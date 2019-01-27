@@ -1,11 +1,9 @@
 # Personal roadmap
 
-It is a personal collection without the intent to contain everything or to recruit the greatest programers with that. If you are interested 
-in other professional roadmaps, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I plan to update it 
-frequently so updates and design fixes will be coming if you look back. If you like, use it how you want.
+It is a personal collection without the intent to contain everything or to recruit the greatest programers with that. If you are interested in professional roadmaps, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I plan to update it frequently so updates and design fixes will be coming if you look back. If you like, use it how you want.
 
 
-[ProgrammingRoadMap.png](ProgrammingRoadMap.png)
+![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
 
 ### Why do I do this?
