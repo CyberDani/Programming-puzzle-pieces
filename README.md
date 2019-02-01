@@ -1,6 +1,6 @@
 # Personal roadmap
 
-It is a personal collection without the intent to contain everything or to recruit the greatest programers with that. If you are interested in professional and actual roadmaps, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I plan to update this little project frequently so updates and design fixes will be coming if you look back. If you like it, you can use freely the entire image or just a part from it how you want without mentioning me or the github page (it is your decision).
+It is a personal collection without the intent to contain everything or to recruit the greatest programers with that. If you are interested in professional and finished roadmaps, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I plan to update this little project frequently so updates and design fixes will be coming if you look back. If you like it, you can use freely the entire image or just a part from it how you want without mentioning me or the github page (it is your decision).
 
 ### Important
 I recommend this roadmap for autoeducative beginners who are curious about the different directions in this profession or want to test herself/himself about what she/he knows and to evaluate what comes next. Always try to figure out first if the new thing you plan to learn will help you and what are its potentials. DO NOT follow the same direction you see on the image and skip the parts you do not need! 
