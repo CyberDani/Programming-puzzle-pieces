@@ -9,8 +9,11 @@ I recommend this roadmap for autoeducative beginners who are curious about the d
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
-### Latest changes
+### Latest changes and plans
 - [x] Extending Gang of Four (GoF) design patterns
+- [ ] Mention: Difference between data read and data manipulation
+- [ ] Add: SQR + SQRS, time management, project management, documentation, security, legal documents
+- [ ] Extend: licenses, algorithms, datastructures
 
 ### Why do I do this?
 0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
