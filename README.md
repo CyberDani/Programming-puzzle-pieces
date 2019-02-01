@@ -5,8 +5,12 @@ It is a personal collection without the intent to contain everything or to recru
 ### Important
 I recommend this roadmap for autoeducative beginners who are curious about the different directions in this profession or want to test herself/himself about what she/he knows and to evaluate what comes next. Always try to figure out first if the new thing you plan to learn will help you and what are its potentials. DO NOT follow the same direction you see on the image and skip the parts you do not need! 
 
+[[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
+
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
+### Latest changes
+- [x] Extending Gang of Four (GoF) design patterns
 
 ### Why do I do this?
 0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
