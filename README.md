@@ -12,7 +12,7 @@ I recommend this roadmap for autoeducative beginners who are curious about the d
 ### Latest changes and plans
 - [x] Extending Gang of Four (GoF) design patterns
 - [ ] Mention: Difference between data read and data manipulation
-- [ ] Add: SQR + SQRS, time management, project management, documentation, security, legal documents
+- [ ] Add: CQR + CQRS, time management, project management, documentation, security, legal documents
 - [ ] Extend: licenses, algorithms, datastructures
 
 ### Why do I do this?
