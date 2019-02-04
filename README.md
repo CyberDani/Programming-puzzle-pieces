@@ -9,12 +9,15 @@ I recommend this roadmap for autoeducative beginners who are curious about the d
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
-### Latest changes and plans
+### Latest changes
+
 - [x] Extending design pattern with CQR, CQRS
 - [x] Added data read and modification
 - [x] Extending Gang of Four (GoF) design patterns
-- [ ] Add: time management, project management, documentation, security, legal documents
-- [ ] Extend: licenses, algorithms, datastructures, code metrics, clean code, diagrams
+
+### See the current plans on waffle
+
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/CyberDani/personal-roadmap.svg?columns=all)](https://waffle.io/CyberDani/personal-roadmap)
 
 ### Why do I do this?
 0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
