@@ -15,7 +15,7 @@ This project tend to collect the general 'should-know' pieces in programming wit
 - [x] Added data read and modification
 - [x] Extending Gang of Four (GoF) design patterns
 
-See the created and reported issue on waffle board:
+See the created and reported issues on waffle board:
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CyberDani/personal-roadmap.svg?columns=all&style=platic)](https://waffle.io/CyberDani/personal-roadmap)
 
