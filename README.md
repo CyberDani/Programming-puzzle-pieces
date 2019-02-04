@@ -15,9 +15,12 @@ I recommend this roadmap for autoeducative beginners who are curious about the d
 - [x] Added data read and modification
 - [x] Extending Gang of Four (GoF) design patterns
 
-### See the current plans on waffle
+See the created and reported issue on waffle board:
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/CyberDani/personal-roadmap.svg?columns=all&style=platic)](https://waffle.io/CyberDani/personal-roadmap)
+
+### How can I contribute?
+If you observe any missing important elements which are part of programming generally speaking without (not specific to a language, framework or library) please feel free to open a new issue and do not forget to motivate your reason. Thank you for helping :+1:
 
 ### Why do I do this?
 0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
