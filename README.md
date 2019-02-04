@@ -11,7 +11,7 @@ This project tend to collect the general 'should-know' pieces in programming wit
 
 ### Latest changes
 
-- [x] Added main topics: TDD(added BDD as an extension), DDD, time and proeject management, 
+- [x] Added main topics: TDD(added BDD as an extension), DDD, time and project management
 - [x] Extending design pattern with CQR, CQRS
 - [x] Added data read and modification
 
