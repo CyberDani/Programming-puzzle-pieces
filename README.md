@@ -11,9 +11,9 @@ This project tend to collect the general 'should-know' pieces in programming wit
 
 ### Latest changes
 
+- [x] Added main topics: TDD(added BDD as an extension), DDD, time and proeject management, 
 - [x] Extending design pattern with CQR, CQRS
 - [x] Added data read and modification
-- [x] Extending Gang of Four (GoF) design patterns
 
 See the created and reported issues on waffle board:
 
