@@ -17,7 +17,7 @@ I recommend this roadmap for autoeducative beginners who are curious about the d
 
 ### See the current plans on waffle
 
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/CyberDani/personal-roadmap.svg?columns=all)](https://waffle.io/CyberDani/personal-roadmap)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/CyberDani/personal-roadmap.svg?columns=all&style=platic)](https://waffle.io/CyberDani/personal-roadmap)
 
 ### Why do I do this?
 0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
