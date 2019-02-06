@@ -11,9 +11,11 @@ This project tend to collects the general 'should-know' pieces in programming wi
 
 ### Latest changes
 
+- [x] Extending the picture (will be more fixes to prittify)
+- [x] Extending: Software names, issue tracking, avanced stuff
+- [x] Adding: Basic Security
 - [x] Added main topics: TDD(added BDD as an extension), DDD, time and project management
 - [x] Extending design pattern with CQR, CQRS
-- [x] Added data read and modification
 
 See the created and reported issues on waffle board:
 
