@@ -11,11 +11,11 @@ This project tend to collects the general 'should-know' pieces in programming wi
 
 ### Latest changes
 
+- [x] Adding more Principles (2019.02.10)
 - [x] Extending Principles -> Solid and Stupid
 - [x] Extending the picture (will be more fixes in order to prettify)
 - [x] Extending: Software names, issue tracking, avanced stuff
 - [x] Adding: Basic Security
-- [x] Added main topics: TDD(added BDD as an extension), DDD, time and project management
 
 See the created and reported issues on waffle board:
 
