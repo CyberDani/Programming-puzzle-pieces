@@ -11,11 +11,11 @@ This project tend to collects the general 'should-know' pieces in programming wi
 
 ### Latest changes
 
+- [x] Added: Ubiquitous language (2019.02.16)
+- [x] Extended: DDD, useful links to learn and practice coding
+- [x] Reorganizing CRUD related topics
 - [x] Adding more Principles (2019.02.10)
 - [x] Extending Principles -> Solid and Stupid
-- [x] Extending the picture (will be more fixes in order to prettify)
-- [x] Extending: Software names, issue tracking, avanced stuff
-- [x] Adding: Basic Security
 
 See the created and reported issues on waffle board:
 
