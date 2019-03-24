@@ -11,7 +11,8 @@ This project tend to collects the general 'should-know' pieces in programming wi
 
 ### Latest changes
 
-- [x] Extending: Design patterns, project & time management (2019.03.24)
+- [x] Extnding: Design patterns (2019.03.24)
+- [x] Extending: Design patterns, project & time management (2019.03.23)
 - [x] Extending code metrics, adding clean code principles (2019.03.13)
 - [x] Extending: Basic principles (2019.03.02)
 - [x] Extending: Basic principles (2019.02.26)
