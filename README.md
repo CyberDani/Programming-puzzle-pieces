@@ -1,22 +1,28 @@
 # Personal roadmap
 
-It is a personal collection without the intent to contain everything or to recruit the greatest programers with that. If you are interested in professional and already finished roadmaps, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I plan to update this little project frequently so updates and design fixes will be coming if you look back. If you like it, you can use freely the entire image or just a part from it how you want without mentioning me or the github page (it is your decision).
+It is an on-going personal collection without the intent to contain everything or to recruit the greatest programers with it. If you are interested in projects like this, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I try to update this little project frequently so updates and design fixes will be coming if you look back. If you want you can use freely the entire image or just a part from it how you want without mentioning me or the github page (it is your decision).
 
-### Important
-This project tend to collects the general 'should-know' pieces in programming without diving into frameworks, libraries or technologies. I recommend this roadmap for autoeducative beginners who are curious about the different directions in this profession or just simply want to test herself/himself about what she/he knows or what should learn next. Even though I strive to keep this general some elements may not apply for your environment. Always try to figure out first if the new thing you plan to learn will help you and what are its potentials. PLEASE DO NOT follow the same direction you see on the image and skip the parts you do not need! You know the best your priorities.
+### Disclaimer
+This project tends to collect the general 'should-know' puzzle pieces in programming without diving into frameworks, libraries or technologies. This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different elements used in programming in the same time. Explaining the different matrials the project coontains is outside of the scope for now. I recommend this roadmap to autoeducative developers who are curious about the different directions in this profession or just simply want to test herself/himself about what she/he knows or want to investigate what he/she should learn next.
 
 [[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
+## Design patterns
+
+[[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
+
+![ProgrammingRoadMap.png](DesignPatterns.png)
+
 ### Latest changes
 
+- [x] Extnding Design patterns and put them on separate image (realizing that all components in a single image is not a good idea) (2019.04.20)
 - [x] Extnding: Design patterns (2019.04.10)
 - [x] Extnding: Design patterns (2019.04.06)
 - [x] Extnding: Design patterns (2019.03.30)
 - [x] Extnding: Design patterns (2019.03.24)
 - [x] Extending: Design patterns, project & time management (2019.03.23)
-- [x] Extending code metrics, adding clean code principles (2019.03.13)
 
 See the created and reported issues on waffle board:
 
