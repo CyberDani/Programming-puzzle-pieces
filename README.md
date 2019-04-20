@@ -9,7 +9,7 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
-## Design patterns
+## Design patterns (design is under construction)
 
 [[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
 
