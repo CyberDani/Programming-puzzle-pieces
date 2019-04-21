@@ -17,12 +17,11 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ### Latest changes
 
-- [x] Extnding Design patterns and put them on separate image (realizing that all components in a single image is not a good idea) (2019.04.20)
+- [x] Adding Chaos Engineering as main topic, design fixes were made on desing patterns (2019.04.21)
+- [x] Extending Design patterns and put them on separate image (realizing that all components in a single image is not a good idea) (2019.04.20)
 - [x] Extnding: Design patterns (2019.04.10)
 - [x] Extnding: Design patterns (2019.04.06)
 - [x] Extnding: Design patterns (2019.03.30)
-- [x] Extnding: Design patterns (2019.03.24)
-- [x] Extending: Design patterns, project & time management (2019.03.23)
 
 See the created and reported issues on waffle board:
 
