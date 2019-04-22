@@ -17,7 +17,7 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ### Latest changes
 
-- [x] Design fixes were mage on design patterns (2019.04.22)
+- [x] Design fixes were made on design patterns (2019.04.22)
 - [x] Adding Chaos Engineering as main topic, design fixes were made on desing patterns (2019.04.21)
 - [x] Extending Design patterns and put them on separate image (realizing that all components in a single image is not a good idea) (2019.04.20)
 - [x] Extnding: Design patterns (2019.04.10)
