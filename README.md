@@ -9,7 +9,7 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
-## Design patterns (design is under construction)
+## Design patterns
 
 [[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
 
@@ -17,12 +17,12 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ### Latest changes
 
+- [x] Extending references for online practicing (2019.06.02)
 - [x] Design fixes were made on design patterns (2019.05.29)
 - [x] Design fixes were made on design patterns (2019.04.27)
 - [x] Design fixes were made on design patterns (2019.04.23)
 - [x] Design fixes were made on design patterns (2019.04.22)
 - [x] Adding Chaos Engineering as main topic, design fixes were made on desing patterns (2019.04.21)
-- [x] Extending Design patterns and put them on separate image (realizing that all components in a single image is not a good idea) (2019.04.20)
 
 
 ### How can I contribute?
