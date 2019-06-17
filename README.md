@@ -25,7 +25,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
-- [x] minor fixings (2019.06.17)
+- [x] minor fixes (2019.06.17)
 - [x] Extending references for online practicing (2019.06.02)
 - [x] Design fixes were made on design patterns (2019.05.29)
 - [x] Design fixes were made on design patterns (2019.04.27)
@@ -37,7 +37,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 If you observe any missing important elements which are part of programming generally speaking (not specific to a language, framework or library) please feel free to open a new issue and do not forget to motivate your reason. Thank you for helping :+1:
 
 ### Why do I do this?
-0. Most of the knowledge I have acquired in computer science I learned from the internet. Currently I am learning day by day from awesome websites. It is still too few to give something back from it, but if you find this interesting in any way, use this picture and information how you want.
-1. It is quite frustrating when I try to learn or understand something I hardly always have to find out that there is a basic notion, principle, methodology or a should know thing that I does not know. Thank you my computer science university :kissing_heart:. As a result I took a decision to learn by myself and figure out basic things as a starting point to see the building blocks. This image maybe will serve as a remainder for the building blocks I am collecting now.
-2. In developer communities sometimes it can be hard to understand everyone at a concept level at least just because I am not familiar with a word for example. So every time I see a notion, principle, methodology, pattern, book, anything important I write it down, learn it later and see if I can include in the image.
-3. I asked myself few time how a general "should-know" roadmap would look like for the past version of me and I realized that it is not an easy story. Based on that question this project might be an interesting experiment.
+0. Most of the knowledge I have acquired in computer science I learned from internet and books, from great professionals motivated in teaching things as well as they can. This project is still too few to give something back from it, but if you find this interesting in any way, yoy can use these pictures and information how you want.
+1. It is quite frustrating that I hardly always have to find out that there is a basic notion, principle, methodology or a should know thing that I does not know. Thank you my computer science university :kissing_heart:. As a result I took a decision to learn by myself and figure out basic things as a starting point to see the building blocks. These images maybe will be able to serve as a remainder for the building blocks.
+2. In developer communities sometimes it can be hard to understand someone at a concept level at least just because I am not familiar with a word for example. So every time I see a notion, principle, methodology, pattern, book, anything important I write it down, learn it later and see if I can include in this project.
+3. This project is also an experiment about how a general "should-know" roadmap would look like that I will definetely consider giving to the past version of me.
