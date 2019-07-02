@@ -25,12 +25,12 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Design fixes were made on design patterns (2019.07.ö3)
 - [x] added architectural design patterns (2019.07.01)
 - [x] minor fixes (2019.06.17)
 - [x] Extending references for online practicing (2019.06.02)
 - [x] Design fixes were made on design patterns (2019.05.29)
 - [x] Design fixes were made on design patterns (2019.04.27)
-- [x] Design fixes were made on design patterns (2019.04.23)
 
 
 ### How can I contribute?
