@@ -5,7 +5,7 @@ This is an on-going personal project without the intent to contain everything or
 ### Disclaimer
 This project tends to collect the general 'should-know' puzzle pieces in programming without diving into frameworks, libraries and technologies. This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different elements used in programming in the same time. Explaining the different concepts the project contains is outside of the scope for now. As a friendly advice you should do your research by yourself if you are interested in a specific topic. I recommend this roadmap to autoeducative developers who are curious about the different directions and concepts in this profession. It can also offer an opportunity to test yourself about how much you already know as well as defining the next topics might want to study.
 
-[[ Click here to open the image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
+[[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
@@ -19,7 +19,7 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
 
-[[ Click here to open the full image by its URL ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
+[[ Click here to open the full image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
 
 ![ProgrammingRoadMap.png](DesignPatterns.png)
 
