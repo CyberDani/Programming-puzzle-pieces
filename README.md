@@ -25,6 +25,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Added concurrency design patterns and minor design fixes were (2019.07.07)
 - [x] Design fixes were made on design patterns (2019.07.03)
 - [x] added architectural design patterns (2019.07.01)
 - [x] minor fixes (2019.06.17)
