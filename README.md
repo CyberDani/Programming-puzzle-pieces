@@ -19,7 +19,7 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
 
-[[ Click here to open the full image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
+[[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
 
 [[ Click here to download Visio file for design patterns ]](https://github.com/CyberDani/personal-roadmap/blob/master/patterns.vsdx)
 
