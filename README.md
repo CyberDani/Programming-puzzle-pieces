@@ -20,12 +20,14 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 
 [[ Click here to open the full image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
+[[ Click here to download Visio file for design patterns ]](https://github.com/CyberDani/personal-roadmap/blob/master/patterns.vsdx)
 
 ![ProgrammingRoadMap.png](DesignPatterns.png)
 
 ### Latest changes
 
-- [x] Added concurrency design patterns and minor design fixes were (2019.07.07)
+- [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
+- [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
 - [x] Design fixes were made on design patterns (2019.07.03)
 - [x] added architectural design patterns (2019.07.01)
 - [x] minor fixes (2019.06.17)
