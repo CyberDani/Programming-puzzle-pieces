@@ -27,14 +27,13 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Added resource design patterns, minor design fixes were made (2019.07.18)
 - [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
 - [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
 - [x] Design fixes were made on design patterns (2019.07.03)
 - [x] added architectural design patterns (2019.07.01)
 - [x] minor fixes (2019.06.17)
 - [x] Extending references for online practicing (2019.06.02)
-- [x] Design fixes were made on design patterns (2019.05.29)
-- [x] Design fixes were made on design patterns (2019.04.27)
 
 
 ### How can I contribute?
