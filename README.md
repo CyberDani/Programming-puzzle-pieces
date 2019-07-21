@@ -27,6 +27,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
 - [x] Added resource design patterns, minor design fixes were made (2019.07.18)
 - [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
 - [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
