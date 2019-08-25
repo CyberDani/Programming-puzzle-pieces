@@ -9,6 +9,14 @@ This project tends to collect the general 'should-know' puzzle pieces in program
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
+## Basic principles
+
+Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with your or other programmers project.
+
+[[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/Principles.png)
+
+![ProgrammingRoadMap.png](Principles.png)
+
 ## Design patterns
 
 A design pattern is "a generalized solution to a commonly occuring problem". Three important aspects needs to be taken into consideration: 
@@ -27,6 +35,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Detaching principles from the main image (2019.08.25)
 - [x] Design fixes were made on design patterns (2019.07.22)
 - [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
 - [x] Added resource design patterns, minor design fixes were made (2019.07.18)
@@ -35,7 +44,6 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 - [x] Design fixes were made on design patterns (2019.07.03)
 - [x] added architectural design patterns (2019.07.01)
 - [x] minor fixes (2019.06.17)
-- [x] Extending references for online practicing (2019.06.02)
 
 
 ### How can I contribute?
