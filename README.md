@@ -35,6 +35,7 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ### Latest changes
 
+- [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
 - [x] Detaching principles from the main image (2019.08.25)
 - [x] Design fixes were made on design patterns (2019.07.22)
 - [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
@@ -43,7 +44,6 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 - [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
 - [x] Design fixes were made on design patterns (2019.07.03)
 - [x] added architectural design patterns (2019.07.01)
-- [x] minor fixes (2019.06.17)
 
 
 ### How can I contribute?
