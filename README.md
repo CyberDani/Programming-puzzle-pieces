@@ -1,9 +1,17 @@
-# Programming roadmap
+# Development puzzle pieces
 
-This is an on-going personal project without the intent to contain everything or to train the greatest programers with it. If you are interested in projects like this, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I try to update this project frequently so updates and design fixes will be coming if you look back. If you want you can use freely the entire image or just a portion from it how you want without mentioning me or the github page (it is your decision).
+This is an on-going personal project without the guarantee to contain everything it should tending to collect the general 'should-know' puzzle pieces in programming but without diving into different languages, frameworks, libraries and technologies (for now).
 
 ### Disclaimer
-This project tends to collect the general 'should-know' puzzle pieces in programming without diving into frameworks, libraries and technologies. This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different elements used in programming in the same time. Explaining the different concepts the project contains is outside of the scope for now. As a friendly advice you should do your research by yourself if you are interested in a specific topic. I recommend this roadmap to autoeducative developers who are curious about the different directions and concepts in this profession. It can also offer an opportunity to test yourself about how much you already know as well as defining the next topics might want to study.
+:world_map: This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
+
+:recycle: If you want you can use freely the entire image and / or the attached visio files or just a portion of it and modify it without any limitation and without mentioning me or the github page (it is your decision).
+
+:pushpin: If you are interested in other similar projects, please check [this web developer roadmap on github](https://github.com/kamranahmedse/developer-roadmap).
+
+## Backlog
+
+Just a set of ideas I conider to extend or invent a main topic for them in the future.
 
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 
