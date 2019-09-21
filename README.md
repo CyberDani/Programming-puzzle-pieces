@@ -2,7 +2,7 @@
 
 This is an on-going personal project without the guarantee to contain everything it should tending to collect the general 'should-know' puzzle pieces in programming but without diving into different languages, frameworks, libraries and technologies (for now).
 
-### Disclaimer
+## Disclaimer
 :world_map: This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
 
 :recycle: If you want you can use freely the entire image and / or the attached visio files or just a portion of it and modify it without any limitation and without mentioning me or the github page (it is your decision).
