@@ -1,4 +1,4 @@
-# Personal roadmap
+# Programming roadmap
 
 This is an on-going personal project without the intent to contain everything or to train the greatest programers with it. If you are interested in projects like this, please check [this github page](https://github.com/kamranahmedse/developer-roadmap). I try to update this project frequently so updates and design fixes will be coming if you look back. If you want you can use freely the entire image or just a portion from it how you want without mentioning me or the github page (it is your decision).
 
@@ -33,8 +33,11 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 
 ![ProgrammingRoadMap.png](DesignPatterns.png)
 
+Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
+
 ### Latest changes
 
+- [x] Added Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
 - [x] Added RAII to Principles (2019.09.14)
 - [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
 - [x] Detaching principles from the main image (2019.08.25)
@@ -43,7 +46,6 @@ Also a design pattern is meant to follow the SOLID principles and by this it can
 - [x] Added resource design patterns, minor design fixes were made (2019.07.18)
 - [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
 - [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
-- [x] Design fixes were made on design patterns (2019.07.03)
 
 
 ### How can I contribute?
