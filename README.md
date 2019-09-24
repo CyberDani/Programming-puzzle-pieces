@@ -1,4 +1,4 @@
-# Development puzzle pieces
+# Programming puzzle pieces
 
 This is an on-going personal project without the guarantee to contain everything it should tending to collect the general 'should-know' puzzle pieces in programming but without diving into different languages, frameworks, libraries and technologies (for now).
 
