@@ -17,6 +17,19 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
+## Online resources
+### Practicing programming by puzzles 
+
+* [Codingame](https://www.codingame.com/home)
+* [CodeSignal](https://app.codesignal.com)
+* [Hackerrank](https://www.hackerrank.com/)
+* [Leetcode](https://leetcode.com)
+* [Codewars](https://www.codewars.com)
+* [Synacor Challenge](https://challenge.synacor.com/)
+* [Checkio](https://checkio.org)
+* [Corewar](https://corewar.co.uk)
+* [RoboCode](https://robocode.sourceforge.io)
+
 ## Basic principles
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with your or other programmers project.
