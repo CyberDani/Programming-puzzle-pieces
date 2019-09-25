@@ -18,7 +18,7 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
 ## Online resources
-### Practice programming by solving puzzles 
+#### Practice programming by solving puzzles 
 
 - [Codingame](https://www.codingame.com/home)
 - [CodeSignal](https://app.codesignal.com)
