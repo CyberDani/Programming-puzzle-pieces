@@ -58,6 +58,7 @@ Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
 
 ### Latest changes
 
+- [x] Detaching practice links from the backlog (2019.09.25)
 - [x] Added Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
 - [x] Added RAII to Principles (2019.09.14)
 - [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
@@ -66,7 +67,6 @@ Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
 - [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
 - [x] Added resource design patterns, minor design fixes were made (2019.07.18)
 - [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
-- [x] Added concurrency design patterns, minor design fixes were made (2019.07.07)
 
 
 ### How can I contribute?
