@@ -20,15 +20,15 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 ## Online resources
 ### Practice programming by solving puzzles 
 
-* [Codingame](https://www.codingame.com/home)
-* [CodeSignal](https://app.codesignal.com)
-* [Hackerrank](https://www.hackerrank.com/)
-* [Leetcode](https://leetcode.com)
-* [Codewars](https://www.codewars.com)
-* [Synacor Challenge](https://challenge.synacor.com/)
-* [Checkio](https://checkio.org)
-* [Corewar](https://corewar.co.uk)
-* [RoboCode](https://robocode.sourceforge.io)
+- [Codingame](https://www.codingame.com/home)
+- [CodeSignal](https://app.codesignal.com)
+- [Hackerrank](https://www.hackerrank.com/)
+- [Leetcode](https://leetcode.com)
+- [Codewars](https://www.codewars.com)
+- [Synacor Challenge](https://challenge.synacor.com/)
+- [Checkio](https://checkio.org)
+- [Corewar](https://corewar.co.uk)
+- [RoboCode](https://robocode.sourceforge.io)
 
 ## Basic principles
 
