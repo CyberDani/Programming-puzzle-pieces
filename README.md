@@ -30,6 +30,30 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 - [Corewar](https://corewar.co.uk)
 - [RoboCode](https://robocode.sourceforge.io)
 
+#### Learn online by yourself
+Free resources:
+- [MIT courses](https://ocw.mit.edu/courses/find-by-topic/)
+- [MIT Computer Science and Artificial Intelligence Laboratory](http://courses.csail.mit.edu)
+- [Harvard courses](https://www.youtube.com/watch?v=0JUN9aDxVmI&list=PL2SOU6wwxB0uP4rJgf5ayhHWgw7akUWSf)
+- [Cybrary](https://www.cybrary.it)
+- [Hackr](https://hackr.io)
+
+Paid alternatives:
+- [Pluralight](https://pluralsight.com)
+- [Udemy](https://www.udemy.com)
+- [edx](https://www.edx.org)
+- [Treehouse](https://teamtreehouse.com)
+- [Udacity](https://www.udacity.com)
+- [Codecademy](https://www.codecademy.com)
+
+#### Freely accessible books
+- [Algorithms by Jeff Erickson](http://jeffe.cs.illinois.edu/teaching/algorithms/)
+- [Physically Based Rendering:From Theory To Implementation](http://www.pbr-book.org)
+- [Great collection of several books](https://github.com/vpreethamkashyap/Library)
+- [Software architecture](http://aosabook.org/en/index.html)
+List of recommendations for good books:
+- [greatest C++ books](https://stackoverflow.com/questions/388242/the-definitive-c-book-guide-and-list)
+
 ## Basic principles
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with your or other programmers project.
@@ -58,6 +82,7 @@ Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
 
 ### Latest changes
 
+- [x] Detaching online learning links from the backlog, added freely accessible books (2019.09.26)
 - [x] Detaching practice links from the backlog (2019.09.25)
 - [x] Added Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
 - [x] Added RAII to Principles (2019.09.14)
@@ -66,7 +91,6 @@ Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
 - [x] Design fixes were made on design patterns (2019.07.22)
 - [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
 - [x] Added resource design patterns, minor design fixes were made (2019.07.18)
-- [x] Added memory management design patterns, minor design fixes were made (2019.07.13)
 
 
 ### How can I contribute?
