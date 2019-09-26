@@ -51,7 +51,8 @@ Paid alternatives:
 - [Physically Based Rendering:From Theory To Implementation](http://www.pbr-book.org)
 - [Great collection of several books](https://github.com/vpreethamkashyap/Library)
 - [Software architecture](http://aosabook.org/en/index.html)
-List of recommendations for good books:
+
+Recommendations for good books:
 - [greatest C++ books](https://stackoverflow.com/questions/388242/the-definitive-c-book-guide-and-list)
 
 ## Basic principles
