@@ -20,7 +20,7 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 ![wiki/Online-resources](topics/onlineResources.png)
 
-### [[[Click here]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-resources)
+### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-resources)
 
 ## Basic principles
 
@@ -30,7 +30,7 @@ Programming principles are simple ideas proposed as advices in order to help to 
 
 ![ProgrammingRoadMap.png](Principles.png)
 
-## Design patterns
+![wiki/designPatterns.png](topics/designPatterns.png)
 
 A design pattern is "a generalized solution to a commonly occuring problem". Three important aspects needs to be taken into consideration: 
 1. **Problem:** _has aspect of design regarding to a specific optimization or to a non-functional requirement (also known as QoS - quality of System)_
@@ -39,14 +39,7 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
-
-[[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/DesignPatterns.png)
-
-[[ Click here to download Visio file for design patterns ]](https://github.com/CyberDani/personal-roadmap/blob/master/patterns.vsdx)
-
-![ProgrammingRoadMap.png](DesignPatterns.png)
-
-Part 2 will be coming here, topics to start with: DDD, CQR, CQRS
+### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patters)
 
 ### Latest changes
 
