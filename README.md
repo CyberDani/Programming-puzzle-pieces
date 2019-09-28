@@ -45,6 +45,7 @@ ___
 
 ### Latest changes
 
+- [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
 - [x] Detaching online learning links from the backlog, added freely accessible books (2019.09.26)
 - [x] Detaching practice links from the backlog (2019.09.25)
 - [x] Added Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
