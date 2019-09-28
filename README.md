@@ -17,43 +17,6 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
-## Online resources
-#### Practice programming by solving puzzles 
-
-- [Codingame](https://www.codingame.com/home)
-- [CodeSignal](https://app.codesignal.com)
-- [Hackerrank](https://www.hackerrank.com/)
-- [Leetcode](https://leetcode.com)
-- [Codewars](https://www.codewars.com)
-- [Synacor Challenge](https://challenge.synacor.com/)
-- [Checkio](https://checkio.org)
-- [Corewar](https://corewar.co.uk)
-- [RoboCode](https://robocode.sourceforge.io)
-
-#### Learn online by yourself
-Free resources:
-- [MIT courses](https://ocw.mit.edu/courses/find-by-topic/)
-- [MIT Computer Science and Artificial Intelligence Laboratory](http://courses.csail.mit.edu)
-- [Harvard courses](https://www.youtube.com/watch?v=0JUN9aDxVmI&list=PL2SOU6wwxB0uP4rJgf5ayhHWgw7akUWSf)
-- [Cybrary](https://www.cybrary.it)
-- [Hackr](https://hackr.io)
-
-Paid alternatives:
-- [Pluralight](https://pluralsight.com)
-- [Udemy](https://www.udemy.com)
-- [edx](https://www.edx.org)
-- [Treehouse](https://teamtreehouse.com)
-- [Udacity](https://www.udacity.com)
-- [Codecademy](https://www.codecademy.com)
-
-#### Freely accessible books
-- [Algorithms by Jeff Erickson](http://jeffe.cs.illinois.edu/teaching/algorithms/)
-- [Physically Based Rendering:From Theory To Implementation](http://www.pbr-book.org)
-- [Great collection of several books](https://github.com/vpreethamkashyap/Library)
-- [Software architecture](http://aosabook.org/en/index.html)
-
-Recommendations for good books:
-- [greatest C++ books](https://stackoverflow.com/questions/388242/the-definitive-c-book-guide-and-list)
 
 ## Basic principles
 
