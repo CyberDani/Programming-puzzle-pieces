@@ -35,7 +35,7 @@ Programming principles are simple ideas proposed as advices in order to help to 
 A design pattern is "a generalized solution to a commonly occuring problem". Three important aspects needs to be taken into consideration: 
 1. **Problem:** _has aspect of design regarding to a specific optimization or to a non-functional requirement (also known as QoS - quality of System)_
 2. **Solution:** _the pattern itself having a specific structure and roles_
-3. **Consequances:** _since a pattern optimizes some aspects over others, it is importand to understand the negative and positive aspeects as well._
+3. **Consequances:** _since a pattern optimizes some aspects over others, it is importand to understand the negative and positive aspects as well._
 
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
