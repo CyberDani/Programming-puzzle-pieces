@@ -20,7 +20,7 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 ![wiki/Online-resources](topics/onlineResources.png)
 
-[Click here](wiki/Online-resources)
+### [[[Click here]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-resources)
 
 ## Basic principles
 
