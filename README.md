@@ -15,9 +15,9 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 
-![wiki/Online-resources](topics/onlineResources.png)
+![topics/Online-resources](topics/onlineResources.png)
 
-### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-resources)
+### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
 
 ![topics/basicPrinciples.png](topics/basicPrinciples.png)
 
@@ -32,7 +32,7 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
-### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patters)
+### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patterns)
 
 ### Latest changes
 
