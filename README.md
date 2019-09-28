@@ -23,10 +23,6 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with a more complex project.
 
-[[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/Principles.png)
-
-![ProgrammingRoadMap.png](Principles.png)
-
 ![topics/designPatterns.png](topics/designPatterns.png)
 
 A design pattern is "a generalized solution to a commonly occuring problem". Three important aspects needs to be taken into consideration: 
