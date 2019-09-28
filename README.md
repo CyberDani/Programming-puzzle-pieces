@@ -14,16 +14,21 @@ This is an on-going personal project without the guarantee to contain everything
 Just a set of ideas I conider to extend or invent a main topic for them in the future.
 
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
+___
 
 ![topics/Online-resources](topics/onlineResources.png)
 
 ### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
+
+___
 
 ![topics/basicPrinciples.png](topics/basicPrinciples.png)
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with a more complex project.
 
 ### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Basic-Principles)
+
+___
 
 ![topics/designPatterns.png](topics/designPatterns.png)
 
@@ -35,6 +40,8 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
 ### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patterns)
+
+___
 
 ### Latest changes
 
