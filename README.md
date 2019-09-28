@@ -18,6 +18,8 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 ![ProgrammingRoadMap.png](ProgrammingRoadMap.png)
 
 
+![wiki/Online-resources](topics/onlineResources.png)
+
 ## Basic principles
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with your or other programmers project.
