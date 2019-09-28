@@ -18,7 +18,7 @@ ___
 
 ![topics/Online-resources](topics/onlineResources.png)
 
-### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
+### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with a more complex project.
 
-### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Basic-Principles)
+### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Basic-Principles)
 
 ___
 
@@ -39,7 +39,7 @@ A design pattern is "a generalized solution to a commonly occuring problem". Thr
 
 Also a design pattern is meant to follow the SOLID principles and by this it can offer a comfortable solution.
 
-### [[[ Click here ]]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patterns)
+### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Design-Patterns)
 
 ___
 
