@@ -14,7 +14,7 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 ___
 
-![topics/Online-resources](topics/onlineResources.png)
+![topics/Online-resources](topics/onlineResources.png "online resources")
 
 Always having your resources where you learn and practice from greatly helps you mastering any topic by yourself without depending on the education system, mentor, etc. It is a choice to develop yourself in your rihtm by determining your invested time and energy.
 
