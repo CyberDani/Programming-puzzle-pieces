@@ -18,8 +18,9 @@ ___
 
 ![topics/Online-resources](topics/onlineResources.png)
 
-### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
+Always having your resources where you learn and practice from greatly help you mastering any topic by yourelf without depending on the education system, mentor, etc. You can simply develop yourself in your rihtm by determining your invested time and energy.
 
+### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
 ___
 
 ![topics/basicPrinciples.png](topics/basicPrinciples.png)
@@ -60,9 +61,3 @@ ___
 
 ### How can I contribute?
 If you observe any missing important elements which are part of programming generally speaking (not specific to a language, framework or library) or find any kind of inacurracy or mistake please feel free to open a new issue and try to motivate your reason. Every observation and suggestion is welcomed and I will try to react to all of them. You actively improve the quality of the project by this and also offer a cleaner quality of information for the other visitors. Thank you for helping :+1:
-
-### Why do I do this?
-0. Most of the knowledge I have acquired in computer science I learned from internet and books, from great professionals motivated in teaching things as well as they can. This project is still too few to give something back from it, but if you find this interesting in any way, you can use these pictures, Visio files and information how you want.
-1. It is quite frustrating that I hardly always have to find out that there is a basic notion, principle, methodology or a should know thing that I does not know. Thank you my computer science university :kissing_heart:. As a result I took a decision to learn by myself and figure out basic things as a starting point to see the building blocks. I want this project to serve as a remainder for the building blocks.
-2. In developer communities sometimes I find hard to understand someone at a concept level at least just because I am not familiar with a word for example. So every time I see a notion, principle, methodology, pattern, book, anything important I write it down, learn it later and see if I can include in this project.
-3. This project is also an experiment about how a general "should-know" roadmap would look like that I will definetely consider giving to the past version of me.
