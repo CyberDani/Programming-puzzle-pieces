@@ -18,7 +18,7 @@ ___
 
 ![topics/Online-resources](topics/onlineResources.png)
 
-Always having your resources where you learn and practice from greatly help you mastering any topic by yourelf without depending on the education system, mentor, etc. It is a choice to develop yourself in your rihtm by determining your invested time and energy.
+Always having your resources where you learn and practice from greatly helps you mastering any topic by yourelf without depending on the education system, mentor, etc. It is a choice to develop yourself in your rihtm by determining your invested time and energy.
 
 ### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Online-Resources)
 ___
