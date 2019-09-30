@@ -16,7 +16,7 @@ ___
 
 # Personal recommendation for a fresh (re)start:
 
-:blue_book: But How Do It Know? - The Basic Principles of Computers for Everyone
+:blue_book: :sparkling_heart: But How Do It Know? - The Basic Principles of Computers for Everyone
 
 The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.
 
@@ -52,17 +52,16 @@ ___
 
 ### Latest changes
 
-- [x] Adding new links to online resources (2019.09.29)
+- [x] Add personal recommendation for a great first book (2019.10.01)
+- [x] Add new links to online resources (2019.09.29)
 - [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
-- [x] Detaching online learning links from the backlog, added freely accessible books (2019.09.26)
-- [x] Detaching practice links from the backlog (2019.09.25)
-- [x] Added Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
-- [x] Added RAII to Principles (2019.09.14)
+- [x] Detach online learning links from the backlog, added freely accessible books (2019.09.26)
+- [x] Detach practice links from the backlog (2019.09.25)
+- [x] Add Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
+- [x] Add RAII to Principles (2019.09.14)
 - [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
 - [x] Detaching principles from the main image (2019.08.25)
 - [x] Design fixes were made on design patterns (2019.07.22)
-- [x] Added new design patterns: Distribution patterns, Safety and Reliability patterns (2019.07.21)
-- [x] Added resource design patterns, minor design fixes were made (2019.07.18)
 
 
 ### How can I contribute?
