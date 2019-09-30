@@ -14,6 +14,14 @@ Just a set of ideas I conider to extend or invent a main topic for them in the f
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 ___
 
+# Personal recommendation for a fresh (re)start:
+
+:blue_book: But How Do It Know? - The Basic Principles of Computers for Everyone
+
+The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.
+
+___
+
 ![topics/Online-resources](topics/onlineResources.png "online resources")
 
 Always having your resources where you learn and practice from greatly helps you mastering any topic by yourself without depending on the education system, mentor, etc. It is a choice to develop yourself in your rihtm by determining your invested time and energy.
