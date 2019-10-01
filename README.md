@@ -1,13 +1,13 @@
 > This is an on-going personal project without the guarantee to contain everything it should tending to collect the general 'should-know' puzzle pieces in programming but without diving into different languages, frameworks, libraries and technologies (for now).
 
 ## Disclaimer
-:world_map: This is a simplified visual representation. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
+:world_map: This project mainly contains simplified visual representations. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
 
 :recycle: If you want you can use freely the entire image and / or the attached visio files or just a portion of it and modify it without any limitation and without mentioning me or the github page (it is your decision).
 
 ## Backlog
 
-Just a set of ideas I conider to extend or invent a main topic for them in the future.
+This is a portion from the very first single image file. My initial plan trying to include everything in a single image turned out not to be efficient to follow, read and extend. Now I am just uing as a backlog and delete from it every time I reuse an element from it.
 
 [[ Click here to open the image in FULL SCREEN ]](https://raw.githubusercontent.com/CyberDani/personal-roadmap/master/ProgrammingRoadMap.png)
 ___
@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Add a separate topic "similar projects" to online resources (2019.10.02)
 - [x] Add personal recommendation for a great first book (2019.10.01)
 - [x] Add new links to online resources (2019.09.29)
 - [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
@@ -58,8 +59,6 @@ ___
 - [x] Add Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
 - [x] Add RAII to Principles (2019.09.14)
 - [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
-- [x] Detaching principles from the main image (2019.08.25)
-- [x] Design fixes were made on design patterns (2019.07.22)
 
 
 ### How can I contribute?
