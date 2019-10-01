@@ -5,8 +5,6 @@
 
 :recycle: If you want you can use freely the entire image and / or the attached visio files or just a portion of it and modify it without any limitation and without mentioning me or the github page (it is your decision).
 
-:pushpin: If you are interested in other similar projects, please check [this web developer roadmap on github](https://github.com/kamranahmedse/developer-roadmap).
-
 ## Backlog
 
 Just a set of ideas I conider to extend or invent a main topic for them in the future.
