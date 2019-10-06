@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Explain RAII, start to redesign basic principles (2019.10.07)
 - [x] Add a separate topic "similar projects" to online resources (2019.10.02)
 - [x] Add personal recommendation for a great first book (2019.10.01)
 - [x] Add new links to online resources (2019.09.29)
@@ -62,4 +63,4 @@ ___
 
 
 ### How can I contribute?
-If you observe any missing important elements which are part of programming generally speaking (not specific to a language, framework or library) or find any kind of inacurracy or mistake please feel free to open a new issue and try to motivate your reason. Every observation and suggestion is welcomed and I will try to react to all of them. You actively improve the quality of the project by this and also offer a cleaner quality of information for the other visitors. Thank you for helping :+1:
+Will be coming...
