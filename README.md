@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Apply more redesigns on basic principles (2019.10.21)
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
 - [x] Add a separate topic "similar projects" to online resources (2019.10.02)
 - [x] Add personal recommendation for a great first book (2019.10.01)
@@ -59,7 +60,6 @@ ___
 - [x] Detach practice links from the backlog (2019.09.25)
 - [x] Add Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
 - [x] Add RAII to Principles (2019.09.14)
-- [x] Redesign Design Patterns, increase font size for better readability (2019.09.10)
 
 
 ### How can I contribute?
