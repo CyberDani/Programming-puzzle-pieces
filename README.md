@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Added some missing descriptions in basic principles (2019.10.25)
 - [x] Apply more redesigns on basic principles (2019.10.21)
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
 - [x] Add a separate topic "similar projects" to online resources (2019.10.02)
