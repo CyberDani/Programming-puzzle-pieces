@@ -29,7 +29,7 @@ ___
 
 ![topics/basicPrinciples.png](topics/basicPrinciples.png)
 
-Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with a more complex project.
+Programming principles are simple ideas proposed as advices in order to help to keep your code clear and maintainable. It is also a common programming mentality, a way of thinking when you have to deal with a complex project.
 
 ### [[ Click here to access the related wiki page ]](https://github.com/CyberDani/Programming-puzzle-pieces/wiki/Basic-Principles)
 
@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Add descriptions to STUPID code and ACID properties in basic principles (2019.10.27)
 - [x] Added some missing descriptions in basic principles (2019.10.25)
 - [x] Apply more redesigns on basic principles (2019.10.21)
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
@@ -59,8 +60,6 @@ ___
 - [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
 - [x] Detach online learning links from the backlog, added freely accessible books (2019.09.26)
 - [x] Detach practice links from the backlog (2019.09.25)
-- [x] Add Antipatterns to design patterns, finish it as part1 because it looks busy to extend in the future (2019.09.21)
-- [x] Add RAII to Principles (2019.09.14)
 
 
 ### How can I contribute?
