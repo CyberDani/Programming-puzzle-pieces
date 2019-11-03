@@ -50,7 +50,8 @@ ___
 
 ### Latest changes
 
-- [x] Add descriptions to STUPID code and ACID properties in basic principles (2019.10.27)
+- [x] Add CRUD operations to basic principles (2019.11.03)
+- [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
 - [x] Added some missing descriptions in basic principles (2019.10.25)
 - [x] Apply more redesigns on basic principles (2019.10.21)
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
