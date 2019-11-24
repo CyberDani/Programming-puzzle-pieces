@@ -3,7 +3,7 @@
 ## Disclaimer
 :world_map: This project mainly contains simplified visual representations. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
 
-:recycle: If you want you can use freely the entire image and / or the attached visio files or just a portion of it and modify it without any limitation and without mentioning me or the github page (it is your decision).
+:recycle: You can use or reuse any image and / or the attached visio files entirely or just a portion of it and modify it without any limitation. Mentioning this github page is not mandatory but it is always appreciated.
 
 ## Backlog
 
@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Add code metrics to basic principles (2019.11.24)
 - [x] Add CRUD operations to basic principles (2019.11.03)
 - [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
 - [x] Added some missing descriptions in basic principles (2019.10.25)
@@ -60,7 +61,6 @@ ___
 - [x] Add new links to online resources (2019.09.29)
 - [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
 - [x] Detach online learning links from the backlog, added freely accessible books (2019.09.26)
-- [x] Detach practice links from the backlog (2019.09.25)
 
 
 ### How can I contribute?
