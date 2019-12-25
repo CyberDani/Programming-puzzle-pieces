@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Add FIRST testing rules to basic principles (2019.12.25)
 - [x] Add code metrics to basic principles (2019.11.24)
 - [x] Add CRUD operations to basic principles (2019.11.03)
 - [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
