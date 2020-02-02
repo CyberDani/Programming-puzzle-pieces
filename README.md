@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Add synonyms for data read / write, add new online resource (2020.02.02)
 - [x] Add FIRST testing rules to basic principles (2019.12.25)
 - [x] Add code metrics to basic principles (2019.11.24)
 - [x] Add CRUD operations to basic principles (2019.11.03)
@@ -61,7 +62,6 @@ ___
 - [x] Add personal recommendation for a great first book (2019.10.01)
 - [x] Add new links to online resources (2019.09.29)
 - [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
-- [x] Detach online learning links from the backlog, added freely accessible books (2019.09.26)
 
 
 ### How can I contribute?
