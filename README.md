@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Redesign Design Patterns to give it a consistent feeling (2020.02.09)
 - [x] Add synonyms for data read / write, add new online resource (2020.02.02)
 - [x] Add FIRST testing rules to basic principles (2019.12.25)
 - [x] Add code metrics to basic principles (2019.11.24)
