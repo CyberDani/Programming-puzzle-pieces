@@ -50,6 +50,7 @@ ___
 
 ### Latest changes
 
+- [x] Apply design fix for Design Patterns, add 5S Principle to Basic Principles (2020.02.16)
 - [x] Redesign Design Patterns to give it a consistent feeling (2020.02.09)
 - [x] Add synonyms for data read / write, add new online resource (2020.02.02)
 - [x] Add FIRST testing rules to basic principles (2019.12.25)
@@ -61,8 +62,6 @@ ___
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
 - [x] Add a separate topic "similar projects" to online resources (2019.10.02)
 - [x] Add personal recommendation for a great first book (2019.10.01)
-- [x] Add new links to online resources (2019.09.29)
-- [x] Moving different topics into different wiki pages, it looks too overcrowded from now to keep all in the main page (2019.09.28)
 
 
 ### How can I contribute?
