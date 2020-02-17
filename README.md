@@ -1,4 +1,5 @@
-> This is an on-going personal project without the guarantee to contain everything it should tending to collect the general 'should-know' puzzle pieces in programming but without diving into different languages, frameworks, libraries and technologies (for now).
+> I can teach you the physics of riding a bicycle. Indeed, the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, center of mass, and so forth, can be demonstrated with less than a page full of equations. Given those formulae I could provide you that bicycle riding is practical and give you all the knowldge you needed to make it work. And you'd still fall down the first time you climbed on that bike. Coding is no different.
+<p align="right"><cite>Robert C. Martin - Clean code</cite> (Introduction - page xxvi)</p>
 
 ## Disclaimer
 :world_map: This project mainly contains simplified visual representations. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
