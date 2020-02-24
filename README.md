@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Add summary for Meaningful Names (2020.02.24)
 - [x] [Basic principles] Add clean code higlighted quotes (2020.02.23)
 - [x] Apply design fix for Design Patterns, add 5S Principle to Basic Principles (2020.02.16)
 - [x] Redesign Design Patterns to give it a consistent feeling (2020.02.09)
@@ -62,7 +63,6 @@ ___
 - [x] Added some missing descriptions in basic principles (2019.10.25)
 - [x] Apply more redesigns on basic principles (2019.10.21)
 - [x] Explain RAII, start to redesign basic principles (2019.10.07)
-- [x] Add a separate topic "similar projects" to online resources (2019.10.02)
 
 
 ### How can I contribute?
