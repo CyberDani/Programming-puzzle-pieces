@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Continue section: Functions (not finished) (2020.03.04)
 - [x] [Basic principles, Clean Code] Add new section: Functions (not finished) (2020.03.02)
 - [x] [Basic principles, Clean Code] Add summary for Meaningful Names (2020.02.24)
 - [x] [Basic principles] Add clean code higlighted quotes (2020.02.23)
@@ -63,7 +64,6 @@ ___
 - [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
 - [x] Added some missing descriptions in basic principles (2019.10.25)
 - [x] Apply more redesigns on basic principles (2019.10.21)
-- [x] Explain RAII, start to redesign basic principles (2019.10.07)
 
 
 ### How can I contribute?
