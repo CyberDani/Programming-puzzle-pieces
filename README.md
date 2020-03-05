@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Continue section: Functions (finished) (2020.03.06)
 - [x] [Basic principles, Clean Code] Continue section: Functions (not finished) (2020.03.04)
 - [x] [Basic principles, Clean Code] Add new section: Functions (not finished) (2020.03.02)
 - [x] [Basic principles, Clean Code] Add summary for Meaningful Names (2020.02.24)
@@ -63,7 +64,6 @@ ___
 - [x] Add CRUD operations to basic principles (2019.11.03)
 - [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
 - [x] Added some missing descriptions in basic principles (2019.10.25)
-- [x] Apply more redesigns on basic principles (2019.10.21)
 
 
 ### How can I contribute?
