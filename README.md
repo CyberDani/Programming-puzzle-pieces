@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Online resources] Add InfoQ :green_heart: (2020.03.09)
 - [x] [Basic principles, Clean Code] Reorganize clean code chapters, start 4.th chapter (2020.03.08)
 - [x] [Basic principles, Clean Code] Continue section: Functions (finished) (2020.03.06)
 - [x] [Basic principles, Clean Code] Continue section: Functions (not finished) (2020.03.04)
@@ -63,7 +64,6 @@ ___
 - [x] Add FIRST testing rules to basic principles (2019.12.25)
 - [x] Add code metrics to basic principles (2019.11.24)
 - [x] Add CRUD operations to basic principles (2019.11.03)
-- [x] Add descriptions to STUPID code and ACID properties within basic principles (2019.10.27)
 
 
 ### How can I contribute?
