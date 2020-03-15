@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Continue section: Comments (finished) (2020.03.15)
 - [x] [Basic principles, Clean Code] Continue section: Comments (not finished) (2020.03.09)
 - [x] [Online resources] Add InfoQ :green_heart: (2020.03.09)
 - [x] [Basic principles, Clean Code] Reorganize clean code chapters, start 4.th chapter (2020.03.08)
@@ -63,7 +64,6 @@ ___
 - [x] Redesign Design Patterns to give it a consistent feeling (2020.02.09)
 - [x] Add synonyms for data read / write, add new online resource (2020.02.02)
 - [x] Add FIRST testing rules to basic principles (2019.12.25)
-- [x] Add code metrics to basic principles (2019.11.24)
 
 
 ### How can I contribute?
