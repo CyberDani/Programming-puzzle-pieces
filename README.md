@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Finish chapter: Formatting (2020.03.19)
 - [x] [Basic principles, Clean Code] Add new chapter: Formatting (not finished) (2020.03.18)
 - [x] [Basic principles, Clean Code] Continue section: Comments (finished) (2020.03.15)
 - [x] [Basic principles, Clean Code] Continue section: Comments (not finished) (2020.03.09)
@@ -63,7 +64,6 @@ ___
 - [x] [Basic principles] Add clean code higlighted quotes (2020.02.23)
 - [x] Apply design fix for Design Patterns, add 5S Principle to Basic Principles (2020.02.16)
 - [x] Redesign Design Patterns to give it a consistent feeling (2020.02.09)
-- [x] Add synonyms for data read / write, add new online resource (2020.02.02)
 
 
 ### How can I contribute?
