@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles] Add Stepdown rule (from Clean Code) (2020.03.25)
 - [x] [Basic principles, Clean Code] Add chapter: Objects and Data Structures (2020.03.24)
 - [x] [Basic principles, Clean Code] Finish chapter: Formatting (2020.03.19)
 - [x] [Basic principles, Clean Code] Add new chapter: Formatting (not finished) (2020.03.18)
@@ -63,7 +64,6 @@ ___
 - [x] [Basic principles, Clean Code] Add new section: Functions (not finished) (2020.03.02)
 - [x] [Basic principles, Clean Code] Add summary for Meaningful Names (2020.02.24)
 - [x] [Basic principles] Add clean code higlighted quotes (2020.02.23)
-- [x] Apply design fix for Design Patterns, add 5S Principle to Basic Principles (2020.02.16)
 
 
 ### How can I contribute?
