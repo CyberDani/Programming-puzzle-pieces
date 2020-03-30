@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Add chapter: Boundaries (2020.03.30)
 - [x] [Online reesources] Add programming-book.com :green_heart: (2020.03.28)
 - [x] [Basic principles, Clean Code] Add chapter: error handling (2020.03.27)
 - [x] [Basic principles] Add Stepdown rule (from Clean Code) (2020.03.25)
@@ -64,7 +65,6 @@ ___
 - [x] [Basic principles, Clean Code] Continue section: Functions (finished) (2020.03.06)
 - [x] [Basic principles, Clean Code] Continue section: Functions (not finished) (2020.03.04)
 - [x] [Basic principles, Clean Code] Add new section: Functions (not finished) (2020.03.02)
-- [x] [Basic principles, Clean Code] Add summary for Meaningful Names (2020.02.24)
 
 
 ### How can I contribute?
