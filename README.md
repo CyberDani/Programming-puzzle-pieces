@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Design Patterns] Do some minor visual fixes (2020.04.06)
 - [x] [Basic principles, Clean Code] Add new chapter: Unit Tests (2020.04.03)
 - [x] [Basic principles, Clean Code] Add chapter: Boundaries (2020.03.30)
 - [x] [Online reesources] Add programming-book.com :green_heart: (2020.03.28)
@@ -64,7 +65,6 @@ ___
 - [x] [Online resources] Add InfoQ :green_heart: (2020.03.09)
 - [x] [Basic principles, Clean Code] Reorganize clean code chapters, start 4.th chapter (2020.03.08)
 - [x] [Basic principles, Clean Code] Continue section: Functions (finished) (2020.03.06)
-- [x] [Basic principles, Clean Code] Continue section: Functions (not finished) (2020.03.04)
 
 
 ### How can I contribute?
