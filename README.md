@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Add new chapter: Systems (2020.04.11)
 - [x] [Basic principles, Clean Code] Add new chapter: Classes (2020.04.07)
 - [x] [Design Patterns] Do some minor visual fixes (2020.04.06)
 - [x] [Basic principles, Clean Code] Add new chapter: Unit Tests (2020.04.03)
@@ -64,7 +65,6 @@ ___
 - [x] [Basic principles, Clean Code] Continue section: Comments (finished) (2020.03.15)
 - [x] [Basic principles, Clean Code] Continue section: Comments (not finished) (2020.03.09)
 - [x] [Online resources] Add InfoQ :green_heart: (2020.03.09)
-- [x] [Basic principles, Clean Code] Reorganize clean code chapters, start 4.th chapter (2020.03.08)
 
 
 ### How can I contribute?
