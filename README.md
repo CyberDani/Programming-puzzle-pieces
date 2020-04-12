@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Add new chapter: Emergence (2020.04.12)
 - [x] [Basic principles, Clean Code] Add new chapter: Systems (2020.04.11)
 - [x] [Basic principles, Clean Code] Add new chapter: Classes (2020.04.07)
 - [x] [Design Patterns] Do some minor visual fixes (2020.04.06)
@@ -64,7 +65,6 @@ ___
 - [x] [Basic principles, Clean Code] Add new chapter: Formatting (not finished) (2020.03.18)
 - [x] [Basic principles, Clean Code] Continue section: Comments (finished) (2020.03.15)
 - [x] [Basic principles, Clean Code] Continue section: Comments (not finished) (2020.03.09)
-- [x] [Online resources] Add InfoQ :green_heart: (2020.03.09)
 
 
 ### How can I contribute?
