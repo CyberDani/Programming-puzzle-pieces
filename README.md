@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] Add new chapters: JUnit Internals; Refactoring SerialDate (2020.05.10)
 - [x] [Basic principles, Clean Code] Add new chapter: Successive Refinement (2020.04.26)
 - [x] [Basic principles, Clean Code] Add new chapter: Concurrency (2020.04.24)
 - [x] [Basic principles, Clean Code] Add new chapter: Emergence (2020.04.12)
@@ -64,7 +65,6 @@ ___
 - [x] [Basic principles] Add Stepdown rule (from Clean Code) (2020.03.25)
 - [x] [Basic principles, Clean Code] Add chapter: Objects and Data Structures (2020.03.24)
 - [x] [Basic principles, Clean Code] Finish chapter: Formatting (2020.03.19)
-- [x] [Basic principles, Clean Code] Add new chapter: Formatting (not finished) (2020.03.18)
 
 
 ### How can I contribute?
