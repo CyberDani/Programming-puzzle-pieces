@@ -51,6 +51,7 @@ ___
 
 ### Latest changes
 
+- [x] [Basic principles, Clean Code] WIP: Smells and Heuristics (2020.05.14)
 - [x] [Basic principles, Clean Code] Add new chapters: JUnit Internals; Refactoring SerialDate (2020.05.10)
 - [x] [Basic principles, Clean Code] Add new chapter: Successive Refinement (2020.04.26)
 - [x] [Basic principles, Clean Code] Add new chapter: Concurrency (2020.04.24)
@@ -64,7 +65,6 @@ ___
 - [x] [Basic principles, Clean Code] Add chapter: error handling (2020.03.27)
 - [x] [Basic principles] Add Stepdown rule (from Clean Code) (2020.03.25)
 - [x] [Basic principles, Clean Code] Add chapter: Objects and Data Structures (2020.03.24)
-- [x] [Basic principles, Clean Code] Finish chapter: Formatting (2020.03.19)
 
 
 ### How can I contribute?
