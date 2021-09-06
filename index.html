@@ -44,6 +44,46 @@
     </div>
   </nav>
   
+  
+  
+  <ul id="slide-out" class="sidenav" style="background-color:#242424;">
+    
+    <li><a href="#!" class="waves-effect grey-text text-lighten-2"><i class="fas fa-link"></i> Online resources</a></li>
+    <li><a href="#!" class="waves-effect grey-text text-lighten-2"><i class="fas fa-puzzle-piece"></i> Design Patterns</a></li>
+    <li>
+		<a href="#!" class="waves-effect grey-text text-lighten-2">
+		<i class="fas fa-book-open"></i> Book summaries</a>
+	</li>
+	<li>
+		<a href="#!" class="waves-effect grey-text text-lighten-2">
+		<i class="far fa-compass"></i> Common Principles</a>
+	</li>
+	<li class="no-padding">
+		<ul class="collapsible collapsible-accordion">
+		  <li>
+			<a class="collapsible-header waves-effect">Placeholder<i class="material-icons">arrow_drop_down</i></a>
+			<div class="collapsible-body grey-text text-lighten-2" style="background-color:#303030;">
+			  <ul>
+				<li><a href="#!">Placeholder</a></li>
+				<li><a href="#!">Placeholder</a></li>
+				<li><a href="#!">Placeholder</a></li>
+				<li><a href="#!">Placeholder</a></li>
+			  </ul>
+			</div>
+		  </li>
+		</ul>
+	</li>
+	
+	
+	<li><div class="divider grey"></div></li>
+	<li><a class="subheader">Actions</a></li>
+	
+	<li><a class="sidenav-close" href="#!">Close sidenav</a></li>
+  </ul>
+
+  
+  
+  
 	<div class="grey lighten-4">
 		
 		<div class="row">
@@ -144,12 +184,48 @@
 
 	</div>
   
+	<div class="divider"></div>
   
-  
-  
-    <h2 class="center-align"> The page will be available in few days... </h2>
+	<div class="row">
 	
+		<div class="container">
+			<div class="col s12 center-align">
+				<h2>Personal recommendation for a fresh (re)start</h2>
+			</div>
+			
+			<div class="col s12">
+			  <div class="card purple lighten-4 z-depth-4">
+				<div class="card-content">
+				  <span class="card-title">
+						<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
+					</span>
+				  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
+				</div>
+				<div class="card-action">
+				  No book content available here yet...
+				</div>
+			  </div>
+			</div>
 	
+			<div class="col s12 divider"></div>
+	
+			<div class="col s12 center-align">
+				<h3>That's all! Open the menu <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> and discover topics you are interested in.</h3>
+			</div>
+	
+		</div>
+		
+	</div>
+  
+	<div class="row">
+		<div class="divider"></div><br>
+	  
+		<div class="row teal lighten-4">
+			<h3 class="col s10 push-s1 center-align"> 
+				The page is getting better and better over time. Please give it some time until it gets finished.
+			</h3>
+		</div>
+	</div>
 	
 	
 	<footer class="page-footer deep-orange accent-3">
@@ -172,12 +248,72 @@
 	  </div>
 	  <div class="footer-copyright">
 		<div class="container">
-			Last modified on ...
-		<a class="grey-text text-lighten-4 right" href="#!">Placeholders</a>
+			Updated <span id="githubRepoUpdatedText"></span>
 		</div>
 	  </div>
 	</footer>
 
+	
+	<script>
+		
+		function updateLastUpdatedTextAsync() {
+			$.ajax({
+			  url: "https://api.github.com/repos/CyberDani/Programming-puzzle-pieces",
+			  dataType: "json",
+			  method: "GET"
+			}).done(function(resp, textStatus, jqXHR) {
+				let updatedAtMs = new Date(resp.updated_at).getTime();
+				let timeDurationMs = new Date().getTime() - updatedAtMs;
+				let sec = Math.ceil(timeDurationMs / 1000);
+				let mins = Math.ceil(sec / 60);
+				let hours = Math.floor(mins / 60);
+				let days = Math.floor(hours / 24);
+				let weeks = Math.floor(days / 7);
+				let months = Math.floor(weeks / 4);
+				let years = Math.floor(months / 12);
+				
+				let durationString = "";
+				if (sec < 60){
+					durationString = sec + " seconds ago"
+				} else if (mins < 60) {
+					durationString = mins + " minutes ago"
+				} else if (hours < 24) {
+					durationString = hours + " hours ago"
+				} else if (days < 7) {
+					hours = hours % 24;
+					durationString = days + " days and " + hours + " hours ago"
+				} else if (weeks < 4) {
+					days = days % 7;
+					durationString = weeks + " weeks and " + days + " days ago"
+				} else if (months < 12) {
+					weeks = weeks % 4;
+					durationString = months + " months and " + weeks + " weeks ago"
+				} else {
+					months = months % 12;
+					durationString = years + " years and " + months + " months ago"
+				}
+				
+				durationString += " on github";
+				$('#githubRepoUpdatedText').text(durationString);
+			}).fail(function() {
+				// alert( "error" );
+			}).always(function() {
+				//alert( "complete" );
+			});
+		}
+		
+		$(document).ready(function(){
+			$('.sidenav').sidenav({
+			 // // specify options here
+			}); 
+			
+			 $('.collapsible').collapsible({
+			  // specify options here
+			});
+			
+			updateLastUpdatedTextAsync();
+		})
+	</script>
 	
   </body>
 </html>
