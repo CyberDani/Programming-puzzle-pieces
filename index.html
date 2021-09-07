@@ -5,6 +5,43 @@
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	
+	<style>
+		svg {
+		  width: 100%;
+		  height: 100%;
+		}
+		
+		.curviture-container {
+			//padding-top:calc( (var(--divider-height)/2) );
+		  --divider-height: 4rem;
+		  
+		  position: relative;
+		  top: calc( var(--divider-height)/2 * -1 );
+
+		  height: var(--divider-height);
+		  width: 100%;
+			/* alternatively, could get rid of the rect, and move the svg container further down */
+
+		  float: left; 
+		  z-index: 1;
+		  
+		/*   outline: 1px solid red; */
+		}
+		
+		#A, #B {
+		  padding: 3rem;
+		}
+		//div {
+		  //font-family: monospace;
+		  //font-size: 1.2rem;
+		  //line-height: 1.2;
+		//}
+		#A {
+		  color: white;
+		}
+		
+	</style>
+	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
 		integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" 
 		crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -102,7 +139,19 @@
 		</div>
 		
 	</div>
-			
+		
+		<br>
+		
+	<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
+
+		<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+
+		<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
+			style="stroke: none; fill: #e0f7fa ;"></path>
+
+		</svg>
+	</div>
+	<div class="cyan lighten-5" style="padding-bottom:18px;">
 	<div class="row">
 	
 	<div class="container">
@@ -169,25 +218,34 @@
 					</div>
 					
 					<p>
-						placeholder text
+						You can use any content and file from this github repository entirely or just a 
+						portion of it in any way it helps you. There is NO any legal restriction from my part. 
+						
+						Referencing this github page as the source of the content you copied 
+						is not mandatory but it is appreciated.
 					</p>
 				</div>
-				<div class="card-action">
-					<a class="waves-effect waves-light btn">button</a>
-					<a href="#">This is a link</a>
+				<div class="card-action center-align">
+					<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+						class="waves-effect waves-light btn">Read MIT license</a>
 				</div>
 			</div>
 			
 		</div>
 		
 	</div>
-
+	</div>
+	</div>
+	
+  <div class="curviture-container" style="padding-top:0px;">
+	  <svg viewBox="0 70 500 60" preserveAspectRatio="none">
+		<rect x="0" y="0" width="500" height="500" style="stroke: none; fill:#f3e5f5;" />
+		<path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" style="stroke: none; fill:#e0f7fa;"></path>
+	  </svg>
 	</div>
   
-	<div class="divider"></div>
-  
+	<div class="purple lighten-5" style="padding-bottom:32px;">
 	<div class="row">
-	
 		<div class="container">
 			<div class="col s12 center-align">
 				<h2>Personal recommendation for a fresh (re)start</h2>
@@ -206,21 +264,25 @@
 				</div>
 			  </div>
 			</div>
-	
-			<div class="col s12 divider"></div>
-	
-			<div class="col s12 center-align">
-				<h3>That's all! Open the menu <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> and discover topics you are interested in.</h3>
-			</div>
-	
 		</div>
-		
+	</div>
+	</div>
+	<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
+		<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+			<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
+				style="stroke: none; fill: #f3e5f5;"></path>
+		</svg>
+	</div>
+  
+	<div class="row container">
+		<div class="col s12 center-align">
+			<h3>That's all! Open the menu <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> and discover topics you are interested in.</h3>
+		</div>
 	</div>
   
 	<div class="row">
-		<div class="divider"></div><br>
 	  
-		<div class="row teal lighten-4">
+		<div class="row teal lighten-5">
 			<h3 class="col s10 push-s1 center-align"> 
 				The page is getting better and better over time. Please give it some time until it gets finished.
 			</h3>
@@ -293,8 +355,8 @@
 					durationString = years + " years and " + months + " months ago"
 				}
 				
-				durationString += " on github";
-				$('#githubRepoUpdatedText').text(durationString);
+				durationString += " on <a href='https://github.com/CyberDani/Programming-puzzle-pieces' class='teal-text text-lighten-4'><i class='fab fa-github'></i> GitHub</a>";
+				$('#githubRepoUpdatedText').html(durationString);
 			}).fail(function() {
 				// alert( "error" );
 			}).always(function() {
