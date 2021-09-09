@@ -2,6 +2,8 @@
   <head>
 	<title>Programming puzzle-pieces</title>
 	
+	<link rel="icon" href="./webPage/images/favicon.png">
+	
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	
@@ -67,15 +69,17 @@
   
   <nav class="amber darken-3">
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo center">Logo</a>
+		<a href="#" class="brand-logo center">
+			
+			<img src="./webPage/images/Logo_text.png" height="56px" style=""></img> 
+		</a>
+	  
       <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li><a href="#asd.html">placeholder</a></li>
         <li><a href="#asd.html">placeholder</a></li>
       </ul>
 	  
 	  <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="#asd.html">placeholder</a></li>
-        <li><a href="#fwq.html">placeholder</a></li>
       </ul>
 	  
     </div>
@@ -101,8 +105,6 @@
 			<a class="collapsible-header waves-effect">Placeholder<i class="material-icons">arrow_drop_down</i></a>
 			<div class="collapsible-body grey-text text-lighten-2" style="background-color:#303030;">
 			  <ul>
-				<li><a href="#!">Placeholder</a></li>
-				<li><a href="#!">Placeholder</a></li>
 				<li><a href="#!">Placeholder</a></li>
 				<li><a href="#!">Placeholder</a></li>
 			  </ul>
@@ -168,17 +170,20 @@
 				
 				<div class="card-content">
 					<div class="card-title center-align">
-						<span class="material-icons" style="font-size:60px">category</span><br/>
-						Simplified drawings & contents
+						<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
+						<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
 					</div>
 					
 					<p>
-						placeholder text
+						The scope is to remain simple so it becomes possible cover a large variety of 
+						different concepts used in programming.  
+						
+						My intention is to use this project as a "source of some of the existing things" 
+						for your studies and to do your own research next if you are interested in a specific topic.
 					</p>
 				</div>
-				<div class="card-action">
-					<a class="waves-effect waves-light btn">button</a>
-					<a href="#">This is a link</a>
+				<div class="card-action center-align">
+					<a class="waves-effect waves-light btn disabled">Contribute</a> 
 				</div>
 			</div>
 			
@@ -190,17 +195,18 @@
 				
 				<div class="card-content">
 					<div class="card-title center-align">
-						<span class="material-icons" style="font-size:60px">insights</span><br/>
-						Continuous development
+						<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
+						<span class="orange-text text-darken-4">Continuous development</span>
 					</div>
 					
 					<p>
-						placeholder text
+						Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
+						impossible to achieve, just like 100% test coverage. We can only try to get 
+						closer to that scope with new updates, like an asymptote.
 					</p>
 				</div>
-				<div class="card-action">
-					<a class="waves-effect waves-light btn">button</a>
-					<a href="#">This is a link</a>
+				<div class="card-action center-align">
+					<a class="waves-effect waves-light btn disabled">See changelog</a>
 				</div>
 			</div>
 			
@@ -213,8 +219,8 @@
 				
 				<div class="card-content">
 					<div class="card-title center-align">
-						<span class="material-icons" style="font-size:60px">recycling</span><br/>
-						Permissive MIT license
+						<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
+						<span class="green-text text-darken-4">Permissive MIT license</span>
 					</div>
 					
 					<p>
@@ -300,10 +306,12 @@
 			</p>
 		  </div>
 		  <div class="col l4 offset-l2 s12">
-			<h5 class="white-text">Links</h5>
+			<h5 class="white-text">Links you might find useful</h5>
 			<ul>
-			  <li><a class="grey-text text-lighten-3" href="#!">Placeholder 1</a></li>
-			  <li><a class="grey-text text-lighten-3" href="#!">Placeholder 2</a></li>
+				<li><a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+						class="grey-text text-lighten-3">
+					<i class="fas fa-balance-scale"></i> MIT license</a>
+				</li>
 			</ul>
 		  </div>
 		</div>
@@ -343,16 +351,28 @@
 					durationString = hours + " hours ago"
 				} else if (days < 7) {
 					hours = hours % 24;
-					durationString = days + " days and " + hours + " hours ago"
+					durationString = days + " days ";
+					if (hours > 0)
+						durationString += "and " + hours + " hours ";
+					durationString += "ago"
 				} else if (weeks < 4) {
 					days = days % 7;
-					durationString = weeks + " weeks and " + days + " days ago"
+					durationString = weeks + " weeks ";
+					if (days > 0)
+						durationString += "and " + days + " days ";
+					durationString += "ago"
 				} else if (months < 12) {
 					weeks = weeks % 4;
-					durationString = months + " months and " + weeks + " weeks ago"
+					durationString = months + " months ";
+					if (weeks > 0)
+						durationString += "and " + weeks + " weeks ";
+					durationString += "ago"
 				} else {
 					months = months % 12;
-					durationString = years + " years and " + months + " months ago"
+					durationString = years + " years ";
+					if (months > 0)
+						durationString += "and " + months + " months ";
+					durationString += "ago"
 				}
 				
 				durationString += " on <a href='https://github.com/CyberDani/Programming-puzzle-pieces' class='teal-text text-lighten-4'><i class='fab fa-github'></i> GitHub</a>";
