@@ -30,18 +30,6 @@
 		/*   outline: 1px solid red; */
 		}
 		
-		#A, #B {
-		  padding: 3rem;
-		}
-		//div {
-		  //font-family: monospace;
-		  //font-size: 1.2rem;
-		  //line-height: 1.2;
-		//}
-		#A {
-		  color: white;
-		}
-		
 	</style>
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
@@ -62,7 +50,11 @@
     <link rel="stylesheet" 
 		href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css">
 
-    <script 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>	
+	<link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap" rel="stylesheet">
+	
+	<script 
 		src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js"></script>
   </head>
   <body>
@@ -137,8 +129,14 @@
 		
 		<div class="row">
 			<div class="col s10 push-s1">
-				<blockquote>
-				  I can teach you the physics of riding a bicycle. Indeed, the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, center of mass, and so forth, can be demonstrated with less than a page full of equations. Given those formulae I could provide you that bicycle riding is practical and give you all the knowldge you needed to make it work. And you'd still fall down the first time you climbed on that bike. Coding is no different.
+				<blockquote class="grey-text text-darken-1" 
+					style="font-family: 'Arima Madurai', cursive;">
+				  <i class="fas fa-quote-left"></i> I can teach you the physics of riding a bicycle. Indeed, 
+				  the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, 
+				  center of mass, and so forth, can be demonstrated with less than a page full of equations. 
+				  Given those formulae I could provide you that bicycle riding is practical and give you all the 
+				  knowledge you needed to make it work. And you'd still fall down the first time you climbed on that bike. 
+				  Coding is no different. <i class="fas fa-quote-right"></i>
 				</blockquote>
 			</div>
 			
@@ -292,7 +290,11 @@
   
 	<div class="row container">
 		<div class="col s12 center-align">
-			<h3>That's all! Open the menu <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> and discover topics you are interested in.</h3>
+			<h3>If you are viewing this page from a mobile or tablet don't forget that you can simply 
+			drag the 
+			<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
+			from the left at any moment. <br/>
+			Discover topics you are interested in and enjoy your learning process!</h3>
 		</div>
 	</div>
   
@@ -333,66 +335,10 @@
 	  </div>
 	</footer>
 
-	
+	<script 
+		src="./webPage/scripts/githubApiScripts.js">
+	</script>
 	<script>
-		
-		function updateLastUpdatedTextAsync() {
-			$.ajax({
-			  url: "https://api.github.com/repos/CyberDani/Programming-puzzle-pieces",
-			  dataType: "json",
-			  method: "GET"
-			}).done(function(resp, textStatus, jqXHR) {
-				let updatedAtMs = new Date(resp.updated_at).getTime();
-				let timeDurationMs = new Date().getTime() - updatedAtMs;
-				let sec = Math.ceil(timeDurationMs / 1000);
-				let mins = Math.ceil(sec / 60);
-				let hours = Math.floor(mins / 60);
-				let days = Math.floor(hours / 24);
-				let weeks = Math.floor(days / 7);
-				let months = Math.floor(weeks / 4);
-				let years = Math.floor(months / 12);
-				
-				let durationString = "";
-				if (sec < 60){
-					durationString = sec + " seconds ago"
-				} else if (mins < 60) {
-					durationString = mins + " minutes ago"
-				} else if (hours < 24) {
-					durationString = hours + " hours ago"
-				} else if (days < 7) {
-					hours = hours % 24;
-					durationString = days + " days ";
-					if (hours > 0)
-						durationString += "and " + hours + " hours ";
-					durationString += "ago"
-				} else if (weeks < 4) {
-					days = days % 7;
-					durationString = weeks + " weeks ";
-					if (days > 0)
-						durationString += "and " + days + " days ";
-					durationString += "ago"
-				} else if (months < 12) {
-					weeks = weeks % 4;
-					durationString = months + " months ";
-					if (weeks > 0)
-						durationString += "and " + weeks + " weeks ";
-					durationString += "ago"
-				} else {
-					months = months % 12;
-					durationString = years + " years ";
-					if (months > 0)
-						durationString += "and " + months + " months ";
-					durationString += "ago"
-				}
-				
-				durationString += " on <a href='https://github.com/CyberDani/Programming-puzzle-pieces' class='teal-text text-lighten-4'><i class='fab fa-github'></i> GitHub</a>";
-				$('#githubRepoUpdatedText').html(durationString);
-			}).fail(function() {
-				// alert( "error" );
-			}).always(function() {
-				//alert( "complete" );
-			});
-		}
 		
 		$(document).ready(function(){
 			$('.sidenav').sidenav({
