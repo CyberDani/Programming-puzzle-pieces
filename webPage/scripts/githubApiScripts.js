@@ -123,7 +123,7 @@ function updateLastUpdatedTextAsync() {
 	  dataType: "json",
 	  method: "GET"
 	}).done(function(resp, textStatus, jqXHR) {
-		let updatedAtMs = new Date(resp.updated_at).getTime();
+		let updatedAtMs = new Date(resp.pushed_at).getTime();
 		let githubLink = "<a href='https://github.com/CyberDani/Programming-puzzle-pieces'"
 					+ " class='teal-text text-lighten-4'><i class='fab fa-github'></i> GitHub</a>";
 		let durationString = getDateStringSinceMs(updatedAtMs) + " ago on " + githubLink;

@@ -30,6 +30,17 @@
 		/*   outline: 1px solid red; */
 		}
 		
+		.underline--magical {
+			background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+			background-repeat: no-repeat;
+			background-size: 100% 0.2em;
+			background-position: 0 88%;
+			transition: background-size 0.25s ease-in;
+		}
+		
+		.underline--magical:hover{
+				background-size: 100% 88%;
+			}
 	</style>
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
@@ -78,12 +89,9 @@
       </ul>
 	  
 	  <ul id="nav-mobile" class="right">
-        <li><ax >
-			<span class="valign-wrapper" style="height:100%;">
-				<span class="material-icons grey-text text-lighten-2" style="font-size:36px">manage_search</span> 
-				<span class="hide-on-small-only grey-text text-lighten-2" style="font-size:24px">Search</span>
-			</span>
-		</ax></li>
+        <li>
+			
+		</li>
       </ul>
 	  
     </div>
@@ -165,8 +173,12 @@
 	<div class="row">
 	
 	<div class="container">
-		<div class="col s12 center-align">
-			<h1>What this project offers?</h1>
+		<div class="col s12 center-align hide-on-small-only">
+			<h2>What this project offers?</h2>
+		</div>
+		
+		<div class="col s12 center-align hide-on-med-and-up">
+			<h3>What this project offers?</h3>
 		</div>
 	</div>
 	
@@ -261,8 +273,12 @@
 	<div class="purple lighten-5" style="padding-bottom:32px;">
 	<div class="row">
 		<div class="container">
-			<div class="col s12 center-align">
+			<div class="col s12 center-align hide-on-small-only">
 				<h2>Personal recommendation for a fresh (re)start</h2>
+			</div>
+			
+			<div class="col s12 center-align hide-on-med-and-up">
+				<h3>Personal recommendation for a fresh (re)start</h3>
 			</div>
 			
 			<div class="col s12">
@@ -289,13 +305,27 @@
 	</div>
   
 	<div class="row container">
-		<div class="col s12 center-align">
-			<h3>If you are viewing this page from a mobile or tablet don't forget that you can simply 
-			drag the 
-			<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
-			from the left at any moment. <br/>
-			Discover topics you are interested in and enjoy your learning process!</h3>
+
+		<div class="col s2 center-align valign-wrapper" 
+			style="vertical-align: middle;">
+		
+			<img width="100%" class="valign-wrapper"
+				src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
+				style=""/>
+		
 		</div>
+		
+		<div class="col s10 center-align">
+			<h3>On devices supporting touch screen you can drag the 
+			<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
+			from the left at any moment.
+			</h3>
+		</div>
+		
+		<div class="col s12 center-align">
+		 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
+		</div>
+		
 	</div>
   
 	<div class="row">
