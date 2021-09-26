@@ -1,0 +1,33 @@
+svg {
+	width: 100%;
+	height: 100%;
+}
+
+.curviture-container {
+	//padding-top:calc( (var(--divider-height)/2) );
+	--divider-height: 4rem;
+
+	position: relative;
+	top: calc( var(--divider-height)/2 * -1 );
+
+	height: var(--divider-height);
+	width: 100%;
+	/* alternatively, could get rid of the rect, and move the svg container further down */
+
+	float: left; 
+	z-index: 1;
+
+	/*   outline: 1px solid red; */
+}
+
+.underline--magical {
+	background-image: linear-gradient(120deg, #ff9029 0%, #c500f2 100%);
+	background-repeat: no-repeat;
+	background-size: 100% 0.2em;
+	background-position: 0 88%;
+	transition: background-size 0.25s ease-in;
+}
+
+.underline--magical:hover {
+	background-size: 100% 88%;
+}
