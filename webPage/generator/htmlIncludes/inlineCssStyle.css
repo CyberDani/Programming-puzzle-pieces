@@ -4,20 +4,14 @@ svg {
 }
 
 .curviture-container {
-	//padding-top:calc( (var(--divider-height)/2) );
+	/* padding-top:calc( (var(--divider-height)/2) ); */
 	--divider-height: 4rem;
-
 	position: relative;
 	top: calc( var(--divider-height)/2 * -1 );
-
 	height: var(--divider-height);
 	width: 100%;
-	/* alternatively, could get rid of the rect, and move the svg container further down */
-
 	float: left; 
 	z-index: 1;
-
-	/*   outline: 1px solid red; */
 }
 
 .underline--magical {

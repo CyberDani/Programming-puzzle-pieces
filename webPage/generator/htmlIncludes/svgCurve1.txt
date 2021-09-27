@@ -1,0 +1,6 @@
+<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
+	<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+		<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
+			style="stroke: none; fill: #e0f7fa ;"></path>
+	</svg>
+</div>

@@ -1,0 +1,82 @@
+<div class="cyan lighten-5" style="padding-bottom:18px;">
+	<div class="row">
+	
+		<div class="container">
+			<div class="col s12 center-align hide-on-small-only">
+				<h2>What this project offers?</h2>
+			</div>
+			
+			<div class="col s12 center-align hide-on-med-and-up">
+				<h3>What this project offers?</h3>
+			</div>
+		</div>
+	
+		<div class="container blue lighten-2">	
+			<div class="col s12 m6 l4">
+				<div class="card teal lighten-4 z-depth-3">
+					<div class="card-content">
+						<div class="card-title center-align">
+							<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
+							<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
+						</div>
+						
+						<p>
+							The scope is to remain simple so it becomes possible to cover a large variety of 
+							different concepts used in programming.  
+							
+							My intention is to use this project as a "source of some of the existing things" 
+							for your studies and to do your own research next if you are interested in a specific topic.
+						</p>
+					</div>
+					<div class="card-action center-align">
+						<a class="waves-effect waves-light btn disabled">Contribute</a> 
+					</div>
+				</div>
+			</div>
+			
+			<div class="col s12 m6 l4">
+				<div class="card teal lighten-4 z-depth-3">
+					<div class="card-content">
+						<div class="card-title center-align">
+							<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
+							<span class="orange-text text-darken-4">Continuous development</span>
+						</div>
+						
+						<p>
+							Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
+							impossible to achieve, just like 100% test coverage. We can only try to get 
+							closer to that scope with new updates, like an asymptote.
+						</p>
+					</div>
+					<div class="card-action center-align">
+						<a class="waves-effect waves-light btn disabled">See changelog</a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col s12 m6 l4">
+				<div class="card teal lighten-4 z-depth-3">
+					<div class="card-content">
+						<div class="card-title center-align">
+							<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
+							<span class="green-text text-darken-4">Permissive MIT license</span>
+						</div>
+						
+						<p>
+							You can use any content and file from this github repository entirely or just a 
+							portion of it in any way it helps you. There is NO any legal restriction from my part. 
+							
+							Referencing this github page as the source of the content you copied 
+							is not mandatory but it is appreciated.
+						</p>
+					</div>
+					<div class="card-action center-align">
+						<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+							class="waves-effect waves-light btn">Read MIT license</a>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>

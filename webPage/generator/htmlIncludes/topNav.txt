@@ -1,0 +1,22 @@
+<nav class="amber darken-3">
+    <div class="nav-wrapper">
+		<a href="#" class="brand-logo center">
+			<img src="./webPage/images/Logo_text.png" height="56px" style=""></img> 
+		</a>
+
+		<ul id="nav-mobile" class="left">
+			<li class="center-align">
+				<a href="#" onclick="$('.sidenav').sidenav('open');" >
+					<span class="valign-wrapper" style="height:100%;">
+						<span class="material-icons grey-text text-lighten-5" style="font-size:36px">menu_open</span> 
+						<span class="hide-on-small-only grey-text text-lighten-5" style="font-size:24px">Menu</span>
+					</span>
+				</a> 
+			</li>
+		</ul>
+
+		<ul id="nav-mobile" class="right">
+			<li></li>
+		</ul>  
+	</div>
+</nav>

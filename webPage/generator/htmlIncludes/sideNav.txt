@@ -1,0 +1,30 @@
+<ul id="slide-out" class="sidenav orange darken-3" >
+	<li>
+		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+			<i class="fas fa-link"></i> Online resources
+		</a>
+	</li>
+	<li><a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;"><i class="fas fa-puzzle-piece"></i> Design Patterns</a></li>
+	<li>
+		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+		<i class="fas fa-book-open"></i> Book summaries</a>
+	</li>
+	<li>
+		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+		<i class="far fa-compass"></i> Common Principles</a>
+	</li>
+	<li class="no-padding">
+		<ul class="collapsible collapsible-accordion">
+			<li>
+			<a class="collapsible-header waves-effect">Placeholder<i class="material-icons">arrow_drop_down</i></a>
+			<div class="collapsible-body grey-text text-lighten-4 orange darken-4">
+			  <ul>
+				<li><a href="#!">Placeholder</a></li>
+			  </ul>
+			</div>
+		  </li>
+		</ul>
+	</li>
+	<li><div class="divider amber darken-2"></div></li>
+	<li><a class="sidenav-close" href="#!">Close sidenav</a></li>
+</ul>
