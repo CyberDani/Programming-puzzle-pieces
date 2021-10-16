@@ -57,6 +57,14 @@ def writeHtmlBodyContent(htmlFile, indentDepth):
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve1.txt", indentDepth)
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/whatThisProjectOffers.txt", indentDepth)
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve2.txt", indentDepth)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/personalRecommandation.txt", indentDepth)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve3.txt", indentDepth)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/textBelowCurves.txt", indentDepth)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/footer.txt", indentDepth)
+  addJsFileAsLink(htmlFile, indentDepth, "./webPage/scripts/githubApiScripts.js")
+  htmlFile.write(tabs + "<script>\n")
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineJs.js", indentDepth + 1)
+  htmlFile.write(tabs + "</script>\n")
 
 # include
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):

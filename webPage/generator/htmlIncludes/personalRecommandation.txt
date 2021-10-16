@@ -1,0 +1,27 @@
+<div class="purple lighten-5" style="padding-bottom:32px;">
+	<div class="row">
+		<div class="container">
+			<div class="col s12 center-align hide-on-small-only">
+				<h2>Personal recommendation for a fresh (re)start</h2>
+			</div>
+			
+			<div class="col s12 center-align hide-on-med-and-up">
+				<h3>Personal recommendation for a fresh (re)start</h3>
+			</div>
+			
+			<div class="col s12">
+			  <div class="card purple lighten-4 z-depth-4">
+				<div class="card-content">
+				  <span class="card-title">
+						<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
+					</span>
+				  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
+				</div>
+				<div class="card-action">
+				  No book content available here yet...
+				</div>
+			  </div>
+			</div>
+		</div>
+	</div>
+</div>

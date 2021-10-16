@@ -1,0 +1,28 @@
+<div class="row container">
+
+	<div class="col s2 center-align valign-wrapper" style="vertical-align: middle;">
+		<img width="100%" class="valign-wrapper"
+			src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
+			style=""/>
+	</div>
+	
+	<div class="col s10 center-align">
+		<h3>On devices supporting touch screen you can drag the 
+		<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
+		from the left.
+		</h3>
+	</div>
+	
+	<div class="col s12 center-align">
+	 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
+	</div>
+	
+</div>
+  
+<div class="row">
+	<div class="row teal lighten-5">
+		<h3 class="col s10 push-s1 center-align"> 
+			The page is getting better and better over time. Please give it some time until it gets finished.
+		</h3>
+	</div>
+</div>

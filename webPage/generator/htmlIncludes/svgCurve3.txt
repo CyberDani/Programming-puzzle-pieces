@@ -1,0 +1,6 @@
+<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
+	<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+		<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
+			style="stroke: none; fill: #f3e5f5;"></path>
+	</svg>
+</div>
