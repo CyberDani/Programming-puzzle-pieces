@@ -1,8 +1,17 @@
+import os
+
 # this is the main function being run
+def backupAndGenerateNewHtmlOutputFile():
+  backupIndexHtml()
+  generateHtmlOutputFile()
+
+def backupIndexHtml():
+  os.replace("../../index.html", "./backup/index.html")
+
 def generateHtmlOutputFile():
   # TODO: create backup of the original index.html in case of any error
   # TODO: make the file path as a configuration somewhere 
-  htmlOutputFilePath = "../../index2.html"
+  htmlOutputFilePath = "../../index.html"
   htmlFile = open(htmlOutputFilePath, "w")
   writeHtmlContentToFile(htmlFile)
 
@@ -136,4 +145,4 @@ def getIndentedTab(indentDepth):
     ans += "\t"
   return ans;
 
-generateHtmlOutputFile()
+backupAndGenerateNewHtmlOutputFile()
