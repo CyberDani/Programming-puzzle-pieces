@@ -1,387 +1,320 @@
 <html>
-  <head>
-	<title>Programming puzzle-pieces</title>
-	
-	<link rel="icon" href="./webPage/images/favicon.png">
-	
-	<!--Let browser know website is optimized for mobile-->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<style>
-		svg {
-		  width: 100%;
-		  height: 100%;
-		}
-		
-		.curviture-container {
-			//padding-top:calc( (var(--divider-height)/2) );
-		  --divider-height: 4rem;
-		  
-		  position: relative;
-		  top: calc( var(--divider-height)/2 * -1 );
+	<head>
+		<title>Programming puzzle-pieces</title>
+		<link rel="icon" href="./webPage/images/favicon.png">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<style>
+			svg {
+				width: 100%;
+				height: 100%;
+			}
 
-		  height: var(--divider-height);
-		  width: 100%;
-			/* alternatively, could get rid of the rect, and move the svg container further down */
+			.curviture-container {
+				/* padding-top:calc( (var(--divider-height)/2) ); */
+				--divider-height: 4rem;
+				position: relative;
+				top: calc( var(--divider-height)/2 * -1 );
+				height: var(--divider-height);
+				width: 100%;
+				float: left; 
+				z-index: 1;
+			}
 
-		  float: left; 
-		  z-index: 1;
-		  
-		/*   outline: 1px solid red; */
-		}
-		
-		.underline--magical {
-			background-image: linear-gradient(120deg, #ff9029 0%, #c500f2 100%);
-			background-repeat: no-repeat;
-			background-size: 100% 0.2em;
-			background-position: 0 88%;
-			transition: background-size 0.25s ease-in;
-		}
-		
-		.underline--magical:hover {
-			background-size: 100% 88%;
-		}
-	</style>
-	
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
-		integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" 
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" 
-		integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" 
-		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
-		integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" 
-		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	
-	<!-- Google Icon Font-->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	
-    <link rel="stylesheet" 
-		href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css">
+			.underline--magical {
+				background-image: linear-gradient(120deg, #ff9029 0%, #c500f2 100%);
+				background-repeat: no-repeat;
+				background-size: 100% 0.2em;
+				background-position: 0 88%;
+				transition: background-size 0.25s ease-in;
+			}
 
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>	
-	<link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap" rel="stylesheet">
-	
-	<script 
-		src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js"></script>
-  </head>
-  <body>
-  
-  <nav class="amber darken-3">
-    <div class="nav-wrapper">
-		<a href="#" class="brand-logo center">
-			
-			<img src="./webPage/images/Logo_text.png" height="56px" style=""></img> 
-		</a>
-	  
-      <ul id="nav-mobile" class="left">
-        <li class="center-align">
-			<a href="#" onclick="$('.sidenav').sidenav('open');" >
-				<span class="valign-wrapper" style="height:100%;">
-					<span class="material-icons grey-text text-lighten-5" style="font-size:36px">menu_open</span> 
-					<span class="hide-on-small-only grey-text text-lighten-5" style="font-size:24px">Menu</span>
-				</span>
-			</a> 
-		</li>
-      </ul>
-	  
-	  <ul id="nav-mobile" class="right">
-        <li>
-			
-		</li>
-      </ul>
-	  
-    </div>
-  </nav>
-  
-  
-  
-  <ul id="slide-out" class="sidenav orange darken-3" >
-    
-    <li><a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;"><i class="fas fa-link"></i> Online resources</a></li>
-    <li><a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;"><i class="fas fa-puzzle-piece"></i> Design Patterns</a></li>
-    <li>
-		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-		<i class="fas fa-book-open"></i> Book summaries</a>
-	</li>
-	<li>
-		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-		<i class="far fa-compass"></i> Common Principles</a>
-	</li>
-	<li class="no-padding">
-		<ul class="collapsible collapsible-accordion">
-		  <li>
-			<a class="collapsible-header waves-effect">Placeholder<i class="material-icons">arrow_drop_down</i></a>
-			<div class="collapsible-body grey-text text-lighten-4 orange darken-4">
-			  <ul>
-				<li><a href="#!">Placeholder</a></li>
-			  </ul>
+			.underline--magical:hover {
+				background-size: 100% 88%;
+			}
+		</style>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+			integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+			rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
+			integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css"
+			rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="amber darken-3">
+		    <div class="nav-wrapper">
+				<a href="#" class="brand-logo center">
+					<img src="./webPage/images/Logo_text.png" height="56px" style=""></img> 
+				</a>
+
+				<ul id="nav-mobile" class="left">
+					<li class="center-align">
+						<a href="#" onclick="$('.sidenav').sidenav('open');" >
+							<span class="valign-wrapper" style="height:100%;">
+								<span class="material-icons grey-text text-lighten-5" style="font-size:36px">menu_open</span> 
+								<span class="hide-on-small-only grey-text text-lighten-5" style="font-size:24px">Menu</span>
+							</span>
+						</a> 
+					</li>
+				</ul>
+
+				<ul id="nav-mobile" class="right">
+					<li></li>
+				</ul>  
 			</div>
-		  </li>
+		</nav>
+		<ul id="slide-out" class="sidenav orange darken-3" >
+			<li>
+				<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+					<i class="fas fa-link"></i> Online resources
+				</a>
+			</li>
+			<li><a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;"><i class="fas fa-puzzle-piece"></i> Design Patterns</a></li>
+			<li>
+				<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+				<i class="fas fa-book-open"></i> Book summaries</a>
+			</li>
+			<li>
+				<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
+				<i class="far fa-compass"></i> Common Principles</a>
+			</li>
+			<li class="no-padding">
+				<ul class="collapsible collapsible-accordion">
+					<li>
+					<a class="collapsible-header waves-effect">Placeholder<i class="material-icons">arrow_drop_down</i></a>
+					<div class="collapsible-body grey-text text-lighten-4 orange darken-4">
+					  <ul>
+						<li><a href="#!">Placeholder</a></li>
+					  </ul>
+					</div>
+				  </li>
+				</ul>
+			</li>
+			<li><div class="divider amber darken-2"></div></li>
+			<li><a class="sidenav-close" href="#!">Close sidenav</a></li>
 		</ul>
-	</li>
-	
-	
-	<li><div class="divider amber darken-2"></div></li>
-	
-	<li><a class="sidenav-close" href="#!">Close sidenav</a></li>
-  </ul>
+		<div class="grey lighten-4">
+			<div class="row">
+				<div class="col s10 push-s1">
+					<blockquote class="grey-text text-darken-1" style="font-family: 'Arima Madurai', cursive;">
+						<i class="fas fa-quote-left"></i> I can teach you the physics of riding a bicycle. Indeed, 
+						the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, 
+						center of mass, and so forth, can be demonstrated with less than a page full of equations. 
+						Given those formulae I could provide you that bicycle riding is practical and give you all the 
+						knowledge you needed to make it work. And you'd still fall down the first time you climbed on that bike. 
+						Coding is no different. <i class="fas fa-quote-right"></i>
+					</blockquote>
+				</div>
 
-  
-  
-  
-	<div class="grey lighten-4">
-		
-		<div class="row">
-			<div class="col s10 push-s1">
-				<blockquote class="grey-text text-darken-1" 
-					style="font-family: 'Arima Madurai', cursive;">
-				  <i class="fas fa-quote-left"></i> I can teach you the physics of riding a bicycle. Indeed, 
-				  the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, 
-				  center of mass, and so forth, can be demonstrated with less than a page full of equations. 
-				  Given those formulae I could provide you that bicycle riding is practical and give you all the 
-				  knowledge you needed to make it work. And you'd still fall down the first time you climbed on that bike. 
-				  Coding is no different. <i class="fas fa-quote-right"></i>
-				</blockquote>
-			</div>
-			
-			<div class="col s12 pull-s1 right-align">
-				
-				Robert C. Martin - Clean code (Introduction - page xxvi)
-				
-			</div>
-			
+				<div class="col s12 pull-s1 right-align">
+					Robert C. Martin - Clean code (Introduction - page xxvi)
+				</div>	
+			</div>	
 		</div>
-		
-	</div>
-		
 		<br \>
-		
-	<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
-
-		<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
-
-		<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
-			style="stroke: none; fill: #e0f7fa ;"></path>
-
-		</svg>
-	</div>
-	<div class="cyan lighten-5" style="padding-bottom:18px;">
-	<div class="row">
-	
-	<div class="container">
-		<div class="col s12 center-align hide-on-small-only">
-			<h2>What this project offers?</h2>
+		<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
+			<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+				<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
+					style="stroke: none; fill: #e0f7fa ;"></path>
+			</svg>
 		</div>
-		
-		<div class="col s12 center-align hide-on-med-and-up">
-			<h3>What this project offers?</h3>
-		</div>
-	</div>
-	
-	<div class="container blue lighten-2">
-		
-		<div class="col s12 m6 l4">
-		
-			<div class="card teal lighten-4 z-depth-3">
-				
-				<div class="card-content">
-					<div class="card-title center-align">
-						<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
-						<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
+		<div class="cyan lighten-5" style="padding-bottom:18px;">
+			<div class="row">
+			
+				<div class="container">
+					<div class="col s12 center-align hide-on-small-only">
+						<h2>What this project offers?</h2>
 					</div>
 					
-					<p>
-						The scope is to remain simple so it becomes possible to cover a large variety of 
-						different concepts used in programming.  
-						
-						My intention is to use this project as a "source of some of the existing things" 
-						for your studies and to do your own research next if you are interested in a specific topic.
-					</p>
+					<div class="col s12 center-align hide-on-med-and-up">
+						<h3>What this project offers?</h3>
+					</div>
 				</div>
-				<div class="card-action center-align">
-					<a class="waves-effect waves-light btn disabled">Contribute</a> 
-				</div>
-			</div>
 			
-		</div>
-		
-		<div class="col s12 m6 l4">
-		
-			<div class="card teal lighten-4 z-depth-3">
-				
-				<div class="card-content">
-					<div class="card-title center-align">
-						<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
-						<span class="orange-text text-darken-4">Continuous development</span>
+				<div class="container blue lighten-2">	
+					<div class="col s12 m6 l4">
+						<div class="card teal lighten-4 z-depth-3">
+							<div class="card-content">
+								<div class="card-title center-align">
+									<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
+									<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
+								</div>
+								
+								<p>
+									The scope is to remain simple so it becomes possible to cover a large variety of 
+									different concepts used in programming.  
+									
+									My intention is to use this project as a "source of some of the existing things" 
+									for your studies and to do your own research next if you are interested in a specific topic.
+								</p>
+							</div>
+							<div class="card-action center-align">
+								<a class="waves-effect waves-light btn disabled">Contribute</a> 
+							</div>
+						</div>
 					</div>
 					
-					<p>
-						Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
-						impossible to achieve, just like 100% test coverage. We can only try to get 
-						closer to that scope with new updates, like an asymptote.
-					</p>
-				</div>
-				<div class="card-action center-align">
-					<a class="waves-effect waves-light btn disabled">See changelog</a>
-				</div>
-			</div>
-			
-		</div>
-		
-		
-		<div class="col s12 m6 l4">
-		
-			<div class="card teal lighten-4 z-depth-3">
-				
-				<div class="card-content">
-					<div class="card-title center-align">
-						<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
-						<span class="green-text text-darken-4">Permissive MIT license</span>
+					<div class="col s12 m6 l4">
+						<div class="card teal lighten-4 z-depth-3">
+							<div class="card-content">
+								<div class="card-title center-align">
+									<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
+									<span class="orange-text text-darken-4">Continuous development</span>
+								</div>
+								
+								<p>
+									Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
+									impossible to achieve, just like 100% test coverage. We can only try to get 
+									closer to that scope with new updates, like an asymptote.
+								</p>
+							</div>
+							<div class="card-action center-align">
+								<a class="waves-effect waves-light btn disabled">See changelog</a>
+							</div>
+						</div>
 					</div>
 					
-					<p>
-						You can use any content and file from this github repository entirely or just a 
-						portion of it in any way it helps you. There is NO any legal restriction from my part. 
-						
-						Referencing this github page as the source of the content you copied 
-						is not mandatory but it is appreciated.
-					</p>
+					<div class="col s12 m6 l4">
+						<div class="card teal lighten-4 z-depth-3">
+							<div class="card-content">
+								<div class="card-title center-align">
+									<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
+									<span class="green-text text-darken-4">Permissive MIT license</span>
+								</div>
+								
+								<p>
+									You can use any content and file from this github repository entirely or just a 
+									portion of it in any way it helps you. There is NO any legal restriction from my part. 
+									
+									Referencing this github page as the source of the content you copied 
+									is not mandatory but it is appreciated.
+								</p>
+							</div>
+							<div class="card-action center-align">
+								<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+									class="waves-effect waves-light btn">Read MIT license</a>
+							</div>
+						</div>
+					</div>
+					
 				</div>
-				<div class="card-action center-align">
-					<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
-						class="waves-effect waves-light btn">Read MIT license</a>
+			</div>
+		</div>
+		<div class="curviture-container" style="padding-top:0px;">
+			<svg viewBox="0 70 500 60" preserveAspectRatio="none">
+				<rect x="0" y="0" width="500" height="500" style="stroke: none; fill:#f3e5f5;" />
+				<path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" style="stroke: none; fill:#e0f7fa;"></path>
+			</svg>
+		</div>
+		<div class="purple lighten-5" style="padding-bottom:32px;">
+			<div class="row">
+				<div class="container">
+					<div class="col s12 center-align hide-on-small-only">
+						<h2>Personal recommendation for a fresh (re)start</h2>
+					</div>
+					
+					<div class="col s12 center-align hide-on-med-and-up">
+						<h3>Personal recommendation for a fresh (re)start</h3>
+					</div>
+					
+					<div class="col s12">
+					  <div class="card purple lighten-4 z-depth-4">
+						<div class="card-content">
+						  <span class="card-title">
+								<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
+							</span>
+						  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
+						</div>
+						<div class="card-action">
+						  No book content available here yet...
+						</div>
+					  </div>
+					</div>
 				</div>
+			</div>
+		</div>
+		<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
+			<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+				<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
+					style="stroke: none; fill: #f3e5f5;"></path>
+			</svg>
+		</div>
+		<div class="row container">
+
+			<div class="col s2 center-align valign-wrapper" style="vertical-align: middle;">
+				<img width="100%" class="valign-wrapper"
+					src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
+					style=""/>
+			</div>
+			
+			<div class="col s10 center-align">
+				<h3>On devices supporting touch screen you can drag the 
+				<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
+				from the left.
+				</h3>
+			</div>
+			
+			<div class="col s12 center-align">
+			 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
 			</div>
 			
 		</div>
-		
-	</div>
-	</div>
-	</div>
-	
-  <div class="curviture-container" style="padding-top:0px;">
-	  <svg viewBox="0 70 500 60" preserveAspectRatio="none">
-		<rect x="0" y="0" width="500" height="500" style="stroke: none; fill:#f3e5f5;" />
-		<path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" style="stroke: none; fill:#e0f7fa;"></path>
-	  </svg>
-	</div>
-  
-	<div class="purple lighten-5" style="padding-bottom:32px;">
-	<div class="row">
-		<div class="container">
-			<div class="col s12 center-align hide-on-small-only">
-				<h2>Personal recommendation for a fresh (re)start</h2>
+		  
+		<div class="row">
+			<div class="row teal lighten-5">
+				<h3 class="col s10 push-s1 center-align"> 
+					The page is getting better and better over time. Please give it some time until it gets finished.
+				</h3>
 			</div>
-			
-			<div class="col s12 center-align hide-on-med-and-up">
-				<h3>Personal recommendation for a fresh (re)start</h3>
-			</div>
-			
-			<div class="col s12">
-			  <div class="card purple lighten-4 z-depth-4">
-				<div class="card-content">
-				  <span class="card-title">
-						<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
-					</span>
-				  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
-				</div>
-				<div class="card-action">
-				  No book content available here yet...
-				</div>
+		</div>
+		<footer class="page-footer deep-orange accent-3">
+		  <div class="container">
+			<div class="row">
+			  <div class="col l6 s12">
+				<h5 class="white-text">Placeholder</h5>
+				<p class="grey-text text-lighten-4">
+					Placeholder
+				</p>
+			  </div>
+			  <div class="col l4 offset-l2 s12">
+				<h5 class="white-text">Links you might find useful</h5>
+				<ul>
+					<li><a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+							class="grey-text text-lighten-3">
+						<i class="fas fa-balance-scale"></i> MIT license</a>
+					</li>
+				</ul>
 			  </div>
 			</div>
-		</div>
-	</div>
-	</div>
-	<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
-		<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
-			<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
-				style="stroke: none; fill: #f3e5f5;"></path>
-		</svg>
-	</div>
-  
-	<div class="row container">
-
-		<div class="col s2 center-align valign-wrapper" 
-			style="vertical-align: middle;">
-		
-			<img width="100%" class="valign-wrapper"
-				src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
-				style=""/>
-		
-		</div>
-		
-		<div class="col s10 center-align">
-			<h3>On devices supporting touch screen you can drag the 
-			<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
-			from the left.
-			</h3>
-		</div>
-		
-		<div class="col s12 center-align">
-		 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
-		</div>
-		
-	</div>
-  
-	<div class="row">
-	  
-		<div class="row teal lighten-5">
-			<h3 class="col s10 push-s1 center-align"> 
-				The page is getting better and better over time. Please give it some time until it gets finished.
-			</h3>
-		</div>
-	</div>
-	
-	
-	<footer class="page-footer deep-orange accent-3">
-	  <div class="container">
-		<div class="row">
-		  <div class="col l6 s12">
-			<h5 class="white-text">Placeholder</h5>
-			<p class="grey-text text-lighten-4">
-				Placeholder
-			</p>
 		  </div>
-		  <div class="col l4 offset-l2 s12">
-			<h5 class="white-text">Links you might find useful</h5>
-			<ul>
-				<li><a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
-						class="grey-text text-lighten-3">
-					<i class="fas fa-balance-scale"></i> MIT license</a>
-				</li>
-			</ul>
+		  <div class="footer-copyright">
+			<div class="container">
+				Updated <span id="githubRepoUpdatedText"></span>
+			</div>
 		  </div>
-		</div>
-	  </div>
-	  <div class="footer-copyright">
-		<div class="container">
-			Updated <span id="githubRepoUpdatedText"></span>
-		</div>
-	  </div>
-	</footer>
+		</footer>
+		<script src="./webPage/scripts/githubApiScripts.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('.sidenav').sidenav({
+				 // // specify options here
+				}); 
 
-	<script 
-		src="./webPage/scripts/githubApiScripts.js">
-	</script>
-	<script>
-		
-		$(document).ready(function(){
-			$('.sidenav').sidenav({
-			 // // specify options here
-			}); 
-			
-			 $('.collapsible').collapsible({
-			  // specify options here
-			});
-			
-			updateLastUpdatedTextAsync();
-		})
-	</script>
-	
-  </body>
+				 $('.collapsible').collapsible({
+				  // specify options here
+				});
+
+				updateLastUpdatedTextAsync();
+			})
+		</script>
+	</body>
 </html>
