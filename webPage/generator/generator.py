@@ -9,8 +9,6 @@ def backupIndexHtml():
   os.replace("../../index.html", "./backup/index.html")
 
 def generateHtmlOutputFile():
-  # TODO: create backup of the original index.html in case of any error
-  # TODO: make the file path as a configuration somewhere 
   htmlOutputFilePath = "../../index.html"
   htmlFile = open(htmlOutputFilePath, "w")
   writeHtmlContentToFile(htmlFile)
@@ -36,25 +34,12 @@ def writeHtmlHeadContent(htmlFile, indentDepth):
   htmlFile.write(tabs + "<style>\n")
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineCssStyle.css", indentDepth + 1)
   htmlFile.write(tabs + "</style>\n")
-  # fontAwesome
-  addCssFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
-					"sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==",
-					"anonymous", "no-referrer")
-  addJsFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js",
-					"sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==",
-					"anonymous", "no-referrer")
-  # jQuery
-  addJsFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
-					"sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==",
-					"anonymous", "no-referrer")
-  # google icons
-  addCssFileAsLink(htmlFile, indentDepth, "https://fonts.googleapis.com/icon?family=Material+Icons")
-  # materialize
-  addCssFileAsLink(htmlFile, indentDepth, 
-					"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css")
-  addJsFileAsLink(htmlFile, indentDepth, 
-					"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js")
+  addFontAwesome(htmlFile, indentDepth)
+  addJquery(htmlFile, indentDepth)
+  addGoogleIcons(htmlFile, indentDepth)
+  addMaterialize(htmlFile, indentDepth)
   addGoogleFont(htmlFile, indentDepth, "?family=Arima+Madurai:wght@500&display=swap")
+  addJQueryLoadingOverlay(htmlFile, indentDepth)
 
 # <body>
 def writeHtmlBodyContent(htmlFile, indentDepth):
@@ -63,17 +48,45 @@ def writeHtmlBodyContent(htmlFile, indentDepth):
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/sideNav.txt", indentDepth)
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topQuote.txt", indentDepth)
   addNewLineToHtmlOutputFile(htmlFile, indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve1.txt", indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/whatThisProjectOffers.txt", indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve2.txt", indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/personalRecommandation.txt", indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve3.txt", indentDepth)
-  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/textBelowCurves.txt", indentDepth)
+  htmlFile.write(tabs + "<div id=\"webContent\">\n")
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve1.txt", indentDepth + 1)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/whatThisProjectOffers.txt", indentDepth + 1)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve2.txt", indentDepth + 1)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/personalRecommandation.txt", indentDepth + 1)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/svgCurve3.txt", indentDepth + 1)
+  includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/textBelowCurves.txt", indentDepth + 1)
+  htmlFile.write(tabs + "</div>\n")
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/footer.txt", indentDepth)
   addJsFileAsLink(htmlFile, indentDepth, "./webPage/scripts/githubApiScripts.js")
   htmlFile.write(tabs + "<script>\n")
   includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineJs.js", indentDepth + 1)
   htmlFile.write(tabs + "</script>\n")
+
+def addFontAwesome(htmlFile, indentDepth):
+  addCssFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+					"sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==",
+					"anonymous", "no-referrer")
+  addJsFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js",
+					"sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==",
+					"anonymous", "no-referrer")
+
+def addJquery(htmlFile, indentDepth):
+  addJsFileAsLink(htmlFile, indentDepth, "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
+					"sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==",
+					"anonymous", "no-referrer")
+
+def addMaterialize(htmlFile, indentDepth):
+  addCssFileAsLink(htmlFile, indentDepth, 
+					"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css")
+  addJsFileAsLink(htmlFile, indentDepth, 
+					"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js")
+
+def addGoogleIcons(htmlFile, indentDepth):
+  addCssFileAsLink(htmlFile, indentDepth, "https://fonts.googleapis.com/icon?family=Material+Icons")
+
+def addJQueryLoadingOverlay(htmlFile, indentDepth):
+    addJsFileAsLink(htmlFile, indentDepth, 
+                        "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js")
 
 # include
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):

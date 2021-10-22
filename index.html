@@ -48,6 +48,7 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 	</head>
 	<body>
 		<nav class="amber darken-3">
@@ -121,159 +122,161 @@
 			</div>	
 		</div>
 		<br \>
-		<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
-			<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
-				<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
-					style="stroke: none; fill: #e0f7fa ;"></path>
-			</svg>
-		</div>
-		<div class="cyan lighten-5" style="padding-bottom:18px;">
-			<div class="row">
-			
-				<div class="container">
-					<div class="col s12 center-align hide-on-small-only">
-						<h2>What this project offers?</h2>
-					</div>
-					
-					<div class="col s12 center-align hide-on-med-and-up">
-						<h3>What this project offers?</h3>
-					</div>
-				</div>
-			
-				<div class="container blue lighten-2">	
-					<div class="col s12 m6 l4">
-						<div class="card teal lighten-4 z-depth-3">
-							<div class="card-content">
-								<div class="card-title center-align">
-									<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
-									<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
-								</div>
-								
-								<p>
-									The scope is to remain simple so it becomes possible to cover a large variety of 
-									different concepts used in programming.  
-									
-									My intention is to use this project as a "source of some of the existing things" 
-									for your studies and to do your own research next if you are interested in a specific topic.
-								</p>
-							</div>
-							<div class="card-action center-align">
-								<a class="waves-effect waves-light btn disabled">Contribute</a> 
-							</div>
-						</div>
-					</div>
-					
-					<div class="col s12 m6 l4">
-						<div class="card teal lighten-4 z-depth-3">
-							<div class="card-content">
-								<div class="card-title center-align">
-									<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
-									<span class="orange-text text-darken-4">Continuous development</span>
-								</div>
-								
-								<p>
-									Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
-									impossible to achieve, just like 100% test coverage. We can only try to get 
-									closer to that scope with new updates, like an asymptote.
-								</p>
-							</div>
-							<div class="card-action center-align">
-								<a class="waves-effect waves-light btn disabled">See changelog</a>
-							</div>
-						</div>
-					</div>
-					
-					<div class="col s12 m6 l4">
-						<div class="card teal lighten-4 z-depth-3">
-							<div class="card-content">
-								<div class="card-title center-align">
-									<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
-									<span class="green-text text-darken-4">Permissive MIT license</span>
-								</div>
-								
-								<p>
-									You can use any content and file from this github repository entirely or just a 
-									portion of it in any way it helps you. There is NO any legal restriction from my part. 
-									
-									Referencing this github page as the source of the content you copied 
-									is not mandatory but it is appreciated.
-								</p>
-							</div>
-							<div class="card-action center-align">
-								<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
-									class="waves-effect waves-light btn">Read MIT license</a>
-							</div>
-						</div>
-					</div>
-					
-				</div>
+		<div id="webContent">
+			<div class="" style="height: 150px; overflow: hidden; padding-top:0px;" >
+				<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+					<path d="M-82.10,-59.70 C223.19,281.73 328.15,-38.97 554.46,54.77 L499.72,188.97 L0.00,150.00 Z" 
+						style="stroke: none; fill: #e0f7fa ;"></path>
+				</svg>
 			</div>
-		</div>
-		<div class="curviture-container" style="padding-top:0px;">
-			<svg viewBox="0 70 500 60" preserveAspectRatio="none">
-				<rect x="0" y="0" width="500" height="500" style="stroke: none; fill:#f3e5f5;" />
-				<path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" style="stroke: none; fill:#e0f7fa;"></path>
-			</svg>
-		</div>
-		<div class="purple lighten-5" style="padding-bottom:32px;">
-			<div class="row">
-				<div class="container">
-					<div class="col s12 center-align hide-on-small-only">
-						<h2>Personal recommendation for a fresh (re)start</h2>
-					</div>
-					
-					<div class="col s12 center-align hide-on-med-and-up">
-						<h3>Personal recommendation for a fresh (re)start</h3>
-					</div>
-					
-					<div class="col s12">
-					  <div class="card purple lighten-4 z-depth-4">
-						<div class="card-content">
-						  <span class="card-title">
-								<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
-							</span>
-						  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
+			<div class="cyan lighten-5" style="padding-bottom:18px;">
+				<div class="row">
+				
+					<div class="container">
+						<div class="col s12 center-align hide-on-small-only">
+							<h2>What this project offers?</h2>
 						</div>
-						<div class="card-action">
-						  No book content available here yet...
+						
+						<div class="col s12 center-align hide-on-med-and-up">
+							<h3>What this project offers?</h3>
 						</div>
-					  </div>
+					</div>
+				
+					<div class="container blue lighten-2">	
+						<div class="col s12 m6 l4">
+							<div class="card teal lighten-4 z-depth-3">
+								<div class="card-content">
+									<div class="card-title center-align">
+										<span class="material-icons blue-text" style="font-size:60px">category</span><br/>
+										<span class="indigo-text text-darken-5">Simplified drawings & contents</span>
+									</div>
+									
+									<p>
+										The scope is to remain simple so it becomes possible to cover a large variety of 
+										different concepts used in programming.  
+										
+										My intention is to use this project as a "source of some of the existing things" 
+										for your studies and to do your own research next if you are interested in a specific topic.
+									</p>
+								</div>
+								<div class="card-action center-align">
+									<a class="waves-effect waves-light btn disabled">Contribute</a> 
+								</div>
+							</div>
+						</div>
+						
+						<div class="col s12 m6 l4">
+							<div class="card teal lighten-4 z-depth-3">
+								<div class="card-content">
+									<div class="card-title center-align">
+										<span class="material-icons orange-text" style="font-size:60px">insights</span><br/>
+										<span class="orange-text text-darken-4">Continuous development</span>
+									</div>
+									
+									<p>
+										Collecting the general "should-know" or "good to know" puzzle pieces in programming seems 
+										impossible to achieve, just like 100% test coverage. We can only try to get 
+										closer to that scope with new updates, like an asymptote.
+									</p>
+								</div>
+								<div class="card-action center-align">
+									<a class="waves-effect waves-light btn disabled">See changelog</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col s12 m6 l4">
+							<div class="card teal lighten-4 z-depth-3">
+								<div class="card-content">
+									<div class="card-title center-align">
+										<span class="material-icons green-text" style="font-size:60px">recycling</span><br/>
+										<span class="green-text text-darken-4">Permissive MIT license</span>
+									</div>
+									
+									<p>
+										You can use any content and file from this github repository entirely or just a 
+										portion of it in any way it helps you. There is NO any legal restriction from my part. 
+										
+										Referencing this github page as the source of the content you copied 
+										is not mandatory but it is appreciated.
+									</p>
+								</div>
+								<div class="card-action center-align">
+									<a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
+										class="waves-effect waves-light btn">Read MIT license</a>
+								</div>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
-			<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
-				<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
-					style="stroke: none; fill: #f3e5f5;"></path>
-			</svg>
-		</div>
-		<div class="row container">
+			<div class="curviture-container" style="padding-top:0px;">
+				<svg viewBox="0 70 500 60" preserveAspectRatio="none">
+					<rect x="0" y="0" width="500" height="500" style="stroke: none; fill:#f3e5f5;" />
+					<path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" style="stroke: none; fill:#e0f7fa;"></path>
+				</svg>
+			</div>
+			<div class="purple lighten-5" style="padding-bottom:32px;">
+				<div class="row">
+					<div class="container">
+						<div class="col s12 center-align hide-on-small-only">
+							<h2>Personal recommendation for a fresh (re)start</h2>
+						</div>
+						
+						<div class="col s12 center-align hide-on-med-and-up">
+							<h3>Personal recommendation for a fresh (re)start</h3>
+						</div>
+						
+						<div class="col s12">
+						  <div class="card purple lighten-4 z-depth-4">
+							<div class="card-content">
+							  <span class="card-title">
+									<i class="fas fa-book"></i> But How Do It Know? - The Basic Principles of Computers for Everyone
+								</span>
+							  <p>The book provides a general and simplified look about how a computer works, which are the main components that makes it easily programmable, how a program really looks and gets executed on a computer. All the examples and illustrations are well explained so the entire book can be easily understood. It can give you the taste about the different aspects any programming language deals with in different ways.</p>
+							</div>
+							<div class="card-action">
+							  No book content available here yet...
+							</div>
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="curviture-container" style="height: 150px; overflow: hidden; padding-top:0px;">
+				<svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+					<path d="M-0.84,91.28 C149.26,189.95 275.67,-30.09 501.97,88.31 L500.00,0.00 L0.00,0.00 Z" 
+						style="stroke: none; fill: #f3e5f5;"></path>
+				</svg>
+			</div>
+			<div class="row container">
 
-			<div class="col s2 center-align valign-wrapper" style="vertical-align: middle;">
-				<img width="100%" class="valign-wrapper"
-					src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
-					style=""/>
+				<div class="col s2 center-align valign-wrapper" style="vertical-align: middle;">
+					<img width="100%" class="valign-wrapper"
+						src = "./webPage/images/finger-swipe.png" alt="Swipe from left"
+						style=""/>
+				</div>
+				
+				<div class="col s10 center-align">
+					<h3>On devices supporting touch screen you can drag the 
+					<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
+					from the left.
+					</h3>
+				</div>
+				
+				<div class="col s12 center-align">
+				 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
+				</div>
+				
 			</div>
-			
-			<div class="col s10 center-align">
-				<h3>On devices supporting touch screen you can drag the 
-				<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i> menu</a> 
-				from the left.
-				</h3>
-			</div>
-			
-			<div class="col s12 center-align">
-			 <h2> <span class="underline--magical">Enjoy Your learning process!</span></h2>
-			</div>
-			
-		</div>
-		  
-		<div class="row">
-			<div class="row teal lighten-5">
-				<h3 class="col s10 push-s1 center-align"> 
-					The page is getting better and better over time. Please give it some time until it gets finished.
-				</h3>
+			  
+			<div class="row">
+				<div class="row teal lighten-5">
+					<h3 class="col s10 push-s1 center-align"> 
+						The page is getting better and better over time. Please give it some time until it gets finished.
+					</h3>
+				</div>
 			</div>
 		</div>
 		<footer class="page-footer deep-orange accent-3">
