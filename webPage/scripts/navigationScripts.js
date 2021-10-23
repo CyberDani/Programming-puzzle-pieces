@@ -110,7 +110,7 @@ $( ".menu-online-resources" ).click(function() {
 });
 
 $( ".menu-design-patterns" ).click(function() {
-
+	loadPage("webPage/pages/DesignPatterns/main.html");
 });
 
 $( ".menu-book-summaries" ).click(function() {
