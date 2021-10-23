@@ -1,3 +1,5 @@
+Work is in progress in order to give a more elegant look to the project: [see it in webpage form](https://cyberdani.github.io/Programming-puzzle-pieces/)
+
 > I can teach you the physics of riding a bicycle. Indeed, the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, center of mass, and so forth, can be demonstrated with less than a page full of equations. Given those formulae I could provide you that bicycle riding is practical and give you all the knowldge you needed to make it work. And you'd still fall down the first time you climbed on that bike. Coding is no different.
 <p align="right"><cite>Robert C. Martin - Clean code</cite> (<i>Introduction - page xxvi</i>) </p>
 
