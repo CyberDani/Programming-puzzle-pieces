@@ -1,6 +1,6 @@
 <nav class="amber darken-3">
     <div class="nav-wrapper">
-		<a href="#" class="brand-logo center">
+		<a href="#" class="brand-logo center topnav-logo">
 			<img src="./webPage/images/Logo_text.png" height="56px" style=""></img> 
 		</a>
 
