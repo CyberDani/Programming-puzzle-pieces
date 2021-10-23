@@ -60,6 +60,7 @@ def writeHtmlBodyContent(htmlFile, indentDepth):
   htmlFile.write(tabs + "</div>\n")
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/footer.txt", indentDepth)
   htmlBuilder.addJsFileAsLink(htmlFile, indentDepth, "./webPage/scripts/githubApiScripts.js")
+  htmlBuilder.addJsFileAsLink(htmlFile, indentDepth, "./webPage/scripts/navigationScripts.js")
   htmlFile.write(tabs + "<script>\n")
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineJs.js", indentDepth + 1)
   htmlFile.write(tabs + "</script>\n")
