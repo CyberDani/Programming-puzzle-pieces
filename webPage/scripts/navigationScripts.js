@@ -118,5 +118,5 @@ $( ".menu-book-summaries" ).click(function() {
 });
 
 $( ".menu-common-principles" ).click(function() {
-
+	loadPage("webPage/pages/CommonPrinciples/main.html");
 });
