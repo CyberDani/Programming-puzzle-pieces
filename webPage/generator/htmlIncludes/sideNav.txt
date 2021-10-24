@@ -19,6 +19,7 @@
 			<i class="far fa-compass"></i> Common Principles
 		</a>
 	</li>
+	<!--
 	<li class="no-padding">
 		<ul class="collapsible collapsible-accordion">
 			<li>
@@ -31,6 +32,7 @@
 		  </li>
 		</ul>
 	</li>
+	-->
 	<li><div class="divider amber darken-2"></div></li>
 	<li><a class="sidenav-close" href="#!">Close sidenav</a></li>
 </ul>
