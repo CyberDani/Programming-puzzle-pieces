@@ -1,0 +1,84 @@
+<h3>5. Formatting</h3>
+<b>The Purpose of Formatting</b><br/>
+"Code formatting is about communication, and communication is the professional developer's first order of business."
+<br/><br/>
+"The coding style and readability set precedents that continue to affect maintainability and extensibility long after the original code has been changed beyond recognition. Your style and discipline survives, even though your code does not."
+<br/><br/>
+<b>Vertical Formatting</b><br/>
+"It appears to be possible to build significant systems (FitNesse is close to 50,000 lines) out of files that are typically 200 lines long, with an upper limit of 500. Although this should not be a hard and fast rule, it should be considered very desirable. Small files are usually easier to understand than large files are."
+<br/><br/>
+<b>The Newspaper Metaphor</b><br/>
+"Think of a well-written newspaper article. You read it vertically. At the top you expect a headline that will tell you what the story is about and allows you to decide whether it is something you want to read. The first paragraph gives you a synopsis of the whole story, hiding all the details while giving you the broad-brush concepts. As you continue downward, the details increase until you have all the dates, names, quotes, claims and other minutia."
+<br/><br/>
+"The topmost parts of a source file should provide the high-level concepts and algorithms. Details should increase as we move downward, until at the end we find the lowest level functions and details in the source file."
+<br/><br/>
+<b>Vertical Openness Between Concepts</b><br/>
+"each group of lines represents a complete thought. Those thoughts should be separated from each other with blank lines."
+<br/><br/>
+"Taking those blank lines out, [...] has a remarkably obscuring effect on the readability of the code."
+<br/><br/>
+<b>Vertical Density</b><br/>
+"If openness separates concepts then vertical density implies close association. So lines of code that are tightly related should appear vertically dense."
+<br/><br/>
+<b>Vertical Distance</b><br/>
+"Concepts that are closely related should be kept vertically close to each other. Clearly this rule doesn't work for concepts that belong in separate files. But then closely related concepts should not be separated into different files unless you have a very good reason."
+<br/><br/>
+"For those concepts that are so closely related that they belong in the same source file, their vertical separation should be a measure of how important each is to the understandability of the other."
+<br/><br/>
+<b>Variable Declarations</b><br/>
+"Variables should be declared as close to their usage as possible."
+<br/><br/>
+"Control variables for loops should usually be declared within the loop statement"
+<br/><br/>
+<b>Instance variables</b><br/>
+"should be declared at the top of the class. This should not increase the vertical distance of these variables, because in a well-designed class, they are used by many, if not all, of the methods of the class."
+<br/><br/>
+"The important thing is for the instance variables to be declared in one well-known place. Everybody should know where to go to see the declarations."
+<br/><br/>
+<b>Dependent functions</b><br/>
+"If one function calls another they should be vertically close, and the caller should be above the callee, if at all possible."
+<br/><br/>
+"This makes it easy to find the called functions and greatly enhances the readability of the whole module."
+<br/><br/>
+<b>Conceptual Affinity</b><br/>
+"Certain bits of code want to be near other bits. They have a certain conceptual affinity. The stronger that affinity, the less vertical distance there should be between them."
+<br/><br/>
+"this affinity might be based on a direct dependence, such as one function calling another, or a function using a variable. But there are other possible causes of affinity. Affinity might be caused because a group of functions perform a similar operation."
+<br/><br/>
+<b>Vertical Ordering</b><br/>
+"In general we want function call dependencies to point in the downward direction. That is, a function that is called should be below a function that does the calling. This creates a nice flow down the source code module from high level to low level."
+<br/><br/>
+"We expect the low-level details to come last."
+<br/><br/>
+<b>Horizontal Formatting</b><br/>
+"Programmers clearly prefers short lines."
+<br/><br/>
+"This suggests that we should strive to keep our lines short. The old Hollerith limit of 80 is a bit arbitrary, and I'm not opposed to lines edging out to 100 or 120. But beyond that is probably just careless."
+<br/><br/>
+<b>Horizontal Openess and Density</b><br/>
+"We use horizontal white space to associate things that are strongly related and disassociate things that are more weakly related."
+<br/><br/>
+"I surrounded the assignment operators with white space to accentuate them. Assignment statements have two distinct and major elements: the left side and the right side."
+<br/><br/>
+"I didn't put spaces between the function names and the opening parenthesis. This is because the function and its arguments are closely related."
+<br/><br/>
+"Another use for white space is to accentuate the precedence of operators."
+<br/><br/>
+<b>Horizontal Alignment</b><br/>
+"I prefer unaligned declarations and assignments [...], because they point out an important deficiency. If I have long lists that need to be aligned, the problem is the length of the lists, not the lack of alignment."
+<br/><br/>
+<b>Indentation</b><br/>
+"To make this hierarchy of scopes visible, we indent the lines of source code in proportion to their position in the hierarchy. Statements at the level of the file, such as most class declarations, are not indented at all. Methods within a class are indented one level to the right of the class. Implementations of those methods are implemented one level to the right of the method declaration. Block implementations are implemented one level to the right of their containing block, and so on."
+<br/><br/>
+<b>Breaking Indentation</b><br/>
+"It is sometimes tempting to break the indentation rule for short if statements, short while loops, or short functions. Whenever I have succumbed to this temptation, I have always gone back and put the indentation back in."
+<br/><br/>
+<b>Dummy Scopes</b><br/>
+"Sometimes the body of a while or for statement is a dummy [i.e. while(condition) ;]"
+<br/><br/>
+"Unless you make that semicolon visible by indenting it on it's own line, it's just too hard to see."
+<br/><br/>
+<b>Team Rules</b><br/>
+"A team of developers should agree upon a single formatting style. We want the software to have a consistent style."
+<br/><br/>
+"The reader needs to be able to trust that the formatting gestures he or she has seen in one source file will mean the same thing in others."

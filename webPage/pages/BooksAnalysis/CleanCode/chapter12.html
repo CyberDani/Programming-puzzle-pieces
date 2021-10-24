@@ -1,0 +1,52 @@
+<h3>12. Emergence</h3>
+<b>Getting Clean via Emergent Design</b><br/>
+"Many of us feel that Kent Beck's four rules of Simple Design are of significant help in creating well-designed software. According to Kent, a design is "simple" if it follows these rules:
+<br/><br/>
+Runs all the tests<br/>
+Contains no duplication<br/>
+Expresses the intent of the programmer<br/>
+Minimizes the number of classes and methods<br/><br/>
+The rules are given in order of importance."
+<br/><br/>
+<b>Simple Design Rule 1: Runs All the Tests</b><br/>
+"A system might have a perfect design on paper, but if there is no simple way to verify that the system actually works as intended, then all the paper effort is questionable."
+<br/><br/>
+"Fortunately, making our systems testable pushes us toward a design where our classes are small and single purpose. It's just easier to test classes that conform to the SRP."
+<br/><br/>
+"Tight coupling makes it difficult to write tests. So, similarly, the more tests we write, the more we use principles like DIP and tools like dependency injection, interfaces, and abstraction to minimize coupling."
+<br/><br/>
+"Writing tests leads to better design."
+<br/><br/>
+<b>Simple Design Rules 2-4: Refactoring</b><br/>
+"Once we have tests, we are empowered to keep our code and classes clean. [...] The fact that we have these tests eliminates the fear that cleaning up the code will break it!"
+<br/><br/>
+"We can increase cohesion, decrease coupling, separate concerns, modularize system concerns, shrink our functions and classes, choose better names, and so on. This is also where we apply the final three rules of simple design: Eliminate duplication, ensure expressiveness, and minimize the number of classes and methods."
+<br/><br/>
+<b>No Duplication</b><br/>
+"Duplication is the primary enemy of a well-designed system. It represents additional work, additional risk, and additional unnecessary complexity. [...] Lines of code that look exactly alike are, of course, duplication."
+<br/><br/>
+"Creating a clean system requires the will to eliminate duplication, even in just a few lines of code."
+<br/><br/>
+"The TEMPLATE METHOD pattern is a common technique for removing higher-level duplication."
+<br/><br/>
+<b>Expressive</b><br/>
+"The majority of the cost of a software project is in long-term maintenance."
+<br/><br/>
+"Therefore, code should clearly express the intent of its author. The clearer the author can make the code, the less time others [including you after few weeks or months] will have to spend understanding it."
+<br/><br/>
+"You can express yourself by choosing good names."
+<br/><br/>
+"You can also express yourself by keeping your functions and classes small."
+<br/><br/>
+"You can also express yourself by using standard nomenclature. Design patterns, for example, are largely about communication and expressiveness."
+<br/><br/>
+"Well-written unit tests are also expressive. A primary goal of tests is to act as documentation by example."
+<br/><br/>
+"But the most important way to be expressive is to try."
+<br/><br/>
+"take care of what you've created. Care is a precious resource."
+<br/><br/>
+<b>Minimal Classes and Methods</b><br/>
+"High class and method counts are sometimes the result of pointless dogmatism."
+<br/><br/>
+"Remember, however, that this rule is the lowest priority of the four rules of Simple Design. So, although it's important to keep class and function count low, it's more important to have tests, eliminate duplication, and express yourself."

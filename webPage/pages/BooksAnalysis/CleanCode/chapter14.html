@@ -1,0 +1,18 @@
+<h3>14. Successive Refinement</h3>
+<br/>
+[!] [This chapter is a "case study" of how a Java code got improved and with it how its implementation had changed as well and still remained clean code. It is also interesting how TDD (Test-Driven-Development) played its role in it. I am not thinking about summarizing in written words a 57 pages chapter mainly composed of code snippets. Consider searching and reading the whole chapter if it makes you curious. My goal is to present only the main ideas here.]
+<br/><br/>
+<b>How Did I Do This?</b><br/>
+"If we learned anything over the last couple of decades, it is that programming is a craft more than it is a science. To write clean code, you must first write dirty code and then clean it."
+<br/><br/>
+"Most freshman programmers (like most grade-schoolers) don't follow this advice particularly well. They believe that the primary goal is to get the program working. Once it's "working", they move on to the next task, leaving the "working" program in whatever state they finally got it to "work". Most seasoned programmers know that this is professional suicide."
+<br/><br/>
+<b>On Incrementalism</b><br/>
+"One of the best ways to ruin a program is to make massive changes to its structure in the name of improvement. Some programs never recover from such "improvements". The problem is that it's very hard to get the program working the same way it worked before the "improvement"."
+<br/><br/>
+"using TDD, I am not allowed to make a change to the system that breaks that system. Every change I make must keep the system working as it worked before."
+<br/><br/>
+<b>String Arguments</b><br/>
+"Putting things in so you can take them out again is pretty common in refactoring. The smallness of the steps and the need to keep the tests running means that you move things around a lot. Refactoring is a lot like solving a Rubik's cube. There are lots of little steps required to achieve a large goal. Each step enables the next."
+<br/><br/>
+"Much of good software design is simply about partitioning - creating appropriate places to put different kinds of code. This separation of concerns makes the code much simpler to understand and maintain."

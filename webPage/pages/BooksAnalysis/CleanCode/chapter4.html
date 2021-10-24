@@ -1,0 +1,121 @@
+<h3>4. Comments</h3>
+<br/>
+"Indeed, comments are, at best, a necessary evil. If our programming languages were expressive enough, or if we had the talent to subtly wield those languages to express our intent, we would not need comments very much - perhaps not at all."
+<br/><br/>
+"The proper use of comments is to compensate for our failure to express ourselves in code."
+<br/><br/>
+"The older a comment is, and the farther away it is from the code it describes, the more likely it is to be just plain wrong. The reason is simple. Programmers can't realistically maintain them."
+<br/><br/>
+"Inaccurate comments are far worse than no comments at all. They delude and mislead."
+<br/><br/>
+<b>Comments Do Not Make Up for Bad Code</b><br/>
+"We know it's a mess. So we say to ourselves, "Ooh, I'd better comment that!" No! You'd better clean it!"
+<br/><br/>
+"Rather than spend your time writing the comments that explain the mess you've made, spend it cleaning that mess."
+<br/><br/>
+<b>Explain Yourself in Code</b><br/>
+"In many cases it's simply a matter of creating a function that says the same thing as the comment you want to write."
+<br/><br/>
+<b>Good comments</b><br/>
+"the only truly good comment is the comment you found a way not to write."
+<br/><br/>
+<b>Legal comments</b><br/>
+"Comments like this should not be contracts or legal tomes. Where possible, refer to a standard license or other external document rather than putting all the terms and conditions into the comment."
+<br/><br/>
+<b>Informative Comments</b><br/>
+"A comment like this can sometimes be useful, but it is better to use the name of the function to convey the information where possible."
+<br/><br/>
+<b>Explanation of Intent</b><br/>
+"Sometimes a comment goes beyond just useful information about the implementation and provides the intent behind a decision."
+<br/><br/>
+<b>Clarification</b><br/>
+"In general it is better to find a way to make that argument or return value clear in its own right; but when its part of the standard library, or in code that you cannot alter, then a helpful clarifying comment can be useful."
+<br/><br/>
+"So before writing comments like this, take care that there is no better way, and then take even more care that they are accurate."
+<br/><br/>
+<b>Warning of Consequences</b><br/>
+"Sometimes it is useful to warn other programmers about certain consequences."
+<br/><br/>
+"It will prevent some overly eager programmer [...]"
+<br/><br/>
+<b>TODO Comments</b><br/>
+"Whatever else a TODO might be, it is not an excuse to leave bad code in the system."
+<br/><br/>
+"you don't want your code to be littered with TODOs. So scan through them regularly and eliminate the ones you can."
+<br/><br/>
+<b>Amplification</b><br/>
+"A comment may be used to amplify the importance of something that may otherwise seem inconsequential."
+<br/><br/>
+<b>Javadocs in Public APIs</b><br/>
+"If you are writing a public API, then you should certainly write good javadocs for it. But keep in mind the rest of the advice in this chapter. Javadocs can be just as misleading, nonlocal, and dishonest as any other kind of comment."
+<br/><br/>
+<b>Bad Comments</b><br/>
+"Usually they are crutches or excuses for poor code or justification for insufficient decisions, amounting to little more than the programmer talking to himself."
+<br/><br/>
+<b>Mumbling</b><br/>
+"If you decide to write a comment, then spend the time necessary to make sure it is the best comment you can write."
+<br/><br/>
+"Any comment that forces you to look in another module for the meaning of that comment has failed to communicate to you and is not worth the bits it consumes."
+<br/><br/>
+<b>Redundant Comments</b><br/>
+"Indeed it is less precise than the code and entices the reader to accept that lack of precision in lieu of true understanding."
+<br/><br/>
+<b>Misleading Comments</b><br/>
+[Will cause misunderstandings for programmers when call a function and resulting different behavior than its comment states it would.]
+<br/><br/>
+<b>Mandated Comments</b><br/>
+"It is just plain silly to have a rule that says that every function must have a javadoc [or any other documentation], or every variable must have a comment. Comments like this just clutter up the code, propagate lies, and lend to general confusion and disorganization."
+<br/><br/>
+<b>Journal Comments</b><br/>
+"Sometimes people add a comment to the start of a module every time they edit it. These comments accumulate as a kind of journal, or log, of every change that has ever been made."
+<br/><br/>
+"We didn't have source code control systems that did it for us. Nowadays, however, these long journals are just more clutter to obfuscate the module. They should be completely removed."
+<br/><br/>
+<b>Noise Comments</b><br/>
+"They restate the obvious and provide no new information."
+<br/><br/>
+"Replace the temptation to create noise with the determination to clean your code. You'll find it makes you a better and happier programmer."
+<br/><br/>
+<b>Scary Noise</b><br/>
+"Javadocs [and any kind of comments written for a documentation tool] can also be noisy."
+<br/><br/>
+"They are just redundant noisy comments written out of some misplaced desire to provide documentation. [e.g. copy-paste-edit error]"
+<br/><br/>
+<b>Don't Use a Comment When You Can Use a Function or a Variable</b><br/>
+[Personal recommendation: use comments to explain why that function is in use, when should it be used: answer WHY? instead of WHAT?]
+<br/><br/>
+<b>Position Markers</b><br/>
+"There are rare times when it makes sense to gather certain function together beneath a banner like this. But in general they are clutter that should be eliminated"
+<br/><br/>
+"use them very sparingly, and only when the benefit is significant. If you overuse banners, they'll fall into the background noise and be ignored."
+<br/><br/>
+<b>Closing Brace Comments</b><br/>
+"Although this might make sense for long functions with deeply nested structures, it serves only to clutter the kind of small and encapsulated functions that we prefer. So if you find yourself wanting to mark your closing braces, try to shorten your functions instead."
+<br/><br/>
+<b>Attributions and Bylines</b><br/>
+"Source code control systems are very good at remembering who added what, when. There is no need to pollute the code with little bylines."
+<br/><br/>
+<b>Commented-Out Code</b><br/>
+"Few practices are as odious as commenting-out code. Don't do this!"
+<br/><br/>
+"Others who see that commented-out code won't have the courage to delete it."
+<br/><br/>
+<b>HTML Comments</b><br/>
+"It makes the comments hard to read in the one place where they should be easy to read- the editor/IDE. If comments are going to be extracted by some tool (like Javadoc) to appear in a Web page, then it should be the responsibility of that tool, and not the programmer, to adorn the comments with appropriate HTML."
+<br/><br/>
+<b>Nonlocal Information</b><br/>
+"If you must write a comment, then make sure it describes the code it appears near. Don't offer systemwide information in the context of a local comment."
+<br/><br/>
+<b>Too Much Information</b><br/>
+"Don't put interesting historical discussions or irrelevant descriptions of details into your comments."
+<br/><br/>
+<b>Inobvious Connection</b><br/>
+"The connection between a comment and the code it describes should be obvious."
+<br/><br/>
+"The purpose of a comment is to explain code that does not explain itself. It is a pity when a comment needs its own explanation."
+<br/><br/>
+<b>Function Headers</b><br/>
+"Short functions don't need much description. A well-chosen name for a small function that does one thing is usually better than a comment header."
+<br/><br/>
+<b>Javadocs in Nonpublic Code</b><br/>
+"As useful as javadocs are for public APIs, they are anathema to code that is not intended for public consumption."

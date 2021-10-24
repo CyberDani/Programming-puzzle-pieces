@@ -1,0 +1,333 @@
+<h3>17. Smells and Heuristics</h3>
+<h4>Comments</h4>
+<b>C1: Inappropriate Information</b><br/>
+"It is inappropriate for a comment to hold information better held in a different kind of system such as your source code control system, your issue tracking system, or any other record-keeping system."
+<br/><br/>
+"Comments should be reserved for technical notes about the code and design."
+<br/><br/>
+<b>C2: Obsolete Comment</b><br/>
+"A comment that has gotten old, irrelevant, and incorrect is obsolete. Comments get old quickly. It is best not to write a comment that will become obsolete."
+<br/><br/>
+<b>C3: Redundant Comment</b><br/>
+"A comment is redundant if it describes something that adequately describes itself."
+<br/><br/>
+"Comments should say things that the code cannot say for itself."
+<br/><br/>
+<b>C4: Poorly Written Comment</b><br/>
+"If you are going to write a comment, take the time to make sure it is the best comment you can write. [...] Don't ramble. Don't state the obvious. Be brief."
+<br/><br/>
+<b>C5: Commented-Out Code</b><br/>
+"Who knows how old it is? Who knows whether or not it's meaningful? Yet no one will delete it, because everyone assumes someone else needs it or has plans for it. That code sits there and rots, getting less and less relevant with every passing day."
+<br/><br/>
+"It pollutes the modules that contain it and distracts the people who try to read it. Commented-out code is an abomination. When you see commented-out code, delete it! Don't worry, the source code control system still remembers it."
+<br/><br/>
+<h4>Environment</h4>
+<b>E1: Building Requires More Than One Step</b><br/>
+"Building a project should be a single trivial operation."
+<br/><br/>
+"You should be able to check out the system with one simple command and then issue one other simple command to build it."
+<br/><br/>
+<b>E2: Tests Require More Than One Step</b><br/>
+"You should be able to run all the unit tests with just one command."
+<br/><br/>
+"Being able to run all the tests is so fundamental and so important that it should be quick, easy, and obvious to do."
+<br/><br/>
+<h4>Functions</h4>
+<b>F1: Too Many Arguments</b><br/>
+"No argument is best, followed by one, two, and three."
+<br/><br/>
+<b>F2: Output Arguments</b><br/>
+"Output arguments are counterintuitive. Readers expect arguments to be inputs, not outputs. If your function must change the state of something, have it change the state of the object it is called on."
+<br/><br/>
+<b>F3: Flag Arguments</b><br/>
+"Boolean arguments loudly declare that the function does more than one thing. They are confusing and should be eliminated."
+<br/><br/>
+<b>F4: Dead Function</b><br/>
+"Methods that are never called should be discarded. Keeping dead code around is wasteful. Don't be afraid to delete the function. Remember, your source code control system still remembers it."
+<br/><br/>
+<h4>General</h4>
+<b>G1: Multiple Languages in One Source File</b><br/>
+"For example, a Java source file might contain snippets of XML, HTML, YAML, JavaDoc, English, JavaScript, and so on. [...] This is confusing at best and carelessly sloppy at worst."
+<br/><br/>
+"The ideal is for a source file to contain one, and only one, language. [...] we should take pains to minimize both the number and extent of extra languages in our source files."
+<br/><br/>
+<b>G2: Obvious Behavior is Unimplemented</b><br/>
+"Following "The Principle of Least Surprise", any function or class should implement the behaviors that another programmer could reasonably expect."
+<br/><br/>
+"When an obvious behavior is not implemented, readers and users of the code can no longer depend on their intuition about function names. They lose their trust in the original author and must fall back on reading the details of the code."
+<br/><br/>
+<b>G3: Incorrect Behavior at the Boundaries</b><br/>
+"Don't rely on your intuition. Look for every boundary condition and write a test for it."
+<br/><br/>
+<b>G4: Overridden Safeties</b><br/>
+"Chernobyl melted down because the plant manager overrode each of the safety mechanisms one by one."
+<br/><br/>
+"Turning off certain compiler warnings (or all warnings!) may help you get the build to succeed, but at the risk of endless debugging sessions. Turning off failing tests and telling yourself you'll get them to pass later is as bad as pretending your credit cards are free money."
+<br/><br/>
+<b>G5: Duplication</b><br/>
+"Virtually every author who writes about software design mentions this rule. Dave Thomas and Andy Hunt called it the DRY principle (Don't Repeat Yourself). Kent Beck made it one of the core principles of Extreme Programming and called it: "Once, and only once". Ron Jeffries ranks this rule second, just below getting all the tests to pass."
+<br/><br/>
+"Every time you see a duplication in the code, it represents a missed opportunity for abstraction. [...] Find and eliminate duplication wherever you can."
+<br/><br/>
+<b>G6: Code at Wrong Level of Abstraction</b><br/>
+"We want all the lower level concepts to be in the derivatives and all the higher level concepts to be in the base class."
+<br/><br/>
+"This rule also pertains to source files, components, and modules. Good software design requires that we separate concepts at different levels and place them in different containers."
+<br/><br/>
+"The point is that you cannot lie or fake your way out of a misplaced abstraction. Isolating abstractions is one of the hardest things that software developers do, and there is no quick fix when you get it wrong."
+<br/><br/>
+<b>G7: Base Classes Depending on Their Derivatives</b><br/>
+"The most common reason for partitioning concepts into base and derivative classes is so that the higher level base class concepts can be independent of the lower level derivative class concepts. Therefore, when we see base classes mentioning the names of their derivatives, we suspect a problem. In general, base classes should know nothing about their derivatives."
+<br/><br/>
+<b>G8: Too Much Information</b><br/>
+"Well defined modules have very small interfaces that allow you to do a lot with a little. Poorly defined modules have wide and deep interfaces that force you too use many different gestures to get simple things done. A well-defined interface does not offer very many functions to depend upon, so coupling is low. A poorly defined interface provides lots of functions that you must call, so coupling is high."
+<br/><br/>
+"Hide your data. Hide your utility functions. Hide your constants and your temporaries. [...] Concentrate on keeping interfaces very tight and very small. Help keep coupling low by limiting information."
+<br/><br/>
+<b>G9: Dead Code</b><br/>
+"Dead code is code that isn't executed."
+<br/><br/>
+"The problem with dead code is that after awhile it starts to smell. The older it is, the stronger and sourer the odor becomes."
+<br/><br/>
+"When you find dead code, do the right thing. Give it a decent burial. Delete it from the system."
+<br/><br/>
+<b>G10: Vertical Separation</b><br/>
+"Variables and function should be defined close to where they are used. Local variables should be declared just above their first usage and should have a small vertical scope."
+<br/><br/>
+"Private functions should be defined just below their first usage. Private functions belong to the scope of the whole class, but we'd still like to limit vertical distance between the invocations and definitions. Finding a private function should just be a matter of scanning downward from the first usage."
+<br/><br/>
+<b>G11: Inconsistency</b><br/>
+"If you do something a certain way, do all similar things in the same way. This goes back to the principle of least surprise. Be careful with the conventions you choose, and once chosen, be careful to continue to follow them. [e.g: class names]"
+<br/><br/>
+<b>G12: Clutter</b><br/>
+"Of what use is a default constructor with no implementation? [...] Variables that aren't used, functions that are never called, comments that add no information, and so forth. All these things are clutter and should be removed. Keep your source files clean, well organized, and free of clutter."
+<br/><br/>
+<b>G13: Artificial Coupling</b><br/>
+"Things that don't depend upon each other should not be artificially coupled."
+<br/><br/>
+"In general an artificial coupling is a coupling between two modules that serve no direct purpose."
+<br/><br/>
+"Take the time to figure out where functions, constants, and variables ought to be declared. Don't just toss them in the most convenient place at hand and then leave them there."
+<br/><br/>
+<b>G14: Feature Envy</b><br/>
+"This is one of Martin Fowler's code smells. The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes. When a method uses accessors and mutators of some other object to manipulate the data within that object, then it envies the scope of the class of that other object. It wishes that it were inside that other class so that it could have direct access to the variables it is manipulating."
+<br/><br/>
+"we want to eliminate Feature Envy because it exposes the internal of one class to another. Sometimes, however, Feature Envy is a necessary evil."
+<br/><br/>
+<b>G15: Selector Arguments</b><br/>
+"There is hardly anything more abominable than a dangling false argument at the end of a function call. [...] Not only is the purpose of a selector argument difficult to remember, each selector argument combines many functions into one."
+<br/><br/>
+"Of course, selectors need not be boolean. They can be enums, integers, or any other type of argument that is used to select the behavior of the function. In general it is better to have many functions than to pass some code into a function to select the behavior."
+<br/><br/>
+<b>G16: Obscured Intent</b><br/>
+"We want code to be as expressive as possible. Run-on expressions, Hungarian notation, and magic numbers all obscure the author's intent."
+<br/><br/>
+"It is worth taking the time to make the intent of our code visible to our readers."
+<br/><br/>
+<b>G17: Misplaced Responsibility</b><br/>
+"One of the most important decisions a software developer can make is where to put code. [e.g. place "PI" constant in Math, Trigonometry or Circle class?]"
+<br/><br/>
+"The principle of least surprise comes into play here. Code should be placed where a reader would naturally expect it to be."
+<br/><br/>
+"Sometimes we get "clever" about where to put certain functionality. We'll put it in a function that's convenient for us, but not necessarily intuitive for the reader."
+<br/><br/>
+<b>G18: Inappropriate Static</b><br/>
+"Sometimes, however, we write static functions that should not be static."
+<br/><br/>
+"In general you should prefer nonstatic methods to static methods. When in doubt, make the function nonstatic. If you really want a function to be static, make sure that there is no chance that you'll want it to behave polymorphically."
+<br/><br/>
+<b>G19: Use Explanatory Variables</b><br/>
+"Kent Beck wrote about this in his great book Smalltalk Best Practice Patterns and again more recently in his equally great book Implementation Patterns. One of the more powerful ways to make a program readable is to break the calculations up into intermediate values that are held in variables with meaningful names."
+<br/><br/>
+"More explanatory variables are generally better than fewer. It is remarkable how an opaque module can suddenly become transparent simply by breaking the calculation up into well-named intermediate values."
+<br/><br/>
+<b>G20: Function Names Should Say What They Do</b><br/>
+"If you have to look at the implementation (or documentation) of the function to know what it does, then you should work to find a better name or rearrange the functionality so that it can be placed in functions with better names."
+<br/><br/>
+<b>G21: Understand the Algorithm</b><br/>
+"You think you know the right algorithm for something, but then you wind up fiddling with it, prodding and poking at it, until you get it to "work". How do you know it "works"? Because it passes the test cases you can think of."
+<br/><br/>
+"Before you consider yourself to be done with a function, make sure you understand how it works. It is not good enough that it passes all the tests. You must know that the solution is correct. Often the best way to gain this knowledge and understanding is to refactor the function into something that is so clean and expressive that it is obvious how it works."
+<br/><br/>
+<b>G22: Make Logical Dependencies Physical</b><br/>
+"If one module depends upon another, that dependency should be physical, not just logical. The dependent module should not make assumptions (in other words, logical dependencies) about the module it depends upon. Rather it should explicitly ask that module for all information it depends upon."
+<br/><br/>
+<b>G23: Prefer Polymorphism to If/Else or Switch/Case</b><br/>
+"switch statements are probably appropriate in the parts of the system where adding new functions is more likely than adding new types."
+<br/><br/>
+"I use the following "ONE SWITCH" rule: There may be no more than one switch statement for a given type of selection. The cases in that switch statement must create polymorphic objects that take the place of other such switch statements in the rest of the system."
+<br/><br/>
+<b>G24: Follow Standard Conventions</b><br/>
+"Every team should follow a coding standard based on common industry norms. This coding standard should specify things like where to declare instance variables; how to name classes, methods, and variables; where to put braces; and so on. The team should not need a document to describe these conventions because their code provides the examples."
+<br/><br/>
+<b>G25: Replace Magic Numbers with Named Constants</b><br/>
+"This is probably one of the oldest rules in software development. I remember reading it in the late sixties in introductory COBOL, FORTRAN, and PL/1 manuals. In general it is a bad idea to have raw numbers in your code. You should hide them behind well-named constants."
+<br/><br/>
+"Some constants are so easy to recognize that they don't always need a named constant to hide behind so long as they are used in conjunction with with very self-explanatory code. For example:
+<br/><br/>
+double milesWalked = feetWalked/5280.0;"
+<br/><br/>
+"Constants like 3.141592653589793 are also very well known and easily recognizable. However, the chance for error is too great to leave them raw."
+<br/><br/>
+"The term "Magic Number" does not apply only to numbers. It applies to any token that has a value that is not self-describing."
+<br/><br/>
+<b>G26: Be Precise</b><br/>
+"When you make a decision in your code, make sure you make it precisely. Know why you have made it and how you will deal with any exceptions. Don't be lazy about the precision of your decisions."
+<br/><br/>
+"Ambiguities and imprecision in code are either a result of disagreements or laziness. In either case they should be eliminated."
+<br/><br/>
+<b>G27: Structure over Convention</b><br/>
+"Enforce design decisions with structure over convention. Naming conventions are good but they are inferior to structures that force compliance. For example, switch/cases with nicely named enumerations are inferior to base classes with abstract methods. No one is forced to implement the switch/case statement the same way each time; but the base classes do enforce that concrete classes have all abstract methods implemented."
+<br/><br/>
+<b>G28: Encapsulate Conditionals</b><br/>
+"Boolean logic is hard enough Extract functions that explain the intent of the conditional. For example:
+<br/><br/>
+if (shouldBeDeleted(timer))
+<br/><br/>
+is preferable to
+<br/><br/>
+if (timer.hasExpired() && !timer.isRecurrent())"
+<br/><br/>
+<b>G29: Avoid Negative Conditionals</b><br/>
+"Negatives are just a but harder to understand than positives. So, when possible, conditionals should be expressed as positives. For example:
+<br/><br/>
+if (buffer.shouldCompact())
+<br/><br/>
+is preferable to [you can also meet the term "anti-negative" as a synonym for this]
+<br/><br/>
+if (!buffer.shouldNotCompact())"
+<br/><br/>
+<b>G30: Functions Should Do One Thing</b><br/>
+"It is often tempting to create functions that have multiple sections that perform a series of operations. Functions of this kind do more than one thing, and should be converted into many smaller functions, each of which does one thing."
+<br/><br/>
+<b>G31: Hidden Temporal Couplings</b><br/>
+"Temporal couplings are often necessary, but you should not hide the coupling. Structure the arguments of your functions such that the order in which they should be called is obvious."
+<br/><br/>
+[Example for hidden temporal coupling from the book:]
+<br/><br/>
+public class MoogDiver {
+  Gradient gradient;
+  List<Spline> splines;
+
+  public void dive(String reason) {
+    saturateGradient();
+    reticulateSplines();
+    diveForMoog(reason);
+  }
+  ...
+}
+<br/><br/>
+[Fix for hidden temporal coupling from the book:]
+<br/><br/>
+public class MoogDiver {
+  [these members might be used in other functions but they are no longer used in the dive()function]
+  Gradient gradient;
+  List<Spline> splines;
+
+  public void dive(String reason) {
+    Gradient gradient = saturateGradient();
+    List<Spline> splines = reticulateSplines(gradient);
+    diveForMoog(splines, reason);
+  }
+  ...
+}
+<br/><br/>
+"Each function produces a result that the next function needs, so there is no reasonable way to call them out of order. You might complain that this increases the complexity of the functions, and you'd be right. But that extra syntactic complexity exposes the true temporal complexity of the situation."
+<br/><br/>
+<b>G32: Don't Be Arbitrary</b><br/>
+"Have a reason for the way you structure your code, and make sure that reason is communicated by the structure of the code. If a structure appears arbitrary, others will feel empowered to change it. If a structure appears consistently throughout the system, others will use it and preserve the convention."
+<br/><br/>
+<b>G33: Encapsulate Boundary Conditions</b><br/>
+"Boundary conditions are hard to keep track of. Put the processing for them in one place. Don't let them leak all over the code. We don't want swarms of +1s and -1s scattered hither and yon."
+<br/><br/>
+<b>G34: Functions Should Descend Only One Level Of Abstraction</b><br/>
+"The statements within a function should all be written at the same level of abstraction, which should be one level below the operation described by the name of the function. This may be the hardest of these heuristics to interpret and follow. Though the idea is plain enough, humans are just far too good at seamlessly mixing levels of abstraction."
+<br/><br/>
+"Separating levels of abstraction is one of the most important functions of refactoring, and it's on of the hardest to do well."
+<br/><br/>
+"when you break a function along lines of abstraction, you often uncover new lines of abstraction that were obscured by the previous structure."
+<br/><br/>
+<b>G35: Keep Configurable Data at High Levels</b><br/>
+"If you have a constant such as a default or configuration value that is known and expected at a high level of abstraction, do not bury it in a low-level function. Expose it as an argument to that low-level function called from the high level function."
+<br/><br/>
+<b>G36: Avoid Transitive Navigation</b><br/>
+"In general we don't want a single module to know much about its collaborators. More specifically, if A collaborates with B, and B collaborates with C, we don't want modules that use A to know about C. (For example, we don't want a.getB().getC().doSomething();.)"
+<br/><br/>
+"This is sometimes called the Law of Demeter. The Pragmatic Programmers call it "Writing Shy Code". In either case it comes down to making sure that modules know only about their immediate collaborators and do not know the navigation map of the whole system."
+<br/><br/>
+"it would be difficult to change the design and architecture to interpose a Q between B and C. You'd have to find every instance of a.getB().getC() and convert it to a.getB().getQ().getC()."
+<br/><br/>
+"Rather we want our immediate collaborators to offer all the services we need."
+<br/><br/>
+<h4>Java</h4>
+<b>J1: Avoid Long Import Lists by Using Wildcards</b><br/>
+"If you use two or more classes from a package, then import the whole package with import package.*;. Long lists of imports are daunting to the reader."
+<br/><br/>
+"The import statement simply adds the package to the search path when hunting for names. So no true dependency is created by such imports, and they therefore serve to keep our modules less coupled."
+<br/><br/>
+"There are times when the long list of specific imports can be useful. [...] However, this use for specific imports is very rare."
+<br/><br/>
+<b>J2: Don't Inherit Constants</b><br/>
+"I have seen this several times and it always makes me grimace. A programmer puts some constants in an interface and then gains access to those constants by inheriting that interface."
+<br/><br/>
+"This a hideous practice! The constants are hidden at the top of the interface hierarchy. Ick! Don't use inheritance as a way to cheat the scoping rules of the language. Use a static import instead."
+<br/><br/>
+<b>J3: Constants versus Enums</b><br/>
+"Don't keep using the old trick of public static final ints. The meaning of ints can get lost. The meaning of enums cannot because they belong to an enumeration that is named. What's more, study the syntax for enums carefully. They can have methods and fields. This makes them very powerful tools that allow much more expression and flexibility than ints."
+<br/><br/>
+<h4>Names</h4>
+<b>N1: Choose Descriptive Names</b><br/>
+"Don't be too quick to choose a name. Make sure the name is descriptive. Remember that meanings tend to drift as software evolves, so frequently reevaluate the appropriateness of the names you choose."
+<br/><br/>
+"Names in software are 90 percent of what make software readable. You need to take the time to choose them wisely and keep them relevant. Names are too important to treat them carelessly."
+<br/><br/>
+"The power of carefully chosen names is that they overload the structure of the code with description."
+<br/><br/>
+<b>N2: Choose Names at the Appropriate Level of Abstraction</b><br/>
+"Don't pick names that communicate implementation; choose names that reflect the level of abstraction of the class or function you are working on. This is hard to do. Again, people are just too good at mixing levels of abstractions. Each time you make a pass over your code, you will likely find some variable that is named at too low a level. You should take the opportunity to change those names when you find them."
+<br/><br/>
+<b>N3: Use Standard Nomenclature Where Possible</b><br/>
+"Names are easier to understand if they are based on existing convention or usage. For example, if you are using the DECORATOR pattern, you should use the word Decorator in the names of the decorating classes."
+<br/><br/>
+<b>N4: Unambiguous Names</b><br/>
+"Choose names that make the workings of a function or variable unambiguous."
+<br/><br/>
+"explanatory value outweighs the length."
+<br/><br/>
+<b>N5: Use Long Names for Long Scopes</b><br/>
+"The length of a name should be related to the length of the scope. You can use very short variable names for tiny scopes, but for big scopes you should use longer names. Variable names like i and j are just fine if their scope is five lines long."
+<br/><br/>
+<b>N6: Avoid Encodings</b><br/>
+"Names should not be encoded with type or scope information. Prefixes as m_ or f_ are useless in today's environments. 
+Also project and/or subsystem encodings such as vis_ (for visual imaging systems) are distracting and redundant."
+<br/><br/>
+<b>N7: Names Should Describe Side-Effects</b><br/>
+"Names should describe everything that a function, variable, or class is or does. Don't hide side effects with a name. Don't use a simple verb to describe a function that does more than just that simple action."
+<br/><br/>
+<h4>Tests</h4>
+<b>T1: Insufficient Tests</b><br/>
+"A test suite should test everything that could possibly break. The tests are insufficient so long as there are conditions that have not been explored by the tests or calculations that have not been validated."
+<br/><br/>
+<b>T2: Use a Coverage Tool!</b><br/>
+"Coverage tools reports gaps in your testing strategy. They make it easy to find modules, classes, and functions that are insufficiently tested."
+<br/><br/>
+<b>T3: Don't Skip Trivial Tests</b><br/>
+"They are easy to write and their documentary value is higher than the cost to produce them."
+<br/><br/>
+<b>T4: An ignored Test Is a Question about an Ambiguity</b><br/>
+"We can express our question about the requirements as a test that is commented out, or as a test that annotated with @Ignore. Which you choose depends upon whether the ambiguity is about something that would compile or not."
+<br/><br/>
+<b>T5: Test Boundary Conditions</b><br/>
+"Take special care to test boundary conditions. We often get the middle of an algorithm right but misjudge the boundaries."
+<br/><br/>
+<b>T6: Exhaustively Test Near Bugs</b><br/>
+"Bugs tend to congregate. When you find a bug in a function it is wise to do an exhaustive test of that function. You'll probably find that the bug was not alone."
+<br/><br/>
+<b>T7: Patterns of Failure Are Revealing</b><br/>
+"Sometimes you can diagnose a problem by finding patterns in the way the test cases fail. This is another argument for making the test cases as complete as possible. Complete test cases ordered in a reasonable way, expose patterns."
+<br/><br/>
+<b>T8: Test Coverage Patterns Can Be Revealing</b><br/>
+"Looking at the code that is or is not executed by the passing tests gives clues to why the failing tests fail."
+<br/><br/>
+<b>T9: Tests Should Be Fast</b><br/>
+"A slow test is a test that won't get run. When things get tight, it's the slow tests that will be dropped from the suite. So do what you must to keep your tests fast."

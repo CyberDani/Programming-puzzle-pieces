@@ -1,0 +1,64 @@
+<h3>10. Classes</h3>
+<b>Class Organization</b><br/>
+"a class should begin with a list of variables. Public static constants, if any, should come first. Then private static variables, followed by private instance variables. [...] Public functions should follow the list of variables."
+<br/><br/>
+<b>Encapsulation</b><br/>
+"Sometimes we need to make a variable or utility function protected so that it can be accessed by a test."
+<br/><br/>
+"However, we'll first look for a way to maintain privacy. Loosening encapsulation is always a last resort."
+<br/><br/>
+<b>Classes Should Be Small!</b><br/>
+"The first rule of classes is that they should be small. The second rule of classes is that they should be smaller than that."
+<br/><br/>
+"With functions we measured size by counting physical lines. With classes we use a different measure. We count responsibilities."
+<br/><br/>
+[Examples for responsibilities: log messages, write data to file, manage DB operations, calculate a random number]
+<br/><br/>
+"The name of a class should describe what responsibilities it fulfills. In fact, naming is probably the first way of helping determine class size."
+<br/><br/>
+"We should also be able to write a brief description of the class in about 25 words, without using the words "if", "and", "or", or "but"."
+<br/><br/>
+<b>The Single Responsibility Principle</b><br/>
+"a class or module should have one, and only one, reason to change. [...] Classes should have one responsibility - one reason to change."
+<br/><br/>
+[Examples to change a class: add a new method, modify a member value, improve a member function, tighten restrictions in an if statement, redesign an algorithm
+<br/><br/>
+Examples for reasons to change them: new functionality needs to be added, a default value changes, improve performance, reimplement code using a third-party library]
+<br/><br/>
+"Trying to identify responsibilities (reasons to change) often helps us recognize and create better abstractions in our code."
+<br/><br/>
+"Getting software to work and making software clean are two very different activities. [...] Maintaining a separation of concerns is just as important in our programming activities as it is in our programs."
+<br/><br/>
+"a system with many small classes has no more moving parts than a system with a few large classes. There is just as much to learn in the system with a few large classes."
+<br/><br/>
+"The primary goal in managing such complexity is to organize it so that a developer knows where to look to find things and need only to understand the directly affected complexity at any given time."
+<br/><br/>
+<b>Cohesion</b><br/>
+"Classes should have a small number of instance variables. Each of the methods of a class should manipulate [write to or read from] one or more of those variables. In general the more variables a method manipulates the more cohesive that method is to its class."
+<br/><br/>
+"When cohesion is high, it means that the methods and variables of the class are co-dependent and hang together as a logical whole."
+<br/><br/>
+<b>Maintaining Cohesion Results in Many Small Classes</b><br/>
+"When classes lose cohesion, split them!"
+<br/><br/>
+"So breaking a large function into many smaller functions often gives us the opportunity to split several smaller classes out as well. This gives our program a much better organization and a more transparent structure."
+<br/><br/>
+[There is an example in this section to splitting up a large class. Consider searching it and taking a look if interested.]
+<br/><br/>
+<b>Organizing for Change</b><br/>
+"In a clean system we organize our classes so as to reduce the risk of change."
+<br/><br/>
+"Private method behavior that applies only to a small subset of a class can be a useful heuristic for spotting potential areas for improvement [related to SRP - Single Responsibility Principle]."
+<br/><br/>
+"as soon as we find ourselves opening up a class, we should consider fixing our design."
+<br/><br/>
+[There is an example in this section for a fix when the SRP violation is violated by the need to add a new function to the class by assuring the Open-Closed Principle. Consider searching it and taking a look if interested.]
+<br/><br/>
+"We want to structure our systems so that we muck with as little as possible when we update them with new or changed features. In an ideal system, we incorporate new features by extending the system, not by making modifications to existing code."
+<br/><br/>
+<b>Isolating from Change</b><br/>
+"Needs will change, therefore code will change. [...] A client class depending upon concrete details is at risk when those details change."
+<br/><br/>
+"The lack of coupling means that the elements of our system are better isolated from each other and from change. This isolation makes it easier to understand each element of the system."
+<br/><br/>
+[There is an example in this section which provides lack of coupling with interfaces supporting the Dependency Inversion Principle (DIP). Consider searching it and taking a look if interested.]

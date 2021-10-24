@@ -1,0 +1,62 @@
+<h3>6. Objects and Data Structures</h3>
+<b>Data Abstraction</b><br/>
+"Hiding implementation is not just a matter of putting a layer of functions between the variables. Hiding implementation is about abstractions! A class does not simply push its variables out through getters and setters. Rather it exposes abstract interfaces that allow its users to manipulate the essence of the data, without having to know its implementation."
+<br/><br/>
+<b>Data / Object Anti-Simmetry</b><br/>
+"Objects hide their data behind abstractions and expose functions that operate on that data. Data structures expose their data and have no meaningful functions. [...] They are virtual opposites."
+<br/><br/>
+"Procedural code (code using data structures) makes it easy to add new functions without changing the existing data structures. OO code, on the other hand, makes it easy to add new classes [e.g. via polymorphism] without changing existing functions."
+<br/><br/>
+"Procedural code makes it hard to add new data structures because all the functions must change. OO code makes it hard to add new functions because all the classes must change."
+<br/><br/>
+"So, the things that are hard for OO are easy for procedures, and the things that are hard for procedures are easy for OO!"
+<br/><br/>
+"Mature programmers know that the idea that everything is an object is a myth. Sometimes you really do want simple data structures with procedures operating on them."
+<br/><br/>
+<b>The Law of Demeter</b><br/>
+"a module should not know about the innards of the objects it manipulates."
+<br/><br/>
+"a method f of a class C should only call the methods of these
+<br/><br/>
+C<br/>
+An object created by f<br/>
+An object passed as an argument to f<br/>
+An object held in an instance variable of C<br/>
+The method should not invoke methods on objects that are returned by any of the allowed functions. In other words, talk to friends, not to strangers."
+<br/><br/>
+Example for the violation of Law of Demeter:
+<br/><br/>
+final String outputDir = ctxt.getOptions().getScratchDir().getAbsolutePath();
+<br/><br/>
+"it calls the getScratchDir() function on the return value of getOptions() and then calls getAbsolutePath() on the return value of getScratchDir()"
+<br/><br/>
+<b>Train Wrecks</b><br/>
+"This kind of code is often called a train wreck because it look like a bunch of coupled train cars. Chains of calls like this are generally considered to be sloppy style and should be avoided."
+<br/><br/>
+"Whether this is a violation of Demeter depends on whether or not ctxt, Options, and ScratchDir are objects or data structures. If they are objects, then their internal structure should be hidden rather then exposed, and so knowledge of their innards is a clear violation of the Law of Demeter. On the other hand, if ctxt, Options, and ScratchDir are just data structures with no behavior, then they naturally expose their internal structure, and so Demeter does not apply."
+<br/><br/>
+"If the code had been written as follows, then we probably wouldn't be asking about Demeter violations."
+<br/><br/>
+final String outputDir = ctxt.options.scratchDir.absolutePath;
+<br/><br/>
+<b>Hybrids</b><br/>
+"This confusion sometimes leads to unfortunate hybrid stuctures that are half object and half data structure. They have functions that do significant things, and they also have either public variables or public accessors and mutators that, for all intents and purposes, make the private variables public, tempting other external functions to use those variables the way a procedural program would use a data structure."
+<br/><br/>
+"Such hybrids make it hard to add new functions but also make it hard to add new data structures. They are the worst of both worlds. Avoid creating them."
+<br/><br/>
+<b>Hiding Structure</b><br/>
+"If ctxt is an object, we should be telling it to do something; we should not be asking it about its internals."
+<br/><br/>
+[To solve this in an elegant way you might need to investigate what you really want to do and provide a new function for it. In this chapter you can find an example for this.]
+<br/><br/>
+<b>Data Transfer Objects</b><br/>
+"The quintessential form of a data structure is a class with public varibles and no functions. This is sometimes called a data transfer object, or DTO."
+<br/><br/>
+[This is a design pattern which you can find in this project if you want to learn more about it.]
+<br/><br/>
+<b>Active Record</b><br/>
+"Active Records are special forms of DTOs. They are data structures with public (or bean-accessed) variables; but they are typically have navigational methods like save and find."
+<br/><br/>
+"treat the Active Record as a data structure and to create separate objects that contain the business rules and that hide their internal data (which are probably just instances of the Active Record)."
+<br/><br/>
+[This is a design pattern which you can find in this project if you want to learn more about it.]

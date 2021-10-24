@@ -1,0 +1,170 @@
+<h3>3. Functions</h3>
+<b>Small</b><br/>
+"<i>The first rule of functions is that they should be small. The second rule of functions is that they should be smaller than that.</i>"
+<br/><br/>
+"<i>In the eighties we used to say that a function should be no bigger than a screen-full. 
+[...] when VT100 screens were 24 lines by 80 columns [..]</i>"
+<br/><br/>
+"<i>Functions should hardly ever be 20 lines long.</i>"
+<br/><br/>
+<b>Blocks and Indenting</b><br/>
+"<i>[..] blocks within if statements, else statements, while statements, and so on should be one line long. 
+Probably that line should be a function call. Not only does this keep the enclosing function small, but it also adds documentary value 
+because the function called within the block can have a nicely descriptive name.</i>"
+<br/><br/>
+"<i>Therefore, the indent level of a function should not be greater than on or two.</i>"
+<br/><br/>
+<b>Do One Thing</b><br/>
+"<i>FUNCTIONS SHOULD DO ONE THING. THEY SHOULD DO IT WELL. THEY SHOULD DO IT ONLY.</i>"
+<br/><br/>
+"<i>[...] steps of the function are one level of abstraction below the stated name of the function.</i>"
+<br/><br/>
+"<i>After all, the reason we write functions is to decompose a larger concept (in other words, the name of the function) 
+into a set of steps at the next level of abstraction.</i>"
+<br/><br/>
+"<i>So, another way to know that a function is doing more than "one thing" is if you can extract another function from it with a 
+name that is not merely a restatement of its implementation.</i>"
+<br/><br/>
+<b>Sections within Functions</b><br/>
+"<i>Functions that do one thing cannot be reasonably divided into sections.</i>"
+<br/><br/>
+<b>One Level of Abstraction per Function</b><br/>
+"<i>In order to make sure our functions are doing "one thing", we need to make sure that the statements within our functions are all 
+at the same level of abstraction.</i>"
+<br/><br/>
+<b>Reading Code from Top to Bottom: The Stepdown Rule</b><br/>
+"<i>We want the code to read like a top-down narrative. We want every function to be followed by those at the next level of abstraction 
+so that we can read the program, descending one level of abstraction at a time as we read down the list of functions. 
+I call this The Stepdown Rule."</i>
+<br/><br/>
+"<i>Making the code read like a top-down set of TO paragraphs is an effective technique for keeping the abstraction level consistent.</i>"
+<br/><br/>
+<b>Switch Statements</b><br/>
+"<i>By their nature, switch statements always do N things. [And, of course, if/else chains as well]</i>"
+<br/><br/>
+"<i>[...] we can make sure that each switch statement is buried in a low-level class and is never repeated.</i>"
+<br/><br/>
+"<i>There are several problems [...] First, it's large [...], it will grow. Second, it very clearly does more than one thing. 
+Third, it violates the Single Responsibility Principle (SRP) [...] But most the worst problem with this function is that that 
+there are an unlimited number of other functions that will have the same structure.</i>"
+<br/><br/>
+<b>Use Descriptive Names</b><br/>
+"<i>The smaller and more focused a function is, the easier it is to choose a descriptive name.</i>"
+<br/><br/>
+"<i>Don't be afraid to make a name long. A long descriptive name is better than a short enigmatic name. 
+A long descriptive name is better than a long descriptive comment.</i>"
+<br/><br/>
+"<i>Choosing descriptive names will clarify the design of the module in your mind and help you to improve it. 
+It is not at all uncommon that hunting for a good name results in a favorable restructuring of the code.</i>"
+<br/><br/>
+"<i>Be consistent in your names. Use the same phrases, nouns, and verbs in the function names you choose for your modules.</i>"
+<br/><br/>
+<b>Function Arguments</b><br/>
+"<i>The ideal number of arguments for a function is zero (niladic). [...] More than three (polyadic) requires very special 
+justification - and then shouldn't be used anyway.</i>"
+<br/><br/>
+"<i>Arguments are even harder from a testing point of view.</i>"
+<br/><br/>
+<b>Common Monadic Forms</b><br/>
+"<i>There are two very common reasons to pass a single argument into a function. 
+You may asking a question about that argument [...] 
+Or You may be operating on that argument, transforming it into something else and returning it.</i>"
+<br/><br/>
+"<i>These two uses are what readers expect when they see a function. You should choose names that make the distinction clear, 
+and always use the two forms in a consistent context.</i>"
+<br/><br/>
+<b>Flag Arguments</b><br/>
+"<i>Flag arguments are ugly. Passing a boolean into a function is a truly terrible practice.</i>"
+<br/><br/>
+"<i>[...] this function does more than one thing. It does one thing if the flag is true and another if the flag is false.</i>"
+<br/><br/>
+<b>Dyadic Functions</b><br/>
+"<i>The parts we ignore are where the bugs will hide.</i>"
+<br/><br/>
+"<i>There are times, of course, where two arguments are appropriate. [...] [for example] ordered components of a single value!</i>"
+<br/><br/>
+"<i>Dyads aren't evil, and you will certainly have to write them. However, you should be aware that they come at a cost 
+and should take advantage of what mechanisms may be available to you to convert them into monads.</i>"
+<br/><br/>
+<b>Triads</b><br/>
+"<i>The issues of ordering, pausing, and ignoring are more than doubled. I suggest you think very carefully before creating a triad.</i>"
+<br/><br/>
+<b>Argument Objects</b><br/>
+"<i>When a function seems to need more than two or three arguments, it is likely that some of those arguments ought 
+to be wrapped into a class of their own. [See Data Transfer Object (DTO) Design Pattern]</i>"
+<br/><br/>
+<b>Argument Lists</b><br/>
+"<i>If the variable arguments [in a variable number of arguments] are all treated identically, [...] 
+then they are equivalent to a single argument [...]</i>"
+<br/><br/>
+"<i>Functions that take variable arguments can be monads, dyads, or even triads. 
+But it would be a mistake to give them more arguments than that.</i>"
+<br/><br/>
+<b>Verbs and Keywords</b><br/>
+"<i>In the case of a monad, the function and argument should form a very nice verb/noun pair. 
+For example, write(name) is very evocative. An even better name might be writeField(name) [...]</i>"
+<br/><br/>
+"<i>Using this form we encode the names of the arguments into the function name. [...] 
+This strongly mitigates the problem of having to remember the ordering of the arguments.</i>"
+<br/><br/>
+<b>Have No Side Effects</b><br/>
+"<i>Side effects are lies. Your function promises to do one thing, but it also does other hidden things.</i>"
+<br/><br/>
+"<i>Temporal couplings are confusing, especially when hidden as a side effect. 
+If you must have a temporal coupling, you should make it clear in the name of the function.</i>"
+<br/><br/>
+<b>Output Arguments</b><br/>
+"<i>Anything that forces you to check the function signature is equivalent to a double-take. 
+It's a cognitive break and should be avoided.</i>"
+<br/><br/>
+"<i>In general output arguments should be avoided. 
+If your function must change the state of something, have it change of its owning object.</i>"
+<br/><br/>
+<b>Command Query Separation</b><br/>
+"<i>Functions should either do something or answer something, but not both. [...] Doing both often leads to confusion.</i>"
+<br/><br/>
+"<i>The real solution is to separate the command from the query so that the ambiguity cannot occur.</i>"
+<br/><br/>
+<b>Prefer Exceptions to Returning Error Codes</b><br/>
+"<i>[...] [error codes] does lead to deeply nested structures. 
+When you return an error code, you create the problem that the caller must deal with the error immediately.</i>"
+<br/><br/>
+"<i>On the other hand, if you use exceptions instead of returned error codes, then the error processing code 
+can be separated from the happy path code and can be simplified.</i>"
+<br/><br/>
+<b>Extract Try/Catch Blocks</b><br/>
+"<i>They confuse the structure of the code and mix error processing with normal processing. 
+So it is better to extract the bodies of the try and catch blocks out into functions of their own.</i>"
+<br/><br/>
+<b>Error Handling is One Thing</b><br/>
+"<i>Functions should do one thing. Error handling is one thing. Thus, a function that handles errors should do nothing else.</i>"
+<br/><br/>
+<b>The Error.java Dependency Magnet</b><br/>
+"<i>Returning error codes usually implies that there is some class or enum in which all the error codes are defined. [...] 
+Classes like this are a dependency magnet; many other classes must import and use them. 
+Thus, when the Error enum changes, all those classes need to be recompiled and redeployed.</i>"
+<br/><br/>
+"<i>When you use exceptions rather than error codes, then new exceptions are derivatives of the exception class. 
+They can be added without forcing any recompilation or redeployment.</i>"
+<br/><br/>
+<b>Don't Repeat Yourself</b><br/>
+"<i>Duplication may be the root of all evil in software.</i>"
+<br/><br/>
+"<i>It would appear that since the invention of the subroutine, innovations in software development have been an ongoing 
+attempt to eliminate duplication from our source code.</i>"
+<br/><br/>
+<b>Structured Programming</b><br/>
+"<i>Dijkstra said that every function, and every block within a function, should have one entry and one exit. 
+[...] those rules serve little [not significant] benefit when functions are very small.</i>"
+<br/><br/>
+"<i>[...] occasional multiple return, break, or continue statements does no harm and can sometimes even be 
+more expressive than the single-entry, single-exit rule.</i>"
+<br/><br/>
+"<i>[...] goto [...] should be avoided.</i>"
+<br/><br/>
+<b>How Do You Write Functions Like This?</b><br/>
+"<i>The first draft might be clumsy and disorganized, so you wordsmith it and restructure it and refine it until 
+it reads the way you want it to read.</i>"
+<br/><br/>
+"<i>So then I massage and refine that code, splitting out functions, changing names, eliminating duplication. 
+I shrink the methods and reorder them. Sometimes I break out whole classes, all the while keeping the tests passing.</i>"

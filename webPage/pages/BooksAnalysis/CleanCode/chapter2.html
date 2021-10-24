@@ -1,0 +1,105 @@
+<h2>2. Meaningful Names</h2>
+
+<b>Use Intention-Revealing Names</b><br/>
+"<i>Choosing good names takes time but saves more than it takes.</i>"
+<br/><br/>
+"<i>The name of a variable, function, or class, should answer all the big questions. 
+It should tell you why it exists, what it does, and how it is used. 
+If a name requires a comment, then the name does not reveal its intent.</i>"
+<br/><br/>
+<b>Avoid Disinformation</b><br/>
+"<i>Programmers must avoid leaving false clues that obscure the meaning of code.</i>"
+<br/><br/>
+"<i>Even if you are encoding a hypotenuse and hp looks like a good abbreviation, it could be disinformative.</i>"
+<br/><br/>
+"<i>Beware of using names which vary in small ways.</i>"
+<br/><br/>
+<b>Make Meaningful Distinctions</b><br/>
+"<i>If name must be different, then they should also mean something different.</i>"
+<br/><br/>
+"<i>Number-series naming (a1, a2, .. aN) [...] are not disinformative - they are noninformtive; 
+they provide no clue to the author's intention.</i>"
+<br/><br/>
+"<i>Noise words are another meaningless distinction.</i>" (e.g. ProductInfo and ProductData are noise words)
+<br/><br/>
+<b>Use Pronounceable Names</b><br/>
+"<i>It would be a shame not to take advantage of that huge portion of our brains that has evolved to deal with spoken language.</i>"
+<br/><br/>
+"<i>If you can't pronounce it, you can't discuss it without sounding like an idiot.</i>"
+<br/><br/>
+<b>Use Searchable Names</b><br/>
+"<i>Single-letter names and numeric constants have a particular problem in that they are not easy to locate across a body of text. 
+One might easily grep for MAX_CLASSES_PER_STUDENT, but the number 7 could be more troublesome.</i>"
+<br/><br/>
+"<i>My personal preference is that single-letter names can ONLY be used as local variables inside short methods. 
+The length of a name should correspond to the size of its scope.</i>"
+<br/><br/>
+<b>Avoid Encodings</b><br/>
+"<i>Encoding type or scope information into names simply adds an extra burden of deciphering.</i>"
+<br/><br/>
+"<i>It is an unnecessary mental burden when trying to solve a problem.</i>"
+<br/><br/>
+<b>Member Prefixes</b><br/>
+"<i>You also don't need to prefix member variables with m_ anymore. 
+Your classes and functions should be small enough that you don't need them. 
+And you should be using an editing environment that highlights or colorizes members to make them distinct.</i>"
+<br/><br/>
+"<i>The more we read the code, the less we see the prefixes. Eventually the prefixes become unseen clutter and a marker of older code.</i>"
+<br/><br/>
+<b>Interfaces and Implementations</b><br/>
+"<i>The preceding I, so common in today's legacy wads, is a distraction. 
+Calling it ShapeFactoryImp, or even the hideous CShapeFactory, is preferable to encoding the interface.</i>"
+<br/><br/>
+<b>Avoid Mental Mapping</b><br/>
+"<i>Readers shouldn't have to mentally translate your names into other names they already know.</i>"
+<br/><br/>
+"<i>Certainly a loop counter may be named i or j or k (though never l) if its scope is very small and no other names can conflict 
+with it. This is because those single-letter names for loop counters are traditional.</i>"
+<br/><br/>
+"<i>[...] the professional understands that clarity is king.</i>"
+<br/><br/>
+<b>Class Names</b><br/>
+"<i>Classes and objects should have noun or noun phrase names [...]</i>"
+<br/><br/>
+"<i>A class name should not be a verb.</i>"
+<br/><br/>
+<b>Method Names</b><br/>
+"<i>Methods should have verb or verb phrase names [...]</i>"
+<br/><br/>
+"<i>Accessors, mutators and predicates should be named for their value and prefixed with get, set, and is [...]</i>"
+<br/><br/>
+"<i>When constructors are overloaded, use static factory methods with names that describe the arguments.</i>"
+<br/><br/>
+<b>Don't Be Cute</b><br/>
+"<i>Choose clarity over entertainment value.</i>"
+<br/><br/>
+"<i>Say what you mean. Mean what you say.</i>"
+<br/><br/>
+<b>Pick One Word per Concept</b><br/>
+"<i>Pick one word for one abstract concept and stick with it.</i>"
+<br/><br/>
+"<i>[...] it's confusing to have a controller and a manager and a driver in the same code base.</i>"
+<br/><br/>
+"<i>A consistent lexicon is a great boon to the programmers who must use your code.</i>"
+<br/><br/>
+<b>Don't Pun</b><br/>
+"<i>Avoid using the same word for two purposes.</i>"
+<br/><br/>
+"<i>We want our code to be a quick skim, not an intense study.</i>"
+<br/><br/>
+<b>Use Solution Domain Names</b><br/>
+"<i>Remember that the people who read your code will be programmers. So go ahead and use computer science terms, algorithm names, 
+pattern names, math terms, and so forth.</i>"
+<br/><br/>
+"<i>There are lots of very technical things that programmers have to do. 
+Choosing technical names for those things is usually the most appropriate course.</i>"
+<br/><br/>
+<b>Use Problem Domain Names</b><br/>
+"<i>When there is no "programmer-eese" for what you're doing, use the name from the problem domain.</i>"
+<br/><br/>
+<b>Add Meaningful Context</b><br/>
+"<i>There are a few names which are meaningful in and of themselves - most are not. 
+Instead, you need to place names in context for your reader by enclosing them in well-named classes, functions, or namespaces.</i>"
+<br/><br/>
+<b>Don't Add Gratuitous Context</b><br/>
+"<i>Shorter names are generally better than longer ones, so long as they are clear. Add no more context to a name than is necessary.</i>"

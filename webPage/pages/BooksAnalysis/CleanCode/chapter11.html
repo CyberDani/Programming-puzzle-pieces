@@ -1,0 +1,69 @@
+<h3>11. Systems</h3><br/>
+"Complexity kills. It sucks the life out of developers, it makes products difficult to plan, build, and test."
+<br/>
+-- Ray Ozzie, CTO, Microsoft Corporation
+<br/><br/>
+<b>How Would You Build a City?</b><br/>
+"cities have teams of people who manage particular parts of the city [...]. Some of those people are responsible for the big picture, while others focus on the details."
+<br/><br/>
+"they have evolved appropriate levels of abstraction and modularity that make it possible for individuals and the "components" they manage to work effectively, even without understanding the big picture."
+<br/><br/>
+"Although software teams are often organized like that too"
+<br/><br/>
+<b>Separate Constructing a System from Using It</b><br/>
+"Software systems should separate the startup process, when the application objects are constructed and the dependencies are "wired" together, from the runtime logic that takes over after startup."
+<br/><br/>
+"The separation of concerns is one of the oldest and most important design techniques in our craft."
+<br/><br/>
+"If we are diligent about building well-formed and robust systems, we should never let little, convenient idioms lead to modularity breakdown."
+<br/><br/>
+<b>Separation of Main</b><br/>
+"One way to separate construction from use is simply to move all aspects of construction to main, and to design the rest of the system assuming that all objects have been constructed and wired up appropriately."
+<br/><br/>
+"This means that the application has no knowledge of main or of the construction process. It simply expects that everything has been built properly."
+<br/><br/>
+<b>Factories</b><br/>
+"Sometimes, of course, we need to make the application responsible for when an object gets created."
+<br/><br/>
+"In this case we can use the ABSTRACT FACTORY pattern to give the application control to when to build [...], but keep the details of that construction separate from the application code."
+<br/><br/>
+"the application is decoupled from the details of how to build"
+<br/><br/>
+<b>Dependency Injection</b><br/>
+"A powerful mechanism for separating construction from use is Dependency Injection (DI), the application of Inversion of Control (IoC) to dependency management. Inversion of Control moves secondary responsibilities from an object to other objects that are dedicated to the purpose, thereby supporting the Single Responsibility Principle. In the context of dependency management, an object should not take responsibility for instantiating dependencies itself. Instead, it should pass this responsibility to another "authoritative" mechanism, thereby inverting the control."
+<br/><br/>
+"But what about the virtues of LAZY-INITIALIZATION? This idiom is still sometimes useful with DI. First, most DI containers won't construct an object until needed."
+<br/><br/>
+<b>Scaling Up</b><br/>
+"It is a myth that we can get systems "right the first time." Instead, we should implement only today's stories, then refactor and expand the system to implement new stories tomorrow. This is the essence of iterative and incremental agility. Test-driven development, refactoring, and the clean code they produce make this work at the code level."
+<br/><br/>
+[!] I had skipped summarizing some sections here which are demonstrating how Java EJB beans help in AOP (aspect-oriented programming) and are describing some specific Java frameworks. I do not plan yet to discuss any programming language. Feel free to search and read these sections if interested.
+<br/><br/>
+<b>Test Drive the System Architecture</b><br/>
+"It is not necessary to do a Big Decision Up Front (BDUF). [from the footer note: BFUF is the practice of designing everything up front before implementing anything at all.] In fact, BDUF is even harmful because it inhibits adapting to change, due to the psychological resistance to discarding prior effort and because of the way architecture choices influence subsequent thinking about the design."
+<br/><br/>
+"This means we can start a software project with a "naively simple" but nicely decoupled architecture, delivering working user stories quickly, then adding more infrastructure as we scale up."
+<br/><br/>
+"However, we must maintain the ability to change course in response to evolving circumstances."
+<br/><br/>
+<b>Optimize Decision Making</b><br/>
+"Modularity and separation of concerns make decentralized management and decision making possible. In a sufficiently large system, whether it is a city or a software project, no one person can make all the decisions."
+<br/><br/>
+"We all know it is best to give responsibilities to the most qualifies persons. We often forget that it is also best to postpone decisions until the last possible moment. [...] A premature decision is a decision made with suboptimal knowledge."
+<br/><br/>
+<b>Use Standards Wisely, When They Add Demonstrable Value</b><br/>
+"Standards make it easier to reuse ideas and components, recruit people with relevant experience, encapsulate good ideas, and wire components together. However, the process of creating standards can sometimes take too long for industry to wait, and some standards lose touch with the real needs of the adopters they are intended to serve."
+<br/><br/>
+<b>Systems Need Domain-Specific Languages</b><br/>
+"In software, there has been renewed interest recently in creating Domain-Specific Languages (DSLs) [same as "Ubiquitous Language"], which are separate, small scripting languages or APIs in standard languages that permit code to be written so that it reads like a structured form of prose that a domain expert might write."
+<br/><br/>
+"If you are implementing a domain logic in the same language that a domain expert uses, there is less risk that you will incorrectly translate the domain into the implementation."
+<br/><br/>
+"DSLs, when used effectively, raise the abstraction level above code idioms and design patterns. They allow the developer to reveal the intent of the code at the appropriate level of abstraction."
+<br/><br/>
+<b>Conclusion</b><br/>
+"Systems must be clean too. [...] When the domain logic is obscured, quality suffers because bugs find it easier to hide and stories become harder to implement."
+<br/><br/>
+"At all levels of abstraction, the intent should be clear."
+<br/><br/>
+"Whether you are designing systems or individual modules, never forget to use the simplest thing that can possibly work."

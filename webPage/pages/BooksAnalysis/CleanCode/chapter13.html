@@ -1,0 +1,137 @@
+<h3>13. Concurrency</h3><br/>
+Objects are abstractions of processing. Threads are abstractions of schedule.
+<br/>
+-- James O. Coplien
+<br/><br/>
+<b>Why Concurrency</b><br/>
+"Concurrency is a decoupling strategy. It helps us decouple what gets done from when it gets done."
+<br/><br/>
+"From a structural point of view the application looks like many little collaborating computers rather than one big main loop. This can make the system easier to understand and offers some powerful ways to separate concerns."
+<br/><br/>
+"But structure is not the only motive for adopting concurrency. Some systems have time and throughput constraints that require hand-coded concurrent solutions."
+<br/><br/>
+<b>Myths and Misconceptions</b><br/>
+"Concurrency always improves performance.<br/>
+Design does not change when writing concurrent programs.<br/>
+Understanding concurrency issues is not important when working with a container such as Web or EJB container."
+<br/><br/>
+"Here are a few more balanced sound bites regarding writing concurrent software:
+<br/><br/>
+Concurrency incurs som overhead, both in performance as well as writing additional code.<br/>
+Correct concurrency is complex, even for simple problems.<br/>
+Concurrency bugs aren't usually repeatable, so they are often ignored as one-offs instead of the true defects they are.<br/>
+Concurrency often requires a fundamental change in design strategy."
+<br/><br/>
+<b>Challenges</b><br/>
+"there are many possible paths that the two threads can take [...], and some of those paths generate incorrect results."
+<br/><br/>
+"Of course most of those paths generate valid results. The problem is that some of them don't."
+<br/><br/>
+<b>Single Responsibility Principle</b><br/>
+"Concurrency-related code has its own life cycle of development, change and tuning.<br/>
+Concurrency-related code has its own challenges [...]<br/>
+The number of ways in which miswritten concurrency-based code can fail makes it challenging enough [...]"<br/>
+"Recommendation: Keep your concurrency-related code separate from other code"<br/>
+<br/><br/>
+<b>Corollary: Limit the Scope of Data</b><br/>
+"two threads modifying the same field of a shared object can interfere with each other, causing unexpected behavior."
+<br/><br/>
+"Recommendation: Take data encapsulation to heart; severely limit the access of any data that may be shared."
+<br/><br/>
+<b>Corollary: Use Copies of Data</b><br/>
+"A good way to avoid shared data is to avoid sharing the data in the first place. In some situations it is possible to copy objects and treat them as read-only. In other cases it might be possible to copy objects, collect results from multiple threads in these copies and then merge the results in a single thread."
+<br/><br/>
+<b>Corollary: Threads Should Be as Independent as Possible</b><br/>
+"Consider writing your threaded code such that each thread exists in its own world, sharing no data with any other thread."
+<br/><br/>
+"Recommendation: Attempt to partition data into independent subsets that can be operated on by independent threads, possibly in different processors."
+<br/><br/>
+[!] [I had skipped a one page content presenting Java solutions to avoid concurrency problems. Search these parts in the book if interested. I don't plan to dive into different programming languages for now.]
+<br/><br/>
+<b>Know Your Execution Models</b><br/>
+"Bound Resources - Resources of a fixed size of number used in a concurrent environment."
+<br/><br/>
+"Mutual Exclusion - Only one thread can access shared data or a shared resource at a time."
+<br/><br/>
+"Starvation - One thread or a group of threads is prohibited from proceeding for an excessively long time or forever."
+<br/><br/>
+"Deadlock - Two or more threads waiting for each other to finish. Each thread has a resource that the other thread requires and neither can finish until it gets the other resource."
+<br/><br/>
+"Livelock - Threads in lockstep, each trying to do work but finding another "in the way". Due to resonance, threads continue trying to make progress but are unable to for an excessively long time - or ferever."
+<br/><br/>
+<b>Producer-Consumer</b><br/>
+"One or more producer threads create some work and place it in a buffer or queue. One or more consumer threads acquire that work from the queue and complete it. The queue between the producers and consumers is a bound resource. This means producers must wait for free space in the queue before writing and consumers must wait until there is something in the queue to consume."
+<br/><br/>
+<b>Readers-Writers</b><br/>
+"When you have a shared resource that primarily serves as a source of information for readers, but which is occasionally updated by writers, throughput is an issue."
+<br/><br/>
+"A simple strategy makes writers wait until there are no readers before allowing the writer to perform an update. If there are continuous readers, however, the writers will be starved. On the other hand, if there are frequent writers and they are given priority, throughput will suffer."
+<br/><br/>
+<b>Dining Philosophers</b><br/>
+"Imagine a number of philosophers sitting around a circular table. A fork is placed to the left of each philosopher. There is a big owl of spaghetti in the center of the table. The philosophers spend their time thinking unless they get hungry. Once hungry, they pick up the forks on either side of them and eat. A philosopher cannot eat unless he is holding two forks. If the philosopher to his right or left is already using one of the forks he needs, h must wait until philosopher finishes eating and puts the forks back down. Once a philosopher eats, he puts both his forks back down on the table and waits until he is hungry again."
+<br/><br/>
+<b>Beware Dependencies Between Synchronized Methods</b><br/>
+"Avoid using more than one method on a shared object."
+<br/><br/>
+"Client-Based Locking - Have the client lock the server before calling the first method and make sure the lock's extent includes code calling the last method."
+<br/><br/>
+"Server-Based Locking - Within the server create a method that locks the server, calls all the methods, and then unlocks. Have the client call the new method."
+<br/><br/>
+"Adapted Server - create an intermediary that performs the locking. This is an example of server-based locking, where the original server cannot be changed."
+<br/><br/>
+<b>Keep Synchronized Sections Small</b><br/>
+"All sections of code guarded by the same lock are guaranteed to have only one thread executing through them at any given time. Locks are expensive because they create delays and add overhead."
+<br/><br/>
+"However, expending synchronization beyond the minimal critical sections increases contention and degrades performance."
+<br/><br/>
+<b>Writing Correct Shut-Down Code Is Hard</b><br/>
+"Graceful shutdown can be hard to get correct. Common problem involve deadlock, with threads waiting for a signal to continue that never comes."
+<br/><br/>
+"So if you must write concurrent code that involves shutting down gracefully, expect to send much of your time getting the shut-down to happen correctly."
+<br/><br/>
+"Think about shut-down early and get it working early."
+<br/><br/>
+<b>Testing Threaded Code</b><br/>
+"Write tests that have the potential to expose problems and then run them frequently, with different programatic configurations and system configurations and load. If tests ever fail, track down the failure."
+<br/><br/>
+<b>Treat Spurious Failures as Candidate Threading Issues</b><br/>
+"Bugs in threaded code might exhibit their symptoms once in a thousand, or a million, executions."
+<br/><br/>
+"It is best to assume that on-offs [e.g. cosmic ray, hardware glitch, and so on] do not exist. The longer these "on-offs" are ignored, the more code is built on top of a potentially faulty approach."
+<br/><br/>
+<b>Get Your Nonthreaded Code Working First</b><br/>
+"Do not try to chase down nonthreading bugs and threading bugs at the same time. Make sure your code works outside of threads."
+<br/><br/>
+<b>Make Your Threaded Code Pluggable</b><br/>
+"Write the concurrency-supporting code such that it can be run in several configurations:
+<br/><br/>
+One thread, several threads, varied as it executes<br/>
+Threaded code interacts with something that can be both real or a test double.<br/>
+Execute with test doubles that run quickly, slowly, variable.<br/>
+Configure tests so they can run for a number of iterations."
+<br/><br/>
+<b>Make Your Threaded Code Tunable</b><br/>
+"Early on, find ways to time the performance of your system under different configurations. Allow the number of threads to be easily tuned. Consider allowing it to change while the system is running. Consider allowing self-tuning based on throughput and system utilization."
+<br/><br/>
+<b>Run with More Threads Than Processors</b><br/>
+"The more frequently your tasks swap, the more likely you'll encounter code that is missing a critical section or causes deadlock."
+<br/><br/>
+<b>Run on Different Platforms</b><br/>
+"different operating systems have different threading policies, each of which impacts the code's execution."
+<br/><br/>
+"Run your threaded code on all target platforms early and often."
+<br/><br/>
+<b>Instrument Your Code to Try and Force Failures</b><br/>
+"How might you increase your chances of catching such rare occurrences? You can instrument your code and force it to run in different orderings by adding calls to methods like Object.wait(), Object.sleep(), Object.yield() and Object.priority()."
+<br/><br/>
+<b>Hand-Coded</b><br/>
+"You can insert calls to wait(), sleep(), yield(), and priority() in your code by hand."
+<br/><br/>
+"What we need is a way to do this during testing but not in production. We also need to easily mix up configurations between different runs, which results in increased chances of finding errors in the aggregate."
+<br/><br/>
+<b>Automated</b><br/>
+"You could use tools like an Aspect-Oriented Framework, CGLIB, or ASM to programmatically instrument your code."
+<br/><br/>
+"use a simple aspect that randomly selects among doing nothing, sleeping, or yielding."
+<br/><br/>
+"Use jiggling strategies to ferret out errors."

@@ -1,0 +1,42 @@
+<h3>7. Error Handling</h3><br/>
+"Error handling is important, but if it obscures logic, it's wrong."
+<br/><br/>
+<b>Use Exceptions Rather Than Return Codes</b><br/>
+"The problem with these approaches is that they clutter the caller. The caller must check for errors immediately after the call. Unfortunately, it's easy to forget. For this reason it is better to throw an exception when you encounter an error. The calling code is cleaner. Its logic is not obscured by error handling."
+<br/><br/>
+<b>Write Your Try-Catch-Finally Statements First</b><br/>
+"In a way, try blocks are like transactions. Your catch has to leave your program in a consistent state, no matter what happens in the try. For this reason it is good practice to start with a try-catch-finally statement when you are writing code that could throw exceptions. This helps you define what the user of that code should expect, no matter what goes wrong with the code that is executed in the try."
+<br/><br/>
+"Try to write tests that force exceptions, and then add behavior to your handler to satisfy your tests. This will cause you to build the transaction scope of the try block first and will help you maintain the transaction nature of that scope."
+<br/><br/>
+<b>Use Unchecked Exceptions</b><br/>
+"they aren't necessary for the production of robust software. C# doesn't have checked exceptions, and despite valiant attempts, C++ doesn't either. Neither do Python or Ruby. Yet it is possible to write robust software in all of these languages. Because that is the case, we have to decide - really - whether checked exceptions are worth their price. What Price? The price of checked exceptions is an Open/Closed Principle violation."
+<br/><br/>
+"Checked exceptions can sometimes be useful if you are writing a critical library: You must catch them. But in general application development the dependency costs outweigh the benefits."
+<br/><br/>
+<b>Provide Context with Exceptions</b><br/>
+"Each exception that you throw should provide enough context to determine the source and location of an error."
+<br/><br/>
+"Create informative error messages and pass them along with your exceptions. Mention the operation that failed and the type of failure."
+<br/><br/>
+<b>Define Exception Classes in Terms of a Caller's Needs</b><br/>
+"when we define exception classes in an application, our most important concern should be how they are caught."
+<br/><br/>
+"In most exception handling situations, the work that we do is relatively standard regardless of the actual case. We have to record an error and make sure that we can proceed. In this case, because we know that the work that we are doing is roughly the same regardless of the exception, we can simplify our code considerably by wrapping the API that we are calling and making sure that it returns a common exception type"
+<br/><br/>
+"Use different [exception] classes only if there are times when you want to catch one exception and allow the other one to pass through."
+<br/><br/>
+<b>Define the Normal Flow</b><br/>
+[Don't overuse exceptions only to separate different cases which are not necessarily errors. Find a different way to handle the different cases. The book mentions the special case design pattern - you can find it in this project as well:]
+<br/><br/>
+"This is called the SPECIAL CASE PATTERN. You create a class or configure an object so that it handles a special case for you. When you do, the client code doesn't have to deal with exceptional behavior. That behavior is encapsulated in the special case object."
+<br/><br/>
+<b>Don't Return Null</b><br/>
+"When we return null, we are essentially creating work for ourselves and foisting problems upon our callers. All it takes is one missing null check to send an application spinning out of control."
+<br/><br/>
+"If you are tempted to return null from a method, consider throwing an exception or returning a SPECIAL CASE object instead. If you are calling a null-returning method from a third-party API, consider wrapping that method with a method that either throws an exception or returns a special case object."
+<br/><br/>
+<b>Don't Pass Null</b><br/>
+"Unless you are working with an API which expects you to pass null, you should avoid passing null in your code whenever possible."
+<br/><br/>
+"In most programming languages there is no good way to deal with a null that is passed by a caller accidentally. Because this is the case, the rational approach is to forbid passing null by default."

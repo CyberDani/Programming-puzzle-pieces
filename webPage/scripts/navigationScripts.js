@@ -114,7 +114,7 @@ $( ".menu-design-patterns" ).click(function() {
 });
 
 $( ".menu-book-summaries" ).click(function() {
-
+	loadPage("webPage/pages/BooksAnalysis/main.html");
 });
 
 $( ".menu-common-principles" ).click(function() {
