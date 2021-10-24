@@ -1,9 +1,6 @@
-Work is in progress in order to give a more elegant look to the project: [see it in webpage form](https://cyberdani.github.io/Programming-puzzle-pieces/)
-
-> I can teach you the physics of riding a bicycle. Indeed, the classical mathematics is relatively straightforward. Gravity, friction, angular momentum, center of mass, and so forth, can be demonstrated with less than a page full of equations. Given those formulae I could provide you that bicycle riding is practical and give you all the knowldge you needed to make it work. And you'd still fall down the first time you climbed on that bike. Coding is no different.
-<p align="right"><cite>Robert C. Martin - Clean code</cite> (<i>Introduction - page xxvi</i>) </p>
-
 ## Disclaimer
+Work is in progress in order to give a more elegant look to this project: [Give it a try](https://cyberdani.github.io/Programming-puzzle-pieces/)
+
 :world_map: This project mainly contains simplified visual representations. The scope is to remain simple and to cover a large variety of different terms used in programming in the same time. Explaining the different concepts and providing examples for them is outside of the scope for now. My advice is to do your own research by yourself if you are interested in a specific topic and use this project as a collection of the "existing things" for your studies.
 
 :recycle: You can use or reuse any image and / or the attached visio files entirely or just a portion of it and modify it without any limitation. Mentioning this github page is not mandatory but it is always appreciated.
