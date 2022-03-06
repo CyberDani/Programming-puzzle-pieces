@@ -2,12 +2,31 @@ import unittest
 
 class UnitTestLearningTests(unittest.TestCase):
 
-  def test_upper(self):
-    self.assertEqual('foo'.upper(), 'FOO')
+  def setUp(self):
+    self.a = 2
 
-  def test_isupper(self):
-    self.assertTrue('FOO'.isupper())
-    self.assertFalse('Foo'.isupper())
+  def tearDown(self):
+    self.a = 22
+
+  @unittest.skip("demonstrating skipping")
+  def test_nothing(self):
+    self.fail("shouldn't happen")
+
+  @unittest.expectedFailure
+  def test_fail(self):
+    self.assertEqual(1, 0, "broken")
+
+  def test_skipIfCondition(self):
+    """
+    Test that a is 2 as set in setup()
+    """
+    self.assertLess(self.a, 20, "something is wrong")
+    if self.a == 22:
+      self.skipTest("external resource not available")
+
+  def test_isEven(self):
+    with self.subTest("a = {0}".format(self.a)):
+      self.assertEqual(self.a % 2, 0)
 
   def test_split(self):
     s = 'hello world'
