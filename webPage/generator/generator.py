@@ -1,10 +1,34 @@
 import os
 import htmlBuilder
 import webLibs
+import unittest
+
+def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPass():
+  print('[1]. Validate unit tests . . .\n')
+  unitTestsResult = collectAndRunUnitTests()
+  # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
+  if not unitTestsResult.wasSuccessful():
+    print('\n ======= UNIT TEST FAILED ======= ')
+    print('\n [!] Nothing will be generated until all tests pass!')
+  else:
+    print('\n - ALL UNIT TESTS PASSED - \n')
+    backupAndGenerateNewHtmlOutputFile()
+
+def collectAndRunUnitTests():
+  suites = unittest.TestSuite()
+  loader = unittest.TestLoader()
+  #possible arguments: sys.stdout, verbosity=2, failfast=failfast, buffer=true
+  runner = unittest.TextTestRunner()
+  #suites.addTest(loader.loadTestsFromName('unitTests.unitTestsRunner_test'))
+  suites.addTest(loader.discover('./unitTests/', pattern='*_test.py'))
+  result = runner.run(suites)
+  return result
 
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFile():
+  print('[2]. Backup all files before generating new ones . . .')
   backupIndexHtml()
+  print('[3]. Generate HTML files . . .')
   generateHtmlOutputFile()
 
 def backupIndexHtml():
@@ -66,4 +90,4 @@ def writeHtmlBodyContent(htmlFile, indentDepth):
   htmlFile.write(tabs + "</script>\n")
 
 
-backupAndGenerateNewHtmlOutputFile()
+backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPass()
