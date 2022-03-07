@@ -1,18 +1,55 @@
 import os
-import htmlBuilder
-import webLibs
+import sys
 import unittest
 
-def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPass():
-  print('[1]. Validate unit tests . . .\n')
-  unitTestsResult = collectAndRunUnitTests()
-  # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
-  if not unitTestsResult.wasSuccessful():
-    print('\n ======= UNIT TEST FAILED ======= ')
-    print('\n [!] Nothing will be generated until all tests pass!')
-  else:
-    print('\n - ALL UNIT TESTS PASSED - \n')
+import htmlBuilder
+import webLibs
+
+def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
+  invalidUsage, runUnitTests, backupAndGenerate = parseArguments()
+  if invalidUsage:
+    print(" [!] Invalid command\n")
+    displayScriptUsage()
+    return
+  if runUnitTests:
+    print('[1]. Validate unit tests . . .\n')
+    unitTestsResult = collectAndRunUnitTests()
+    # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
+    if not unitTestsResult.wasSuccessful():
+      print('\n ======= UNIT TEST FAILED ======= ')
+      print('\n [!] No operation can be done until all tests pass!')
+    else:
+      print('\n - ALL UNIT TESTS PASSED -\n')
+  if backupAndGenerate:
     backupAndGenerateNewHtmlOutputFile()
+  else:
+    print("No backup or generation was made")
+
+def parseArguments():
+  #skip the first argument which contains the name of the script
+  args = sys.argv[1:]
+  argsSize = len(args)
+  invalidUsage = True
+  runUnitTests = False
+  backupAndGenerate = False
+  if argsSize == 0 or argsSize > 1:
+    return invalidUsage, runUnitTests, backupAndGenerate
+  firstArg = args[0]
+  if firstArg == "-u":
+    invalidUsage = False
+    runUnitTests = True
+    return invalidUsage, runUnitTests, backupAndGenerate
+  if firstArg == "-a":
+    invalidUsage = False
+    runUnitTests = True
+    backupAndGenerate = True
+    return invalidUsage, runUnitTests, backupAndGenerate  
+  return invalidUsage, runUnitTests, backupAndGenerate
+
+def displayScriptUsage():
+  print("  Script usages: \n")
+  print("{0} -u \t Run only the unit tests, nothing else happens".format(sys.argv[0]))
+  print("{0} -a \t If all unit tests pass, backup current files and generate new ones".format(sys.argv[0]))
 
 def collectAndRunUnitTests():
   suites = unittest.TestSuite()
@@ -90,4 +127,4 @@ def writeHtmlBodyContent(htmlFile, indentDepth):
   htmlFile.write(tabs + "</script>\n")
 
 
-backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPass()
+backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()
