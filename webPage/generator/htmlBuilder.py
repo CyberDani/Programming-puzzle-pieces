@@ -1,6 +1,8 @@
+import io
+
 # include
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
-  lines = getLinesFromFile(includeFilePath)
+  lines = getLinesFromFileWithEndingNewLine(includeFilePath)
   tabs = getIndentedTab(indentDepth)
   for line in lines:
     if (line and line != "\n"):
@@ -8,10 +10,6 @@ def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
     else:
       htmlFile.write("\n")
   htmlFile.write("\n")
-
-def getLinesFromFile(filePath):
-  f = open(filePath, "r")
-  return f.readlines()
 
 # <br \>
 def addNewLineToHtmlOutputFile(htmlFile, indentDepth):
@@ -47,6 +45,21 @@ def addCssFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=Non
   tabs += "\t"
   htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
   htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
+
+def getLinesFromFileWithEndingNewLine(filePath):
+  f = open(filePath, "r")
+  return f.readlines()
+
+def writeLinesToFileThenAppendNewLine(file, lines):
+  if not isinstance(file, io.TextIOBase):
+    raise Exception("file is not a TextIOWrapper type argument")
+  if (type(lines) != list):
+    raise Exception("lines is not a list type argument")
+  if len(lines) == 0:
+    return
+  for line in lines:
+    file.write(line)
+    file.write("\n")
 
 def getIndentedTab(indentDepth):
   if (type(indentDepth) != int):
