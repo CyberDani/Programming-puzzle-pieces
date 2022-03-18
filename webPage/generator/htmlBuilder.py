@@ -49,16 +49,7 @@ def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
 
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
-  if (type(nrOfNewLines) != int):
-    raise Exception("nrOfNewLines is not an int type for argument " + str(nrOfNewLines))
-  if (nrOfNewLines < 0):
-    raise Exception("nrOfNewLines < 0 for argument " + str(nrOfNewLines))
-  if (type(nrOfNewLines) != int):
-    raise Exception("nrOfNewLines is not an int type for argument " + str(nrOfNewLines))
-  if (nrOfNewLines == 0):
-    raise Exception("I do not really think you want nrOfNewLines = 0")
-  if (nrOfNewLines > 50):
-    raise Exception("Do you really need that much new lines?")
+  checkIntIsBetween(nrOfNewLines, 1, 50)
   result = getIndentedTab(indentDepth)
   for i in range(nrOfNewLines):
     result += "<br\>"
@@ -83,15 +74,16 @@ def writeLinesToFileThenAppendNewLine(file, lines):
 
 # \t\t\t
 def getIndentedTab(indentDepth):
-  if (type(indentDepth) != int):
-    raise Exception("indentDepth is not an int type for argument " + str(indentDepth))
-  if (indentDepth < 0):
-    raise Exception("indentDepth < 0 for argument " + str(indentDepth))
-  if (indentDepth == 0):
-    raise Exception("I do not really think you want indentDepth = 0")
-  if (indentDepth > 50):
-    raise Exception("Do you really need that much indentation?")
+  checkIntIsBetween(indentDepth, 1, 50)
   ans=""; 
   for i in range(indentDepth):
     ans += "\t"
   return ans;
+
+def checkIntIsBetween(var, minValue, maxValue):
+  if (type(var) != int):
+    raise Exception("Not an int type for argument " + str(var))
+  if (var < minValue):
+    raise Exception("int < " + minValue + " for argument " + str(var))
+  if (var > maxValue):
+    raise Exception("Do you really need that int to be {0}?".format(var))
