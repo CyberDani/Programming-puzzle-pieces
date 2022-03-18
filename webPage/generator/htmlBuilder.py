@@ -63,7 +63,7 @@ def getLinesFromFileWithEndingNewLine(filePath):
 
 def writeLinesToFileThenAppendNewLine(file, lines):
   checkIfFile(file)
-  checkIfList(lines)
+  checkIfPureListOfArrays(lines)
   if len(lines) == 0:
     return
   for line in lines:
@@ -77,6 +77,12 @@ def getIndentedTab(indentDepth):
   for i in range(indentDepth):
     ans += "\t"
   return ans;
+
+def checkIfPureListOfArrays(var):
+  checkIfList(var)
+  for val in var:
+    if (type(val) != str):
+      raise Exception("The list has a non-string element: '{0}'".format(str(val)))
 
 def checkIfList(var):
   if (type(var) != list):
