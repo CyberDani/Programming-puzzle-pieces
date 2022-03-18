@@ -11,11 +11,6 @@ def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
       htmlFile.write("\n")
   htmlFile.write("\n")
 
-# <br \>
-def addNewLineToHtmlOutputFile(htmlFile, indentDepth):
-  tabs = getIndentedTab(indentDepth)
-  htmlFile.write(tabs + "<br \>\n")
-
 # <script src=".js" />
 def addJsFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   tabs = getIndentedTab(indentDepth)
@@ -46,6 +41,31 @@ def addCssFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=Non
   htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
   htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
 
+# <br\> <br\> <br\>  ->  file
+def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
+  tabs = getIndentedTab(indentDepth)
+  newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
+  writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
+
+# <br\> <br\> <br\>
+def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
+  if (type(nrOfNewLines) != int):
+    raise Exception("nrOfNewLines is not an int type for argument " + str(nrOfNewLines))
+  if (nrOfNewLines < 0):
+    raise Exception("nrOfNewLines < 0 for argument " + str(nrOfNewLines))
+  if (type(nrOfNewLines) != int):
+    raise Exception("nrOfNewLines is not an int type for argument " + str(nrOfNewLines))
+  if (nrOfNewLines == 0):
+    raise Exception("I do not really think you want nrOfNewLines = 0")
+  if (nrOfNewLines > 50):
+    raise Exception("Do you really need that much new lines?")
+  result = getIndentedTab(indentDepth)
+  for i in range(nrOfNewLines):
+    result += "<br\>"
+    if i != nrOfNewLines - 1:
+      result += " "
+  return result
+
 def getLinesFromFileWithEndingNewLine(filePath):
   f = open(filePath, "r")
   return f.readlines()
@@ -61,13 +81,14 @@ def writeLinesToFileThenAppendNewLine(file, lines):
     file.write(line)
     file.write("\n")
 
+# \t\t\t
 def getIndentedTab(indentDepth):
   if (type(indentDepth) != int):
     raise Exception("indentDepth is not an int type for argument " + str(indentDepth))
   if (indentDepth < 0):
     raise Exception("indentDepth < 0 for argument " + str(indentDepth))
   if (indentDepth == 0):
-    raise Exception("I do not really think you want indentDepth == 0")
+    raise Exception("I do not really think you want indentDepth = 0")
   if (indentDepth > 50):
     raise Exception("Do you really need that much indentation?")
   ans=""; 

@@ -118,3 +118,83 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(readLines[0],"this is me:\n")
     self.assertEqual(readLines[1],"\tJohn Doe, VIP executor\n")
     self.assertEqual(readLines[2],"tel: 0875432123\n")
+
+  def test_getHtmlNewLines_nonsense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = "two", nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = "one")
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = -2, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 0, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 100, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 100)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 0)
+
+  def test_getHtmlNewLines_defaultParameter_nrOfNewLines_1(self):
+    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 1)
+    self.assertEqual(newLines,"\t<br\\>")
+    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 2)
+    self.assertEqual(newLines,"\t\t<br\\>")
+    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 3)
+    self.assertEqual(newLines,"\t\t\t<br\\>")
+    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 6)
+    self.assertEqual(newLines,"\t\t\t\t\t\t<br\\>")
+
+  def test_getHtmlNewLines_normalCases(self):
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 1)
+    self.assertEqual(newLines,"\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 1)
+    self.assertEqual(newLines,"\t\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 4, nrOfNewLines = 1)
+    self.assertEqual(newLines,"\t\t\t\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 2)
+    self.assertEqual(newLines,"\t<br\\> <br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 3)
+    self.assertEqual(newLines,"\t<br\\> <br\\> <br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 6)
+    self.assertEqual(newLines,"\t<br\\> <br\\> <br\\> <br\\> <br\\> <br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 2)
+    self.assertEqual(newLines,"\t\t<br\\> <br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 4)
+    self.assertEqual(newLines,"\t\t<br\\> <br\\> <br\\> <br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 4, nrOfNewLines = 2)
+    self.assertEqual(newLines,"\t\t\t\t<br\\> <br\\>")
+
+  def test_addNewLineToHtmlOutputFile_nonsense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile("heyho", indentDepth = 2, nrOfNewLines = 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = "two", nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 2, nrOfNewLines = "one")
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = -2, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 0, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 100, nrOfNewLines = 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = 100)
+    with self.assertRaises(Exception):
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = 0)
+    file.close()
+
+  def test_addNewLineToHtmlOutputFile_defaultParameter_nrOfNewLines_1(self):
+    for indent in range(1,6):
+      newLines =  htmlBuilder.getHtmlNewLines(indent)
+      file = open("./unitTests/temp/test.txt", "w")
+      htmlBuilder.addNewLineToHtmlOutputFile(file, indent)
+      file.close()
+      readLines = htmlBuilder.getLinesFromFileWithEndingNewLine("./unitTests/temp/test.txt")
+      self.assertEqual(len(readLines),1)
+      self.assertEqual(readLines[0],newLines + "\n")
