@@ -57,6 +57,14 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
       result += " "
   return result
 
+# \t\t\t
+def getIndentedTab(indentDepth):
+  checkIntIsBetween(indentDepth, 1, 50)
+  ans=""; 
+  for i in range(indentDepth):
+    ans += "\t"
+  return ans;
+
 def getLinesFromFileWithEndingNewLine(filePath):
   f = open(filePath, "r")
   return f.readlines()
@@ -70,13 +78,8 @@ def writeLinesToFileThenAppendNewLine(file, lines):
     file.write(line)
     file.write("\n")
 
-# \t\t\t
-def getIndentedTab(indentDepth):
-  checkIntIsBetween(indentDepth, 1, 50)
-  ans=""; 
-  for i in range(indentDepth):
-    ans += "\t"
-  return ans;
+
+# C H E C K E R S
 
 def checkIfPureListOfArrays(var):
   checkIfList(var)
