@@ -62,10 +62,8 @@ def getLinesFromFileWithEndingNewLine(filePath):
   return f.readlines()
 
 def writeLinesToFileThenAppendNewLine(file, lines):
-  if not isinstance(file, io.TextIOBase):
-    raise Exception("file is not a TextIOWrapper type argument")
-  if (type(lines) != list):
-    raise Exception("lines is not a list type argument")
+  checkIfFile(file)
+  checkIfList(lines)
   if len(lines) == 0:
     return
   for line in lines:
@@ -80,7 +78,19 @@ def getIndentedTab(indentDepth):
     ans += "\t"
   return ans;
 
+def checkIfList(var):
+  if (type(var) != list):
+    raise Exception("Not a list type")
+
+def checkIfFile(file):
+  if not isinstance(file, io.TextIOBase):
+    raise Exception("The file is not a TextIOWrapper type argument")
+
 def checkIntIsBetween(var, minValue, maxValue):
+  if (type(minValue) != int):
+    raise Exception("minValue not an int type")
+  if (type(maxValue) != int):
+    raise Exception("maxValue not an int type")
   if (type(var) != int):
     raise Exception("Not an int type for argument " + str(var))
   if (var < minValue):
