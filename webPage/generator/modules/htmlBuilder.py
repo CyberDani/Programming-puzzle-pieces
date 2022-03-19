@@ -41,6 +41,23 @@ def addCssFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=Non
   htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
   htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
 
+# <link href=".css" />
+def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  tabs = getIndentedTab(indentDepth)
+  #htmlFile.write(tabs + "<link href=\"" + url + "\"")
+  if (integrity is None or crossorigin is None or referrerpolicy is None):
+    if (integrity is not None or crossorigin is not None or referrerpolicy is not None):
+      raise Exception("integrity, crossorigin and referrerpolicy must be all set or None")
+    #if len(url) > 95:
+      #htmlFile.write("\n" + tabs + "\t")
+    #else:
+      #htmlFile.write(" ")
+    #htmlFile.write("rel=\"stylesheet\" />\n")
+    return
+  tabs += "\t"
+  #htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
+  #htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
+
 # <br\> <br\> <br\>  ->  file
 def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
   tabs = getIndentedTab(indentDepth)

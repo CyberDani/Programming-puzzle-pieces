@@ -1,4 +1,4 @@
-import htmlBuilder
+from modules import htmlBuilder
 
 def addFontAwesome(htmlFile, indentDepth):
   htmlBuilder.addCssFileAsLink(htmlFile, indentDepth, 

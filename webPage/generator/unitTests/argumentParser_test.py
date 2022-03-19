@@ -3,7 +3,7 @@ import sys
 
 sys.path.append('..')
 
-import argumentParser
+from modules import argumentParser
 
 class ArgumentParserTests(unittest.TestCase):
 

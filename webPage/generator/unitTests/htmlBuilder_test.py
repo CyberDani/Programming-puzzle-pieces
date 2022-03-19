@@ -3,7 +3,7 @@ import sys
 import unittest
 
 sys.path.append('..')
-import htmlBuilder
+from modules import htmlBuilder
 
 class HtmlBuilderTests(unittest.TestCase):
 

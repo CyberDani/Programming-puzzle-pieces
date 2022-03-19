@@ -2,9 +2,9 @@ import os
 import sys
 import unittest
 
-import argumentParser
-import htmlBuilder
-import webLibs
+from modules import argumentParser
+from modules import htmlBuilder
+from modules import webLibs
 
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
