@@ -1,4 +1,4 @@
-import io
+from modules import checks
 
 # include
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
@@ -66,7 +66,7 @@ def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
 
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
-  checkIntIsBetween(nrOfNewLines, 1, 50)
+  checks.checkIntIsBetween(nrOfNewLines, 1, 50)
   result = getIndentedTab(indentDepth)
   for i in range(nrOfNewLines):
     result += "<br\>"
@@ -76,7 +76,7 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
 
 # \t\t\t
 def getIndentedTab(indentDepth):
-  checkIntIsBetween(indentDepth, 1, 50)
+  checks.checkIntIsBetween(indentDepth, 1, 50)
   ans=""; 
   for i in range(indentDepth):
     ans += "\t"
@@ -87,39 +87,10 @@ def getLinesFromFileWithEndingNewLine(filePath):
   return f.readlines()
 
 def writeLinesToFileThenAppendNewLine(file, lines):
-  checkIfFile(file)
-  checkIfPureListOfArrays(lines)
+  checks.checkIfFile(file)
+  checks.checkIfPureListOfStrings(lines)
   if len(lines) == 0:
     return
   for line in lines:
     file.write(line)
     file.write("\n")
-
-
-# C H E C K E R S
-
-def checkIfPureListOfArrays(var):
-  checkIfList(var)
-  for val in var:
-    if (type(val) != str):
-      raise Exception("The list has a non-string element: '{0}'".format(str(val)))
-
-def checkIfList(var):
-  if (type(var) != list):
-    raise Exception("Not a list type")
-
-def checkIfFile(file):
-  if not isinstance(file, io.TextIOBase):
-    raise Exception("The file is not a TextIOWrapper type argument")
-
-def checkIntIsBetween(var, minValue, maxValue):
-  if (type(minValue) != int):
-    raise Exception("minValue not an int type")
-  if (type(maxValue) != int):
-    raise Exception("maxValue not an int type")
-  if (type(var) != int):
-    raise Exception("Not an int type for argument " + str(var))
-  if (var < minValue):
-    raise Exception("int < " + minValue + " for argument " + str(var))
-  if (var > maxValue):
-    raise Exception("Do you really need that int to be {0}?".format(var))
