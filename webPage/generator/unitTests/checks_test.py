@@ -117,3 +117,74 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfPureListOfStrings(["one", "\t", "two", "three", "four", "five", "six", "seven", "\n"])
     except Exception:
       self.fail("checkIfPureListOfStrings() raised Exception unexpectedly!")
+
+  def test_checkIfString_raiseException(self):
+    with self.assertRaises(Exception):
+      checks.checkIfString(123,3, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hello", "empty", 10)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hey", 1, None)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hey", -3, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfString("", -3, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hey", 20, 2)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hey", -2, -1)
+    with self.assertRaises(Exception):
+      checks.checkIfString("hey", 5, 1500)
+    with self.assertRaises(Exception):
+      checks.checkIfString("", 1, 21)
+    with self.assertRaises(Exception):
+      checks.checkIfString("this string is intented to represent a longer one", 5, 15)
+
+  def test_checkIfString_notRaiseException(self):
+    try:
+      checks.checkIfString("hey", 3, 10)
+      checks.checkIfString("hey", 0, 3)
+      checks.checkIfString("", 0, 23)
+      checks.checkIfString("hello", 0, 12)
+      checks.checkIfString("hello", 3, 20)
+    except Exception:
+      self.fail("checkIfString() raised Exception unexpectedly!")
+
+  def test_checkIfAllNoneOrString_raiseException(self):
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString("not a list", 3, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString([], 0, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["hello","hey","hi"], 3, 10)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["", "hello"], 0, 2)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["heyho", "hello"], 0, 4)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["heyho", "hello"], 10, 22)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["hello"], 6, 6)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["hello", "bye", None], 0, 16)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString(["hello", None, "bye"], 0, 16)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString([None, "hello", "bye"], 0, 16)
+    with self.assertRaises(Exception):
+      checks.checkIfAllNoneOrString([None, "im a lonely string :(", None], 0, 16)
+
+  def test_checkIfAllNoneOrString_notRaiseException(self):
+    try:
+      checks.checkIfAllNoneOrString([None], 3, 10)
+      checks.checkIfAllNoneOrString([None, None], 0, 10)
+      checks.checkIfAllNoneOrString([None, None, None], 10, 100)
+      checks.checkIfAllNoneOrString([""], 0, 0)
+      checks.checkIfAllNoneOrString([""], 0, 10)
+      checks.checkIfAllNoneOrString(["hello"], 0, 10)
+      checks.checkIfAllNoneOrString(["hello", ""], 0, 10)
+      checks.checkIfAllNoneOrString(["hello", "hey"], 3, 5)
+      checks.checkIfAllNoneOrString(["hello", "hey", "hi", "k", ""], 0, 15)
+    except Exception:
+      self.fail("checkIfString() raised Exception unexpectedly!")
+    

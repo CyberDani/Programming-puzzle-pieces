@@ -22,6 +22,8 @@ class HtmlBuilderTests(unittest.TestCase):
       htmlBuilder.getIndentedTab(124)
     with self.assertRaises(Exception):
       htmlBuilder.getIndentedTab('hello')
+    with self.assertRaises(Exception):
+      htmlBuilder.getIndentedTab(False)
 
   def test_getIndentedTabWithNormalValues(self):
     self.assertEqual(htmlBuilder.getIndentedTab(1),'\t')
@@ -198,3 +200,101 @@ class HtmlBuilderTests(unittest.TestCase):
       readLines = htmlBuilder.getLinesFromFileWithEndingNewLine("./unitTests/temp/test.txt")
       self.assertEqual(len(readLines),1)
       self.assertEqual(readLines[0],newLines + "\n")
+
+  def test_getCssLinkHref_nonsense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(indentDepth=-3, url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(2, False, None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(2, "", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "hello", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "sha215-23", None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", None, "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", None, None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", None, "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "sha512-23", None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "sha512-23", "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "a", "x", "z")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "abc", "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "abc", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "anonymous", "ab")
+
+  def test_getCssLinkHref_justUrl(self):
+    result = htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", None, None, None)
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "\t<link href=\"www.mysite.com/res.css\" rel=\"stylesheet\" />")
+    result = htmlBuilder.getCssLinkHref(2, "https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css", None, None, None)
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0], "\t\t<link href=\"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css\"")
+    self.assertEqual(result[1], "\t\t\trel=\"stylesheet\" />")
+
+  def test_getCssLinkHref_containsIntegrity(self):
+    result = htmlBuilder.getCssLinkHref(3, "https://www.randomsite.com/resource.css", 
+                    "asdsadbsdsadbi32gr3ur", "techguy", "refferrer")
+    self.assertEqual(len(result), 3)
+    self.assertEqual(result[0], "\t\t\t<link href=\"https://www.randomsite.com/resource.css\"")
+    self.assertEqual(result[1], "\t\t\t\tintegrity=\"asdsadbsdsadbi32gr3ur\"")
+    self.assertEqual(result[2], "\t\t\t\trel=\"stylesheet\" crossorigin=\"techguy\" referrerpolicy=\"refferrer\" />")
+
+  def test_addCssLinkHrefToHtmlOutputFile_nonsense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file,indentDepth=-3, 
+                                url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile("file.html", 2, "https://site.com/random.css", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 2, False, None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 2, "", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "hello", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha215-23", None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", None, "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", None, None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", None, "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-23", None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-23", "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "a", "x", "z")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "abc", "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "abc", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "anonymous", "ab")
+    file.close()
+
+  def test_addCssLinkHrefToHtmlOutputFile_normalCases(self):
+    self.cssLinkHrefTestHelper(1, "www.mysite.com/res.css", None, None, None)
+    self.cssLinkHrefTestHelper(5, "https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css", 
+                        None, None, None)
+    self.cssLinkHrefTestHelper(3, "https://www.randomsite.com/resource.css", "asdsadbsdsadbi32gr3ur", "techguy", "refferrer")
+
+  def cssLinkHrefTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
+    file = open("./unitTests/temp/test.txt", "w")
+    lines = htmlBuilder.getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
+    htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
+    file.close()
+    readLines = htmlBuilder.getLinesFromFileWithEndingNewLine("./unitTests/temp/test.txt")
+    self.assertEqual(len(readLines), len(lines))
+    for i in range(len(readLines)):
+      self.assertEqual(readLines[i],lines[i] + "\n")

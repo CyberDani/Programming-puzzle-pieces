@@ -24,43 +24,32 @@ def addJsFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=None
   htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
   htmlFile.write(tabs + "crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\"></script>\n")
 
-# <link href=".css" />
-def addCssFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
-  tabs = getIndentedTab(indentDepth)
-  htmlFile.write(tabs + "<link href=\"" + url + "\"")
-  if (integrity is None or crossorigin is None or referrerpolicy is None):
-    if (integrity is not None or crossorigin is not None or referrerpolicy is not None):
-      raise Exception("integrity, crossorigin and referrerpolicy must be all set or None")
-    if len(url) > 95:
-      htmlFile.write("\n" + tabs + "\t")
-    else:
-      htmlFile.write(" ")
-    htmlFile.write("rel=\"stylesheet\" />\n")
-    return
-  tabs += "\t"
-  htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
-  htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
+# <link href=".css" />   ->  file
+def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  lines = getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
+  writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <link href=".css" />
 def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  #"a.io/s.css" -> length 10
+  checks.checkIfString(url, 10, 500)
+  checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
   tabs = getIndentedTab(indentDepth)
-  #htmlFile.write(tabs + "<link href=\"" + url + "\"")
-  if (integrity is None or crossorigin is None or referrerpolicy is None):
-    if (integrity is not None or crossorigin is not None or referrerpolicy is not None):
-      raise Exception("integrity, crossorigin and referrerpolicy must be all set or None")
-    #if len(url) > 95:
-      #htmlFile.write("\n" + tabs + "\t")
-    #else:
-      #htmlFile.write(" ")
-    #htmlFile.write("rel=\"stylesheet\" />\n")
-    return
+  result = [tabs + "<link href=\"" + url + "\""]
   tabs += "\t"
-  #htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
-  #htmlFile.write(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />\n")
+  if (integrity is None):
+    if len(url) > 95:
+      result.append(tabs + "rel=\"stylesheet\" />")
+    else:
+      result[0] += " rel=\"stylesheet\" />"
+    return result
+  # integrity deserves its own line because usually it is a long string
+  result.append(tabs + "integrity=\"" + integrity + "\"")
+  result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
+  return result
 
 # <br\> <br\> <br\>  ->  file
 def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
-  tabs = getIndentedTab(indentDepth)
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
   writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
 
