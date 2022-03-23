@@ -16,6 +16,16 @@ def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, c
   lines = getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
   writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
+# <link href=".css" />   ->  file
+def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  lines = getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
+  writeLinesToFileThenAppendNewLine(htmlFile, lines)
+
+# <br\> <br\> <br\>  ->  file
+def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
+  newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
+  writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
+
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   #"a.io/s.js" -> length 9
@@ -31,11 +41,6 @@ def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerp
   result.append(tabs + "integrity=\"" + integrity + "\"")
   result.append(tabs + "crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\"></script>")
   return result
-
-# <link href=".css" />   ->  file
-def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
-  lines = getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
-  writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <link href=".css" />
 def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
@@ -55,11 +60,6 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
   result.append(tabs + "integrity=\"" + integrity + "\"")
   result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
   return result
-
-# <br\> <br\> <br\>  ->  file
-def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
-  newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
-  writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
 
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
