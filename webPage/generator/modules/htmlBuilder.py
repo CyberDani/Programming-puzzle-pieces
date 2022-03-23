@@ -11,18 +11,26 @@ def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
       htmlFile.write("\n")
   htmlFile.write("\n")
 
+# <script src=".js" />   ->  file
+def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  lines = getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
+  writeLinesToFileThenAppendNewLine(htmlFile, lines)
+
 # <script src=".js" />
-def addJsFileAsLink(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
+  #"a.io/s.js" -> length 9
+  checks.checkIfString(url, 9, 500)
+  checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
   tabs = getIndentedTab(indentDepth)
-  htmlFile.write(tabs + "<script src=\"" + url + "\"")
-  if (integrity is None or crossorigin is None or referrerpolicy is None):
-    if (integrity is not None or crossorigin is not None or referrerpolicy is not None):
-      raise Exception("integrity, crossorigin and referrerpolicy must be all set or None")
-    htmlFile.write("></script>\n")
-    return
+  result = [tabs + "<script src=\"" + url + "\""]
+  if (integrity is None):
+    result[0] += "></script>"
+    return result
   tabs += "\t"
-  htmlFile.write("\n" + tabs + "integrity=\"" + integrity + "\"\n")
-  htmlFile.write(tabs + "crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\"></script>\n")
+  # integrity deserves its own line because usually it is a long string
+  result.append(tabs + "integrity=\"" + integrity + "\"")
+  result.append(tabs + "crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\"></script>")
+  return result
 
 # <link href=".css" />   ->  file
 def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):

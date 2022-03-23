@@ -187,4 +187,3 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfAllNoneOrString(["hello", "hey", "hi", "k", ""], 0, 15)
     except Exception:
       self.fail("checkIfString() raised Exception unexpectedly!")
-    

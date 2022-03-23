@@ -298,3 +298,65 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
+
+  def test_getJsScriptSrc_nonsense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(indentDepth=-3, url="www.mysite.com/res.js", integrity=None, crossorigin=None, referrerpolicy=None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(2, False, None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(2, "", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "hello", None, None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "sha215-23", None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", None, "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", None, None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", None, "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "sha512-23", None, "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "sha512-23", "anonymous", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "a", "x", "z")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "abc", "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "sha512-asdasdc-xcx", "abc", "no-refferer")
+    with self.assertRaises(Exception):
+      htmlBuilder.getJsScriptSrc(1, "www.mysite.com/res.js", "sha512-asdasdc-xcx", "anonymous", "ab")
+
+  def test_getJsScriptSrc_justUrl(self):
+    result = htmlBuilder.getJsScriptSrc(1, "https://randomsite.com/myscript.js", None, None, None)
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "\t<script src=\"https://randomsite.com/myscript.js\"></script>")
+    result = htmlBuilder.getJsScriptSrc(2, "https://code.jquery.com/jquery-3.6.0.min.js", None, None, None)
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "\t\t<script src=\"https://code.jquery.com/jquery-3.6.0.min.js\"></script>")
+
+  def test_getJsScriptSrc_containsIntegrity(self):
+    result = htmlBuilder.getJsScriptSrc(3, "https://randomsite.com/mySuperScript.js", 
+                    "sha512-adasdbidbeiebewiwbf==", "theGeek", "no-refferrer")
+    self.assertEqual(len(result), 3)
+    self.assertEqual(result[0], "\t\t\t<script src=\"https://randomsite.com/mySuperScript.js\"")
+    self.assertEqual(result[1], "\t\t\t\tintegrity=\"sha512-adasdbidbeiebewiwbf==\"")
+    self.assertEqual(result[2], "\t\t\t\tcrossorigin=\"theGeek\" referrerpolicy=\"no-refferrer\"></script>")
+
+  def test_addJsScriptSrcToHtmlOutputFile_normalCases(self):
+    self.jsScriptSrcTestHelper(1, "www.myAwesomeSite.com/script.js", None, None, None)
+    self.jsScriptSrcTestHelper(5, "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js", 
+                        None, None, None)
+    self.jsScriptSrcTestHelper(3, "https://www.randomsite.com/resource.js", "asfldfohsdofsdflndjfbfd", "TechGuy", "refferrer")
+
+  def jsScriptSrcTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
+    file = open("./unitTests/temp/test.txt", "w")
+    lines = htmlBuilder.getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
+    htmlBuilder.addJsScriptSrcToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
+    file.close()
+    readLines = htmlBuilder.getLinesFromFileWithEndingNewLine("./unitTests/temp/test.txt")
+    self.assertEqual(len(readLines), len(lines))
+    for i in range(len(readLines)):
+      self.assertEqual(readLines[i],lines[i] + "\n")
