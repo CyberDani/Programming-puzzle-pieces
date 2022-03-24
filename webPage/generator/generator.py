@@ -20,6 +20,7 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     if not unitTestsResult.wasSuccessful():
       print('\n ======= UNIT TEST FAILED ======= ')
       print('\n [!] No operation can be done until all tests pass!')
+      return
     else:
       print('\n - ALL UNIT TESTS PASSED -\n')
   if backupAndGenerate:

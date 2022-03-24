@@ -1,15 +1,9 @@
 from modules import checks
 
-# include
+# file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
-  lines = getLinesFromFileWithEndingNewLine(includeFilePath)
-  tabs = getIndentedTab(indentDepth)
-  for line in lines:
-    if (line and line != "\n"):
-      htmlFile.write(tabs + line)
-    else:
-      htmlFile.write("\n")
-  htmlFile.write("\n")
+  lines = getLinesByFilePathWithEndingNewLine(includeFilePath)
+  writeStringsIndentedToFileThenAppendNewLine(htmlFile, indentDepth, lines)
 
 # <script src=".js" />   ->  file
 def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
@@ -79,7 +73,10 @@ def getIndentedTab(indentDepth):
     ans += "\t"
   return ans;
 
-def getLinesFromFileWithEndingNewLine(filePath):
+# File ReadWriter
+
+def getLinesByFilePathWithEndingNewLine(filePath):
+  checks.checkIfString(filePath, 2, 300)
   f = open(filePath, "r")
   return f.readlines()
 
@@ -91,3 +88,14 @@ def writeLinesToFileThenAppendNewLine(file, lines):
   for line in lines:
     file.write(line)
     file.write("\n")
+
+def writeStringsIndentedToFileThenAppendNewLine(file, indentDepth, lines):
+  checks.checkIfFile(file)
+  checks.checkIfPureListOfStrings(lines)
+  tabs = getIndentedTab(indentDepth)
+  for line in lines:
+    if (line and line != "\n"):
+      file.write(tabs + line)
+    else:
+      file.write("\n")
+  file.write("\n")
