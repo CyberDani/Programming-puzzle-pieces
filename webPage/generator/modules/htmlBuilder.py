@@ -1,24 +1,25 @@
 from modules import checks
+from modules import filerw
 
 # file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
-  lines = getLinesByFilePathWithEndingNewLine(includeFilePath)
-  writeStringsIndentedToFileThenAppendNewLine(htmlFile, indentDepth, lines)
+  lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
+  filerw.writeStringsIndentedToFileThenAppendNewLine(htmlFile, indentDepth, lines)
 
 # <script src=".js" />   ->  file
 def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   lines = getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
-  writeLinesToFileThenAppendNewLine(htmlFile, lines)
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <link href=".css" />   ->  file
 def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   lines = getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
-  writeLinesToFileThenAppendNewLine(htmlFile, lines)
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <br\> <br\> <br\>  ->  file
 def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
-  writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
 
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
@@ -72,30 +73,3 @@ def getIndentedTab(indentDepth):
   for i in range(indentDepth):
     ans += "\t"
   return ans;
-
-# File ReadWriter
-
-def getLinesByFilePathWithEndingNewLine(filePath):
-  checks.checkIfString(filePath, 2, 300)
-  f = open(filePath, "r")
-  return f.readlines()
-
-def writeLinesToFileThenAppendNewLine(file, lines):
-  checks.checkIfFile(file)
-  checks.checkIfPureListOfStrings(lines)
-  if len(lines) == 0:
-    return
-  for line in lines:
-    file.write(line)
-    file.write("\n")
-
-def writeStringsIndentedToFileThenAppendNewLine(file, indentDepth, lines):
-  checks.checkIfFile(file)
-  checks.checkIfPureListOfStrings(lines)
-  tabs = getIndentedTab(indentDepth)
-  for line in lines:
-    if (line and line != "\n"):
-      file.write(tabs + line)
-    else:
-      file.write("\n")
-  file.write("\n")

@@ -4,6 +4,7 @@ import unittest
 
 sys.path.append('..')
 from modules import htmlBuilder
+from modules import filerw
 
 class HtmlBuilderTests(unittest.TestCase):
 
@@ -34,201 +35,6 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlBuilder.getIndentedTab(4),'\t\t\t\t')
     self.assertEqual(htmlBuilder.getIndentedTab(5),'\t\t\t\t\t')
     self.assertEqual(htmlBuilder.getIndentedTab(10),'\t\t\t\t\t\t\t\t\t\t')
-
-  def test_getLinesByFilePathWithEndingNewLine_1line(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    file.write("HEY")
-    file.close()
-    linesFromFile = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(linesFromFile), 1)
-    self.assertEqual(linesFromFile[0],"HEY")
-
-  def test_getLinesByFilePathWithEndingNewLine_1line_1emptyLine(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    file.write("HEY\n")
-    file.close()
-    linesFromFile = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(linesFromFile), 1)
-    self.assertEqual(linesFromFile[0],"HEY\n")
-
-  def test_getLinesByFilePathWithEndingNewLine_2lines(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    file.write("hello dear\n")
-    file.write("this is the tester\n")
-    file.close()
-    linesFromFile = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(linesFromFile), 2)
-    self.assertEqual(linesFromFile[0],"hello dear\n")
-    self.assertEqual(linesFromFile[1],"this is the tester\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    with self.assertRaises(Exception):
-      htmlBuilder.writeStringsIndentedToFileThenAppendNewLine(file, 2, "asd")
-    with self.assertRaises(Exception):
-      htmlBuilder.writeStringsIndentedToFileThenAppendNewLine(file, -1, ["asd"])
-    with self.assertRaises(Exception):
-      htmlBuilder.writeStringsIndentedToFileThenAppendNewLine("./unitTests/temp/test.txt", 1, ["asd"])
-    with self.assertRaises(Exception):
-      htmlBuilder.writeStringsIndentedToFileThenAppendNewLine(None, 3, ["asd"])
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_emptyList(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, [])
-    self.assertEqual(len(readLines), 1)
-    self.assertEqual(readLines[0], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneEmptyString(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(2, [""])
-    self.assertEqual(len(readLines), 2)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoEmptyStrings(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["", ""])
-    self.assertEqual(len(readLines), 3)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-    self.assertEqual(readLines[2], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneNewLine(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["\n"])
-    self.assertEqual(len(readLines), 2)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoNewLines(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(5, ["\n", "\n"])
-    self.assertEqual(len(readLines), 3)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-    self.assertEqual(readLines[2], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_NewLineAndEmptyString(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["\n",""])
-    self.assertEqual(len(readLines), 3)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-    self.assertEqual(readLines[2], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_emptyStringAndNewLine(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["", "\n"])
-    self.assertEqual(len(readLines), 3)
-    self.assertEqual(readLines[0], "\n")
-    self.assertEqual(readLines[1], "\n")
-    self.assertEqual(readLines[2], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneString(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(2, ["hey"])
-    self.assertEqual(len(readLines), 1)
-    self.assertEqual(readLines[0], "\t\they\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoStrings(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, ["hey","Joe"])
-    self.assertEqual(len(readLines), 1)
-    self.assertEqual(readLines[0], "\they\tJoe\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_threeStrings(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, ["hey", "magnificent", "Joe"])
-    self.assertEqual(len(readLines), 1)
-    self.assertEqual(readLines[0], "\they\tmagnificent\tJoe\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneStringEndingWithNewLine(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["hey\n"])
-    self.assertEqual(len(readLines), 2)
-    self.assertEqual(readLines[0], "\t\t\they\n")
-    self.assertEqual(readLines[1], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoStringsEndingWithNewLine(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n"])
-    self.assertEqual(len(readLines), 3)
-    self.assertEqual(readLines[0], "\t\t\t\they\n")
-    self.assertEqual(readLines[1], "\t\t\t\tJoe\n")
-    self.assertEqual(readLines[2], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_stringsAndNewLine(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n", "\n"])
-    self.assertEqual(len(readLines), 4)
-    self.assertEqual(readLines[0], "\t\t\t\they\n")
-    self.assertEqual(readLines[1], "\t\t\t\tJoe\n")
-    self.assertEqual(readLines[2], "\n")
-    self.assertEqual(readLines[3], "\n")
-
-  def test_writeStringsIndentedToFileThenAppendNewLine_stringsAndNewLineAndEmptyString(self):
-    readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n", "\n", ""])
-    self.assertEqual(len(readLines), 5)
-    self.assertEqual(readLines[0], "\t\t\t\they\n")
-    self.assertEqual(readLines[1], "\t\t\t\tJoe\n")
-    self.assertEqual(readLines[2], "\n")
-    self.assertEqual(readLines[3], "\n")
-    self.assertEqual(readLines[4], "\n")
-
-  def helper_writeStringsIndentedToFileThenAppendNewLine(self, indent, lines):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeStringsIndentedToFileThenAppendNewLine(file, indent, lines)
-    file.close()
-    return htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-
-  def test_writeLinesToFileRaisesExceptionWhenAskingNonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    with self.assertRaises(Exception):
-      htmlBuilder.writeLinesToFile(file, "asd")
-    with self.assertRaises(Exception):
-      htmlBuilder.writeLinesToFile(file, 1)
-    with self.assertRaises(Exception):
-      htmlBuilder.writeLinesToFile(file, None)
-    with self.assertRaises(Exception):
-      htmlBuilder.writeLinesToFile("text.txt", ["firstLine"])
-
-  def test_writeLinesToFileThenAppendNewLine_Noline(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, [])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),0)
-
-  def test_writeLinesToFileThenAppendNewLine_emptyLine(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, [""])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),1)
-    self.assertEqual(readLines[0], "\n")
-
-  def test_writeLinesToFileThenAppendNewLine_1line(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, ["this is me"])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),1)
-    self.assertEqual(readLines[0],"this is me\n")
-
-  def test_writeLinesToFileThenAppendNewLine_1lineEndingWithNewline(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, ["this is me\n"])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),2)
-    self.assertEqual(readLines[0],"this is me\n")
-    self.assertEqual(readLines[1],"\n")
-
-  def test_writeLinesToFileThenAppendNewLine_2lines(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, ["this is me:","\tJohn Doe, VIP executor"])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),2)
-    self.assertEqual(readLines[0],"this is me:\n")
-    self.assertEqual(readLines[1],"\tJohn Doe, VIP executor\n")
-
-  def test_writeLinesToFileThenAppendNewLine_3lines(self):
-    file = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(file, ["this is me:","\tJohn Doe, VIP executor","tel: 0875432123"])
-    file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-    self.assertEqual(len(readLines),3)
-    self.assertEqual(readLines[0],"this is me:\n")
-    self.assertEqual(readLines[1],"\tJohn Doe, VIP executor\n")
-    self.assertEqual(readLines[2],"tel: 0875432123\n")
 
   def test_getHtmlNewLines_nonsense(self):
     with self.assertRaises(Exception):
@@ -306,7 +112,7 @@ class HtmlBuilderTests(unittest.TestCase):
       file = open("./unitTests/temp/test.txt", "w")
       htmlBuilder.addNewLineToHtmlOutputFile(file, indent)
       file.close()
-      readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+      readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
       self.assertEqual(len(readLines),1)
       self.assertEqual(readLines[0],newLines + "\n")
 
@@ -403,7 +209,7 @@ class HtmlBuilderTests(unittest.TestCase):
     lines = htmlBuilder.getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
@@ -465,7 +271,7 @@ class HtmlBuilderTests(unittest.TestCase):
     lines = htmlBuilder.getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addJsScriptSrcToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
@@ -495,7 +301,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", 1)
     dest.close()
-    lines = htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "\n")
 
@@ -513,9 +319,9 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def helper_includeFileToHtmlOutputFile(self, indent, lines):
     src = open("./unitTests/temp/test2.txt", "w")
-    htmlBuilder.writeLinesToFileThenAppendNewLine(src, lines)
+    filerw.writeLinesToFileThenAppendNewLine(src, lines)
     src.close()
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", indent)
     dest.close()
-    return htmlBuilder.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
