@@ -10,13 +10,13 @@ def addFontAwesome_v611(htmlFile, indentDepth):
 					"sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==",
 					"anonymous", "no-referrer")
 
-def addJquery(htmlFile, indentDepth):
+def addJquery_v360(htmlFile, indentDepth):
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, 
                     "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
 					"sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==",
 					"anonymous", "no-referrer")
 
-def addMaterialize(htmlFile, indentDepth):
+def addMaterialize_v110_alpha(htmlFile, indentDepth):
   htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, 
 					"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, 
@@ -25,7 +25,7 @@ def addMaterialize(htmlFile, indentDepth):
 def addGoogleIcons(htmlFile, indentDepth):
   htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, "https://fonts.googleapis.com/icon?family=Material+Icons")
 
-def addJQueryLoadingOverlay(htmlFile, indentDepth):
+def addJQueryLoadingOverlay_v217(htmlFile, indentDepth):
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, 
                     "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js")
 

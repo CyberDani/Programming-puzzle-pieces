@@ -75,11 +75,11 @@ def writeHtmlHeadContent(htmlFile, indentDepth):
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineCssStyle.css", indentDepth + 1)
   htmlFile.write(tabs + "</style>\n")
   webLibs.addFontAwesome_v611(htmlFile, indentDepth)
-  webLibs.addJquery(htmlFile, indentDepth)
+  webLibs.addJquery_v360(htmlFile, indentDepth)
   webLibs.addGoogleIcons(htmlFile, indentDepth)
-  webLibs.addMaterialize(htmlFile, indentDepth)
+  webLibs.addMaterialize_v110_alpha(htmlFile, indentDepth)
   webLibs.addGoogleFont(htmlFile, indentDepth, "?family=Arima+Madurai:wght@500&display=swap")
-  webLibs.addJQueryLoadingOverlay(htmlFile, indentDepth)
+  webLibs.addJQueryLoadingOverlay_v217(htmlFile, indentDepth)
 
 # <body>
 def writeHtmlBodyContent(htmlFile, indentDepth):
