@@ -1,5 +1,4 @@
 from modules import checks
-from modules import htmlBuilder
 
 def getLinesByFilePathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)
@@ -15,13 +14,13 @@ def writeLinesToFileThenAppendNewLine(file, lines):
     file.write(line)
     file.write("\n")
 
-def writeStringsIndentedToFileThenAppendNewLine(file, indentDepth, lines):
+def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
-  tabs = htmlBuilder.getIndentedTab(indentDepth)
+  checks.checkIfString(prefix, 0, 300)
   for line in lines:
     if (line and line != "\n"):
-      file.write(tabs + line)
+      file.write(prefix + line)
     else:
       file.write("\n")
   file.write("\n")

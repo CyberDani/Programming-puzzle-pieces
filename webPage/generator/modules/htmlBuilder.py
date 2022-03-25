@@ -4,7 +4,8 @@ from modules import filerw
 # file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
   lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
-  filerw.writeStringsIndentedToFileThenAppendNewLine(htmlFile, indentDepth, lines)
+  tabs = getIndentedTab(indentDepth)
+  filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
 # <script src=".js" />   ->  file
 def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):

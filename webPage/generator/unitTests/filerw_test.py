@@ -4,6 +4,7 @@ import unittest
 
 sys.path.append('..')
 from modules import filerw
+from modules import htmlBuilder
 
 class FileReadWriterTests(unittest.TestCase):
 
@@ -36,13 +37,17 @@ class FileReadWriterTests(unittest.TestCase):
   def test_writeStringsIndentedToFileThenAppendNewLine_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
-      filerw.writeStringsIndentedToFileThenAppendNewLine(file, 2, "asd")
+      filerw.writeStringsPrefixedToFileThenAppendNewLine(file, "prefix", "asd")
     with self.assertRaises(Exception):
-      filerw.writeStringsIndentedToFileThenAppendNewLine(file, -1, ["asd"])
+      filerw.writeStringsPrefixedToFileThenAppendNewLine(file, "prefix", None)
     with self.assertRaises(Exception):
-      filerw.writeStringsIndentedToFileThenAppendNewLine("./unitTests/temp/test.txt", 1, ["asd"])
+      filerw.writeStringsPrefixedToFileThenAppendNewLine(file, 1, ["asd"])
     with self.assertRaises(Exception):
-      filerw.writeStringsIndentedToFileThenAppendNewLine(None, 3, ["asd"])
+      filerw.writeStringsPrefixedToFileThenAppendNewLine(file, ["prefix"], ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeStringsPrefixedToFileThenAppendNewLine("./unitTests/temp/test.txt", "prefix", ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeStringsPrefixedToFileThenAppendNewLine(None, "prefix", ["asd"])
 
   def test_writeStringsIndentedToFileThenAppendNewLine_emptyList(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, [])
@@ -136,7 +141,8 @@ class FileReadWriterTests(unittest.TestCase):
 
   def helper_writeStringsIndentedToFileThenAppendNewLine(self, indent, lines):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeStringsIndentedToFileThenAppendNewLine(file, indent, lines)
+    tabs = htmlBuilder.getIndentedTab(indent)
+    filerw.writeStringsPrefixedToFileThenAppendNewLine(file, tabs, lines)
     file.close()
     return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
 
