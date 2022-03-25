@@ -74,7 +74,7 @@ def writeHtmlHeadContent(htmlFile, indentDepth):
   htmlFile.write(tabs + "<style>\n")
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineCssStyle.css", indentDepth + 1)
   htmlFile.write(tabs + "</style>\n")
-  webLibs.addFontAwesome(htmlFile, indentDepth)
+  webLibs.addFontAwesome_v611(htmlFile, indentDepth)
   webLibs.addJquery(htmlFile, indentDepth)
   webLibs.addGoogleIcons(htmlFile, indentDepth)
   webLibs.addMaterialize(htmlFile, indentDepth)

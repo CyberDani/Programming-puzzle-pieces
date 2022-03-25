@@ -1,22 +1,22 @@
 <ul id="slide-out" class="sidenav orange darken-3" >
 	<li class="menu-online-resources">
 		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-			<i class="fas fa-link"></i> Online resources
+			<i class="fa-solid fa-link fa-fw"></i> Online resources
 		</a>
 	</li>
 	<li class="menu-design-patterns">
 		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-			<i class="fas fa-puzzle-piece"></i> Design Patterns
+			<i class="fa-solid fa-puzzle-piece fa-fw"></i> Design Patterns
 		</a>
 	</li>
 	<li class="menu-book-summaries">
 		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-			<i class="fas fa-book-open"></i> Book summaries
+			<i class="fa-solid fa-book-open fa-fw"></i> Book summaries
 		</a>
 	</li>
 	<li class="menu-common-principles">
 		<a href="#!" class="waves-effect grey-text text-lighten-4" style="font-size:15px;">
-			<i class="far fa-compass"></i> Common Principles
+			<i class="fa-regular fa-compass fa-fw"></i> Common Principles
 		</a>
 	</li>
 	<!--

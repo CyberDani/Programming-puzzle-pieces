@@ -1,13 +1,13 @@
 from modules import htmlBuilder
 
-def addFontAwesome(htmlFile, indentDepth):
+def addFontAwesome_v611(htmlFile, indentDepth):
   htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, 
-                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
-					"sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==",
+                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css",
+					"sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==",
 					"anonymous", "no-referrer")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, 
-                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js",
-					"sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==",
+                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js",
+					"sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==",
 					"anonymous", "no-referrer")
 
 def addJquery(htmlFile, indentDepth):

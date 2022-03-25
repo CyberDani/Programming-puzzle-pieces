@@ -12,7 +12,7 @@
 		<ul>
 			<li><a href="https://github.com/CyberDani/Programming-puzzle-pieces/blob/master/LICENSE" 
 					class="grey-text text-lighten-3">
-				<i class="fas fa-balance-scale"></i> MIT license</a>
+				<i class="fa-solid fa-balance-scale fa-fw"></i> MIT license</a>
 			</li>
 		</ul>
 	  </div>

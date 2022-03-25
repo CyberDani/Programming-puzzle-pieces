@@ -125,7 +125,7 @@ function updateLastUpdatedTextAsync() {
 	}).done(function(resp, textStatus, jqXHR) {
 		let updatedAtMs = new Date(resp.pushed_at).getTime();
 		let githubLink = "<a href='https://github.com/CyberDani/Programming-puzzle-pieces'"
-					+ " class='teal-text text-lighten-4'><i class='fab fa-github'></i> GitHub</a>";
+					+ " class='teal-text text-lighten-4'><i class='fa-brands fa-github fa-fw'></i> GitHub</a>";
 		let durationString = getDateStringSinceMs(updatedAtMs) + " ago on " + githubLink;
 		
 		$('#githubRepoUpdatedText').html(durationString);
