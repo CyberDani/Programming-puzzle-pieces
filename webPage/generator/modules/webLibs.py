@@ -1,4 +1,5 @@
 from modules import htmlBuilder
+from modules import checks
 
 def addFontAwesome_v611(htmlFile, indentDepth):
   htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, 
@@ -30,6 +31,7 @@ def addJQueryLoadingOverlay_v217(htmlFile, indentDepth):
                     "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js")
 
 def addGoogleFont(htmlFile, indentDepth, name):
+  checks.checkIfString(name, 3, 300)
   tabs = htmlBuilder.getIndentedTab(indentDepth)
   htmlFile.write(tabs + "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n")
   htmlFile.write(tabs + "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n")
