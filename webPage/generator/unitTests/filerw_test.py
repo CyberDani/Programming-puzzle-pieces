@@ -33,6 +33,35 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(linesFromFile[0],"hello dear\n")
     self.assertEqual(linesFromFile[1],"this is the tester\n")
 
+  def test_getLinesWithEndingNewLine_1line(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLinesWithEndingNewLine(file)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0],"HEY")
+
+  def test_getLinesWithEndingNewLine_1line_1emptyLine(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY\n")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLinesWithEndingNewLine(file)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0],"HEY\n")
+
+  def test_getLinesWithEndingNewLine_2lines(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLinesWithEndingNewLine(file)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0],"hello dear\n")
+    self.assertEqual(linesFromFile[1],"this is the tester\n")
+
   def test_writeStringsIndentedToFileThenAppendNewLine_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):

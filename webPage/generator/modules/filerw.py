@@ -5,6 +5,10 @@ def getLinesByFilePathWithEndingNewLine(filePath):
   f = open(filePath, "r")
   return f.readlines()
 
+def getLinesWithEndingNewLine(file):
+  checks.checkIfFile(file)
+  return file.readlines()
+
 def writeLinesToFileThenAppendNewLine(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
