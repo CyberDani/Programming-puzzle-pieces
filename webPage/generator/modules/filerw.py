@@ -9,11 +9,18 @@ def getLinesWithEndingNewLine(file):
   checks.checkIfFile(file)
   return file.readlines()
 
+def writeLinesToFile(file, lines):
+  checks.checkIfFile(file)
+  checks.checkIfPureListOfStrings(lines)
+  n = len(lines)
+  for i in range(n):
+    file.write(lines[i])
+    if (i < n - 1):
+      file.write("\n")
+
 def writeLinesToFileThenAppendNewLine(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
-  if len(lines) == 0:
-    return
   for line in lines:
     file.write(line)
     file.write("\n")
