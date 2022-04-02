@@ -35,3 +35,13 @@ def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
     else:
       file.write("\n")
   file.write("\n")
+
+def rTrimNewLines(stringsArr):
+  checks.checkIfPureListOfStrings(stringsArr)
+  result = []
+  for string in stringsArr:
+    trimmedString = string
+    while trimmedString.endswith("\n"):
+      trimmedString = trimmedString[:-1]
+    result.append(trimmedString)
+  return result

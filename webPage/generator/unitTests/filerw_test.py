@@ -295,3 +295,63 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(readLines[0],"this is me:\n")
     self.assertEqual(readLines[1],"\tJohn Doe, VIP executor\n")
     self.assertEqual(readLines[2],"tel: 0875432123")
+
+  def test_rTrimNewLines_nonSense(self):
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines()
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines("hello")
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines(None)
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines("hey\n")
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines(False)
+    with self.assertRaises(Exception):
+      filerw.rTrimNewLines(["one", None, "three"])
+
+  def test_rTrimNewLines_emptyList(self):
+    result = filerw.rTrimNewLines([])
+    self.assertEqual(len(result), 0)
+
+  def test_rTrimNewLines_oneElement(self):
+    result = filerw.rTrimNewLines(["Hello!"])
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "Hello!")
+    result = filerw.rTrimNewLines(["\n\tHello!"])
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "\n\tHello!")
+    result = filerw.rTrimNewLines(["\n\tHello!\n"])
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "\n\tHello!")
+    result = filerw.rTrimNewLines(["Hello\n\n"])
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "Hello")
+    result = filerw.rTrimNewLines(["Hello\n\n\n\n\n\n\n"])
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0], "Hello")
+
+  def test_rTrimNewLines_twoElements(self):
+    result = filerw.rTrimNewLines(["Hello","hey\n"])
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0], "Hello")
+    self.assertEqual(result[1], "hey")
+    result = filerw.rTrimNewLines(["hey\n", "Hello\n"])
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[1], "Hello")
+    self.assertEqual(result[0], "hey")
+    result = filerw.rTrimNewLines(["Hello","hey"])
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0], "Hello")
+    self.assertEqual(result[1], "hey")
+    result = filerw.rTrimNewLines(["Hello","\n\n"])
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0], "Hello")
+    self.assertEqual(result[1], "")
+
+  def test_rTrimNewLines_threeElements(self):
+    result = filerw.rTrimNewLines(["Hello\n", "hey", "hi\n\n"])
+    self.assertEqual(len(result), 3)
+    self.assertEqual(result[0], "Hello")
+    self.assertEqual(result[1], "hey")
+    self.assertEqual(result[2], "hi")
