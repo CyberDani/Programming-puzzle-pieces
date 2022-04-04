@@ -9,6 +9,14 @@ def getLinesWithEndingNewLine(file):
   checks.checkIfFile(file)
   return file.readlines()
 
+def getLinesByFilePath(filePath):
+  linesWithNewEndingline = getLinesByFilePathWithEndingNewLine(filePath)
+  return rTrimNewLines(linesWithNewEndingline)
+
+def getLines(file):
+  linesWithNewEndingline = getLinesWithEndingNewLine(file)
+  return rTrimNewLines(linesWithNewEndingline)
+
 def writeLinesToFile(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)

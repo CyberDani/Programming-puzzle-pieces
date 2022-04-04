@@ -33,6 +33,32 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(linesFromFile[0],"hello dear\n")
     self.assertEqual(linesFromFile[1],"this is the tester\n")
 
+  def test_getLinesByFilePath_1line(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY")
+    file.close()
+    linesFromFile = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLinesByFilePath_1line_1emptyLine(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY\n")
+    file.close()
+    linesFromFile = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLinesByFilePath_2lines(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    linesFromFile = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear")
+    self.assertEqual(linesFromFile[1], "this is the tester")
+
   def test_getLinesWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")
     file.write("HEY")
@@ -61,6 +87,35 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(len(linesFromFile), 2)
     self.assertEqual(linesFromFile[0],"hello dear\n")
     self.assertEqual(linesFromFile[1],"this is the tester\n")
+
+  def test_getLines_1line(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLines(file)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLines_1line_1emptyLine(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("HEY\n")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLines(file)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLines_2lines(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    file = open("./unitTests/temp/test.txt", "r")
+    linesFromFile = filerw.getLines(file)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear")
+    self.assertEqual(linesFromFile[1], "this is the tester")
 
   def test_writeStringsIndentedToFileThenAppendNewLine_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
