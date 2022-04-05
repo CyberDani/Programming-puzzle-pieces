@@ -1,5 +1,7 @@
 from modules import checks
 
+###### Reads ######
+
 def getLinesByFilePathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)
   f = open(filePath, "r")
@@ -17,6 +19,8 @@ def getLines(file):
   linesWithNewEndingline = getLinesWithEndingNewLine(file)
   return rTrimNewLines(linesWithNewEndingline)
 
+###### Writes ######
+
 def writeLinesToFile(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
@@ -26,12 +30,24 @@ def writeLinesToFile(file, lines):
     if (i < n - 1):
       file.write("\n")
 
+def writeLinesToFileByFilePath(filePath, lines):
+  checks.checkIfString(filePath, 2, 300)
+  file = open(filePath, "w")
+  writeLinesToFile(file, lines)
+  file.close()
+
 def writeLinesToFileThenAppendNewLine(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
   for line in lines:
     file.write(line)
     file.write("\n")
+
+def writeLinesToFileByFilePathThenAppendNewLine(filePath, lines):
+  checks.checkIfString(filePath, 2, 300)
+  file = open(filePath, "w")
+  writeLinesToFileThenAppendNewLine(file, lines)
+  file.close()
 
 def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfFile(file)
@@ -43,6 +59,8 @@ def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
     else:
       file.write("\n")
   file.write("\n")
+
+###### Helper functions ######
 
 def rTrimNewLines(stringsArr):
   checks.checkIfPureListOfStrings(stringsArr)
