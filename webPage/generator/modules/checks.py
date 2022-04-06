@@ -1,4 +1,17 @@
 import io
+import json
+
+def checkIfValidJsonFile(file):
+  checkIfFile(file)
+  try:
+    return json.load(file)
+  except ValueError as e:
+    raise Exception('Invalid json: {0}'.format(e))
+
+def checkIfValidJsonFileByFilePath(filePath):
+  checkIfString(filePath, 2, 300)
+  f = open(filePath, "r")
+  return checkIfValidJsonFile(f)
 
 def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   checkIfList(listVar)
