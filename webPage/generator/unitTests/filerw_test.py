@@ -1,3 +1,4 @@
+import os
 import sys
 import unittest
 
@@ -6,6 +7,28 @@ from modules import filerw
 from modules import htmlBuilder
 
 class FileReadWriterTests(unittest.TestCase):
+
+  def test_fileExists_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.fileExists(file)
+    with self.assertRaises(Exception):
+      filerw.fileExists("")
+    with self.assertRaises(Exception):
+      filerw.fileExists()
+    with self.assertRaises(Exception):
+      filerw.fileExists(None)
+    with self.assertRaises(Exception):
+      filerw.fileExists(23)
+    with self.assertRaises(Exception):
+      filerw.fileExists(False)
+
+  def test_fileExists_example(self):
+    file = open("./unitTests/temp/testFile.txt", "w")
+    file.close()
+    self.assertTrue(filerw.fileExists("./unitTests/temp/testFile.txt"))
+    os.remove("./unitTests/temp/testFile.txt")
+    self.assertFalse(filerw.fileExists("./unitTests/temp/testFile.txt"))
 
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")

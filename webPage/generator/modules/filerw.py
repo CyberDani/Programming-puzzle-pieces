@@ -1,6 +1,12 @@
+import os
+
 from modules import checks
 
 ###### Reads ######
+
+def fileExists(filePath):
+  checks.checkIfString(filePath, 2, 300)
+  return os.path.isfile(filePath)
 
 def getLinesByFilePathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)

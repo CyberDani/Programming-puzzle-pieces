@@ -241,6 +241,8 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath(file)
     with self.assertRaises(Exception):
+      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/notExistingFile.extension")
+    with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath(None)
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath(12)
