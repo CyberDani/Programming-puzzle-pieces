@@ -3,12 +3,13 @@ import sys
 import unittest
 
 from modules import argumentParser
+from modules import buildType
 from modules import htmlBuilder
 from modules import webLibs
 
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
-  invalidUsage, runUnitTests, backupAndGenerate = argumentParser.parseArguments(args)
+  invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
   if invalidUsage:
     print(" [!] Invalid command")
     argumentParser.displayScriptUsage()
@@ -23,8 +24,8 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
       return
     else:
       print('\n - ALL UNIT TESTS PASSED -\n')
-  if backupAndGenerate:
-    backupAndGenerateNewHtmlOutputFile()
+  if buildOption != buildType.buildType.DO_NOT_BUILD:
+    backupAndGenerateNewHtmlOutputFile(buildOption)
   else:
     print("No backup or generation was made")
 
@@ -39,32 +40,32 @@ def collectAndRunUnitTests():
   return result
 
 # this is the main function being run
-def backupAndGenerateNewHtmlOutputFile():
+def backupAndGenerateNewHtmlOutputFile(buildOption):
   print('[2]. Backup all files before generating new ones . . .')
   backupIndexHtml()
   print('[3]. Generate HTML files . . .')
-  generateHtmlOutputFile()
+  generateHtmlOutputFile(buildOption)
 
 def backupIndexHtml():
   os.replace("../../index.html", "./backup/index.html")
 
-def generateHtmlOutputFile():
+def generateHtmlOutputFile(buildOption):
   htmlOutputFilePath = "../../index.html"
   htmlFile = open(htmlOutputFilePath, "w")
-  writeHtmlContentToFile(htmlFile)
+  writeHtmlContentToFile(htmlFile, buildOption)
 
-def writeHtmlContentToFile(htmlFile):
+def writeHtmlContentToFile(htmlFile, buildOption):
   htmlFile.write("<html>\n")
   htmlFile.write("\t<head>\n")
-  writeHtmlHeadContent(htmlFile, 2)
+  writeHtmlHeadContent(htmlFile, buildOption, 2)
   htmlFile.write("\t</head>\n")
   htmlFile.write("\t<body>\n")
-  writeHtmlBodyContent(htmlFile, 2)
+  writeHtmlBodyContent(htmlFile, buildOption, 2)
   htmlFile.write("\t</body>\n")
   htmlFile.write("</html>\n")
 
 # <head>
-def writeHtmlHeadContent(htmlFile, indentDepth):
+def writeHtmlHeadContent(htmlFile, buildOption, indentDepth):
   tabs = htmlBuilder.getIndentedTab(indentDepth)
   # TODO: see what is worth to add as a configuration
   htmlFile.write(tabs + "<title>Programming puzzle-pieces</title>\n")
@@ -82,7 +83,7 @@ def writeHtmlHeadContent(htmlFile, indentDepth):
   webLibs.addJQueryLoadingOverlay_v217(htmlFile, indentDepth)
 
 # <body>
-def writeHtmlBodyContent(htmlFile, indentDepth):
+def writeHtmlBodyContent(htmlFile, buildOption, indentDepth):
   tabs = htmlBuilder.getIndentedTab(indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topNav.txt", indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/sideNav.txt", indentDepth)
