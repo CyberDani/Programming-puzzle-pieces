@@ -31,9 +31,9 @@ class WebReqTests(unittest.TestCase):
     self.assertTrue(len(html) > 300)
 
   def test_getstatusCodeEncodingAndHtmlFromUrl_404(self):
-    statusCode, encoding, html = webReq.getstatusCodeEncodingAndHtmlFromUrl("https://www.youtube.com/q1w2e3r4t5")
+    statusCode, encoding, html = webReq.getstatusCodeEncodingAndHtmlFromUrl("https://www.google.com/asdfeogeroiyfgwieuapfbi")
     self.assertEqual(statusCode, 404)
-    self.assertEqual(encoding, "utf-8")
+    self.assertEqual(encoding.lower(), "utf-8")
     self.assertTrue(len(html) > 300)
 
   def test_downloadFromUrlToFile_nonSense(self):
@@ -53,13 +53,15 @@ class WebReqTests(unittest.TestCase):
     self.assertFalse(filerw.fileExists("./unitTests/temp/logo.binary"))
 
   def test_downloadFromUrlToFile_incorrectUrl(self):
+    if filerw.fileExists("./unitTests/temp/download.binary"):
+      os.remove("./unitTests/temp/download.binary")
     with self.assertRaises(Exception):
-      statusCode, encoding, html = webReq.downloadFromUrlToFileIfStatusIs200("http://www.asdsasdsadasdas.qweqwe.com", "./unitTests/temp/download.binary")
+      statusCode, encoding, html = webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi", "./unitTests/temp/download.binary")
     self.assertFalse(filerw.fileExists("./unitTests/temp/download.binary"))
 
   def test_downloadFromUrlToFile_404(self):
     with self.assertRaises(Exception):
-      webReq.downloadFromUrlToFileIfStatusIs200("https://www.youtube.com/q1w2e3r4t5", "./unitTests/temp/download.binary")
+      webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi", "./unitTests/temp/download.binary")
 
   def test_downloadFromUrlToFile_correctUrl200(self):
     webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png", "./unitTests/temp/download.png")
