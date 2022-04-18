@@ -1,9 +1,11 @@
 import sys
 
 from modules import buildType
+from modules import checks
 
 # args excludes the name of the script
 def parseArguments(args):
+  checks.checkIfPureListOfStrings(args)
   argsSize = len(args)
   invalidUsage = True
   runUnitTests = False

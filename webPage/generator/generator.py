@@ -4,6 +4,7 @@ import unittest
 
 from modules import argumentParser
 from modules import buildType
+from modules import counter
 from modules import htmlBuilder
 from modules import webLibs
 
@@ -14,8 +15,9 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     print(" [!] Invalid command")
     argumentParser.displayScriptUsage()
     return
+  stepsCounter = counter.SimpleCounter(1)
   if runUnitTests:
-    print('[1]. Validate unit tests . . .\n')
+    print(stepsCounter.getNextMessage('Validate unit tests . . .\n'))
     unitTestsResult = collectAndRunUnitTests()
     # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
     if not unitTestsResult.wasSuccessful():
@@ -25,7 +27,7 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     else:
       print('\n - ALL UNIT TESTS PASSED -\n')
   if buildOption != buildType.buildType.DO_NOT_BUILD:
-    backupAndGenerateNewHtmlOutputFile(buildOption)
+    backupAndGenerateNewHtmlOutputFile(stepsCounter, buildOption)
   else:
     print("No backup or generation was made")
 
@@ -40,10 +42,10 @@ def collectAndRunUnitTests():
   return result
 
 # this is the main function being run
-def backupAndGenerateNewHtmlOutputFile(buildOption):
-  print('[2]. Backup all files before generating new ones . . .')
+def backupAndGenerateNewHtmlOutputFile(stepsCounter, buildOption):
+  print(stepsCounter.getNextMessage('Backup all files before generating new ones . . .'))
   backupIndexHtml()
-  print('[3]. Generate HTML files . . .')
+  print(stepsCounter.getNextMessage('Generate HTML files . . .'))
   generateHtmlOutputFile(buildOption)
 
 def backupIndexHtml():
