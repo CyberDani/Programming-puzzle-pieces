@@ -10,9 +10,9 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       stringUtil.getStringStartsWithEndsWithNoOverlap(None, None, None)
     with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("", "Mozzart", "Bach")
+      stringUtil.getStringStartsWithEndsWithNoOverlap("", "Mozart", "Bach")
     with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("X", "Mozzart", "Bach")
+      stringUtil.getStringStartsWithEndsWithNoOverlap("X", "Mozart", "Bach")
     with self.assertRaises(Exception):
       stringUtil.getStringStartsWithEndsWithNoOverlap("", "", "")
     with self.assertRaises(Exception):
