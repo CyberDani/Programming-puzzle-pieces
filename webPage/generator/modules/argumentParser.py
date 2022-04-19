@@ -9,7 +9,7 @@ def parseArguments(args):
   argsSize = len(args)
   invalidUsage = True
   runUnitTests = False
-  buildOption = buildType.buildType.DO_NOT_BUILD
+  buildOption = buildType.BuildType.DO_NOT_BUILD
   if argsSize == 0 or argsSize > 1:
     return invalidUsage, runUnitTests, buildOption
   firstArg = args[0]
@@ -20,12 +20,12 @@ def parseArguments(args):
   if firstArg == "-b":
     invalidUsage = False
     runUnitTests = True
-    buildOption = buildType.buildType.BUILD
+    buildOption = buildType.BuildType.BUILD
     return invalidUsage, runUnitTests, buildOption
   if firstArg == "-rb":
     invalidUsage = False
     runUnitTests = True
-    buildOption = buildType.buildType.REBUILD
+    buildOption = buildType.BuildType.REBUILD
     return invalidUsage, runUnitTests, buildOption
   return invalidUsage, runUnitTests, buildOption
 

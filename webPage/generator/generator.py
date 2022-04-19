@@ -26,7 +26,7 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
       return
     else:
       print('\n - ALL UNIT TESTS PASSED -\n')
-  if buildOption != buildType.buildType.DO_NOT_BUILD:
+  if buildOption != buildType.BuildType.DO_NOT_BUILD:
     backupAndGenerateNewHtmlOutputFile(stepsCounter, buildOption)
   else:
     print("No backup or generation was made")
@@ -43,7 +43,7 @@ def collectAndRunUnitTests():
 
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFile(stepsCounter, buildOption):
-  print(stepsCounter.getNextMessage('Backup all files before generating new ones . . .'))
+  print(stepsCounter.getNextMessage('Backup all HTML files . . .'))
   backupIndexHtml()
   print(stepsCounter.getNextMessage('Generate HTML files . . .'))
   generateHtmlOutputFile(buildOption)

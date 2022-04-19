@@ -8,39 +8,51 @@ from modules import buildType
 
 class ArgumentParserTests(unittest.TestCase):
 
+  def test_nonSense(self):
+    with self.assertRaises(Exception):
+      argumentParser.parseArguments(["hello", False])
+    with self.assertRaises(Exception):
+      argumentParser.parseArguments([False, False])
+    with self.assertRaises(Exception):
+      argumentParser.parseArguments(["hello", "arg2", None, "arg4"])
+    with self.assertRaises(Exception):
+      argumentParser.parseArguments([12, "one", "two", "three"])
+    with self.assertRaises(Exception):
+      argumentParser.parseArguments("-b -a")
+
   def test_noArgument(self):
     args = []
     invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
-    self.assertEqual(buildOption, buildType.buildType.DO_NOT_BUILD)
+    self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
 
   def test_unitTestSingleArgument(self):
     args = ['-u']
     invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
-    self.assertEqual(buildOption, buildType.buildType.DO_NOT_BUILD)
+    self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
 
   def test_build(self):
     args = ['-b']
     invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
-    self.assertEqual(buildOption, buildType.buildType.BUILD)
+    self.assertEqual(buildOption, buildType.BuildType.BUILD)
 
   def test_rebuild(self):
     args = ['-rb']
     invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
-    self.assertEqual(buildOption, buildType.buildType.REBUILD)
+    self.assertEqual(buildOption, buildType.BuildType.REBUILD)
 
   def invalidArgumentCheck(self, args):
     invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
-    self.assertEqual(buildOption, buildType.buildType.DO_NOT_BUILD)
+    self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
 
   def test_invalidArguments(self):
     self.invalidArgumentCheck(['-A'])

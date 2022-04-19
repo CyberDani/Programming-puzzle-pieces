@@ -7,6 +7,18 @@ from modules import counter
 
 class CounterTests(unittest.TestCase):
 
+  def test_initNonSens(self):
+    with self.assertRaises(Exception):
+      counter.SimpleCounter(-234)
+    with self.assertRaises(Exception):
+      counter.SimpleCounter()
+    with self.assertRaises(Exception):
+      counter.SimpleCounter(None)
+    with self.assertRaises(Exception):
+      counter.SimpleCounter(False)
+    with self.assertRaises(Exception):
+      counter.SimpleCounter("zero")
+
   def test_getNextInt(self):
     count = counter.SimpleCounter(4)
     val = count.getNextInt()
