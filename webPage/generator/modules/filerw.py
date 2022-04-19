@@ -1,6 +1,7 @@
 import os
 
 from modules import checks
+from modules import stringUtil
 
 ###### Reads ######
 
@@ -72,8 +73,5 @@ def rTrimNewLines(stringsArr):
   checks.checkIfPureListOfStrings(stringsArr)
   result = []
   for string in stringsArr:
-    trimmedString = string
-    while trimmedString.endswith("\n"):
-      trimmedString = trimmedString[:-1]
-    result.append(trimmedString)
+    result.append(stringUtil.rTrimNewLines(string))
   return result

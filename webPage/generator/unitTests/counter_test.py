@@ -7,7 +7,7 @@ from modules import counter
 
 class CounterTests(unittest.TestCase):
 
-  def test_initNonSens(self):
+  def test_initNonSense(self):
     with self.assertRaises(Exception):
       counter.SimpleCounter(-234)
     with self.assertRaises(Exception):

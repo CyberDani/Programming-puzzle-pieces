@@ -75,3 +75,45 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(ans, "bcabcQWAEa")
     ans = stringUtil.getStringStartsWithEndsWithNoOverlap("abcabcQWAEabcabc", "abc", "abc")
     self.assertEqual(ans, "abcabc")
+
+  def test_rTrimNewLines_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.rTrimNewLines()
+    with self.assertRaises(Exception):
+      stringUtil.rTrimNewLines(["hello"])
+    with self.assertRaises(Exception):
+      stringUtil.rTrimNewLines(True)
+    with self.assertRaises(Exception):
+      stringUtil.rTrimNewLines(None)
+
+  def test_rTrimNewLines_examples(self):
+    ans = stringUtil.rTrimNewLines("")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("X")
+    self.assertEqual(ans, "X")
+    ans = stringUtil.rTrimNewLines("heLLo")
+    self.assertEqual(ans, "heLLo")
+    ans = stringUtil.rTrimNewLines("\n")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("\r\n")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("\n\n")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("\r\n\r\n")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("\r\r\r")
+    self.assertEqual(ans, "")
+    ans = stringUtil.rTrimNewLines("hey!\n")
+    self.assertEqual(ans, "hey!")
+    ans = stringUtil.rTrimNewLines("\r\nwinLine\r\n")
+    self.assertEqual(ans, "\r\nwinLine")
+    ans = stringUtil.rTrimNewLines("winLine\r\n")
+    self.assertEqual(ans, "winLine")
+    ans = stringUtil.rTrimNewLines("firstRow\r\nsecondRow\r\n")
+    self.assertEqual(ans, "firstRow\r\nsecondRow")
+    ans = stringUtil.rTrimNewLines("\nfirstRow\n\r\nsecondRow\r\n")
+    self.assertEqual(ans, "\nfirstRow\n\r\nsecondRow")
+    ans = stringUtil.rTrimNewLines("\nfirstRow\n\r\nsecondRow\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n")
+    self.assertEqual(ans, "\nfirstRow\n\r\nsecondRow")
+    ans = stringUtil.rTrimNewLines("\n\nfirstRow\n\r\n\nsecondRow\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n")
+    self.assertEqual(ans, "\n\nfirstRow\n\r\n\nsecondRow")
