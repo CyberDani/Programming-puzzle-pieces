@@ -3,7 +3,8 @@ import sys
 
 sys.path.append('..')
 
-from modules import buildType
+from defTypes import buildType
+
 
 class BuildTypeTests(unittest.TestCase):
 

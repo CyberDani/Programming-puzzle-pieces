@@ -4,7 +4,10 @@ import sys
 sys.path.append('..')
 
 from modules import argumentParser
-from modules import buildType
+from modules import db
+from defTypes import dbBranchType
+from defTypes import buildType
+
 
 class ArgumentParserTests(unittest.TestCase):
 
@@ -22,44 +25,101 @@ class ArgumentParserTests(unittest.TestCase):
 
   def test_noArgument(self):
     args = []
-    invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
+    # not interested in actual value of dbBranch in this case
+    self.assertTrue(dbBranch == dbBranchType.DbBranchType.MASTER or dbBranch == dbBranchType.DbBranchType.DEVEL)
 
   def test_unitTestSingleArgument(self):
     args = ['-u']
-    invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
+    self.assertEqual(dbBranch, db.getCurrentDbBranch())
+
+  def test_unitTest_dbMaster(self):
+    args = ['-u', 'db:master']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
+
+  def test_unitTest_dbDevel(self):
+    args = ['-u', 'db:devel']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def test_build(self):
     args = ['-b']
-    invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
     self.assertEqual(buildOption, buildType.BuildType.BUILD)
+    self.assertEqual(dbBranch, db.getCurrentDbBranch())
+
+  def test_build_dbMaster(self):
+    args = ['-b','db:master']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.BUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
+
+  def test_build_dbDevel(self):
+    args = ['-b','db:devel']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.BUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def test_rebuild(self):
     args = ['-rb']
-    invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
     self.assertEqual(buildOption, buildType.BuildType.REBUILD)
+    self.assertEqual(dbBranch, db.getCurrentDbBranch())
+
+  def test_rebuild_dbMaster(self):
+    args = ['-rb','db:master']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.REBUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
+
+  def test_rebuild_dbDevel(self):
+    args = ['-rb','db:devel']
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    self.assertFalse(invalidUsage)
+    self.assertTrue(runUnitTests)
+    self.assertEqual(buildOption, buildType.BuildType.REBUILD)
+    self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def invalidArgumentCheck(self, args):
-    invalidUsage, runUnitTests, buildOption = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
+    # not interested in actual value of dbBranch in this case
+    self.assertTrue(dbBranch == dbBranchType.DbBranchType.MASTER or dbBranch == dbBranchType.DbBranchType.DEVEL)
 
   def test_invalidArguments(self):
     self.invalidArgumentCheck(['-A'])
     self.invalidArgumentCheck(['-B'])
     self.invalidArgumentCheck(['-U'])
+    self.invalidArgumentCheck(['-U','db:master'])
     self.invalidArgumentCheck(['b'])
     self.invalidArgumentCheck(['a'])
+    self.invalidArgumentCheck(['a', 'db:devel'])
     self.invalidArgumentCheck(['-a'])
     self.invalidArgumentCheck(['u'])
     self.invalidArgumentCheck(['au'])
@@ -79,6 +139,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.invalidArgumentCheck(['-a','-idk'])
     self.invalidArgumentCheck(['-b','-idk'])
     self.invalidArgumentCheck(['-u','-idk'])
+    self.invalidArgumentCheck(['-u','db:nonExistingBranch'])
     self.invalidArgumentCheck(['x'])
     self.invalidArgumentCheck(['-x'])
     self.invalidArgumentCheck(['-x','file.yaml'])
@@ -86,3 +147,6 @@ class ArgumentParserTests(unittest.TestCase):
     self.invalidArgumentCheck(['-x','-y','file.txt'])
     self.invalidArgumentCheck(['text','-y','-file'])
     self.invalidArgumentCheck(['-x','-y','-z','-alpha','-beta','-gamma'])
+    self.invalidArgumentCheck(['db:master','db:devel'])
+    self.invalidArgumentCheck(['db:master','-u'])
+    self.invalidArgumentCheck(['db:master'])
