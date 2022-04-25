@@ -57,25 +57,14 @@ def backupFiles(stepsCounter):
 
 def generateNewHtmlOutputFile(settings):
   print(settings.stepsCounter.getNextMessage('Generate HTML files . . .'))
-  writeIndexHtmlToFile(settings)
+  htmlBuilder.writeIndexHtmlToFile(writeHtmlHeadContent, writeHtmlBodyContent, settings)
 
 def backupIndexHtml():
   os.replace("../../index.html", "./backup/index.html")
 
-def writeIndexHtmlToFile(settings):
-  htmlFile = settings.htmlOutputFile
-  htmlFile.write("<html>\n")
-  htmlFile.write("\t<head>\n")
-  writeHtmlHeadContent(settings)
-  htmlFile.write("\t</head>\n")
-  htmlFile.write("\t<body>\n")
-  writeHtmlBodyContent(settings)
-  htmlFile.write("\t</body>\n")
-  htmlFile.write("</html>\n")
-
 # <head>
 def writeHtmlHeadContent(settings):
-  tabs = htmlBuilder.getIndentedTab(settings.indentDepth)
+  tabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
   htmlFile = settings.htmlOutputFile
   # TODO: see what is worth to add as a configuration
   htmlFile.write(tabs + "<title>Programming puzzle-pieces</title>\n")
@@ -95,7 +84,7 @@ def writeHtmlHeadContent(settings):
 # <body>
 def writeHtmlBodyContent(settings):
   htmlFile = settings.htmlOutputFile
-  tabs = htmlBuilder.getIndentedTab(settings.indentDepth)
+  tabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topNav.txt", settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/sideNav.txt", settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topQuote.txt", settings.indentDepth)

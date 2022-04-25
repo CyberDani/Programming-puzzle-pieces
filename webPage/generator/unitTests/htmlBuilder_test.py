@@ -3,8 +3,27 @@ import sys
 import unittest
 
 sys.path.append('..')
+from defTypes import buildType
+from defTypes import dbBranchType
+from defTypes import buildSettings
 from modules import htmlBuilder
 from modules import filerw
+from modules import counter
+
+
+def emptyHtmlHeadContent(settings):
+  a = 2
+
+def emptyHtmlBodyContent(settings):
+  a = 2
+
+def minimalistHtmlHeadContent(settings):
+  htmlTabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<title>Hey!</title>"])
+
+def minimalistHtmlBodyContent(settings):
+  htmlTabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<h1>Hello!</h1>"])
 
 class HtmlBuilderTests(unittest.TestCase):
 
@@ -12,29 +31,81 @@ class HtmlBuilderTests(unittest.TestCase):
     if not os.path.exists('./unitTests/temp'):
       os.makedirs('./unitTests/temp')
 
-  def test_getIndentedTabRaisesExceptionWhenAskingNonSense(self):
+  def test_writeIndexHtmlToFile_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    settings = buildSettings.BuildSettings(htmlOutputFile=file,
+                                           buildOption=buildType.BuildType.BUILD,
+                                           dbBranch=dbBranchType.DbBranchType.DEVEL,
+                                           stepsCounter=counter.SimpleCounter(1),
+                                           indentDepth=2)
     with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(0)
+      htmlBuilder.writeIndexHtmlToFile("hello", "hello", settings)
     with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(-1)
+      htmlBuilder.writeIndexHtmlToFile(None, None, settings)
     with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(-10)
-    with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(124)
-    with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab('hello')
-    with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(False)
-    with self.assertRaises(Exception):
-      htmlBuilder.getIndentedTab(None)
+      htmlBuilder.writeIndexHtmlToFile(True, False, settings)
 
-  def test_getIndentedTabWithNormalValues(self):
-    self.assertEqual(htmlBuilder.getIndentedTab(1),'\t')
-    self.assertEqual(htmlBuilder.getIndentedTab(2),'\t\t')
-    self.assertEqual(htmlBuilder.getIndentedTab(3),'\t\t\t')
-    self.assertEqual(htmlBuilder.getIndentedTab(4),'\t\t\t\t')
-    self.assertEqual(htmlBuilder.getIndentedTab(5),'\t\t\t\t\t')
-    self.assertEqual(htmlBuilder.getIndentedTab(10),'\t\t\t\t\t\t\t\t\t\t')
+  def test_writeIndexHtmlToFile_emptyHtml(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    settings = buildSettings.BuildSettings(htmlOutputFile=file,
+                                           buildOption=buildType.BuildType.BUILD,
+                                           dbBranch=dbBranchType.DbBranchType.DEVEL,
+                                           stepsCounter=counter.SimpleCounter(1),
+                                           indentDepth=2)
+    htmlBuilder.writeIndexHtmlToFile(emptyHtmlHeadContent, emptyHtmlBodyContent, settings)
+    file.close()
+    emptyHtmlLines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(emptyHtmlLines), 6)
+    self.assertEqual(emptyHtmlLines[0], "<html>")
+    self.assertEqual(emptyHtmlLines[1], "\t<head>")
+    self.assertEqual(emptyHtmlLines[2], "\t</head>")
+    self.assertEqual(emptyHtmlLines[3], "\t<body>")
+    self.assertEqual(emptyHtmlLines[4], "\t</body>")
+    self.assertEqual(emptyHtmlLines[5], "</html>")
+
+  def test_writeIndexHtmlToFile_minimalistHtml(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    settings = buildSettings.BuildSettings(htmlOutputFile=file,
+                                           buildOption=buildType.BuildType.BUILD,
+                                           dbBranch=dbBranchType.DbBranchType.DEVEL,
+                                           stepsCounter=counter.SimpleCounter(1),
+                                           indentDepth=2)
+    htmlBuilder.writeIndexHtmlToFile(minimalistHtmlHeadContent, minimalistHtmlBodyContent, settings)
+    file.close()
+    emptyHtmlLines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(emptyHtmlLines), 8)
+    self.assertEqual(emptyHtmlLines[0], "<html>")
+    self.assertEqual(emptyHtmlLines[1], "\t<head>")
+    self.assertEqual(emptyHtmlLines[2], "\t\t<title>Hey!</title>")
+    self.assertEqual(emptyHtmlLines[3], "\t</head>")
+    self.assertEqual(emptyHtmlLines[4], "\t<body>")
+    self.assertEqual(emptyHtmlLines[5], "\t\t<h1>Hello!</h1>")
+    self.assertEqual(emptyHtmlLines[6], "\t</body>")
+    self.assertEqual(emptyHtmlLines[7], "</html>")
+
+  def test_getHtmlTabsRaisesExceptionWhenAskingNonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(0)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(-1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(-10)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(124)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs('hello')
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(False)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTabs(None)
+
+  def test_getHtmlTabsWithNormalValues(self):
+    self.assertEqual(htmlBuilder.getHtmlTabs(1), '\t')
+    self.assertEqual(htmlBuilder.getHtmlTabs(2), '\t\t')
+    self.assertEqual(htmlBuilder.getHtmlTabs(3), '\t\t\t')
+    self.assertEqual(htmlBuilder.getHtmlTabs(4), '\t\t\t\t')
+    self.assertEqual(htmlBuilder.getHtmlTabs(5), '\t\t\t\t\t')
+    self.assertEqual(htmlBuilder.getHtmlTabs(10), '\t\t\t\t\t\t\t\t\t\t')
 
   def test_getHtmlNewLines_nonsense(self):
     with self.assertRaises(Exception):

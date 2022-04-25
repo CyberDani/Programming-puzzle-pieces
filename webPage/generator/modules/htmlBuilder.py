@@ -1,10 +1,23 @@
 from modules import checks
 from modules import filerw
 
+# <html><head> [headWriter()] </head><body> [bodyWriter()] </body></html>
+def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
+  htmlFile = settings.htmlOutputFile
+  settings.indentDepth = 2
+  htmlFile.write("<html>\n")
+  htmlFile.write("\t<head>\n")
+  indexHtmlHeadWriterFunction(settings)
+  htmlFile.write("\t</head>\n")
+  htmlFile.write("\t<body>\n")
+  indexHtmlBodyWriterFunction(settings)
+  htmlFile.write("\t</body>\n")
+  htmlFile.write("</html>\n")
+
 # file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
   lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
-  tabs = getIndentedTab(indentDepth)
+  tabs = getHtmlTabs(indentDepth)
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
 # <script src=".js" />   ->  file
@@ -27,7 +40,7 @@ def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerp
   #"a.io/s.js" -> length 9
   checks.checkIfString(url, 9, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
-  tabs = getIndentedTab(indentDepth)
+  tabs = getHtmlTabs(indentDepth)
   result = [tabs + "<script src=\"" + url + "\""]
   if (integrity is None):
     result[0] += "></script>"
@@ -43,7 +56,7 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
   #"a.io/s.css" -> length 10
   checks.checkIfString(url, 10, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
-  tabs = getIndentedTab(indentDepth)
+  tabs = getHtmlTabs(indentDepth)
   result = [tabs + "<link href=\"" + url + "\""]
   tabs += "\t"
   if (integrity is None):
@@ -60,7 +73,7 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
   checks.checkIntIsBetween(nrOfNewLines, 1, 50)
-  result = getIndentedTab(indentDepth)
+  result = getHtmlTabs(indentDepth)
   for i in range(nrOfNewLines):
     result += "<br\>"
     if i != nrOfNewLines - 1:
@@ -68,7 +81,7 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
   return result
 
 # \t\t\t
-def getIndentedTab(indentDepth):
+def getHtmlTabs(indentDepth):
   checks.checkIntIsBetween(indentDepth, 1, 50)
   ans=""; 
   for i in range(indentDepth):

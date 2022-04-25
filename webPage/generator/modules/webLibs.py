@@ -32,7 +32,7 @@ def addJQueryLoadingOverlay_v217(htmlFile, indentDepth):
 
 def addGoogleFont(htmlFile, indentDepth, name):
   checks.checkIfString(name, 3, 300)
-  tabs = htmlBuilder.getIndentedTab(indentDepth)
+  tabs = htmlBuilder.getHtmlTabs(indentDepth)
   htmlFile.write(tabs + "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n")
   htmlFile.write(tabs + "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n")
   htmlFile.write(tabs + "<link href=\"https://fonts.googleapis.com/css2" + name +"\" rel=\"stylesheet\">\n")
