@@ -69,7 +69,7 @@ def writeHtmlHeadContent(settings):
   htmlFile = settings.htmlOutputFile
   # TODO: see what is worth to add as a configuration
   htmlBuilder.addTitleToHtmlOutputFile(htmlFile, "Programming puzzle-pieces", settings.indentDepth)
-  htmlFile.write(tabs + "<link rel=\"icon\" href=\"./webPage/images/favicon.png\">\n")
+  htmlBuilder.addFaviconToHtmlOutputFile(htmlFile, "./webPage/images/favicon.png", settings.indentDepth)
   # website is optimized for mobile
   htmlFile.write(tabs + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n")
   htmlFile.write(tabs + "<style>\n")

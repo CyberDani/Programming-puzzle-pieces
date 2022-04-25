@@ -40,6 +40,11 @@ def addTitleToHtmlOutputFile(htmlFile, titleString, indentDepth):
   htmlTitle = getHtmlTitle(titleString, indentDepth)
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlTitle])
 
+# <link rel="icon" href="favicon.png">  ->  file
+def addFaviconToHtmlOutputFile(htmlFile, faviconPath, indentDepth):
+  htmlFavicon = getHtmlFavicon(faviconPath, indentDepth)
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlFavicon])
+
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   #"a.io/s.js" -> length 9
@@ -73,6 +78,14 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
   # integrity deserves its own line because usually it is a long string
   result.append(tabs + "integrity=\"" + integrity + "\"")
   result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
+  return result
+
+# <link rel="icon" href="favicon.png">
+def getHtmlFavicon(faviconPath, indentDepth):
+  checks.checkIntIsBetween(indentDepth, 1, 150)
+  checks.checkIfString(faviconPath, 3, 300)
+  result = getHtmlTabs(indentDepth)
+  result += "<link rel=\"icon\" href=\"" + faviconPath + "\">"
   return result
 
 # <title> page title </title>

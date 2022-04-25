@@ -187,6 +187,35 @@ class HtmlBuilderTests(unittest.TestCase):
       self.assertEqual(len(readLines),1)
       self.assertEqual(readLines[0],newLines + "\n")
 
+  def test_addFaviconToHtmlOutputFile_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, "favicon.png", -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, "/img/fav.ico", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, "./images/f.png", True)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, None, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, 34, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, False, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile(file, "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addFaviconToHtmlOutputFile("./unitTests/temp/test.txt", "myFavicon.ico", 2)
+
+  def test_addFaviconToHtmlOutputFile_examples(self):
+    for indent in [3, 4, 5]:
+      for favicon in ["fav.png", "./media/img/icon.ico", "../../myFavIcon.jpg"]:
+        file = open("./unitTests/temp/test.txt", "w")
+        htmlBuilder.addFaviconToHtmlOutputFile(file, favicon, indent)
+        file.close()
+        line = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+        self.assertEqual(len(line), 1)
+        self.assertEqual(line[0], htmlBuilder.getHtmlFavicon(favicon, indent))
+
   def test_addTitleToHtmlOutputFile_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
@@ -313,6 +342,31 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
+
+  def test_getHtmlFavicon_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon("favicon.ico", -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon("fav.png", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon("images/favicon.ico", True)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon(None, 1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon(34, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon(False, 3)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon("", 4)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlFavicon("X", 5)
+
+  def test_getHtmlFavicon_examples(self):
+    self.assertEqual(htmlBuilder.getHtmlFavicon("favicon.png", 1), "\t<link rel=\"icon\" href=\"favicon.png\">")
+    self.assertEqual(htmlBuilder.getHtmlFavicon("/images/fav.ico", 2),
+                     "\t\t<link rel=\"icon\" href=\"/images/fav.ico\">")
+    self.assertEqual(htmlBuilder.getHtmlFavicon("../media/img/F.ico", 3),
+                     "\t\t\t<link rel=\"icon\" href=\"../media/img/F.ico\">")
 
   def test_getHtmlTitle_nonSense(self):
     with self.assertRaises(Exception):
