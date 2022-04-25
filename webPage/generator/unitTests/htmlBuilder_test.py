@@ -245,6 +245,24 @@ class HtmlBuilderTests(unittest.TestCase):
         self.assertEqual(len(line), 1)
         self.assertEqual(line[0], htmlBuilder.getHtmlTitle(title, indent))
 
+  def test_addMetaScreenOptimizedForMobileToHtmlOutputFile_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, -3)
+    with self.assertRaises(Exception):
+      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, "2")
+    with self.assertRaises(Exception):
+      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile("./unitTests/temp/test.txt", 2)
+
+  def test_addMetaScreenOptimizedForMobileToHtmlOutputFile_examples(self):
+    for indent in range(1,5):
+      file = open("./unitTests/temp/test.txt", "w")
+      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, indent)
+      file.close()
+      lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+      self.assertEqual(len(lines), 1)
+      self.assertEqual(lines[0], htmlBuilder.getMetaScreenOptimizedForMobile(indent))
+
   def test_getCssLinkHref_nonsense(self):
     with self.assertRaises(Exception):
       htmlBuilder.getCssLinkHref(indentDepth=-3, url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
@@ -451,7 +469,33 @@ class HtmlBuilderTests(unittest.TestCase):
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
 
-  def test_includeFileToHtmlOutputFile_nonsense(self):
+  def test_getMetaScreenOptimizedForMobile_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile(-1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile(None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile(False)
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile("zero")
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile("")
+    with self.assertRaises(Exception):
+      htmlBuilder.getMetaScreenOptimizedForMobile([])
+
+  def test_getMetaScreenOptimizedForMobile_examples(self):
+    self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(1),
+                     "\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+    self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(2),
+                     "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+    self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(3),
+                     "\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+    self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(4),
+                     "\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+    self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(5),
+                     "\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+
+  def test_includeFileToHtmlOutputFile_nonSense(self):
     dest = open("./unitTests/temp/test.txt", "w")
     src = open("./unitTests/temp/test2.txt", "w")
     src.close()

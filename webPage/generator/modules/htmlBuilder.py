@@ -45,6 +45,11 @@ def addFaviconToHtmlOutputFile(htmlFile, faviconPath, indentDepth):
   htmlFavicon = getHtmlFavicon(faviconPath, indentDepth)
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlFavicon])
 
+# <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  ->  file
+def addMetaScreenOptimizedForMobileToHtmlOutputFile(htmlFile, indentDepth):
+  metaTag = getMetaScreenOptimizedForMobile(indentDepth)
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [metaTag])
+
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   #"a.io/s.js" -> length 9
@@ -95,6 +100,12 @@ def getHtmlTitle(titleString, indentDepth):
   result = getEscapedTabs(indentDepth)
   result += "<title>" + titleString + "</title>"
   return result
+
+# <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+def getMetaScreenOptimizedForMobile(indentDepth):
+  tabs = getEscapedTabs(indentDepth)
+  metaTag = tabs + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>"
+  return metaTag
 
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
