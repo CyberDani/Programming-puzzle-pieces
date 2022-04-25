@@ -1,7 +1,7 @@
 from modules import checks
 from modules import filerw
 
-# <html><head> [headWriter()] </head><body> [bodyWriter()] </body></html>
+# <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
   htmlFile = settings.htmlOutputFile
   settings.indentDepth = 2
@@ -34,6 +34,11 @@ def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, c
 def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
+
+# <title> Page title </title>  ->  file
+def addTitleToHtmlOutputFile(htmlFile, titleString, indentDepth):
+  htmlTitle = getHtmlTitle(titleString, indentDepth)
+  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlTitle])
 
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
@@ -68,6 +73,14 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
   # integrity deserves its own line because usually it is a long string
   result.append(tabs + "integrity=\"" + integrity + "\"")
   result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
+  return result
+
+# <title> page title </title>
+def getHtmlTitle(titleString, indentDepth):
+  checks.checkIntIsBetween(indentDepth, 1, 150)
+  checks.checkIfString(titleString, 2, 300)
+  result = getHtmlTabs(indentDepth)
+  result += "<title>" + titleString + "</title>"
   return result
 
 # <br\> <br\> <br\>

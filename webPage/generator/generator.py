@@ -12,6 +12,7 @@ from modules import webLibs
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
+  # TODO: write a function which return what to do based on these factors, e.g. STOP_APP, CONTINUE
   invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
   if invalidUsage:
     print(" [!] Invalid command")
@@ -67,7 +68,7 @@ def writeHtmlHeadContent(settings):
   tabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
   htmlFile = settings.htmlOutputFile
   # TODO: see what is worth to add as a configuration
-  htmlFile.write(tabs + "<title>Programming puzzle-pieces</title>\n")
+  htmlBuilder.addTitleToHtmlOutputFile(htmlFile, "Programming puzzle-pieces", settings.indentDepth)
   htmlFile.write(tabs + "<link rel=\"icon\" href=\"./webPage/images/favicon.png\">\n")
   # website is optimized for mobile
   htmlFile.write(tabs + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n")

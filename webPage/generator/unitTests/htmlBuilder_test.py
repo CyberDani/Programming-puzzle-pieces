@@ -187,6 +187,35 @@ class HtmlBuilderTests(unittest.TestCase):
       self.assertEqual(len(readLines),1)
       self.assertEqual(readLines[0],newLines + "\n")
 
+  def test_addTitleToHtmlOutputFile_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, "title", -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, "title", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, "title", True)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, None, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, 34, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, False, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile(file, "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.addTitleToHtmlOutputFile("./unitTests/temp/test.txt", "title", 2)
+
+  def test_addTitleToHtmlOutputFile_examples(self):
+    for indent in [2, 3, 4]:
+      for title in ["title", "my page", "Look At This 23!#"]:
+        file = open("./unitTests/temp/test.txt", "w")
+        htmlBuilder.addTitleToHtmlOutputFile(file, title, indent)
+        file.close()
+        line = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+        self.assertEqual(len(line), 1)
+        self.assertEqual(line[0], htmlBuilder.getHtmlTitle(title, indent))
+
   def test_getCssLinkHref_nonsense(self):
     with self.assertRaises(Exception):
       htmlBuilder.getCssLinkHref(indentDepth=-3, url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
@@ -284,6 +313,27 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i],lines[i] + "\n")
+
+  def test_getHtmlTitle_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle("title", -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle("title", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle("title", True)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle(None, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle(34, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle(False, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.getHtmlTitle("", 2)
+
+  def test_getHtmlTitle_examples(self):
+    self.assertEqual(htmlBuilder.getHtmlTitle("Title", 2), "\t\t<title>Title</title>")
+    self.assertEqual(htmlBuilder.getHtmlTitle("My pagE", 3), "\t\t\t<title>My pagE</title>")
+    self.assertEqual(htmlBuilder.getHtmlTitle("awesome title here", 4), "\t\t\t\t<title>awesome title here</title>")
 
   def test_getJsScriptSrc_nonsense(self):
     with self.assertRaises(Exception):
