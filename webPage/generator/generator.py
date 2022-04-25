@@ -65,7 +65,7 @@ def backupIndexHtml():
 
 # <head>
 def writeHtmlHeadContent(settings):
-  tabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  tabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   htmlFile = settings.htmlOutputFile
   # TODO: see what is worth to add as a configuration
   htmlBuilder.addTitleToHtmlOutputFile(htmlFile, "Programming puzzle-pieces", settings.indentDepth)
@@ -85,7 +85,7 @@ def writeHtmlHeadContent(settings):
 # <body>
 def writeHtmlBodyContent(settings):
   htmlFile = settings.htmlOutputFile
-  tabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  tabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topNav.txt", settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/sideNav.txt", settings.indentDepth)
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/topQuote.txt", settings.indentDepth)

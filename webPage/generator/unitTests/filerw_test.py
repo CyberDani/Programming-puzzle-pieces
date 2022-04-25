@@ -247,7 +247,7 @@ class FileReadWriterTests(unittest.TestCase):
 
   def helper_writeStringsIndentedToFileThenAppendNewLine(self, indent, lines):
     file = open("./unitTests/temp/test.txt", "w")
-    tabs = htmlBuilder.getHtmlTabs(indent)
+    tabs = htmlBuilder.getEscapedTabs(indent)
     filerw.writeStringsPrefixedToFileThenAppendNewLine(file, tabs, lines)
     file.close()
     return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")

@@ -17,7 +17,7 @@ def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunctio
 # file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
   lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
-  tabs = getHtmlTabs(indentDepth)
+  tabs = getEscapedTabs(indentDepth)
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
 # <script src=".js" />   ->  file
@@ -50,7 +50,7 @@ def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerp
   #"a.io/s.js" -> length 9
   checks.checkIfString(url, 9, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
-  tabs = getHtmlTabs(indentDepth)
+  tabs = getEscapedTabs(indentDepth)
   result = [tabs + "<script src=\"" + url + "\""]
   if (integrity is None):
     result[0] += "></script>"
@@ -66,7 +66,7 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
   #"a.io/s.css" -> length 10
   checks.checkIfString(url, 10, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
-  tabs = getHtmlTabs(indentDepth)
+  tabs = getEscapedTabs(indentDepth)
   result = [tabs + "<link href=\"" + url + "\""]
   tabs += "\t"
   if (integrity is None):
@@ -84,7 +84,7 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
 def getHtmlFavicon(faviconPath, indentDepth):
   checks.checkIntIsBetween(indentDepth, 1, 150)
   checks.checkIfString(faviconPath, 3, 300)
-  result = getHtmlTabs(indentDepth)
+  result = getEscapedTabs(indentDepth)
   result += "<link rel=\"icon\" href=\"" + faviconPath + "\">"
   return result
 
@@ -92,14 +92,14 @@ def getHtmlFavicon(faviconPath, indentDepth):
 def getHtmlTitle(titleString, indentDepth):
   checks.checkIntIsBetween(indentDepth, 1, 150)
   checks.checkIfString(titleString, 2, 300)
-  result = getHtmlTabs(indentDepth)
+  result = getEscapedTabs(indentDepth)
   result += "<title>" + titleString + "</title>"
   return result
 
 # <br\> <br\> <br\>
 def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
   checks.checkIntIsBetween(nrOfNewLines, 1, 50)
-  result = getHtmlTabs(indentDepth)
+  result = getEscapedTabs(indentDepth)
   for i in range(nrOfNewLines):
     result += "<br\>"
     if i != nrOfNewLines - 1:
@@ -107,7 +107,7 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
   return result
 
 # \t\t\t
-def getHtmlTabs(indentDepth):
+def getEscapedTabs(indentDepth):
   checks.checkIntIsBetween(indentDepth, 1, 50)
   ans=""; 
   for i in range(indentDepth):

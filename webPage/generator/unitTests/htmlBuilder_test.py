@@ -18,11 +18,11 @@ def emptyHtmlBodyContent(settings):
   a = 2
 
 def minimalistHtmlHeadContent(settings):
-  htmlTabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  htmlTabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<title>Hey!</title>"])
 
 def minimalistHtmlBodyContent(settings):
-  htmlTabs = htmlBuilder.getHtmlTabs(settings.indentDepth)
+  htmlTabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<h1>Hello!</h1>"])
 
 class HtmlBuilderTests(unittest.TestCase):
@@ -83,29 +83,29 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(emptyHtmlLines[6], "\t</body>")
     self.assertEqual(emptyHtmlLines[7], "</html>")
 
-  def test_getHtmlTabsRaisesExceptionWhenAskingNonSense(self):
+  def test_getEscapedTabs_nonSense(self):
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(0)
+      htmlBuilder.getEscapedTabs(0)
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(-1)
+      htmlBuilder.getEscapedTabs(-1)
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(-10)
+      htmlBuilder.getEscapedTabs(-10)
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(124)
+      htmlBuilder.getEscapedTabs(124)
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs('hello')
+      htmlBuilder.getEscapedTabs('hello')
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(False)
+      htmlBuilder.getEscapedTabs(False)
     with self.assertRaises(Exception):
-      htmlBuilder.getHtmlTabs(None)
+      htmlBuilder.getEscapedTabs(None)
 
-  def test_getHtmlTabsWithNormalValues(self):
-    self.assertEqual(htmlBuilder.getHtmlTabs(1), '\t')
-    self.assertEqual(htmlBuilder.getHtmlTabs(2), '\t\t')
-    self.assertEqual(htmlBuilder.getHtmlTabs(3), '\t\t\t')
-    self.assertEqual(htmlBuilder.getHtmlTabs(4), '\t\t\t\t')
-    self.assertEqual(htmlBuilder.getHtmlTabs(5), '\t\t\t\t\t')
-    self.assertEqual(htmlBuilder.getHtmlTabs(10), '\t\t\t\t\t\t\t\t\t\t')
+  def test_getEscapedTabs_examples(self):
+    self.assertEqual(htmlBuilder.getEscapedTabs(1), '\t')
+    self.assertEqual(htmlBuilder.getEscapedTabs(2), '\t\t')
+    self.assertEqual(htmlBuilder.getEscapedTabs(3), '\t\t\t')
+    self.assertEqual(htmlBuilder.getEscapedTabs(4), '\t\t\t\t')
+    self.assertEqual(htmlBuilder.getEscapedTabs(5), '\t\t\t\t\t')
+    self.assertEqual(htmlBuilder.getEscapedTabs(10), '\t\t\t\t\t\t\t\t\t\t')
 
   def test_getHtmlNewLines_nonsense(self):
     with self.assertRaises(Exception):
