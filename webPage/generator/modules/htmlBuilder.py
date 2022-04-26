@@ -1,9 +1,8 @@
 from modules import checks
 from modules import filerw
 
-# Todo: buildIndexHtml....
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
-def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
+def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
   htmlFile = settings.htmlOutputFile
   settings.indentDepth = 2
   htmlFile.write("<html>\n")
@@ -15,16 +14,14 @@ def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunctio
   htmlFile.write("\t</body>\n")
   htmlFile.write("</html>\n")
 
-# Todo: thenAppendNewLine
 # file1 += file2
-def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
+def includeFileThenAppendNewLine(htmlFile, includeFilePath, indentDepth):
   lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
   tabs = getEscapedTabs(indentDepth)
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
-# Todo: thenAppendNewLine
 # file1 += <htmlTag> file2 </htmlTag>
-def includeFileSurroundedByHtmlTagToHtmlOutputFile(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
+def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
   tabs = getEscapedTabs(indentDepth)
   htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlTagOption) + "\n")
   fileLines = filerw.getLinesByFilePath(includeFilePath)
@@ -42,7 +39,7 @@ def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, c
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <br\> <br\> <br\>  ->  file
-def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines = 1):
+def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines=1):
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
 
@@ -63,12 +60,12 @@ def addMetaScreenOptimizedForMobileToHtmlOutputFile(htmlFile, indentDepth):
 
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
-  #"a.io/s.js" -> length 9
+  # "a.io/s.js" -> length 9
   checks.checkIfString(url, 9, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
   tabs = getEscapedTabs(indentDepth)
   result = [tabs + "<script src=\"" + url + "\""]
-  if (integrity is None):
+  if integrity is None:
     result[0] += "></script>"
     return result
   tabs += "\t"
@@ -79,13 +76,13 @@ def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerp
 
 # <link href=".css" />
 def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
-  #"a.io/s.css" -> length 10
+  # "a.io/s.css" -> length 10
   checks.checkIfString(url, 10, 500)
   checks.checkIfAllNoneOrString([integrity, crossorigin, referrerpolicy], 5, 200)
   tabs = getEscapedTabs(indentDepth)
   result = [tabs + "<link href=\"" + url + "\""]
   tabs += "\t"
-  if (integrity is None):
+  if integrity is None:
     if len(url) > 95:
       result.append(tabs + "rel=\"stylesheet\" />")
     else:
@@ -93,7 +90,8 @@ def getCssLinkHref(indentDepth, url, integrity=None, crossorigin=None, referrerp
     return result
   # integrity deserves its own line because usually it is a long string
   result.append(tabs + "integrity=\"" + integrity + "\"")
-  result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
+  result.append(tabs + "rel=\"stylesheet\" crossorigin=\"" + crossorigin
+                + "\" referrerpolicy=\"" + referrerpolicy + "\" />")
   return result
 
 # <link rel="icon" href="favicon.png">
@@ -123,10 +121,12 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
   checks.checkIntIsBetween(nrOfNewLines, 1, 50)
   result = getEscapedTabs(indentDepth)
   for i in range(nrOfNewLines):
-    result += "<br\>"
+    result += "<br\\>"
     if i != nrOfNewLines - 1:
       result += " "
   return result
+
+#Todo: htmlTag does not contain characters < > " \t \n \r, etc
 
 # <htmlTag options>
 def getOpenedHtmlTag(htmlTag, options = ""):
@@ -145,7 +145,7 @@ def getClosedHtmlTag(htmlTag):
 # \t\t\t
 def getEscapedTabs(indentDepth):
   checks.checkIntIsBetween(indentDepth, 1, 50)
-  ans=""; 
+  ans = ""
   for i in range(indentDepth):
     ans += "\t"
-  return ans;
+  return ans
