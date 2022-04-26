@@ -126,12 +126,11 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
       result += " "
   return result
 
-#Todo: htmlTag does not contain characters < > " \t \n \r, etc
-
 # <htmlTag options>
 def getOpenedHtmlTag(htmlTag, options = ""):
   checks.checkIfString(htmlTag, 1, 100)
   checks.checkIfString(options, 0, 500)
+  checks.checkIfStringIsAlphaNumerical(htmlTag)
   result = "<" + htmlTag
   if len(options) > 0:
     result += " " + options
@@ -140,6 +139,7 @@ def getOpenedHtmlTag(htmlTag, options = ""):
 
 def getClosedHtmlTag(htmlTag):
   checks.checkIfString(htmlTag, 1, 100)
+  checks.checkIfStringIsAlphaNumerical(htmlTag)
   return "</" + htmlTag + ">"
 
 # \t\t\t

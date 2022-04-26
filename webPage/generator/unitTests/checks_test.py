@@ -10,23 +10,23 @@ class ChecksTests(unittest.TestCase):
 
   def test_checkIntIsBetween_raiseException(self):
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(0,1,4)
+      checks.checkIntIsBetween(0, 1, 4)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-20,10,55)
+      checks.checkIntIsBetween(-20, 10, 55)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(20,-55,-15)
+      checks.checkIntIsBetween(20, -55, -15)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-30,-15,-45)
+      checks.checkIntIsBetween(-30, -15, -45)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(10,2,9)
+      checks.checkIntIsBetween(10, 2, 9)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-120,20,90)
+      checks.checkIntIsBetween(-120, 20, 90)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100,120,90)
+      checks.checkIntIsBetween(100, 120, 90)
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100,30,"houndred")
+      checks.checkIntIsBetween(100, 30, "hundred")
     with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100,[0],1200)
+      checks.checkIntIsBetween(100, [0], 1200)
     with self.assertRaises(Exception):
       checks.checkIntIsBetween("one", 0, 1200)
 
@@ -42,6 +42,44 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIntIsBetween() raised Exception unexpectedly!")
 
+  def test_checkIfStringIsAlphaNumerical_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("!")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical([])
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical(23)
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical(None)
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("ha-ha-ha")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("[something]")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("2+4")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("4's street")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("hey!")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("my text")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("nickname_12")
+    with self.assertRaises(Exception):
+      checks.checkIfStringIsAlphaNumerical("professional?")
+
+  def test_checkIfStringIsAlphaNumerical_valid(self):
+    try:
+      checks.checkIfStringIsAlphaNumerical("text")
+      checks.checkIfStringIsAlphaNumerical("simpleText")
+      checks.checkIfStringIsAlphaNumerical("2022")
+      checks.checkIfStringIsAlphaNumerical("2errors2fails")
+      checks.checkIfStringIsAlphaNumerical("good2go")
+      checks.checkIfStringIsAlphaNumerical("number1")
+      checks.checkIfStringIsAlphaNumerical("1dev4all100")
+    except Exception:
+      self.fail("checkIfStringIsAlphaNumerical() raised Exception unexpectedly!")
+
   def test_checkIfFile_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfFile(0)
@@ -50,7 +88,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfFile("file.txt")
     with self.assertRaises(Exception):
-      checks.checkIfFile([2,3,4])
+      checks.checkIfFile([2, 3, 4])
     with self.assertRaises(Exception):
       checks.checkIfFile(True)
 
@@ -76,7 +114,7 @@ class ChecksTests(unittest.TestCase):
 
   def test_checkIfList_notRaiseException(self):
     try:
-      checks.checkIfList([0,2,4,1,0])
+      checks.checkIfList([0, 2, 4, 1, 0])
       checks.checkIfList([0])
       checks.checkIfList([])
       checks.checkIfList(["hello", "world"])
@@ -95,15 +133,15 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings("hey")
     with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(["hello","my","world",12])
+      checks.checkIfPureListOfStrings(["hello", "my", "world",12])
     with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings([True, "hello","my","world"])
+      checks.checkIfPureListOfStrings([True, "hello", "my", "world"])
     with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(["hello","my", ["one", "two"], "world"])
+      checks.checkIfPureListOfStrings(["hello", "my", ["one", "two"], "world"])
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings([True])
     with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings([0,1,2,3,4,5,6])
+      checks.checkIfPureListOfStrings([0, 1, 2, 3, 4, 5, 6])
 
   def test_checkIfPureListOfStrings_notRaiseException(self):
     try:
@@ -139,7 +177,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfString("", 1, 21)
     with self.assertRaises(Exception):
-      checks.checkIfString("this string is intented to represent a longer one", 5, 15)
+      checks.checkIfString("this string is intended to represent a longer one", 5, 15)
 
   def test_checkIfString_notRaiseException(self):
     try:
@@ -157,7 +195,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfAllNoneOrString([], 0, 10)
     with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["hello","hey","hi"], 3, 10)
+      checks.checkIfAllNoneOrString(["hello", "hey", "hi"], 3, 10)
     with self.assertRaises(Exception):
       checks.checkIfAllNoneOrString(["", "hello"], 0, 2)
     with self.assertRaises(Exception):

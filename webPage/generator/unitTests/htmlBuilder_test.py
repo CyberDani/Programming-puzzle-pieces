@@ -126,34 +126,34 @@ class HtmlBuilderTests(unittest.TestCase):
       htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 0)
 
   def test_getHtmlNewLines_defaultParameter_nrOfNewLines_1(self):
-    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 1)
-    self.assertEqual(newLines,"\t<br\\>")
-    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 2)
-    self.assertEqual(newLines,"\t\t<br\\>")
-    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 3)
-    self.assertEqual(newLines,"\t\t\t<br\\>")
-    newLines =  htmlBuilder.getHtmlNewLines(indentDepth = 6)
-    self.assertEqual(newLines,"\t\t\t\t\t\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1)
+    self.assertEqual(newLines, "\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2)
+    self.assertEqual(newLines, "\t\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 3)
+    self.assertEqual(newLines, "\t\t\t<br\\>")
+    newLines = htmlBuilder.getHtmlNewLines(indentDepth = 6)
+    self.assertEqual(newLines, "\t\t\t\t\t\t<br\\>")
 
   def test_getHtmlNewLines_normalCases(self):
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 1)
-    self.assertEqual(newLines,"\t<br\\>")
+    self.assertEqual(newLines, "\t<br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 1)
-    self.assertEqual(newLines,"\t\t<br\\>")
+    self.assertEqual(newLines, "\t\t<br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 4, nrOfNewLines = 1)
-    self.assertEqual(newLines,"\t\t\t\t<br\\>")
+    self.assertEqual(newLines, "\t\t\t\t<br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 2)
-    self.assertEqual(newLines,"\t<br\\> <br\\>")
+    self.assertEqual(newLines, "\t<br\\> <br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 3)
-    self.assertEqual(newLines,"\t<br\\> <br\\> <br\\>")
+    self.assertEqual(newLines, "\t<br\\> <br\\> <br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 1, nrOfNewLines = 6)
-    self.assertEqual(newLines,"\t<br\\> <br\\> <br\\> <br\\> <br\\> <br\\>")
+    self.assertEqual(newLines, "\t<br\\> <br\\> <br\\> <br\\> <br\\> <br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 2)
-    self.assertEqual(newLines,"\t\t<br\\> <br\\>")
+    self.assertEqual(newLines, "\t\t<br\\> <br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 2, nrOfNewLines = 4)
-    self.assertEqual(newLines,"\t\t<br\\> <br\\> <br\\> <br\\>")
+    self.assertEqual(newLines, "\t\t<br\\> <br\\> <br\\> <br\\>")
     newLines = htmlBuilder.getHtmlNewLines(indentDepth = 4, nrOfNewLines = 2)
-    self.assertEqual(newLines,"\t\t\t\t<br\\> <br\\>")
+    self.assertEqual(newLines, "\t\t\t\t<br\\> <br\\>")
 
   def test_addNewLineToHtmlOutputFile_nonsense(self):
     file = open("./unitTests/temp/test.txt", "w")
@@ -178,14 +178,14 @@ class HtmlBuilderTests(unittest.TestCase):
     file.close()
 
   def test_addNewLineToHtmlOutputFile_defaultParameter_nrOfNewLines_1(self):
-    for indent in range(1,6):
-      newLines =  htmlBuilder.getHtmlNewLines(indent)
+    for indent in range(1, 6):
+      newLines = htmlBuilder.getHtmlNewLines(indent)
       file = open("./unitTests/temp/test.txt", "w")
       htmlBuilder.addNewLineToHtmlOutputFile(file, indent)
       file.close()
       readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
-      self.assertEqual(len(readLines),1)
-      self.assertEqual(readLines[0],newLines + "\n")
+      self.assertEqual(len(readLines), 1)
+      self.assertEqual(readLines[0], newLines + "\n")
 
   def test_addFaviconToHtmlOutputFile_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
@@ -313,7 +313,7 @@ class HtmlBuilderTests(unittest.TestCase):
   def test_addCssLinkHrefToHtmlOutputFile_nonsense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
-      htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file,indentDepth=-3, 
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file, indentDepth=-3,
                                 url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
     with self.assertRaises(Exception):
       htmlBuilder.addCssLinkHrefToHtmlOutputFile("file.html", 2, "https://site.com/random.css", None, None, None)
@@ -467,7 +467,7 @@ class HtmlBuilderTests(unittest.TestCase):
     readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
-      self.assertEqual(readLines[i],lines[i] + "\n")
+      self.assertEqual(readLines[i], lines[i] + "\n")
 
   def test_getMetaScreenOptimizedForMobile_nonSense(self):
     with self.assertRaises(Exception):
@@ -628,6 +628,16 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.getOpenedHtmlTag("")
     with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("<div")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("<div>")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("/div")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("div\nspan")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("ul selected")
+    with self.assertRaises(Exception):
       htmlBuilder.getOpenedHtmlTag("", "focused")
     with self.assertRaises(Exception):
       htmlBuilder.getOpenedHtmlTag(12)
@@ -657,9 +667,19 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.getClosedHtmlTag("")
     with self.assertRaises(Exception):
-      htmlBuilder.getOpenedHtmlTag(12)
+      htmlBuilder.getClosedHtmlTag(12)
     with self.assertRaises(Exception):
-      htmlBuilder.getOpenedHtmlTag(None)
+      htmlBuilder.getClosedHtmlTag(None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("<div")
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("<div>")
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("/div")
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("div\nspan")
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("ul selected")
 
   def test_getClosedHtmlTag_examples(self):
     self.assertEqual(htmlBuilder.getClosedHtmlTag("b"), "</b>")
