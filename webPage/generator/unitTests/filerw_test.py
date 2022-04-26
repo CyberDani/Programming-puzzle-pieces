@@ -140,7 +140,243 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(linesFromFile[0], "hello dear")
     self.assertEqual(linesFromFile[1], "this is the tester")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_nonSense(self):
+  def test_writeLinesPrefixedToFile_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile(file, "prefix", "asd")
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile(file, "prefix", None)
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile(file, 1, ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile(file, ["prefix"], ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile("./unitTests/temp/test.txt", "prefix", ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFile(None, "prefix", ["asd"])
+
+  def test_writeLinesPrefixedToFile_emptyList(self):
+    readLines = self.helper_writeLinesPrefixedToFile("== prefix ==", [])
+    self.assertEqual(len(readLines), 0)
+
+  def test_writeLinesPrefixedToFile_oneEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFile("== prefix ==", [""])
+    self.assertEqual(len(readLines), 1)
+    # empty line
+    self.assertEqual(readLines[0], "")
+
+  def test_writeLinesPrefixedToFile_twoEmptyStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFile("== prefix ==", ["", ""])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFile_oneNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFile("[-]", ["\n"])
+    self.assertEqual(len(readLines), 1)
+    self.assertEqual(readLines[0], "")
+
+  def test_writeLinesPrefixedToFile_twoNewLines(self):
+    readLines = self.helper_writeLinesPrefixedToFile("-=-", ["\n", "\n"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFile_NewLineAndEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFile("line: ", ["\n",""])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFile_emptyStringAndNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFile("text: ", ["", "\n"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFile_oneString(self):
+    readLines = self.helper_writeLinesPrefixedToFile("Greetings: ", ["hey"])
+    self.assertEqual(len(readLines), 1)
+    self.assertEqual(readLines[0], "Greetings: hey")
+
+  def test_writeLinesPrefixedToFile_twoStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFile("[text] ", ["hey", "Joe"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "[text] hey")
+    self.assertEqual(readLines[1], "[text] Joe")
+
+  def test_writeLinesPrefixedToFile_threeStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFile("", ["hey", "magnificent", "Joe"])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "hey")
+    self.assertEqual(readLines[1], "magnificent")
+    self.assertEqual(readLines[2], "Joe")
+
+  def test_writeLinesPrefixedToFile_oneStringEndingWithNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFile(".", ["hey\n"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], ".hey")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFile_twoStringsEndingWithNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFile("# ", ["hey\n", "Joe\n"])
+    self.assertEqual(len(readLines), 4)
+    self.assertEqual(readLines[0], "# hey")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "# Joe")
+    self.assertEqual(readLines[3], "")
+
+  def test_writeLinesPrefixedToFile_stringsAndNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFile(">", ["hey\n", "Joe\n", "\n"])
+    self.assertEqual(len(readLines), 5)
+    self.assertEqual(readLines[0], ">hey")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], ">Joe")
+    self.assertEqual(readLines[3], "")
+    self.assertEqual(readLines[4], "")
+
+  def test_writeLinesPrefixedToFile_stringsAndNewLineAndEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFile("\t\t", ["hey\n", "Joe\n", "\n", ""])
+    self.assertEqual(len(readLines), 6)
+    self.assertEqual(readLines[0], "\t\they")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "\t\tJoe")
+    self.assertEqual(readLines[3], "")
+    self.assertEqual(readLines[4], "")
+    self.assertEqual(readLines[5], "")
+
+  def helper_writeLinesPrefixedToFile(self, prefix, lines):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesPrefixedToFile(file, prefix, lines)
+    file.close()
+    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine(file, "prefix", "asd")
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine(file, "prefix", None)
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine(file, 1, ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine(file, ["prefix"], ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine("./unitTests/temp/test.txt", "prefix", ["asd"])
+    with self.assertRaises(Exception):
+      filerw.writeLinesPrefixedToFileThenAppendNewLine(None, "prefix", ["asd"])
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_emptyList(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("== prefix ==", [])
+    self.assertEqual(len(readLines), 1)
+    self.assertEqual(readLines[0], "") # empty line
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_oneEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("== prefix ==", [""])
+    self.assertEqual(len(readLines), 2)
+    # empty lines
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_twoEmptyStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("== prefix ==", ["", ""])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_oneNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("[-]", ["\n"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_twoNewLines(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("-=-", ["\n", "\n"])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_NewLineAndEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("line: ", ["\n",""])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_emptyStringAndNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("text: ", ["", "\n"])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_oneString(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("Greetings: ", ["hey"])
+    self.assertEqual(len(readLines), 2)
+    self.assertEqual(readLines[0], "Greetings: hey")
+    self.assertEqual(readLines[1], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_twoStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("[text] ", ["hey", "Joe"])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "[text] hey")
+    self.assertEqual(readLines[1], "[text] Joe")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_threeStrings(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("", ["hey", "magnificent", "Joe"])
+    self.assertEqual(len(readLines), 4)
+    self.assertEqual(readLines[0], "hey")
+    self.assertEqual(readLines[1], "magnificent")
+    self.assertEqual(readLines[2], "Joe")
+    self.assertEqual(readLines[3], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_oneStringEndingWithNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine(".", ["hey\n"])
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], ".hey")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_twoStringsEndingWithNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("# ", ["hey\n", "Joe\n"])
+    self.assertEqual(len(readLines), 5)
+    self.assertEqual(readLines[0], "# hey")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "# Joe")
+    self.assertEqual(readLines[3], "")
+    self.assertEqual(readLines[4], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_stringsAndNewLine(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine(">", ["hey\n", "Joe\n", "\n"])
+    self.assertEqual(len(readLines), 6)
+    self.assertEqual(readLines[0], ">hey")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], ">Joe")
+    self.assertEqual(readLines[3], "")
+    self.assertEqual(readLines[4], "")
+    self.assertEqual(readLines[5], "")
+
+  def test_writeLinesPrefixedToFileThenAppendNewLine_stringsAndNewLineAndEmptyString(self):
+    readLines = self.helper_writeLinesPrefixedToFileThenAppendNewLine("\t\t", ["hey\n", "Joe\n", "\n", ""])
+    self.assertEqual(len(readLines), 7)
+    self.assertEqual(readLines[0], "\t\they")
+    self.assertEqual(readLines[1], "")
+    self.assertEqual(readLines[2], "\t\tJoe")
+    self.assertEqual(readLines[3], "")
+    self.assertEqual(readLines[4], "")
+    self.assertEqual(readLines[5], "")
+    self.assertEqual(readLines[6], "")
+
+  def helper_writeLinesPrefixedToFileThenAppendNewLine(self, prefix, lines):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesPrefixedToFileThenAppendNewLine(file, prefix, lines)
+    file.close()
+    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+
+  def test_writeStringsPrefixedToFileThenAppendNewLine_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
       filerw.writeStringsPrefixedToFileThenAppendNewLine(file, "prefix", "asd")
@@ -155,80 +391,80 @@ class FileReadWriterTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filerw.writeStringsPrefixedToFileThenAppendNewLine(None, "prefix", ["asd"])
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_emptyList(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_emptyList(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, [])
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneEmptyString(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_oneEmptyString(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(2, [""])
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoEmptyStrings(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_twoEmptyStrings(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["", ""])
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
     self.assertEqual(readLines[2], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneNewLine(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_oneNewLine(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["\n"])
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoNewLines(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_twoNewLines(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(5, ["\n", "\n"])
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
     self.assertEqual(readLines[2], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_NewLineAndEmptyString(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_NewLineAndEmptyString(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["\n",""])
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
     self.assertEqual(readLines[2], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_emptyStringAndNewLine(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_emptyStringAndNewLine(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["", "\n"])
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "\n")
     self.assertEqual(readLines[1], "\n")
     self.assertEqual(readLines[2], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneString(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_oneString(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(2, ["hey"])
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\t\they\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoStrings(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_twoStrings(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, ["hey","Joe"])
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\they\tJoe\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_threeStrings(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_threeStrings(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(1, ["hey", "magnificent", "Joe"])
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\they\tmagnificent\tJoe\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_oneStringEndingWithNewLine(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_oneStringEndingWithNewLine(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(3, ["hey\n"])
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "\t\t\they\n")
     self.assertEqual(readLines[1], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_twoStringsEndingWithNewLine(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_twoStringsEndingWithNewLine(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n"])
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "\t\t\t\they\n")
     self.assertEqual(readLines[1], "\t\t\t\tJoe\n")
     self.assertEqual(readLines[2], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_stringsAndNewLine(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_stringsAndNewLine(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n", "\n"])
     self.assertEqual(len(readLines), 4)
     self.assertEqual(readLines[0], "\t\t\t\they\n")
@@ -236,7 +472,7 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(readLines[2], "\n")
     self.assertEqual(readLines[3], "\n")
 
-  def test_writeStringsIndentedToFileThenAppendNewLine_stringsAndNewLineAndEmptyString(self):
+  def test_writeStringsPrefixedToFileThenAppendNewLine_stringsAndNewLineAndEmptyString(self):
     readLines = self.helper_writeStringsIndentedToFileThenAppendNewLine(4, ["hey\n", "Joe\n", "\n", ""])
     self.assertEqual(len(readLines), 5)
     self.assertEqual(readLines[0], "\t\t\t\they\n")

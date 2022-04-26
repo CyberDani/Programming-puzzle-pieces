@@ -61,11 +61,32 @@ def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfPureListOfStrings(lines)
   checks.checkIfString(prefix, 0, 300)
   for line in lines:
-    if (line and line != "\n"):
+    if (line and line != "\n" and line != "\r\n"):
       file.write(prefix + line)
     else:
       file.write("\n")
   file.write("\n")
+
+def writeLinesPrefixedToFileThenAppendNewLine(file, prefix, lines):
+  checks.checkIfFile(file)
+  checks.checkIfPureListOfStrings(lines)
+  checks.checkIfString(prefix, 0, 300)
+  for line in lines:
+    if (line and line != "\n" and line != "\r\n"):
+      file.write(prefix + line + "\n")
+    else:
+      file.write("\n")
+  file.write("\n")
+
+def writeLinesPrefixedToFile(file, prefix, lines):
+  checks.checkIfFile(file)
+  checks.checkIfPureListOfStrings(lines)
+  checks.checkIfString(prefix, 0, 300)
+  for line in lines:
+    if (line and line != "\n" and line != "\r\n"):
+      file.write(prefix + line + "\n")
+    else:
+      file.write("\n")
 
 ###### Helper functions ######
 

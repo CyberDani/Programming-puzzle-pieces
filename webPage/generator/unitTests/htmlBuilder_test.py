@@ -495,6 +495,85 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlBuilder.getMetaScreenOptimizedForMobile(5),
                      "\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
 
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_nonSense(self):
+    dest = open("./unitTests/temp/test.txt", "w")
+    src = open("./unitTests/temp/test2.txt", "w")
+    src.close()
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "div", "", -1)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, src, "div", "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, None, "div", "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(None, None, "div", "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(None, "./unitTests/temp/test2.txt", "div", "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "div", "", False)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "div", "", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(None, None, "div", "", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "", "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "div", None, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "span", 12, 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", 22, "", 2)
+    with self.assertRaises(Exception):
+      htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", None, "", 2)
+
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_emptyFile(self):
+    src = open("./unitTests/temp/test2.txt", "w")
+    src.close()
+    dest = open("./unitTests/temp/test.txt", "w")
+    htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "a", "href='url.com'", 1)
+    dest.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 2)
+    self.assertEqual(lines[0], "\t<a href='url.com'>")
+    self.assertEqual(lines[1], "\t</a>")
+
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_emptyFile_2(self):
+    src = open("./unitTests/temp/test2.txt", "w")
+    src.close()
+    dest = open("./unitTests/temp/test.txt", "w")
+    htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", "div", "", 2)
+    dest.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 2)
+    self.assertEqual(lines[0], "\t\t<div>")
+    self.assertEqual(lines[1], "\t\t</div>")
+
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_examples(self):
+    lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(1, ["be proud of yourself"],
+                                                                       "span", "class='myClass'")
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "\t<span class='myClass'>")
+    self.assertEqual(lines[1], "\t\tbe proud of yourself")
+    self.assertEqual(lines[2], "\t</span>")
+    lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(2, ["<div>", "\thooray!", "</div>"],
+                                                                       "footer", "")
+    self.assertEqual(len(lines), 5)
+    self.assertEqual(lines[0], "\t\t<footer>")
+    self.assertEqual(lines[1], "\t\t\t<div>")
+    self.assertEqual(lines[2], "\t\t\t\thooray!")
+    self.assertEqual(lines[3], "\t\t\t</div>")
+    self.assertEqual(lines[4], "\t\t</footer>")
+
+  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
+    src = open("./unitTests/temp/test2.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    src.close()
+    dest = open("./unitTests/temp/test.txt", "w")
+    htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", htmlTag,
+                                                               htmlTagOption, indent)
+    dest.close()
+    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+
   def test_includeFileToHtmlOutputFile_nonSense(self):
     dest = open("./unitTests/temp/test.txt", "w")
     src = open("./unitTests/temp/test2.txt", "w")
@@ -544,3 +623,46 @@ class HtmlBuilderTests(unittest.TestCase):
     htmlBuilder.includeFileToHtmlOutputFile(dest, "./unitTests/temp/test2.txt", indent)
     dest.close()
     return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+
+  def test_getOpenedHtmlTag_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("", "focused")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(12)
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(2, "option2")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(None, "selected")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("abc", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("abc", 12)
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag("abc", False)
+
+  def test_getOpenedHtmlTag_examples(self):
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("b"), "<b>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("div"), "<div>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("footer"), "<footer>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("ul", "selected"), "<ul selected>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com'"), "<a href='webpage.com'>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com' class='new-link'"),
+                                                  "<a href='webpage.com' class='new-link'>")
+
+  def test_getClosedHtmlTag_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getClosedHtmlTag("")
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(12)
+    with self.assertRaises(Exception):
+      htmlBuilder.getOpenedHtmlTag(None)
+
+  def test_getClosedHtmlTag_examples(self):
+    self.assertEqual(htmlBuilder.getClosedHtmlTag("b"), "</b>")
+    self.assertEqual(htmlBuilder.getClosedHtmlTag("style"), "</style>")
+    self.assertEqual(htmlBuilder.getClosedHtmlTag("script"), "</script>")
+    self.assertEqual(htmlBuilder.getClosedHtmlTag("navbar"), "</navbar>")

@@ -1,6 +1,7 @@
 from modules import checks
 from modules import filerw
 
+# Todo: buildIndexHtml....
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
   htmlFile = settings.htmlOutputFile
@@ -14,11 +15,21 @@ def writeIndexHtmlToFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunctio
   htmlFile.write("\t</body>\n")
   htmlFile.write("</html>\n")
 
+# Todo: thenAppendNewLine
 # file1 += file2
 def includeFileToHtmlOutputFile(htmlFile, includeFilePath, indentDepth):
   lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
   tabs = getEscapedTabs(indentDepth)
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
+
+# Todo: thenAppendNewLine
+# file1 += <htmlTag> file2 </htmlTag>
+def includeFileSurroundedByHtmlTagToHtmlOutputFile(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
+  tabs = getEscapedTabs(indentDepth)
+  htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlTagOption) + "\n")
+  fileLines = filerw.getLinesByFilePath(includeFilePath)
+  filerw.writeLinesPrefixedToFile(htmlFile, tabs + "\t", fileLines)
+  htmlFile.write(tabs + getClosedHtmlTag(htmlTag) + "\n")
 
 # <script src=".js" />   ->  file
 def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
@@ -116,6 +127,20 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
     if i != nrOfNewLines - 1:
       result += " "
   return result
+
+# <htmlTag options>
+def getOpenedHtmlTag(htmlTag, options = ""):
+  checks.checkIfString(htmlTag, 1, 100)
+  checks.checkIfString(options, 0, 500)
+  result = "<" + htmlTag
+  if len(options) > 0:
+    result += " " + options
+  result += ">"
+  return result
+
+def getClosedHtmlTag(htmlTag):
+  checks.checkIfString(htmlTag, 1, 100)
+  return "</" + htmlTag + ">"
 
 # \t\t\t
 def getEscapedTabs(indentDepth):

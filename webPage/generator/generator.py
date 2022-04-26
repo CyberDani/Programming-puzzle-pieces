@@ -71,9 +71,8 @@ def writeHtmlHeadContent(settings):
   htmlBuilder.addTitleToHtmlOutputFile(htmlFile, "Programming puzzle-pieces", settings.indentDepth)
   htmlBuilder.addFaviconToHtmlOutputFile(htmlFile, "./webPage/images/favicon.png", settings.indentDepth)
   htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(htmlFile, settings.indentDepth)
-  htmlFile.write(tabs + "<style>\n")
-  htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineCssStyle.css", settings.indentDepth + 1)
-  htmlFile.write(tabs + "</style>\n")
+  htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineCssStyle.css",
+                                                             "style", "", settings.indentDepth)
   webLibs.addFontAwesome_v611(htmlFile, settings.indentDepth)
   webLibs.addJquery_v360(htmlFile, settings.indentDepth)
   webLibs.addGoogleIcons(htmlFile, settings.indentDepth)
@@ -100,9 +99,8 @@ def writeHtmlBodyContent(settings):
   htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/footer.txt", settings.indentDepth)
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/githubApiScripts.js")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/navigationScripts.js")
-  htmlFile.write(tabs + "<script>\n")
-  htmlBuilder.includeFileToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineJs.js", settings.indentDepth + 1)
-  htmlFile.write(tabs + "</script>\n")
+  htmlBuilder.includeFileSurroundedByHtmlTagToHtmlOutputFile(htmlFile, "./htmlIncludes/inlineJs.js",
+                                                             "script", "", settings.indentDepth)
 
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()
