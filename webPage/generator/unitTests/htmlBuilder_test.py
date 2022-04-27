@@ -564,6 +564,40 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[3], "\t\t\t</div>")
     self.assertEqual(lines[4], "\t\t</footer>")
 
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_examples_2(self):
+    lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(3, ["be proud of yourself", "find a meaning"],
+                                                                       "span", "class='myClass'")
+    self.assertEqual(len(lines), 7)
+    self.assertEqual(lines[0], "line 1")
+    self.assertEqual(lines[1], "\tline 2")
+    self.assertEqual(lines[2], "\t\t\tline 3")
+    self.assertEqual(lines[3], "\t\t\t<span class='myClass'>")
+    self.assertEqual(lines[4], "\t\t\t\tbe proud of yourself")
+    self.assertEqual(lines[5], "\t\t\t\tfind a meaning")
+    self.assertEqual(lines[6], "\t\t\t</span>")
+    lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(2, ["<div>", "\thooray!", "</div>"],
+                                                                       "footer", "")
+    self.assertEqual(len(lines), 8)
+    self.assertEqual(lines[0], "line 1")
+    self.assertEqual(lines[1], "\tline 2")
+    self.assertEqual(lines[2], "\t\t\tline 3")
+    self.assertEqual(lines[3], "\t\t<footer>")
+    self.assertEqual(lines[4], "\t\t\t<div>")
+    self.assertEqual(lines[5], "\t\t\t\thooray!")
+    self.assertEqual(lines[6], "\t\t\t</div>")
+    self.assertEqual(lines[7], "\t\t</footer>")
+
+  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(self, indent, lines, htmlTag, htmlTagOption):
+    src = open("./unitTests/temp/test2.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    src.close()
+    dest = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(dest, ["line 1", "\tline 2", "\t\t\tline 3"])
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
+                                                                htmlTagOption, indent)
+    dest.close()
+    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
     src = open("./unitTests/temp/test2.txt", "w")
     filerw.writeLinesToFileThenAppendNewLine(src, lines)
@@ -608,12 +642,40 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(len(lines), 2)
     self.assertEqual(lines[0], "\tbe proud of yourself\n")
     self.assertEqual(lines[1], "\n")
-    lines = self.helper_includeFileToHtmlOutputFile(2, ["<div>","\thooray!","</div>"])
+    lines = self.helper_includeFileToHtmlOutputFile(2, ["<div>", "\thooray!", "</div>"])
     self.assertEqual(len(lines), 4)
     self.assertEqual(lines[0], "\t\t<div>\n")
     self.assertEqual(lines[1], "\t\t\thooray!\n")
     self.assertEqual(lines[2], "\t\t</div>\n")
     self.assertEqual(lines[3], "\n")
+
+  def test_includeFileToHtmlOutputFile_normalCases_2(self):
+    lines = self.helper_includeFileToHtmlOutputFile_2(1, ["be proud of yourself"])
+    self.assertEqual(len(lines), 5)
+    self.assertEqual(lines[0], "> first line\n")
+    self.assertEqual(lines[1], ">> second line\n")
+    self.assertEqual(lines[2], ">>> third line\n")
+    self.assertEqual(lines[3], "\tbe proud of yourself\n")
+    self.assertEqual(lines[4], "\n")
+    lines = self.helper_includeFileToHtmlOutputFile_2(2, ["<div>", "\thooray!", "</div>"])
+    self.assertEqual(len(lines), 7)
+    self.assertEqual(lines[0], "> first line\n")
+    self.assertEqual(lines[1], ">> second line\n")
+    self.assertEqual(lines[2], ">>> third line\n")
+    self.assertEqual(lines[3], "\t\t<div>\n")
+    self.assertEqual(lines[4], "\t\t\thooray!\n")
+    self.assertEqual(lines[5], "\t\t</div>\n")
+    self.assertEqual(lines[6], "\n")
+
+  def helper_includeFileToHtmlOutputFile_2(self, indent, lines):
+    src = open("./unitTests/temp/test2.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    src.close()
+    dest = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(dest, ["> first line", ">> second line", ">>> third line"])
+    htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
+    dest.close()
+    return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
 
   def helper_includeFileToHtmlOutputFile(self, indent, lines):
     src = open("./unitTests/temp/test2.txt", "w")
