@@ -7,6 +7,7 @@ from defTypes import dbBranchType
 from modules import argumentParser
 from modules import counter
 from modules import htmlBuilder
+from modules import htmlHead
 from modules import webLibs
 
 # this is the main function being run
@@ -65,19 +66,17 @@ def backupIndexHtml():
 
 # <head>
 def writeHtmlHeadContent(settings):
-  htmlFile = settings.htmlOutputFile
-  # TODO: see if it worth to define these strings as configuration
-  htmlBuilder.addTitleToHtmlOutputFile(htmlFile, "Programming puzzle-pieces", settings.indentDepth)
-  htmlBuilder.addFaviconToHtmlOutputFile(htmlFile, "./webPage/images/favicon.png", settings.indentDepth)
-  htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(htmlFile, settings.indentDepth)
-  htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, "./htmlIncludes/inlineCssStyle.css",
-                                                             "style", "", settings.indentDepth)
-  webLibs.addFontAwesome_v611(htmlFile, settings.indentDepth)
-  webLibs.addJquery_v360(htmlFile, settings.indentDepth)
-  webLibs.addGoogleIcons(htmlFile, settings.indentDepth)
-  webLibs.addMaterialize_v110_alpha(htmlFile, settings.indentDepth)
-  webLibs.addGoogleFont(htmlFile, settings.indentDepth, "?family=Arima+Madurai:wght@500&display=swap")
-  webLibs.addJQueryLoadingOverlay_v217(htmlFile, settings.indentDepth)
+  head = htmlHead.HtmlHead(settings.htmlOutputFile, settings.indentDepth)
+  head.setTitle("Programming puzzle-pieces") \
+      .setFavicon("./webPage/images/favicon.png") \
+      .setMetaScreenOptimizedForMobile() \
+      .includeFileAsInlineCSS("./htmlIncludes/inlineCssStyle.css")
+  head.addFontAwesome_v611() \
+      .addJquery_v360() \
+      .addGoogleIcons() \
+      .addMaterialize_v110_alpha() \
+      .addGoogleFont("?family=Arima+Madurai:wght@500&display=swap") \
+      .addJQueryLoadingOverlay_v217()
 
 # <body>
 def writeHtmlBodyContent(settings):

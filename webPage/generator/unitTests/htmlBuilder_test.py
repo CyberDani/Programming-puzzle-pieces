@@ -255,7 +255,7 @@ class HtmlBuilderTests(unittest.TestCase):
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile("./unitTests/temp/test.txt", 2)
 
   def test_addMetaScreenOptimizedForMobileToHtmlOutputFile_examples(self):
-    for indent in range(1,5):
+    for indent in range(1, 5):
       file = open("./unitTests/temp/test.txt", "w")
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, indent)
       file.close()
@@ -265,7 +265,8 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def test_getCssLinkHref_nonsense(self):
     with self.assertRaises(Exception):
-      htmlBuilder.getCssLinkHref(indentDepth=-3, url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
+      htmlBuilder.getCssLinkHref(indentDepth=-3, url="www.mysite.com/res.css",
+                                 integrity=None, crossorigin=None, referrerpolicy=None)
     with self.assertRaises(Exception):
       htmlBuilder.getCssLinkHref(2, False, None, None, None)
     with self.assertRaises(Exception):
@@ -313,8 +314,8 @@ class HtmlBuilderTests(unittest.TestCase):
   def test_addCssLinkHrefToHtmlOutputFile_nonsense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
-      htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file, indentDepth=-3,
-                                url="www.mysite.com/res.css", integrity=None, crossorigin=None, referrerpolicy=None)
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file, indentDepth=-3, url="www.mysite.com/res.css",
+                                                 integrity=None, crossorigin=None, referrerpolicy=None)
     with self.assertRaises(Exception):
       htmlBuilder.addCssLinkHrefToHtmlOutputFile("file.html", 2, "https://site.com/random.css", None, None, None)
     with self.assertRaises(Exception):
@@ -359,7 +360,7 @@ class HtmlBuilderTests(unittest.TestCase):
     readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
-      self.assertEqual(readLines[i],lines[i] + "\n")
+      self.assertEqual(readLines[i], lines[i] + "\n")
 
   def test_getHtmlFavicon_nonSense(self):
     with self.assertRaises(Exception):
@@ -409,7 +410,8 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def test_getJsScriptSrc_nonsense(self):
     with self.assertRaises(Exception):
-      htmlBuilder.getJsScriptSrc(indentDepth=-3, url="www.mysite.com/res.js", integrity=None, crossorigin=None, referrerpolicy=None)
+      htmlBuilder.getJsScriptSrc(indentDepth=-3, url="www.mysite.com/res.js",
+                                 integrity=None, crossorigin=None, referrerpolicy=None)
     with self.assertRaises(Exception):
       htmlBuilder.getJsScriptSrc(2, False, None, None, None)
     with self.assertRaises(Exception):
@@ -723,7 +725,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("ul", "selected"), "<ul selected>")
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com'"), "<a href='webpage.com'>")
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com' class='new-link'"),
-                                                  "<a href='webpage.com' class='new-link'>")
+                    "<a href='webpage.com' class='new-link'>")
 
   def test_getClosedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):
