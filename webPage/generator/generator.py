@@ -3,12 +3,11 @@ import unittest
 
 from defTypes import buildSettings
 from defTypes import buildType
-from defTypes import dbBranchType
+
 from modules import argumentParser
 from modules import counter
 from modules import htmlBuilder
 from modules import htmlHead
-from modules import webLibs
 
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
@@ -85,7 +84,7 @@ def writeHtmlBodyContent(settings):
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/topNav.txt", settings.indentDepth)
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/sideNav.txt", settings.indentDepth)
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/topQuote.txt", settings.indentDepth)
-  htmlBuilder.addNewLineToHtmlOutputFile(htmlFile, settings.indentDepth)
+  htmlBuilder.addHtmlNewLineToFile(htmlFile, settings.indentDepth)
   htmlFile.write(tabs + "<div id=\"webContent\">\n")
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve1.txt", settings.indentDepth + 1)
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/whatThisProjectOffers.txt", settings.indentDepth + 1)

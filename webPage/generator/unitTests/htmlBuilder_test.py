@@ -158,30 +158,30 @@ class HtmlBuilderTests(unittest.TestCase):
   def test_addNewLineToHtmlOutputFile_nonsense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile("heyho", indentDepth = 2, nrOfNewLines = 2)
+      htmlBuilder.addHtmlNewLineToFile("heyho", indentDepth = 2, nrOfNewLines = 2)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = "two", nrOfNewLines = 1)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth ="two", nrOfNewLines = 1)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 2, nrOfNewLines = "one")
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 2, nrOfNewLines ="one")
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = -2, nrOfNewLines = 1)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = -2, nrOfNewLines = 1)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 0, nrOfNewLines = 1)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 0, nrOfNewLines = 1)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 100, nrOfNewLines = 1)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 100, nrOfNewLines = 1)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = -1)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 1, nrOfNewLines = -1)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = 100)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 1, nrOfNewLines = 100)
     with self.assertRaises(Exception):
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indentDepth = 1, nrOfNewLines = 0)
+      htmlBuilder.addHtmlNewLineToFile(file, indentDepth = 1, nrOfNewLines = 0)
     file.close()
 
   def test_addNewLineToHtmlOutputFile_defaultParameter_nrOfNewLines_1(self):
     for indent in range(1, 6):
       newLines = htmlBuilder.getHtmlNewLines(indent)
       file = open("./unitTests/temp/test.txt", "w")
-      htmlBuilder.addNewLineToHtmlOutputFile(file, indent)
+      htmlBuilder.addHtmlNewLineToFile(file, indent)
       file.close()
       readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
       self.assertEqual(len(readLines), 1)

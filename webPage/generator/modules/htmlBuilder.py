@@ -39,7 +39,7 @@ def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, c
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
 
 # <br\> <br\> <br\>  ->  file
-def addNewLineToHtmlOutputFile(htmlFile, indentDepth, nrOfNewLines=1):
+def addHtmlNewLineToFile(htmlFile, indentDepth, nrOfNewLines=1):
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
   filerw.writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
 
