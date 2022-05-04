@@ -66,6 +66,7 @@ def backupIndexHtml():
 
 # <head>
 def writeHtmlHeadContent(settings):
+  # TODO: you did not test chaining
   head = htmlHead.HtmlHead(settings.htmlOutputFile, settings.indentDepth)
   head.setTitle("Programming puzzle-pieces") \
       .setFavicon("./webPage/images/favicon.png") \
@@ -82,19 +83,20 @@ def writeHtmlHeadContent(settings):
 def writeHtmlBodyContent(settings):
   body = htmlBody.HtmlBody(settings.htmlOutputFile, settings.indentDepth)
   htmlFile = settings.htmlOutputFile
-  tabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   body.includeFileThenAppendNewLine("./htmlIncludes/topNav.txt") \
       .includeFileThenAppendNewLine("./htmlIncludes/sideNav.txt") \
       .includeFileThenAppendNewLine("./htmlIncludes/topQuote.txt")
   htmlBuilder.addHtmlNewLineToFile(htmlFile, settings.indentDepth)
-  htmlFile.write(tabs + "<div id=\"webContent\">\n")
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve1.txt", settings.indentDepth + 1)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/whatThisProjectOffers.txt", settings.indentDepth + 1)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve2.txt", settings.indentDepth + 1)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/personalRecommendation.txt", settings.indentDepth + 1)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve3.txt", settings.indentDepth + 1)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/textBelowCurves.txt", settings.indentDepth + 1)
-  htmlFile.write(tabs + "</div>\n")
+
+  body.openHtmlTagThenAppendNewLine("div", "id=\"webContent\"") \
+      .includeFileThenAppendNewLine("../pages/mainPage/svgCurve1.txt") \
+      .includeFileThenAppendNewLine("../pages/mainPage/whatThisProjectOffers.txt") \
+      .includeFileThenAppendNewLine("../pages/mainPage/svgCurve2.txt") \
+      .includeFileThenAppendNewLine("../pages/mainPage/personalRecommendation.txt") \
+      .includeFileThenAppendNewLine("../pages/mainPage/svgCurve3.txt") \
+      .includeFileThenAppendNewLine("../pages/mainPage/textBelowCurves.txt") \
+      .closeLastOpenedHtmlTag()
+
   body.includeFileThenAppendNewLine("./htmlIncludes/footer.txt")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/githubApiScripts.js")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/navigationScripts.js")
