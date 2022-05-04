@@ -7,6 +7,7 @@ from defTypes import buildType
 from modules import argumentParser
 from modules import counter
 from modules import htmlBuilder
+from modules import htmlBody
 from modules import htmlHead
 
 # this is the main function being run
@@ -79,11 +80,12 @@ def writeHtmlHeadContent(settings):
 
 # <body>
 def writeHtmlBodyContent(settings):
+  body = htmlBody.HtmlBody(settings.htmlOutputFile, settings.indentDepth)
   htmlFile = settings.htmlOutputFile
   tabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/topNav.txt", settings.indentDepth)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/sideNav.txt", settings.indentDepth)
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/topQuote.txt", settings.indentDepth)
+  body.includeFileThenAppendNewLine("./htmlIncludes/topNav.txt") \
+      .includeFileThenAppendNewLine("./htmlIncludes/sideNav.txt") \
+      .includeFileThenAppendNewLine("./htmlIncludes/topQuote.txt")
   htmlBuilder.addHtmlNewLineToFile(htmlFile, settings.indentDepth)
   htmlFile.write(tabs + "<div id=\"webContent\">\n")
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve1.txt", settings.indentDepth + 1)
@@ -93,7 +95,7 @@ def writeHtmlBodyContent(settings):
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/svgCurve3.txt", settings.indentDepth + 1)
   htmlBuilder.includeFileThenAppendNewLine(htmlFile, "../pages/mainPage/textBelowCurves.txt", settings.indentDepth + 1)
   htmlFile.write(tabs + "</div>\n")
-  htmlBuilder.includeFileThenAppendNewLine(htmlFile, "./htmlIncludes/footer.txt", settings.indentDepth)
+  body.includeFileThenAppendNewLine("./htmlIncludes/footer.txt")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/githubApiScripts.js")
   htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/navigationScripts.js")
   htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, "./htmlIncludes/inlineJs.js",

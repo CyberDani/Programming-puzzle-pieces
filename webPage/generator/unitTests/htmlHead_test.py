@@ -1,11 +1,8 @@
-import os
 import sys
 import unittest
 
 sys.path.append('..')
-from defTypes import buildType
-from defTypes import dbBranchType
-from defTypes import buildSettings
+
 from modules import htmlBuilder
 from modules import filerw
 from modules import htmlHead
