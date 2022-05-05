@@ -1,4 +1,3 @@
-import os
 import sys
 import unittest
 
@@ -7,7 +6,6 @@ sys.path.append('..')
 from modules import htmlBuilder
 from modules import filerw
 from modules import htmlBody
-from modules import webLibs
 
 class HtmlBodyTests(unittest.TestCase):
 
@@ -325,3 +323,157 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(lines[12], "\t\t</table>")
     self.assertEqual(lines[13], "\t\t1. include")
     self.assertEqual(lines[14], "\t\t2. include")
+
+  def test_addHtmlNewLineThenAppendNewLine_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    body = htmlBody.HtmlBody(file, 2)
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine(None)
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine(True)
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine("")
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine("Zero")
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine(0)
+    with self.assertRaises(Exception):
+      body.addHtmlNewLineThenAppendNewLine(-1)
+
+  def test_addHtmlNewLineThenAppendNewLine_1br(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    body = htmlBody.HtmlBody(file, 1)
+    body.addHtmlNewLineThenAppendNewLine(1)
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 2)
+    self.assertEqual(lines[0], "simple line")
+    self.assertEqual(lines[1], htmlBuilder.getHtmlNewLines(1, 1))
+
+  def test_addHtmlNewLineThenAppendNewLine_2br(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    body = htmlBody.HtmlBody(file, 3)
+    body.addHtmlNewLineThenAppendNewLine(2)
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 2)
+    self.assertEqual(lines[0], "simple line")
+    self.assertEqual(lines[1], htmlBuilder.getHtmlNewLines(3, 2))
+
+  def test_addHtmlNewLineThenAppendNewLine_5br(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    body = htmlBody.HtmlBody(file, 2)
+    body.addHtmlNewLineThenAppendNewLine(5)
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 2)
+    self.assertEqual(lines[0], "simple line")
+    self.assertEqual(lines[1], htmlBuilder.getHtmlNewLines(2, 5))
+
+  def test_addHtmlNewLineThenAppendNewLine_2brAnd5br(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    body = htmlBody.HtmlBody(file, 4)
+    body.addHtmlNewLineThenAppendNewLine(2).addHtmlNewLineThenAppendNewLine(5)
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "simple line")
+    self.assertEqual(lines[1], htmlBuilder.getHtmlNewLines(4, 2))
+    self.assertEqual(lines[2], htmlBuilder.getHtmlNewLines(4, 5))
+
+  def test_addJsScriptSrcThenAppendNewLine_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    body = htmlBody.HtmlBody(file, 4)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine(False, None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("", None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("hello", None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "sha215-23", None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", None, "anonymous", None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", None, None, "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", None, "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "sha512-23", None, "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "sha512-23", "anonymous", None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "a", "x", "z")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "abc", "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "sha512-asdasdc-xcx", "abc", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcThenAppendNewLine("www.mysite.com/res.js", "sha512-asdasdc-xcx", "anonymous", "ab")
+
+  def test_addJsScriptSrcThenAppendNewLine_justUrl(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    body = htmlBody.HtmlBody(file, 1)
+    body.addJsScriptSrcThenAppendNewLine("myAwesomeSite.com/randomScript.js", None, None, None)
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    jsLines = htmlBuilder.getJsScriptSrc(1, "myAwesomeSite.com/randomScript.js", None, None, None)
+    self.assertEqual(len(lines), 2 + len(jsLines))
+    self.assertEqual(lines[0], "- 1 -")
+    self.assertEqual(lines[1], "- 2 -")
+    for i in range(0, len(jsLines)):
+      self.assertEqual(lines[2 + i], jsLines[i])
+
+  def test_addJsScriptSrcThenAppendNewLine_urlIntegrityCrossoriginReferrerpolicy(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    body = htmlBody.HtmlBody(file, 6)
+    body.addJsScriptSrcThenAppendNewLine("https://lookatthis.com/itsascript.js",
+                                        "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    jsLines = htmlBuilder.getJsScriptSrc(6, "https://lookatthis.com/itsascript.js",
+                                         "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
+    self.assertEqual(len(lines), 2 + len(jsLines))
+    self.assertEqual(lines[0], "- 1 -")
+    self.assertEqual(lines[1], "- 2 -")
+    for i in range(0, len(jsLines)):
+      self.assertEqual(lines[2 + i], jsLines[i])
+
+  def test_includeFileAsInlineJs_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    body = htmlBody.HtmlBody(file, 1)
+    with self.assertRaises(Exception):
+      body.includeFileAsInlineJs("nonExistingFile.js")
+    with self.assertRaises(Exception):
+      body.includeFileAsInlineJs(None)
+    with self.assertRaises(Exception):
+      body.includeFileAsInlineJs(False)
+    with self.assertRaises(Exception):
+      body.includeFileAsInlineJs(file)
+    with self.assertRaises(Exception):
+      body.includeFileAsInlineJs(122)
+
+  def test_includeFileAsInlineJs_example(self):
+    file2 = open("./unitTests/temp/test2.txt", "w")
+    filerw.writeLinesToFile(file2, ["function getTwo() {", "\treturn 2;", "}"])
+    file2.close()
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToFileThenAppendNewLine(file, ["\tsome line", "\tsome another line here"])
+    body = htmlBody.HtmlBody(file, 1)
+    body.includeFileAsInlineJs("./unitTests/temp/test2.txt")
+    file.close()
+    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 7)
+    self.assertEqual(lines[0], "\tsome line")
+    self.assertEqual(lines[1], "\tsome another line here")
+    self.assertEqual(lines[2], "\t<script>")
+    self.assertEqual(lines[3], "\t\tfunction getTwo() {")
+    self.assertEqual(lines[4], "\t\t\treturn 2;")
+    self.assertEqual(lines[5], "\t\t}")
+    self.assertEqual(lines[6], "\t</script>")

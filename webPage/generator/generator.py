@@ -82,12 +82,10 @@ def writeHtmlHeadContent(settings):
 # <body>
 def writeHtmlBodyContent(settings):
   body = htmlBody.HtmlBody(settings.htmlOutputFile, settings.indentDepth)
-  htmlFile = settings.htmlOutputFile
   body.includeFileThenAppendNewLine("./htmlIncludes/topNav.txt") \
       .includeFileThenAppendNewLine("./htmlIncludes/sideNav.txt") \
-      .includeFileThenAppendNewLine("./htmlIncludes/topQuote.txt")
-  htmlBuilder.addHtmlNewLineToFile(htmlFile, settings.indentDepth)
-
+      .includeFileThenAppendNewLine("./htmlIncludes/topQuote.txt") \
+      .addHtmlNewLineThenAppendNewLine(1)
   body.openHtmlTagThenAppendNewLine("div", "id=\"webContent\"") \
       .includeFileThenAppendNewLine("../pages/mainPage/svgCurve1.txt") \
       .includeFileThenAppendNewLine("../pages/mainPage/whatThisProjectOffers.txt") \
@@ -95,13 +93,11 @@ def writeHtmlBodyContent(settings):
       .includeFileThenAppendNewLine("../pages/mainPage/personalRecommendation.txt") \
       .includeFileThenAppendNewLine("../pages/mainPage/svgCurve3.txt") \
       .includeFileThenAppendNewLine("../pages/mainPage/textBelowCurves.txt") \
-      .closeLastOpenedHtmlTag()
-
-  body.includeFileThenAppendNewLine("./htmlIncludes/footer.txt")
-  htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/githubApiScripts.js")
-  htmlBuilder.addJsScriptSrcToHtmlOutputFile(htmlFile, settings.indentDepth, "./webPage/scripts/navigationScripts.js")
-  htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, "./htmlIncludes/inlineJs.js",
-                                                             "script", "", settings.indentDepth)
+      .closeLastOpenedHtmlTag()  # div#webContent
+  body.includeFileThenAppendNewLine("./htmlIncludes/footer.txt") \
+      .addJsScriptSrcThenAppendNewLine("./webPage/scripts/githubApiScripts.js") \
+      .addJsScriptSrcThenAppendNewLine("./webPage/scripts/navigationScripts.js") \
+      .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
 
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()

@@ -31,3 +31,17 @@ class HtmlBody:
     self.htmlFile.write(closedHtmlTag + "\n")
     del self.openedHtmlTags[-1]
     return self
+
+  def addHtmlNewLineThenAppendNewLine(self, nrOfNewLines = 1):
+    htmlBuilder.addHtmlNewLineToFile(self.htmlFile, self.indentDepth, nrOfNewLines)
+    return self
+
+  def addJsScriptSrcThenAppendNewLine(self, url, integrity=None, crossorigin=None, referrerpolicy=None):
+    htmlBuilder.addJsScriptSrcToHtmlOutputFile(self.htmlFile, self.indentDepth, url,
+                                               integrity, crossorigin, referrerpolicy)
+    return self
+
+  def includeFileAsInlineJs(self, filePath):
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(self.htmlFile, filePath,
+                                                                "script", "", self.indentDepth)
+    return self
