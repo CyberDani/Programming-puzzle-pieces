@@ -1,6 +1,7 @@
 import os
-import unittest
+import sys
 
+from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
 
@@ -9,11 +10,11 @@ from modules import counter
 from modules import htmlBuilder
 from modules import htmlBody
 from modules import htmlHead
+from modules import uTest
 
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
-  # TODO: write a function which return what to do based on these factors, e.g. STOP_APP, CONTINUE
   invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
   if invalidUsage:
     print(" [!] Invalid command")
@@ -21,15 +22,9 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     return
   stepsCounter = counter.SimpleCounter(1)
   if runUnitTests:
-    print(stepsCounter.getNextMessage('Validate unit tests . . .\n'))
-    unitTestsResult = collectAndRunUnitTests()
-    # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
-    if not unitTestsResult.wasSuccessful():
-      print('\n ======= UNIT TEST FAILED ======= ')
-      print('\n [!] No operation can be done until all tests pass!')
-      return
-    else:
-      print('\n - ALL UNIT TESTS PASSED -\n')
+    result = uTest.runAndEvaluateUnitTests(stepsCounter)
+    if result == appDecisionType.AppDecisionType.STOP_APP:
+      sys.exit()
   if buildOption != buildType.BuildType.DO_NOT_BUILD:
     backupFiles(stepsCounter)
     htmlOutputFilePath = "../../index.html"
@@ -42,16 +37,6 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     generateNewHtmlOutputFile(settings)
   else:
     print("No backup or generation was made")
-
-def collectAndRunUnitTests():
-  suites = unittest.TestSuite()
-  loader = unittest.TestLoader()
-  # possible arguments: sys.stdout, verbosity=2, failfast=failfast, buffer=true
-  runner = unittest.TextTestRunner()
-  # suites.addTest(loader.loadTestsFromName('unitTests.unitTestsRunner_test'))
-  suites.addTest(loader.discover('./unitTests/', pattern='*_test.py'))
-  result = runner.run(suites)
-  return result
 
 def backupFiles(stepsCounter):
   print(stepsCounter.getNextMessage('Backup all HTML files . . .'))
