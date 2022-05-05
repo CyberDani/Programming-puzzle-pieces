@@ -338,3 +338,22 @@ class HtmlHeadTests(unittest.TestCase):
     for libLine in libLines:
       self.assertEqual(libLine, lines[3 + i])
       i += 1
+
+  def test_function_chaining(self):
+    filerw.writeLinesToFileByFilePathThenAppendNewLine("./unitTests/temp/test2.txt",
+                                                       ["first line", "second line"])
+    filerw.writeLinesToFileByFilePathThenAppendNewLine("./unitTests/temp/test3.txt",
+                                                       ["first line in this as well", "I also have a second line"])
+    file = open("./unitTests/temp/test.txt", "w")
+    head = htmlHead.HtmlHead(file, 2)
+    head.setTitle("Programming puzzle-pieces") \
+      .setFavicon("./webPage/images/favicon.png") \
+      .setMetaScreenOptimizedForMobile() \
+      .includeFileAsInlineCSS("./unitTests/temp/test2.txt") \
+      .addFontAwesome_v611() \
+      .addJquery_v360() \
+      .addGoogleIcons() \
+      .addMaterialize_v110_alpha() \
+      .addGoogleFont("?family=Arima+Madurai:wght@500&display=swap") \
+      .addJQueryLoadingOverlay_v217() \
+      .includeFileAsInlineCSS("./unitTests/temp/test3.txt")

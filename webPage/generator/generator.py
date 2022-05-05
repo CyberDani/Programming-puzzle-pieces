@@ -66,7 +66,6 @@ def backupIndexHtml():
 
 # <head>
 def writeHtmlHeadContent(settings):
-  # TODO: you did not test chaining
   head = htmlHead.HtmlHead(settings.htmlOutputFile, settings.indentDepth)
   head.setTitle("Programming puzzle-pieces") \
       .setFavicon("./webPage/images/favicon.png") \
