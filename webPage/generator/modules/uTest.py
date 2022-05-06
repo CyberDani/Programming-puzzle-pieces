@@ -5,17 +5,16 @@ from defTypes import appDecisionType
 
 from modules import checks
 
-# Todo: unittest me
-def runAndEvaluateUnitTests(stepsCounter):
-  print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
-  unitTestsResult = collectAndRunUnitTestsByFilePattern('./unitTests/', '*_test.py')
-  # r.testsRun, len(r.errors), len(r.failures), r.printErrors()
+
+def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
+  lines = []
+  unitTestsResult = collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStream)
   if unitTestsResult.wasSuccessful():
-    print(' - ALL UNIT TESTS PASSED -\n')
-    return appDecisionType.AppDecisionType.CONTINUE_RUNNING
-  print('\n ======= UNIT TEST FAILED ======= ')
-  print('\n [!] No operation can be done until all tests pass!')
-  return appDecisionType.AppDecisionType.STOP_APP
+    lines.append(' - ALL UNIT TESTS PASSED -\n')
+    return appDecisionType.AppDecisionType.CONTINUE_RUNNING, lines
+  lines.append('\n ======= UNIT TEST FAILED ======= ')
+  lines.append('\n [!] No operation can be done until all tests pass!')
+  return appDecisionType.AppDecisionType.STOP_APP, lines
 
 def collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStream = None):
   checks.checkIfString(relativeDirPath, 2, 300)
@@ -26,4 +25,6 @@ def collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStre
   # suites.addTest(loader.loadTestsFromName('unitTests.unitTestsRunner_test'))
   suites.addTest(loader.discover(relativeDirPath, pattern = filePattern))
   result = runner.run(suites)
+  if result.testsRun == 0:
+    raise Exception('No tests found to run!')
   return result

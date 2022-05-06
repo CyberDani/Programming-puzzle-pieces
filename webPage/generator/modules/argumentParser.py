@@ -44,13 +44,16 @@ def getCommandLineArgs():
   #skip the first argument which contains the name of the script
   return sys.argv[1:]
 
-def displayScriptUsage():
-  print("  Usage: {0} [command] [db-branch] \n".format(sys.argv[0]))
-  print("Commands:")
-  print("\t -u \t Run unit tests, nothing else happens")
-  print("\t -b \t If all unit tests pass, backup current files and regenerate necessary files")
-  print("\t -rb \t If all unit tests pass, backup current files and rebuild all files")
-  print("\nDB branch:")
-  print(" [!] Note: if not given it uses db:master for git:master and db:devel otherwise\n")
-  print("\t db:master \t Use the master branch on dbhub.io")
-  print("\t db:devel \t Use the devel branch on dbhub.io")
+def getScriptUsageLines():
+  lines = ["  Usage: {0} [command] [db-branch] \n".format(sys.argv[0]),
+           "Commands:",
+           "\t -u \t Run unit tests, nothing else happens",
+           "\t -b \t If all unit tests pass, backup current files and regenerate necessary files",
+           "\t -rb \t If all unit tests pass, backup current files and rebuild all files",
+           "",
+           "DB branch:",
+           " [!] Note: if not given it uses db:master for git:master and db:devel otherwise",
+           "",
+           "\t db:master \t Use the master branch on dbhub.io",
+           "\t db:devel \t Use the devel branch on dbhub.io"]
+  return lines

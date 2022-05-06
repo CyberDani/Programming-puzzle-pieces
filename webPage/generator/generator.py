@@ -18,11 +18,13 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
   if invalidUsage:
     print(" [!] Invalid command")
-    argumentParser.displayScriptUsage()
+    print(*argumentParser.getScriptUsageLines(), sep="\n")
     sys.exit()
   stepsCounter = counter.SimpleCounter(1)
   if runUnitTests:
-    result = uTest.runAndEvaluateUnitTests(stepsCounter)
+    print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
+    result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
+    print(*lines, sep="\n")
     if result == appDecisionType.AppDecisionType.STOP_APP:
       sys.exit()
   if buildOption != buildType.BuildType.DO_NOT_BUILD:

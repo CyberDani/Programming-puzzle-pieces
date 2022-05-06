@@ -3,11 +3,12 @@ import sys
 
 sys.path.append('..')
 
-from modules import argumentParser
-from modules import db
 from defTypes import dbBranchType
 from defTypes import buildType
 
+from modules import argumentParser
+from modules import checks
+from modules import db
 
 class ArgumentParserTests(unittest.TestCase):
 
@@ -65,7 +66,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.assertEqual(dbBranch, db.getCurrentDbBranch())
 
   def test_build_dbMaster(self):
-    args = ['-b','db:master']
+    args = ['-b', 'db:master']
     invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
@@ -73,7 +74,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
 
   def test_build_dbDevel(self):
-    args = ['-b','db:devel']
+    args = ['-b', 'db:devel']
     invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
@@ -89,7 +90,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.assertEqual(dbBranch, db.getCurrentDbBranch())
 
   def test_rebuild_dbMaster(self):
-    args = ['-rb','db:master']
+    args = ['-rb', 'db:master']
     invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
@@ -97,7 +98,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
 
   def test_rebuild_dbDevel(self):
-    args = ['-rb','db:devel']
+    args = ['-rb', 'db:devel']
     invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
@@ -116,7 +117,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.invalidArgumentCheck(['-A'])
     self.invalidArgumentCheck(['-B'])
     self.invalidArgumentCheck(['-U'])
-    self.invalidArgumentCheck(['-U','db:master'])
+    self.invalidArgumentCheck(['-U', 'db:master'])
     self.invalidArgumentCheck(['b'])
     self.invalidArgumentCheck(['a'])
     self.invalidArgumentCheck(['a', 'db:devel'])
@@ -126,27 +127,32 @@ class ArgumentParserTests(unittest.TestCase):
     self.invalidArgumentCheck(['ua'])
     self.invalidArgumentCheck(['-ua'])
     self.invalidArgumentCheck(['-au'])
-    self.invalidArgumentCheck(['-a','-u'])
-    self.invalidArgumentCheck(['-b','-u'])
-    self.invalidArgumentCheck(['-a','-x'])
-    self.invalidArgumentCheck(['-b','-x'])
-    self.invalidArgumentCheck(['-u','-a'])
-    self.invalidArgumentCheck(['-u','-b'])
-    self.invalidArgumentCheck(['-u','-x'])
-    self.invalidArgumentCheck(['-u','file'])
-    self.invalidArgumentCheck(['-','file'])
-    self.invalidArgumentCheck(['-','-idk'])
-    self.invalidArgumentCheck(['-a','-idk'])
-    self.invalidArgumentCheck(['-b','-idk'])
-    self.invalidArgumentCheck(['-u','-idk'])
-    self.invalidArgumentCheck(['-u','db:nonExistingBranch'])
+    self.invalidArgumentCheck(['-a', '-u'])
+    self.invalidArgumentCheck(['-b', '-u'])
+    self.invalidArgumentCheck(['-a', '-x'])
+    self.invalidArgumentCheck(['-b', '-x'])
+    self.invalidArgumentCheck(['-u', '-a'])
+    self.invalidArgumentCheck(['-u', '-b'])
+    self.invalidArgumentCheck(['-u', '-x'])
+    self.invalidArgumentCheck(['-u', 'file'])
+    self.invalidArgumentCheck(['-', 'file'])
+    self.invalidArgumentCheck(['-', '-idk'])
+    self.invalidArgumentCheck(['-a', '-idk'])
+    self.invalidArgumentCheck(['-b', '-idk'])
+    self.invalidArgumentCheck(['-u', '-idk'])
+    self.invalidArgumentCheck(['-u', 'db:nonExistingBranch'])
     self.invalidArgumentCheck(['x'])
     self.invalidArgumentCheck(['-x'])
-    self.invalidArgumentCheck(['-x','file.yaml'])
-    self.invalidArgumentCheck(['-x','-y'])
-    self.invalidArgumentCheck(['-x','-y','file.txt'])
-    self.invalidArgumentCheck(['text','-y','-file'])
-    self.invalidArgumentCheck(['-x','-y','-z','-alpha','-beta','-gamma'])
-    self.invalidArgumentCheck(['db:master','db:devel'])
-    self.invalidArgumentCheck(['db:master','-u'])
+    self.invalidArgumentCheck(['-x', 'file.yaml'])
+    self.invalidArgumentCheck(['-x', '-y'])
+    self.invalidArgumentCheck(['-x', '-y', 'file.txt'])
+    self.invalidArgumentCheck(['text', '-y', '-file'])
+    self.invalidArgumentCheck(['-x', '-y', '-z', '-alpha', '-beta', '-gamma'])
+    self.invalidArgumentCheck(['db:master', 'db:devel'])
+    self.invalidArgumentCheck(['db:master', '-u'])
     self.invalidArgumentCheck(['db:master'])
+
+  def test_getScriptUsageLines_returnsPureListOfStrings(self):
+    lines = argumentParser.getScriptUsageLines()
+    checks.checkIfPureListOfStrings(lines)
+    self.assertTrue(len(lines) > 7)
