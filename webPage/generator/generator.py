@@ -7,8 +7,8 @@ from defTypes import buildType
 
 from modules import argumentParser
 from modules import counter
-from modules import htmlBuilder
 from modules import htmlBody
+from modules import htmlBuilder
 from modules import htmlHead
 from modules import uTest
 
@@ -19,7 +19,7 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   if invalidUsage:
     print(" [!] Invalid command")
     argumentParser.displayScriptUsage()
-    return
+    sys.exit()
   stepsCounter = counter.SimpleCounter(1)
   if runUnitTests:
     result = uTest.runAndEvaluateUnitTests(stepsCounter)
@@ -40,14 +40,11 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
 
 def backupFiles(stepsCounter):
   print(stepsCounter.getNextMessage('Backup all HTML files . . .'))
-  backupIndexHtml()
+  os.replace("../../index.html", "./backup/index.html")
 
 def generateNewHtmlOutputFile(settings):
   print(settings.stepsCounter.getNextMessage('Generate HTML files . . .'))
   htmlBuilder.buildIndexHtmlFile(writeHtmlHeadContent, writeHtmlBodyContent, settings)
-
-def backupIndexHtml():
-  os.replace("../../index.html", "./backup/index.html")
 
 # <head>
 def writeHtmlHeadContent(settings):
