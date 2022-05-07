@@ -11,14 +11,15 @@ def parseArguments(args):
   argsSize = len(args)
   invalidUsage = True
   runUnitTests = False
+  backup = False
   buildOption = buildType.BuildType.DO_NOT_BUILD
   dbBranch = db.getCurrentDbBranch()
   if argsSize == 0 or argsSize > 2:
-    return invalidUsage, runUnitTests, buildOption, dbBranch
+    return invalidUsage, runUnitTests, backup, buildOption, dbBranch
   if argsSize == 2:
     secondArg = args[1]
     if secondArg != "db:master" and secondArg != "db:devel":
-      return invalidUsage, runUnitTests, buildOption, dbBranch
+      return invalidUsage, runUnitTests, backup, buildOption, dbBranch
     if secondArg == "db:master":
       dbBranch = dbBranchType.DbBranchType.MASTER
     elif secondArg == "db:devel":
@@ -27,18 +28,21 @@ def parseArguments(args):
   if firstArg == "-u":
     invalidUsage = False
     runUnitTests = True
-    return invalidUsage, runUnitTests, buildOption, dbBranch
+    backup = False
+    return invalidUsage, runUnitTests, backup, buildOption, dbBranch
   if firstArg == "-b":
     invalidUsage = False
     runUnitTests = True
+    backup = True
     buildOption = buildType.BuildType.BUILD
-    return invalidUsage, runUnitTests, buildOption, dbBranch
+    return invalidUsage, runUnitTests, backup, buildOption, dbBranch
   if firstArg == "-rb":
     invalidUsage = False
     runUnitTests = True
+    backup = True
     buildOption = buildType.BuildType.REBUILD
-    return invalidUsage, runUnitTests, buildOption, dbBranch
-  return invalidUsage, runUnitTests, buildOption, dbBranch
+    return invalidUsage, runUnitTests, backup, buildOption, dbBranch
+  return invalidUsage, runUnitTests, backup, buildOption, dbBranch
 
 def getCommandLineArgs():
   #skip the first argument which contains the name of the script

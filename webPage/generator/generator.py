@@ -15,7 +15,7 @@ from modules import uTest
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
-  invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+  invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
   if invalidUsage:
     print(" [!] Invalid command")
     print(*argumentParser.getScriptUsageLines(), sep="\n")
@@ -27,8 +27,14 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
     print(*lines, sep="\n")
     if result == appDecisionType.AppDecisionType.STOP_APP:
       sys.exit()
+  else:
+    print(stepsCounter.getNextMessage('Skip unit tests'))
+  if backup:
+    print(stepsCounter.getNextMessage('Backup current files . . .'))
+    backupFiles()
+  else:
+    print(stepsCounter.getNextMessage('Skip making backups'))
   if buildOption != buildType.BuildType.DO_NOT_BUILD:
-    backupFiles(stepsCounter)
     htmlOutputFilePath = "../../index.html"
     htmlFile = open(htmlOutputFilePath, "w")
     settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
@@ -38,10 +44,9 @@ def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
                                            indentDepth=2)
     generateNewHtmlOutputFile(settings)
   else:
-    print("No backup or generation was made")
+    print(stepsCounter.getNextMessage('Skip building'))
 
-def backupFiles(stepsCounter):
-  print(stepsCounter.getNextMessage('Backup all HTML files . . .'))
+def backupFiles():
   os.replace("../../index.html", "./backup/index.html")
 
 def generateNewHtmlOutputFile(settings):

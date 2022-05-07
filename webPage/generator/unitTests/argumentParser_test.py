@@ -26,89 +26,100 @@ class ArgumentParserTests(unittest.TestCase):
 
   def test_noArgument(self):
     args = []
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
+    self.assertFalse(backup)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
     # not interested in actual value of dbBranch in this case
     self.assertTrue(dbBranch == dbBranchType.DbBranchType.MASTER or dbBranch == dbBranchType.DbBranchType.DEVEL)
 
   def test_unitTestSingleArgument(self):
     args = ['-u']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertFalse(backup)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
     self.assertEqual(dbBranch, db.getCurrentDbBranch())
 
   def test_unitTest_dbMaster(self):
     args = ['-u', 'db:master']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertFalse(backup)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
 
   def test_unitTest_dbDevel(self):
     args = ['-u', 'db:devel']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertFalse(backup)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def test_build(self):
     args = ['-b']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.BUILD)
     self.assertEqual(dbBranch, db.getCurrentDbBranch())
 
   def test_build_dbMaster(self):
     args = ['-b', 'db:master']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.BUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
 
   def test_build_dbDevel(self):
     args = ['-b', 'db:devel']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.BUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def test_rebuild(self):
     args = ['-rb']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.REBUILD)
     self.assertEqual(dbBranch, db.getCurrentDbBranch())
 
   def test_rebuild_dbMaster(self):
     args = ['-rb', 'db:master']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.REBUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.MASTER)
 
   def test_rebuild_dbDevel(self):
     args = ['-rb', 'db:devel']
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertFalse(invalidUsage)
     self.assertTrue(runUnitTests)
+    self.assertTrue(backup)
     self.assertEqual(buildOption, buildType.BuildType.REBUILD)
     self.assertEqual(dbBranch, dbBranchType.DbBranchType.DEVEL)
 
   def invalidArgumentCheck(self, args):
-    invalidUsage, runUnitTests, buildOption, dbBranch = argumentParser.parseArguments(args)
+    invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
     self.assertTrue(invalidUsage)
     self.assertFalse(runUnitTests)
+    self.assertFalse(backup)
     self.assertEqual(buildOption, buildType.BuildType.DO_NOT_BUILD)
     # not interested in actual value of dbBranch in this case
     self.assertTrue(dbBranch == dbBranchType.DbBranchType.MASTER or dbBranch == dbBranchType.DbBranchType.DEVEL)
