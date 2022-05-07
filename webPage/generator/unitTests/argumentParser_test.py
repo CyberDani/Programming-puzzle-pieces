@@ -162,6 +162,7 @@ class ArgumentParserTests(unittest.TestCase):
     self.invalidArgumentCheck(['db:master', 'db:devel'])
     self.invalidArgumentCheck(['db:master', '-u'])
     self.invalidArgumentCheck(['db:master'])
+    self.invalidArgumentCheck(['db:devel'])
 
   def test_getScriptUsageLines_returnsPureListOfStrings(self):
     lines = argumentParser.getScriptUsageLines()

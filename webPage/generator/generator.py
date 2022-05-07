@@ -16,35 +16,49 @@ from modules import uTest
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
   invalidUsage, runUnitTests, backup, buildOption, dbBranch = argumentParser.parseArguments(args)
-  if invalidUsage:
-    print(" [!] Invalid command")
-    print(*argumentParser.getScriptUsageLines(), sep="\n")
-    sys.exit()
+  handleInvalidUsageIfRequired(invalidUsage)
   stepsCounter = counter.SimpleCounter(1)
-  if runUnitTests:
-    print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
-    result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
-    print(*lines, sep="\n")
-    if result == appDecisionType.AppDecisionType.STOP_APP:
-      sys.exit()
-  else:
+  handleUnitTestsIfRequired(runUnitTests, stepsCounter)
+  handleBackupIfRequired(backup, stepsCounter)
+  handleBuildingIfRequired(buildOption, stepsCounter, dbBranch)
+
+def handleInvalidUsageIfRequired(invalidUsage):
+  if not invalidUsage:
+    return
+  print(" [!] Invalid command")
+  print(*argumentParser.getScriptUsageLines(), sep="\n")
+  sys.exit()
+
+def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
+  if not runUnitTests:
     print(stepsCounter.getNextMessage('Skip unit tests'))
-  if backup:
-    print(stepsCounter.getNextMessage('Backup current files . . .'))
-    backupFiles()
-  else:
+    return
+  print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
+  result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
+  print(*lines, sep="\n")
+  if result == appDecisionType.AppDecisionType.STOP_APP:
+    sys.exit()
+
+def handleBackupIfRequired(backup, stepsCounter):
+  if not backup:
     print(stepsCounter.getNextMessage('Skip making backups'))
-  if buildOption != buildType.BuildType.DO_NOT_BUILD:
-    htmlOutputFilePath = "../../index.html"
-    htmlFile = open(htmlOutputFilePath, "w")
-    settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
-                                           buildOption=buildOption,
-                                           dbBranch=dbBranch,
-                                           stepsCounter=stepsCounter,
-                                           indentDepth=2)
-    generateNewHtmlOutputFile(settings)
-  else:
+    return
+  print(stepsCounter.getNextMessage('Backup current files . . .'))
+  backupFiles()
+
+def handleBuildingIfRequired(buildOption, stepsCounter, dbBranch):
+  if buildOption == buildType.BuildType.DO_NOT_BUILD:
     print(stepsCounter.getNextMessage('Skip building'))
+    return
+  htmlOutputFilePath = "../../index.html"
+  htmlFile = open(htmlOutputFilePath, "w")
+  settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
+                                         buildOption=buildOption,
+                                         dbBranch=dbBranch,
+                                         stepsCounter=stepsCounter,
+                                         indentDepth=2)
+  generateNewHtmlOutputFile(settings)
+
 
 def backupFiles():
   os.replace("../../index.html", "./backup/index.html")
