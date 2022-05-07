@@ -57,7 +57,7 @@ async function loadMainPage() {
   
   let part4 = new Promise(function(resolve, reject) {
 	$.ajax({
-		url: "webPage/pages/mainPage/personalRecommandation.txt",
+		url: "webPage/pages/mainPage/personalRecommendation.txt",
 		dataType: "html",
 		method: "GET"
 	}).done(function(html) {
