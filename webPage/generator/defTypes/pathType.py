@@ -7,6 +7,7 @@ class DirectoryRelPathType(Enum):
   GIT_REPOSITORY = pathChecker.DirectoryPathChecker("", ["README.md", ".git/HEAD"])
   INDEX_HTML_LOCATION = pathChecker.DirectoryPathChecker("", ["index.html"])
   PYTHON_MAIN_GENERATOR = pathChecker.DirectoryPathChecker("webPage/generator", ["generator.py"])
-  PYTHON_GENERATOR_UNIT_TESTS = pathChecker.DirectoryPathChecker("webPage/generator", ["generator.py"])
-  HTML_GENERAL_INCLUDES = pathChecker.DirectoryPathChecker("webPage/generator/unitTests",
+  PYTHON_GENERATOR_UNIT_TESTS = pathChecker.DirectoryPathChecker("webPage/generator/unitTests",
                                                            ["checks_test.py", "argumentParser_test.py"])
+  HTML_GENERAL_INCLUDES = pathChecker.DirectoryPathChecker("webPage/generator/htmlIncludes",
+                                                           ["footer.txt", "topNav.txt", "sideNav.txt"])
