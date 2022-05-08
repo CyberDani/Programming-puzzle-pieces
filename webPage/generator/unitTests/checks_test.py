@@ -276,7 +276,9 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfDirectoryPathExists("unitTests/")
       checks.checkIfDirectoryPathExists("unitTests")
       checks.checkIfDirectoryPathExists(".")
+      checks.checkIfDirectoryPathExists("./")
       checks.checkIfDirectoryPathExists("..")
+      checks.checkIfDirectoryPathExists("../")
     except Exception:
       self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
 

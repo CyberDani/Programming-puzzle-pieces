@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import pathlib
 
 def checkIfValidJsonFile(file):
   checkIfFile(file)
@@ -25,10 +26,11 @@ def checkIfFilePathExists(filePath):
   if not os.path.isfile(filePath):
     raise Exception("Could not found file path '{}'!".format(filePath))
 
-def checkIfDirectoryPathExists(filePath):
-  checkIfString(filePath, 1, 300)
-  if not os.path.isdir(filePath):
-    raise Exception("Could not found directory path '{}'!".format(filePath))
+def checkIfDirectoryPathExists(dirPath):
+  checkIfString(dirPath, 1, 300)
+  resolvedPath = pathlib.Path(dirPath).resolve()
+  if not resolvedPath.is_dir():
+    raise Exception("Could not validate as a directory path '{}'!".format(resolvedPath))
 
 def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   checkIfList(listVar)
