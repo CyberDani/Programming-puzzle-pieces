@@ -133,7 +133,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings("hey")
     with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(["hello", "my", "world",12])
+      checks.checkIfPureListOfStrings(["hello", "my", "world", 12])
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings([True, "hello", "my", "world"])
     with self.assertRaises(Exception):
@@ -157,9 +157,132 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfPureListOfStrings() raised Exception unexpectedly!")
 
+  def test_checkIfNonEmptyPureListOfStrings_raiseException(self):
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings(0)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings(None)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings(False)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings(["hello", "my", "world", 12])
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings([True, "hello", "my", "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings(["hello", "my", ["one", "two"], "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings([True])
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings([0, 1, 2, 3, 4, 5, 6])
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfStrings([])
+
+  def test_checkIfNonEmptyPureListOfStrings_notRaiseException(self):
+    try:
+      checks.checkIfNonEmptyPureListOfStrings([""])
+      checks.checkIfNonEmptyPureListOfStrings(["\t"])
+      checks.checkIfNonEmptyPureListOfStrings(["X"])
+      checks.checkIfNonEmptyPureListOfStrings(["\tHELLO\n"])
+      checks.checkIfNonEmptyPureListOfStrings(["one"])
+      checks.checkIfNonEmptyPureListOfStrings(["one", "two"])
+      checks.checkIfNonEmptyPureListOfStrings(["one", "two", "three"])
+      checks.checkIfNonEmptyPureListOfStrings(["one", "\t", "two", "three", "four", "five", "six", "seven", "\n"])
+    except Exception:
+      self.fail("checkIfPureListOfStrings() raised Exception unexpectedly!")
+
+  def test_checkIfFilePathExists_nonSense(self):
+    file = open("./unitTests/temp/testFile.txt", "w")
+    file.close()
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists(file)
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists()
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists(None)
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists(23)
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists(False)
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp/notExistingFile.txt")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp/notExistingFile")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp/testFile")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp/test")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp/")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/temp")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests/")
+    with self.assertRaises(Exception):
+      checks.checkIfFilePathExists("./unitTests")
+
+  def test_checkIfFilePathExists_example(self):
+    try:
+      file = open("./unitTests/temp/testFile.txt", "w")
+      file.close()
+      file = open("./unitTests/temp/testFile2.txt", "w")
+      file.close()
+      checks.checkIfFilePathExists("./unitTests/temp/testFile.txt")
+      checks.checkIfFilePathExists("./unitTests/temp/testFile2.txt")
+      checks.checkIfFilePathExists("unitTests/temp/testFile.txt")
+      checks.checkIfFilePathExists("unitTests/temp/testFile2.txt")
+    except Exception:
+      self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
+
+  def test_checkIfDirectoryPathExists_nonSense(self):
+    file = open("./unitTests/temp/testFile.txt", "w")
+    file.close()
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists(file)
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists(None)
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists(23)
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists(False)
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/temp/testFile.txt")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/temp/testFile")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/temp/notExistingFile.txt")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/temp/testDir/")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/temp/test/")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTests/tempX")
+    with self.assertRaises(Exception):
+      checks.checkIfDirectoryPathExists("./unitTestsX")
+
+  def test_checkIfDirectoryPathExists_example(self):
+    try:
+      file = open("./unitTests/temp/testFile.txt", "w")
+      file.close()
+      checks.checkIfDirectoryPathExists("./unitTests/temp/")
+      checks.checkIfDirectoryPathExists("./unitTests/temp")
+      checks.checkIfDirectoryPathExists("./unitTests/")
+      checks.checkIfDirectoryPathExists("./unitTests")
+      checks.checkIfDirectoryPathExists("unitTests/")
+      checks.checkIfDirectoryPathExists("unitTests")
+      checks.checkIfDirectoryPathExists(".")
+      checks.checkIfDirectoryPathExists("..")
+    except Exception:
+      self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
+
   def test_checkIfString_raiseException(self):
     with self.assertRaises(Exception):
-      checks.checkIfString(123,3, 10)
+      checks.checkIfString(123, 3, 10)
     with self.assertRaises(Exception):
       checks.checkIfString("hello", "empty", 10)
     with self.assertRaises(Exception):
@@ -186,6 +309,7 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfString("", 0, 23)
       checks.checkIfString("hello", 0, 12)
       checks.checkIfString("hello", 3, 20)
+      checks.checkIfString("hello", 5, 5)
     except Exception:
       self.fail("checkIfString() raised Exception unexpectedly!")
 

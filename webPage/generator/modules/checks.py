@@ -1,5 +1,6 @@
 import io
 import json
+import os
 
 def checkIfValidJsonFile(file):
   checkIfFile(file)
@@ -18,6 +19,16 @@ def checkIfStringIsAlphaNumerical(string):
     raise Exception("Not a string type: '{0}'".format(str(string)))
   if not string.isalnum():
     raise Exception("String {} is not alphanumerical!".format(string))
+
+def checkIfFilePathExists(filePath):
+  checkIfString(filePath, 2, 300)
+  if not os.path.isfile(filePath):
+    raise Exception("Could not found file path '{}'!".format(filePath))
+
+def checkIfDirectoryPathExists(filePath):
+  checkIfString(filePath, 1, 300)
+  if not os.path.isdir(filePath):
+    raise Exception("Could not found directory path '{}'!".format(filePath))
 
 def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   checkIfList(listVar)
@@ -51,6 +62,14 @@ def checkIfString(var, minLength, maxLength):
 
 def checkIfPureListOfStrings(var):
   checkIfList(var)
+  for val in var:
+    if type(val) != str:
+      raise Exception("The list has a non-string element: '{0}'".format(str(val)))
+
+def checkIfNonEmptyPureListOfStrings(var):
+  checkIfList(var)
+  if len(var) == 0:
+    raise Exception("The list must contain at least one string!")
   for val in var:
     if type(val) != str:
       raise Exception("The list has a non-string element: '{0}'".format(str(val)))
