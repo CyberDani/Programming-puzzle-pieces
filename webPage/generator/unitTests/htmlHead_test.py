@@ -340,10 +340,10 @@ class HtmlHeadTests(unittest.TestCase):
       i += 1
 
   def test_function_chaining(self):
-    filerw.writeLinesToFileByFilePathThenAppendNewLine("./unitTests/temp/test2.txt",
-                                                       ["first line", "second line"])
-    filerw.writeLinesToFileByFilePathThenAppendNewLine("./unitTests/temp/test3.txt",
-                                                       ["first line in this as well", "I also have a second line"])
+    filerw.writeLinesToFileByFilePathThenAppendNewLineAndCloseFile("./unitTests/temp/test2.txt",
+                                                                   ["first line", "second line"])
+    filerw.writeLinesToFileByFilePathThenAppendNewLineAndCloseFile("./unitTests/temp/test3.txt",
+                                                                   ["first line in this as well", "I also have a second line"])
     file = open("./unitTests/temp/test.txt", "w")
     head = htmlHead.HtmlHead(file, 2)
     head.setTitle("Programming puzzle-pieces") \

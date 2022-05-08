@@ -37,7 +37,7 @@ def writeLinesToFile(file, lines):
     if (i < n - 1):
       file.write("\n")
 
-def writeLinesToFileByFilePath(filePath, lines):
+def writeLinesToFileByFilePathAndCloseFile(filePath, lines):
   checks.checkIfString(filePath, 2, 300)
   file = open(filePath, "w")
   writeLinesToFile(file, lines)
@@ -50,7 +50,7 @@ def writeLinesToFileThenAppendNewLine(file, lines):
     file.write(line)
     file.write("\n")
 
-def writeLinesToFileByFilePathThenAppendNewLine(filePath, lines):
+def writeLinesToFileByFilePathThenAppendNewLineAndCloseFile(filePath, lines):
   checks.checkIfString(filePath, 2, 300)
   file = open(filePath, "w")
   writeLinesToFileThenAppendNewLine(file, lines)
