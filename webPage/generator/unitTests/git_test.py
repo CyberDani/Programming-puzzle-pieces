@@ -1,3 +1,4 @@
+import pathlib
 import sys
 import unittest
 
@@ -11,9 +12,7 @@ class GitUtilTests(unittest.TestCase):
 
   def test_getRepoRootDirectory(self):
     gitRoot = git.getRepoRootDirectory()
-    currentPath = stringUtil.rTrimNewLines(cmd.getOutputFromCommand("cd"))
-    gitRoot = gitRoot.replace("\\", "/")
-    currentPath = currentPath.replace("\\", "/")
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRoot))
     self.assertTrue(filerw.fileExists(gitRoot + "/.git/HEAD"))
 

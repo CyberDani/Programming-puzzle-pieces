@@ -1,9 +1,9 @@
 from modules import cmd
+from modules import path
 from modules import stringUtil
 
 def getRepoRootDirectory():
-  ans = cmd.getOutputFromCommand("git rev-parse --show-toplevel")
-  return stringUtil.rTrimNewLines(ans)
+  return path.getGitRepoAbsolutePathEndingWithSlash()
 
 def getCurrentBranch():
   f = open(getRepoRootDirectory() + "/.git/HEAD", "r")
