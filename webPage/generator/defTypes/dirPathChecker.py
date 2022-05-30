@@ -1,3 +1,5 @@
+# from defTypes import pathType
+
 from modules import checks
 from modules import filerw
 from modules import path
@@ -21,3 +23,7 @@ class DirectoryPathChecker:
 
   def getAbsolutePath(self):
     return self.absoluteDirPath
+
+class FilePathChecker:
+  def __init__(self, dirPathType, fileName):
+    checks.checkIfString(fileName, 1, 300)
