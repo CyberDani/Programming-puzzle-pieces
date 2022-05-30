@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes import pathType
+from defTypes import dirPathType
 from defTypes import pathChecker
 
 from modules import filerw
@@ -14,5 +14,9 @@ class PathTypeTests(unittest.TestCase):
 
   def test_DirectoryRelPathType_checkPaths(self):
     # this line will run the pathChecker test for all enum values
-    pathType.DirectoryRelPathType
+    dirPathType.DirectoryRelPathType
+
+  def test_DirectoryRelPathType_allMemberHasCheckerValueType(self):
+    for name, member in dirPathType.DirectoryRelPathType.__members__.items():
+      self.assertTrue(type(member.value) == pathChecker.DirectoryPathChecker)
 
