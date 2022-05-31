@@ -1,4 +1,3 @@
-import pathlib
 import sys
 import unittest
 
@@ -6,10 +5,7 @@ sys.path.append('..')
 
 from defTypes import dirPathChecker
 
-from modules import filerw
-from modules import path
-
-class PathCheckerTests(unittest.TestCase):
+class DirPathCheckerTests(unittest.TestCase):
 
   def test_DirectoryPathChecker_nonSense(self):
     with self.assertRaises(Exception):
