@@ -1,3 +1,4 @@
+import io
 import unittest
 import sys
 
@@ -464,3 +465,39 @@ class ChecksTests(unittest.TestCase):
     file = open("./unitTests/temp/test.txt", "r")
     jsonVals = checks.checkIfValidJsonFile(file)
     self.assertEqual(jsonVals["intValue"], 23)
+
+  def test_checkIfType_invalid(self):
+    file = open("./unitTests/temp/test.txt", "r")
+    with self.assertRaises(Exception):
+      checks.checkIfType(file, 12)
+    with self.assertRaises(Exception):
+      checks.checkIfType(12, "./unitTests/temp/notExistingFile.extension")
+    with self.assertRaises(Exception):
+      checks.checkIfType(None, None)
+    with self.assertRaises(Exception):
+      checks.checkIfType(True, False)
+    with self.assertRaises(Exception):
+      checks.checkIfType(False, Exception)
+
+  def test_checkIfType_wrongType(self):
+    file = open("./unitTests/temp/test.txt", "r")
+    with self.assertRaises(Exception):
+      checks.checkIfType(file, int)
+    with self.assertRaises(Exception):
+      checks.checkIfType(12, str)
+    with self.assertRaises(Exception):
+      checks.checkIfType(None, list)
+    with self.assertRaises(Exception):
+      checks.checkIfType(True, bytearray)
+    with self.assertRaises(Exception):
+      checks.checkIfType(False, io.TextIOWrapper)
+
+  def test_checkIfType_correctType(self):
+    file = open("./unitTests/temp/test.txt", "r")
+    checks.checkIfType(file, io.TextIOWrapper)
+    checks.checkIfType(12, int)
+    checks.checkIfType("", str)
+    checks.checkIfType(True, bool)
+    checks.checkIfType([], list)
+    checks.checkIfType([12], list)
+    checks.checkIfType([12, "array"], list)

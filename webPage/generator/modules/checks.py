@@ -32,6 +32,10 @@ def checkIfDirectoryPathExists(dirPath):
   if not resolvedPath.is_dir():
     raise Exception("Could not validate as a directory path '{}'!".format(resolvedPath))
 
+def checkIfType(value, compareType):
+  if type(value) != compareType:
+    raise Exception("Type missmatch '{}' with '{}'!".format(str(type(value)), str(compareType)))
+
 def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   checkIfList(listVar)
   if len(listVar) == 0:
