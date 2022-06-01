@@ -15,9 +15,9 @@ class DirectoryPathChecker:
       absPath = self.absoluteDirPath + file
       checks.checkIfFilePathExists(absPath)
 
-  def getRelativePath(self):
+  def getRelativePathEndingWithSlash(self):
     """The associated path is relative to the git root repository"""
     return self.dirPathRelativeToGitRepo
 
-  def getAbsolutePath(self):
+  def getAbsolutePathEndingWithSlash(self):
     return self.absoluteDirPath
