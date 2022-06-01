@@ -83,6 +83,16 @@ class FileReadWriterTests(unittest.TestCase):
     os.rmdir("./unitTests/testDir2")
     self.assertFalse(filerw.directoryExists("unitTests/testDir2/"))
 
+  def test_createDirectoryWithParentsIfNotExists_nonExistingNestedFolder(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/"))
+    filerw.createDirectoryWithParentsIfNotExists("./unitTests/testDir3/testDir4")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir3/testDir4/"))
+    os.rmdir("./unitTests/testDir3/testDir4")
+    os.rmdir("./unitTests/testDir3")
+    self.assertFalse(filerw.directoryExists("unitTests/testDir3/testDir4/"))
+    self.assertFalse(filerw.directoryExists("unitTests/testDir3"))
+
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")
     file.write("HEY")

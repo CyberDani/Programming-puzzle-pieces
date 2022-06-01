@@ -7,6 +7,7 @@ from defTypes import buildType
 
 from modules import argumentParser
 from modules import counter
+from modules import filerw
 from modules import htmlBody
 from modules import htmlBuilder
 from modules import htmlHead
@@ -34,8 +35,11 @@ def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
     print(stepsCounter.getNextMessage('Skip unit tests'))
     return
   print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
+  # quick trick to surely avoid all potential fileNotFound errors in tests
+  filerw.createDirectoryWithParentsIfNotExists("./unitTests/temp")
   result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
   print(*lines, sep="\n")
+  # TODO: cleanup (even if we are talking about just some bytes)
   if result == appDecisionType.AppDecisionType.STOP_APP:
     sys.exit()
 
