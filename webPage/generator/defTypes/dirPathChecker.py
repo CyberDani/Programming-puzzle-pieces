@@ -8,6 +8,8 @@ class DirectoryPathChecker:
     checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
     if len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo[-1] != "/":
       dirPathRelativeToGitRepo += "/"
+    while len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo.startswith("./"):
+      dirPathRelativeToGitRepo = dirPathRelativeToGitRepo[2:]
     self.dirPathRelativeToGitRepo = dirPathRelativeToGitRepo
     self.absoluteDirPath = path.getGitRepoAbsolutePathEndingWithSlash() + dirPathRelativeToGitRepo
     checks.checkIfDirectoryPathExists(self.absoluteDirPath)
