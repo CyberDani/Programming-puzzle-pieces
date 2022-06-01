@@ -30,6 +30,29 @@ class FileReadWriterTests(unittest.TestCase):
     os.remove("./unitTests/temp/testFile.txt")
     self.assertFalse(filerw.fileExists("./unitTests/temp/testFile.txt"))
 
+  def test_directoryExists_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.directoryExists(file)
+    with self.assertRaises(Exception):
+      filerw.directoryExists("")
+    with self.assertRaises(Exception):
+      filerw.directoryExists()
+    with self.assertRaises(Exception):
+      filerw.directoryExists(None)
+    with self.assertRaises(Exception):
+      filerw.directoryExists(23)
+    with self.assertRaises(Exception):
+      filerw.directoryExists(False)
+
+  def test_directoryExists_example(self):
+    self.assertTrue(filerw.directoryExists("./unitTests"))
+    self.assertTrue(filerw.directoryExists("unitTests"))
+    self.assertTrue(filerw.directoryExists("modules"))
+    self.assertFalse(filerw.directoryExists("Xmodules"))
+    self.assertFalse(filerw.directoryExists("modulesX"))
+    self.assertFalse(filerw.directoryExists("ASfwefSAffASfj"))
+
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")
     file.write("HEY")

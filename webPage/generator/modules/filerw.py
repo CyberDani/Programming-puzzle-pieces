@@ -9,6 +9,10 @@ def fileExists(filePath):
   checks.checkIfString(filePath, 2, 300)
   return os.path.isfile(filePath)
 
+def directoryExists(dirPath):
+  checks.checkIfString(dirPath, 1, 300)
+  return os.path.isdir(dirPath)
+
 def getLinesByFilePathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)
   f = open(filePath, "r")
