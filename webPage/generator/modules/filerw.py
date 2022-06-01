@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 from modules import checks
 from modules import stringUtil
@@ -31,6 +32,11 @@ def getLines(file):
   return rTrimNewLines(linesWithNewEndingline)
 
 ###### Writes ######
+
+def createDirectoryWithParentsIfNotExists(dirPath):
+  if directoryExists(dirPath):
+    return
+  pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
 
 def writeLinesToFile(file, lines):
   checks.checkIfFile(file)

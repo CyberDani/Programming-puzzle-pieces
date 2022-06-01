@@ -53,6 +53,36 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertFalse(filerw.directoryExists("modulesX"))
     self.assertFalse(filerw.directoryExists("ASfwefSAffASfj"))
 
+  def test_createDirectoryWithParentsIfNotExists_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists(file)
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists("")
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists()
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists(None)
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists(23)
+    with self.assertRaises(Exception):
+      filerw.createDirectoryWithParentsIfNotExists(False)
+
+  def test_createDirectoryWithParentsIfNotExists_existingFolder(self):
+    os.mkdir("./unitTests/testDir")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir/"))
+    filerw.createDirectoryWithParentsIfNotExists("./unitTests/testDir")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir/"))
+    os.rmdir("./unitTests/testDir")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir/"))
+
+  def test_createDirectoryWithParentsIfNotExists_nonExistingFolder(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir2/"))
+    filerw.createDirectoryWithParentsIfNotExists("./unitTests/testDir2")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir2/"))
+    os.rmdir("./unitTests/testDir2")
+    self.assertFalse(filerw.directoryExists("unitTests/testDir2/"))
+
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")
     file.write("HEY")
