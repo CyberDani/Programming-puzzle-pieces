@@ -93,6 +93,71 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertFalse(filerw.directoryExists("unitTests/testDir3/testDir4/"))
     self.assertFalse(filerw.directoryExists("unitTests/testDir3"))
 
+  def test_deleteNonEmptyDirectoryIfExists_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists(file)
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists(["unitTests/temp"])
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists()
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists(None)
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists(23)
+    with self.assertRaises(Exception):
+      filerw.deleteNonEmptyDirectoryIfExists(False)
+
+  def test_deleteNonEmptyDirectoryIfExists_nonExistingDirectory(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
+    self.assertTrue(filerw.directoryExists("unitTests"))
+    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir3/testDir4")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
+    self.assertTrue(filerw.directoryExists("unitTests"))
+
+  def test_deleteNonEmptyDirectoryIfExists_nonExistingDirectory_2(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
+    self.assertTrue(filerw.directoryExists("unitTests"))
+    filerw.deleteNonEmptyDirectoryIfExists("unitTests/testDir3")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
+    self.assertTrue(filerw.directoryExists("unitTests"))
+
+  def test_deleteNonEmptyDirectoryIfExists_emptyDirectory(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+
+  def test_deleteNonEmptyDirectoryIfExists_directoryWithFiles(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir12"))
+    file = open("./unitTests/testDir12/test.txt", "w")
+    file.close()
+    file = open("./unitTests/testDir12/test2.txt", "w")
+    file.close()
+    file = open("./unitTests/testDir12/test3.txt", "w")
+    file.close()
+    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+
+  def test_deleteNonEmptyDirectoryIfExists_directoryWithFilesAndDirs(self):
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12/testDir22")
+    self.assertTrue(filerw.directoryExists("./unitTests/testDir12/testDir22"))
+    file = open("./unitTests/testDir12/test.txt", "w")
+    file.close()
+    file = open("./unitTests/testDir12/test2.txt", "w")
+    file.close()
+    file = open("./unitTests/testDir12/test3.txt", "w")
+    file.close()
+    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12/testDir22"))
+    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     file = open("./unitTests/temp/test.txt", "w")
     file.write("HEY")

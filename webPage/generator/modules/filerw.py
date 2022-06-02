@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 
 from modules import checks
 from modules import stringUtil
@@ -30,6 +31,13 @@ def getLinesByFilePath(filePath):
 def getLines(file):
   linesWithNewEndingline = getLinesWithEndingNewLine(file)
   return rTrimNewLines(linesWithNewEndingline)
+
+###### Deletes ######
+
+def deleteNonEmptyDirectoryIfExists(dirPath):
+  if not directoryExists(dirPath):
+    return
+  shutil.rmtree(dirPath)
 
 ###### Writes ######
 

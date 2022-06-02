@@ -39,7 +39,8 @@ def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
   filerw.createDirectoryWithParentsIfNotExists("./unitTests/temp")
   result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
   print(*lines, sep="\n")
-  # TODO: cleanup (even if we are talking about just some bytes)
+  # cleanup (even if we are talking about just some bytes)
+  filerw.deleteNonEmptyDirectoryIfExists("unitTests/temp")
   if result == appDecisionType.AppDecisionType.STOP_APP:
     sys.exit()
 
