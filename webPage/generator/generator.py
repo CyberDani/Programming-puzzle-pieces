@@ -65,9 +65,6 @@ def handleBuildingIfRequired(buildOption, stepsCounter, dbBranch):
   generateNewHtmlOutputFile(settings)
 
 
-def backupFiles():
-  os.replace("../../index.html", "./backup/index.html")
-
 def generateNewHtmlOutputFile(settings):
   print(settings.stepsCounter.getNextMessage('Generate HTML files . . .'))
   htmlBuilder.buildIndexHtmlFile(writeHtmlHeadContent, writeHtmlBodyContent, settings)
@@ -106,5 +103,7 @@ def writeHtmlBodyContent(settings):
       .addJsScriptSrcThenAppendNewLine("./webPage/scripts/navigationScripts.js") \
       .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
 
+def backupFiles():
+  os.replace("../../index.html", "./backup/index.html")
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()
