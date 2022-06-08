@@ -316,6 +316,62 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfString() raised Exception unexpectedly!")
 
+  def test_checkIfStringDoesNotContainAnySubstringFromList_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList(123, 3, 10, ["/"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hello", "empty", 10, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 1, None, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", -3, 10, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("", -3, 10, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 20, 2, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", -2, -1, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 5, 1500, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("", 1, 21, ["notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("this string is intended to represent a longer one", 5, 15,
+                                                             ["^_^"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["notMatch", 2])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [None])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [True, "notMatch"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["notMatch", 2, "bye"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [None, "notMatch", 2])
+
+  def test_checkIfStringDoesNotContainAnySubstringFromList_containsString(self):
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["H"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 2, 21, ["./", "H"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 8, ["y", "H", "x"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 121, ["hey", "hell", "H", "bye"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 11, ["hey", "Hell", "bye"])
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 0, 21, ["ell", "Hell", "H", "He"])
+
+  def test_checkIfStringDoesNotContainAnySubstringFromList_valid(self):
+    try:
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 5, 5, [])
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 5, 5, ["hello"])
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 5, 5, ["hell", "elo", "L", "LO", "hello"])
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 5, 5, ["abcd", "\n", "\t", "bye"])
+    except Exception:
+      self.fail("checkIfStringDoesNotContainAnySubstringFromList() raised Exception unexpectedly!")
+
   def test_checkIfAllNoneOrString_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfAllNoneOrString("not a list", 3, 10)
@@ -352,7 +408,7 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfAllNoneOrString(["hello", "hey"], 3, 5)
       checks.checkIfAllNoneOrString(["hello", "hey", "hi", "k", ""], 0, 15)
     except Exception:
-      self.fail("checkIfString() raised Exception unexpectedly!")
+      self.fail("checkIfAllNoneOrString() raised Exception unexpectedly!")
 
   def test_checkIfValidJsonFile_nonSense(self):
     with self.assertRaises(Exception):

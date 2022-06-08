@@ -15,6 +15,12 @@ def checkIfValidJsonFileByFilePath(filePath):
   f = open(filePath, "r")
   return checkIfValidJsonFile(f)
 
+def checkIfStringDoesNotContainAnySubstringFromList(string, minLength, maxLength, listOfExceptionChars):
+  checkIfString(string, minLength, maxLength)
+  for stringToMatch in listOfExceptionChars:
+    if stringToMatch in string:
+      raise Exception("String '{}' should not contain '{}' in itself".format(string, stringToMatch))
+
 def checkIfStringIsAlphaNumerical(string):
   if type(string) != str:
     raise Exception("Not a string type: '{0}'".format(str(string)))

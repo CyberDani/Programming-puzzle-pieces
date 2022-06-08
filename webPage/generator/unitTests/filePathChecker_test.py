@@ -11,7 +11,7 @@ from modules import path
 
 class FilePathCheckerTests(unittest.TestCase):
 
-  def test_DirectoryPathChecker_nonSense(self):
+  def test_FilePathChecker_nonSense(self):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(None, "file.txt")
     with self.assertRaises(Exception):
@@ -43,7 +43,7 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker("", ["README.md"])
 
-  def test_DirectoryPathChecker_nonExistingFiles(self):
+  def test_FilePathChecker_nonExistingFiles(self):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "bubbleGenerator.py")
     with self.assertRaises(Exception):
@@ -51,12 +51,31 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS, "asdasdsda.py")
 
-  def test_DirectoryPathChecker_existingFiles(self):
-    filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, "README.md")
-    filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
+  def test_FilePathChecker_existingFiles(self):
+    try:
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "generator.py")
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, "README.md")
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
+    except Exception:
+      self.fail("FilePathChecker raised Exception unexpectedly!")
 
-  def test_DirectoryPathChecker_getRelativePathEndingWithSlash(self):
+  def test_FilePathChecker_existingFilesButContainsSlash(self):
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "./generator.py")
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, ".git/HEAD")
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, "./.git/HEAD")
+
+  def test_FilePathChecker_existingDirectoryInsteadOfExistingFile(self):
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "unitTests")
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, ".git")
+    with self.assertRaises(Exception):
+      filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, ".git/refs")
+
+  def test_FilePathChecker_getRelativePathEndingWithSlash(self):
     filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getRelativePathEndingWithSlash(),
                      dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR.value.getRelativePathEndingWithSlash()
@@ -71,7 +90,7 @@ class FilePathCheckerTests(unittest.TestCase):
                      dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS.value.getRelativePathEndingWithSlash()
                      + "checks_test.py")
 
-  def test_DirectoryPathChecker_getAbsolutePathEndingWithSlash(self):
+  def test_FilePathChecker_getAbsolutePathEndingWithSlash(self):
     filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getAbsolutePathEndingWithSlash(),
                      dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR.value.getAbsolutePathEndingWithSlash()
