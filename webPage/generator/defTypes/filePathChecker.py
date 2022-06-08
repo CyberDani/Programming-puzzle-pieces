@@ -1,3 +1,5 @@
+import os
+
 from defTypes import dirPathChecker
 from defTypes import dirPathType
 
@@ -9,6 +11,7 @@ class FilePathChecker:
   def __init__(self, directoryPathType, fileName):
     checks.checkIfStringDoesNotContainAnySubstringFromList(fileName, 1, 300, "/")
     checks.checkIfType(directoryPathType, dirPathType.DirectoryRelPathType)
+    self.fileName = fileName
     self.absolutePath = directoryPathType.value.getAbsolutePathEndingWithSlash() + fileName
     self.relativePathToGitRepo = directoryPathType.value.getRelativePathEndingWithSlash() + fileName
     checks.checkIfFilePathExists(self.absolutePath)
@@ -19,3 +22,10 @@ class FilePathChecker:
 
   def getAbsolutePathEndingWithSlash(self):
     return self.absolutePath
+
+  def getFileName(self):
+    return self.fileName
+
+  def getPathRelativeToDirectory(self, directoryPathType):
+    checks.checkIfType(directoryPathType, dirPathType.DirectoryRelPathType)
+    return os.path.relpath(self.absolutePath, directoryPathType.value.getAbsolutePathEndingWithSlash())
