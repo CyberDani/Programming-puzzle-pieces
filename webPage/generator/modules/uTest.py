@@ -1,10 +1,21 @@
+import io
 import sys
 import unittest
 
 from defTypes import appDecisionType
 
 from modules import checks
+from modules import filerw
 
+def runAndEvaluateUnitTestsUsingTempFolder(relativeDirPath, filePattern, tempFolderName, outputStream = None):
+  checks.checkIfStringDoesNotContainAnySubstringFromList(tempFolderName, 1, 200, ['/'])
+  if relativeDirPath[-1] != "/":
+    relativeDirPath += "/"
+  pathToTempFolder = relativeDirPath + tempFolderName
+  filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
+  result, lines = runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream)
+  filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
+  return result, lines
 
 def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
   lines = []
@@ -19,6 +30,8 @@ def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
 def collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStream = None):
   checks.checkIfString(relativeDirPath, 2, 300)
   checks.checkIfString(filePattern, 1, 300)
+  if outputStream is not None:
+    checks.checkIfType(outputStream, io.TextIOWrapper)
   suites = unittest.TestSuite()
   loader = unittest.TestLoader()
   runner = unittest.TextTestRunner(stream = outputStream, verbosity = 0)

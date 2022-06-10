@@ -35,12 +35,8 @@ def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
     print(stepsCounter.getNextMessage('Skip unit tests'))
     return
   print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
-  # quick trick to surely avoid all potential fileNotFound errors in tests
-  filerw.createDirectoryWithParentsIfNotExists("./unitTests/temp")
-  result, lines = uTest.runAndEvaluateUnitTests('./unitTests/', '*_test.py')
+  result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder("unitTests", '*_test.py', "temp")
   print(*lines, sep="\n")
-  # cleanup (even if we are talking about just some bytes)
-  filerw.deleteNonEmptyDirectoryIfExists("unitTests/temp")
   if result == appDecisionType.AppDecisionType.STOP_APP:
     sys.exit()
 
