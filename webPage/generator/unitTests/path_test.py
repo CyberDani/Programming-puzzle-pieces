@@ -83,7 +83,7 @@ class StringUtilTests(unittest.TestCase):
     self.assertAbsoluteFilePath(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
 
   def assertAbsoluteFilePath(self, gitRepoAbsPath, fileType):
-    fileAbsolutePath = fileType.value.getAbsoluteFilePath()
+    fileAbsolutePath = path.getAbsoluteFilePath(fileType)
     self.assertTrue(fileAbsolutePath.startswith(gitRepoAbsPath))
     self.assertTrue(fileAbsolutePath.endswith(fileType.value.getFileName()))
     self.assertEqual(fileAbsolutePath, gitRepoAbsPath + fileType.value.getRelativeFilePathToGitRepo())
