@@ -7,7 +7,7 @@ from modules import checks
 class FilePathChecker:
   def __init__(self, directoryPathType, fileName):
     checks.checkIfStringDoesNotContainAnySubstringFromList(fileName, 1, 300, "/")
-    checks.checkIfType(directoryPathType, dirPathType.DirectoryRelPathType)
+    checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
     self.fileName = fileName
     self.absolutePath = directoryPathType.value.getAbsolutePathEndingWithSlash() + fileName
     self.relativePathToGitRepo = directoryPathType.value.getRelativePathEndingWithSlash() + fileName
@@ -24,5 +24,5 @@ class FilePathChecker:
     return self.fileName
 
   def getPathRelativeToDirectory(self, directoryPathType):
-    checks.checkIfType(directoryPathType, dirPathType.DirectoryRelPathType)
+    checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
     return os.path.relpath(self.absolutePath, directoryPathType.value.getAbsolutePathEndingWithSlash())

@@ -28,6 +28,7 @@ class DirectoryPathChecker:
   gitRepoAbsolutePath = getGitRepoAbsolutePathEndingWithSlash()
 
   def __init__(self, dirPathRelativeToGitRepo, filesToCheck):
+    """The associated path is relative to the git root repository"""
     checks.checkIfString(dirPathRelativeToGitRepo, 0, 300)
     checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
     if len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo[-1] != "/":
