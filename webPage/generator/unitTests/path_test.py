@@ -88,3 +88,72 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(fileAbsolutePath.endswith(fileType.value.getFileName()))
     self.assertEqual(fileAbsolutePath, gitRepoAbsPath + fileType.value.getRelativeFilePathToGitRepo())
     self.assertEqual(fileAbsolutePath, fileType.value.getAbsoluteFilePath())
+
+  def test_getRelativeDirPathToGitRepoEndingWithSlash_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(".")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash("")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash("webPage/generator")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(False)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(None)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(0)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(["webPage/generator"])
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash([])
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToGitRepoEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+
+  def test_getRelativeDirPathToGitRepoEndingWithSlash_examples(self):
+    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR)
+
+  def assertRelDirPathToGit(self, gitRepoAbsPath, directoryPathType):
+    relDirPath = path.getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType)
+    self.assertFalse(relDirPath.startswith(gitRepoAbsPath))
+    self.assertTrue(len(relDirPath) == 0 or relDirPath[-1] == "/")
+    self.assertEqual(relDirPath, directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash())
+    self.assertEqual(gitRepoAbsPath + relDirPath, directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
+
+  def test_getRelativeFilePathToGitRepo_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(".")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo("")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo("webPage/generator")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(False)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(None)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(0)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(["webPage/generator"])
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo([])
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToGitRepo(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+
+  def test_getRelativeFilePathToGitRepo_examples(self):
+    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_FOOTER)
+    self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPQUOTE)
+    self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_INLINEJS)
+    self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+
+  def assertRelFilePathToGit(self, gitRepoAbsPath, fileType):
+    fileRelPathToGit = path.getRelativeFilePathToGitRepo(fileType)
+    self.assertFalse(fileRelPathToGit.startswith(gitRepoAbsPath))
+    self.assertTrue(fileRelPathToGit.endswith(fileType.value.getFileName()))
+    self.assertEqual(gitRepoAbsPath + fileRelPathToGit, fileType.value.getAbsoluteFilePath())
+    self.assertEqual(fileRelPathToGit, fileType.value.getRelativeFilePathToGitRepo())

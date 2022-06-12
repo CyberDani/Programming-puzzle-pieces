@@ -13,3 +13,11 @@ def getAbsoluteDirPathEndingWithSlash(directoryPathType):
 def getAbsoluteFilePath(fPathType):
   checks.checkIfType(fPathType, filePathType.FilePathType)
   return fPathType.value.getAbsoluteFilePath()
+
+def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
+  checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
+  return directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash()
+
+def getRelativeFilePathToGitRepo(fPathType):
+  checks.checkIfType(fPathType, filePathType.FilePathType)
+  return fPathType.value.getRelativeFilePathToGitRepo()
