@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 from modules import checks
@@ -28,7 +27,7 @@ class DirectoryPathChecker:
   gitRepoAbsolutePath = getGitRepoAbsolutePathEndingWithSlash()
 
   def __init__(self, dirPathRelativeToGitRepo, filesToCheck):
-    """The associated path is relative to the git root repository"""
+    """The associated path must be relative to the git root repository"""
     checks.checkIfString(dirPathRelativeToGitRepo, 0, 300)
     checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
     if len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo[-1] != "/":
@@ -42,9 +41,8 @@ class DirectoryPathChecker:
       absPath = self.absoluteDirPath + file
       checks.checkIfFilePathExists(absPath)
 
-  def getRelativePathEndingWithSlash(self):
-    """The path is relative to the git root repository"""
+  def getRelativeDirPathToGitRepoEndingWithSlash(self):
     return self.dirPathRelativeToGitRepo
 
-  def getAbsolutePathEndingWithSlash(self):
+  def getAbsoluteDirPathEndingWithSlash(self):
     return self.absoluteDirPath

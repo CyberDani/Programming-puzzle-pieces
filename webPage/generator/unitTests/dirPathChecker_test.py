@@ -103,17 +103,18 @@ class DirPathCheckerTests(unittest.TestCase):
 
   def test_DirectoryPathChecker_getRelativePathEndingWithSlash(self):
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
-    self.assertEqual(dir.getRelativePathEndingWithSlash(), "")
+    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "")
     dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getRelativePathEndingWithSlash(), "webPage/generator/unitTests/")
+    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "webPage/generator/unitTests/")
     dir = dirPathChecker.DirectoryPathChecker("./././././webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getRelativePathEndingWithSlash(), "webPage/generator/unitTests/")
+    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "webPage/generator/unitTests/")
 
   def test_DirectoryPathChecker_getAbsolutePathEndingWithSlash(self):
     gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
-    self.assertEqual(dir.getAbsolutePathEndingWithSlash(), gitRepoAbsPath)
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath)
     dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getAbsolutePathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
     dir = dirPathChecker.DirectoryPathChecker("./././././webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getAbsolutePathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
+

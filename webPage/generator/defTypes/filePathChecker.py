@@ -9,15 +9,15 @@ class FilePathChecker:
     checks.checkIfStringDoesNotContainAnySubstringFromList(fileName, 1, 300, "/")
     checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
     self.fileName = fileName
-    self.absolutePath = directoryPathType.value.getAbsolutePathEndingWithSlash() + fileName
-    self.relativePathToGitRepo = directoryPathType.value.getRelativePathEndingWithSlash() + fileName
+    self.absolutePath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + fileName
+    self.relativePathToGitRepo = directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash() + fileName
     checks.checkIfFilePathExists(self.absolutePath)
 
-  def getRelativePathEndingWithSlash(self):
+  def getRelativeFilePathToGitRepo(self):
     """The path is relative to the git root repository"""
     return self.relativePathToGitRepo
 
-  def getAbsolutePath(self):
+  def getAbsoluteFilePath(self):
     return self.absolutePath
 
   def getFileName(self):
@@ -25,4 +25,4 @@ class FilePathChecker:
 
   def getPathRelativeToDirectory(self, directoryPathType):
     checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
-    return os.path.relpath(self.absolutePath, directoryPathType.value.getAbsolutePathEndingWithSlash())
+    return os.path.relpath(self.absolutePath, directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
