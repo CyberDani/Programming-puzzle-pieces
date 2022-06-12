@@ -4,11 +4,8 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes import dirPathChecker
 from defTypes import dirPathType
 from defTypes import filePathChecker
-
-from modules import path
 
 class FilePathCheckerTests(unittest.TestCase):
 
@@ -93,16 +90,16 @@ class FilePathCheckerTests(unittest.TestCase):
 
   def test_FilePathChecker_getAbsolutePathEndingWithSlash(self):
     filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    self.assertEqual(filePath.getAbsolutePathEndingWithSlash(),
+    self.assertEqual(filePath.getAbsolutePath(),
                      dirPathType.DirectoryRelPathType.PYTHON_MAIN_GENERATOR.value.getAbsolutePathEndingWithSlash()
-                          + "generator.py")
+                     + "generator.py")
     filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryRelPathType.GIT_REPOSITORY, "README.md")
-    self.assertEqual(filePath.getAbsolutePathEndingWithSlash(),
+    self.assertEqual(filePath.getAbsolutePath(),
                      dirPathType.DirectoryRelPathType.GIT_REPOSITORY.value.getAbsolutePathEndingWithSlash()
                      + "README.md")
     filePath = filePathChecker.FilePathChecker(
                               dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    self.assertEqual(filePath.getAbsolutePathEndingWithSlash(),
+    self.assertEqual(filePath.getAbsolutePath(),
                      dirPathType.DirectoryRelPathType.PYTHON_GENERATOR_UNIT_TESTS.value.getAbsolutePathEndingWithSlash()
                      + "checks_test.py")
 
@@ -169,7 +166,7 @@ class FilePathCheckerTests(unittest.TestCase):
 
   @staticmethod
   def getExpectedRelativePath(filePath, directoryPathType):
-    return os.path.relpath(filePath.getAbsolutePathEndingWithSlash(),
+    return os.path.relpath(filePath.getAbsolutePath(),
                            directoryPathType.value.getAbsolutePathEndingWithSlash())
 
   def assertRelativePathWithDirWithExpected(self, filePath, directoryPathType):

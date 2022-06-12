@@ -1,6 +1,4 @@
-from modules import cmd
 from modules import path
-from modules import stringUtil
 
 def getRepoRootDirectory():
   return path.getGitRepoAbsolutePathEndingWithSlash()

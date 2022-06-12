@@ -1,11 +1,8 @@
 import os
 
-from defTypes import dirPathChecker
 from defTypes import dirPathType
 
 from modules import checks
-from modules import filerw
-from modules import path
 
 class FilePathChecker:
   def __init__(self, directoryPathType, fileName):
@@ -20,7 +17,7 @@ class FilePathChecker:
     """The path is relative to the git root repository"""
     return self.relativePathToGitRepo
 
-  def getAbsolutePathEndingWithSlash(self):
+  def getAbsolutePath(self):
     return self.absolutePath
 
   def getFileName(self):

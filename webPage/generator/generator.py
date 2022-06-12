@@ -7,7 +7,6 @@ from defTypes import buildType
 
 from modules import argumentParser
 from modules import counter
-from modules import filerw
 from modules import htmlBody
 from modules import htmlBuilder
 from modules import htmlHead
