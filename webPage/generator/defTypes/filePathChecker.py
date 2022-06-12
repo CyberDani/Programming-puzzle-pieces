@@ -14,7 +14,6 @@ class FilePathChecker:
     checks.checkIfFilePathExists(self.absolutePath)
 
   def getRelativeFilePathToGitRepo(self):
-    """The path is relative to the git root repository"""
     return self.relativePathToGitRepo
 
   def getAbsoluteFilePath(self):
