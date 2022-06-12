@@ -1,3 +1,4 @@
+import pathlib
 import sys
 import unittest
 
@@ -5,9 +6,16 @@ sys.path.append('..')
 
 from defTypes import dirPathChecker
 
-from modules import path
+from modules import filerw
 
 class DirPathCheckerTests(unittest.TestCase):
+
+  def test_getGitRepoAbsolutePathEndingWithSlash(self):
+    gitRepoPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
+    self.assertEqual(gitRepoPath[-1], "/")
+    self.assertTrue(filerw.fileExists(gitRepoPath + ".git/HEAD"))
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
+    self.assertTrue(currentPath.startswith(gitRepoPath))
 
   def test_DirectoryPathChecker_nonSense(self):
     with self.assertRaises(Exception):
@@ -102,7 +110,7 @@ class DirPathCheckerTests(unittest.TestCase):
     self.assertEqual(dir.getRelativePathEndingWithSlash(), "webPage/generator/unitTests/")
 
   def test_DirectoryPathChecker_getAbsolutePathEndingWithSlash(self):
-    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
     self.assertEqual(dir.getAbsolutePathEndingWithSlash(), gitRepoAbsPath)
     dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
