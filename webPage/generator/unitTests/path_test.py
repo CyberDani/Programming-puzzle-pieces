@@ -248,3 +248,74 @@ class StringUtilTests(unittest.TestCase):
                      pathlib.Path(dirPath1.value.getAbsoluteDirPathEndingWithSlash()).resolve())
     self.assertFalse("\\" in relPath)
     self.assertTrue(relPath[-1] == "/")
+
+  def test_getRelativeFilePathToIndexHtml_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml("")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(".")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml("temp")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml("..")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(0)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(None)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(False)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToIndexHtml(["webPage"])
+
+  def test_getRelativeFilePathToIndexHtml_examples(self):
+    indexHtmlLocationAbsPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+    self.assertRelFilePathToIndexHtml(indexHtmlLocationAbsPath, filePathType.FilePathType.HTML_INCLUDE_FOOTER)
+    self.assertRelFilePathToIndexHtml(indexHtmlLocationAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    self.assertRelFilePathToIndexHtml(indexHtmlLocationAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPQUOTE)
+    self.assertRelFilePathToIndexHtml(indexHtmlLocationAbsPath, filePathType.FilePathType.HTML_INCLUDE_INLINEJS)
+    self.assertRelFilePathToIndexHtml(indexHtmlLocationAbsPath, filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+
+  def assertRelFilePathToIndexHtml(self, indexHtmlLocationAbsPath, fileType):
+    fileRelPathToIndexHtml = path.getRelativeFilePathToIndexHtml(fileType)
+    self.assertTrue(fileRelPathToIndexHtml.endswith(fileType.value.getFileName()))
+    self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + fileRelPathToIndexHtml).resolve(),
+                     pathlib.Path(fileType.value.getAbsoluteFilePath()).resolve())
+
+  def test_getRelativeDirPathToIndexHtmlEndingWithSlash_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash("")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(".")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash("temp")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash("..")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(0)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(None)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(False)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToIndexHtmlEndingWithSlash(["webPage"])
+
+  def test_getRelativeDirPathToIndexHtmlEndingWithSlash_examples(self):
+    indexHtmlLocationAbsPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+    self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath, dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath,
+                                             dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath,
+                                             dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath,
+                                             dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR)
+
+  def assertRelDirPathToIndexHtmlLocation(self, indexHtmlLocationAbsPath, directoryPathType):
+    relDirPath = path.getRelativeDirPathToIndexHtmlEndingWithSlash(directoryPathType)
+    self.assertTrue(len(relDirPath) > 0)
+    self.assertTrue(relDirPath[-1] == "/")
+    self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + relDirPath).resolve(),
+                     pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())

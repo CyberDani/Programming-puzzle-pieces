@@ -41,3 +41,10 @@ def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTy
   if len(relPath) > 0 and relPath[-1] != '/':
     relPath += '/'
   return relPath
+
+def getRelativeFilePathToIndexHtml(fPathType):
+  return getRelativeFilePathToDirectory(fPathType, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+
+def getRelativeDirPathToIndexHtmlEndingWithSlash(directoryPathType):
+  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType,
+                                                      dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
