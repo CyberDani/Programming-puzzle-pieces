@@ -200,3 +200,50 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
                      pathlib.Path(fPathType.value.getAbsoluteFilePath()).resolve())
     self.assertFalse("\\" in relPath)
+
+  def test_getRelativeDirPathToDirectoryEndingWithSlash_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS,
+                                                         filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
+                                                        dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
+                                                        filePathType.FilePathType.HTML_INCLUDE_FOOTER)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(dirPathType.DirectoryPathType.GIT_REPOSITORY,
+                                                         "D:/Programming puzzle pieces/webPage")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/webPage/generator",
+                                                        dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/webPage/generator/",
+                                          "D:/Programming puzzle pieces/webPage")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(None, None)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(True, "directoryName")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash("directoryName", 12)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(123, 0)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToDirectoryEndingWithSlash(["directoryName"], False)
+
+  def test_getRelativeDirPathToDirectoryEndingWithSlash_examples(self):
+    self.assertRelativeDirPathToDirectory(dirPathType.DirectoryPathType.GIT_REPOSITORY,
+                                          dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertRelativeDirPathToDirectory(dirPathType.DirectoryPathType.GIT_REPOSITORY,
+                                          dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR)
+    self.assertRelativeDirPathToDirectory(dirPathType.DirectoryPathType.INDEX_HTML_LOCATION,
+                                          dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertRelativeDirPathToDirectory(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
+                                          dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+
+  def assertRelativeDirPathToDirectory(self, dirPath1, dirPath2):
+    relPath = path.getRelativeDirPathToDirectoryEndingWithSlash(dirPath1, dirPath2)
+    self.assertTrue(len(relPath) > 0)
+    self.assertEqual(pathlib.Path(dirPath2.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
+                     pathlib.Path(dirPath1.value.getAbsoluteDirPathEndingWithSlash()).resolve())
+    self.assertFalse("\\" in relPath)

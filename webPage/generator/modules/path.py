@@ -31,3 +31,13 @@ def getRelativeFilePathToDirectory(fPathType, directoryPathType):
                             directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
   relPath = relPath.replace("\\", "/")
   return relPath
+
+def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTypeForComparison):
+  checks.checkIfType(dirPathTypeToResolve, dirPathType.DirectoryPathType)
+  checks.checkIfType(dirPathTypeForComparison, dirPathType.DirectoryPathType)
+  relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPathEndingWithSlash(),
+                            dirPathTypeForComparison.value.getAbsoluteDirPathEndingWithSlash())
+  relPath = relPath.replace("\\", "/")
+  if len(relPath) > 0 and relPath[-1] != '/':
+    relPath += '/'
+  return relPath
