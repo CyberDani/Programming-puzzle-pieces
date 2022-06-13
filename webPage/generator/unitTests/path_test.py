@@ -157,3 +157,46 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(fileRelPathToGit.endswith(fileType.value.getFileName()))
     self.assertEqual(gitRepoAbsPath + fileRelPathToGit, fileType.value.getAbsoluteFilePath())
     self.assertEqual(fileRelPathToGit, fileType.value.getRelativeFilePathToGitRepo())
+
+  def test_getRelativeFilePathToDirectory_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS,
+                                          filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
+                                          "D:/Programming puzzle pieces/webPage")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/webPage/generator/generator.py",
+                                          dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/webPage/generator/generator.py",
+                                          "D:/Programming puzzle pieces/webPage")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(None, None)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(True, "directoryName")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory("file.txt", 12)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(123, 0)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToDirectory(["fileName.txt"], False)
+
+  def test_getRelativeFilePathToDirectory_example(self):
+    self.assertRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
+                                        dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_TOPQUOTE,
+                                           dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
+                                           dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_FOOTER,
+                                           dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+    self.assertRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_INLINEJS,
+                                           dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+
+  def assertRelativeFilePathToDirectory(self, fPathType, directoryPathType):
+    relPath = path.getRelativeFilePathToDirectory(fPathType, directoryPathType)
+    self.assertTrue(relPath.endswith(fPathType.value.getFileName()))
+    self.assertEqual(pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
+                     pathlib.Path(fPathType.value.getAbsoluteFilePath()).resolve())
+    self.assertFalse("\\" in relPath)

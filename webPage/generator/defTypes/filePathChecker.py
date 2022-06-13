@@ -1,5 +1,3 @@
-import os
-
 from defTypes import dirPathType
 
 from modules import checks
@@ -21,7 +19,3 @@ class FilePathChecker:
 
   def getFileName(self):
     return self.fileName
-
-  def getPathRelativeToDirectory(self, directoryPathType):
-    checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
-    return os.path.relpath(self.absolutePath, directoryPathType.value.getAbsoluteDirPathEndingWithSlash())

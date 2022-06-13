@@ -1,4 +1,3 @@
-import os
 import sys
 import unittest
 
@@ -111,64 +110,3 @@ class FilePathCheckerTests(unittest.TestCase):
     filePath = filePathChecker.FilePathChecker(
                               dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
     self.assertEqual(filePath.getFileName(), "checks_test.py")
-
-  def test_getPathRelativeToDirectory_nonSense(self):
-    filePath1 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    filePath2 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, "README.md")
-    filePath3 = filePathChecker.FilePathChecker(
-                                  dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    with self.assertRaises(Exception):
-      filePath1.getPathRelativeToDirectory("")
-    with self.assertRaises(Exception):
-      filePath1.getPathRelativeToDirectory("webPage/generator")
-    with self.assertRaises(Exception):
-      filePath2.getPathRelativeToDirectory(".")
-    with self.assertRaises(Exception):
-      filePath1.getPathRelativeToDirectory("..")
-    with self.assertRaises(Exception):
-      filePath3.getPathRelativeToDirectory(1)
-    with self.assertRaises(Exception):
-      filePath2.getPathRelativeToDirectory(None)
-    with self.assertRaises(Exception):
-      filePath1.getPathRelativeToDirectory(["log.txt"])
-    with self.assertRaises(Exception):
-      filePath3.getPathRelativeToDirectory(False)
-
-  def test_getPathRelativeToDirectory_selfDirectory(self):
-    filePath1 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    filePath2 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, "README.md")
-    filePath3 = filePathChecker.FilePathChecker(
-                                  dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    self.assertEqual(filePath1.getPathRelativeToDirectory(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR),
-                      "generator.py")
-    self.assertEqual(filePath2.getPathRelativeToDirectory(dirPathType.DirectoryPathType.GIT_REPOSITORY),
-                     "README.md")
-    self.assertEqual(filePath3.getPathRelativeToDirectory(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS),
-                     "checks_test.py")
-
-  def test_getPathRelativeToDirectory_notSelfDirectory(self):
-    filePath1 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    filePath2 = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, "README.md")
-    filePath3 = filePathChecker.FilePathChecker(
-                                  dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    self.assertRelativePathWithDirWithExpected(filePath1, dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
-    self.assertRelativePathWithDirWithExpected(filePath2, dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
-    self.assertRelativePathWithDirWithExpected(filePath3, dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
-    self.assertRelativePathWithDirWithExpected(filePath1, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
-    self.assertRelativePathWithDirWithExpected(filePath2, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
-    self.assertRelativePathWithDirWithExpected(filePath3, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
-    self.assertRelativePathWithDirWithExpected(filePath1, dirPathType.DirectoryPathType.GIT_REPOSITORY)
-    self.assertRelativePathWithDirWithExpected(filePath2, dirPathType.DirectoryPathType.GIT_REPOSITORY)
-    self.assertRelativePathWithDirWithExpected(filePath3, dirPathType.DirectoryPathType.GIT_REPOSITORY)
-    self.assertRelativePathWithDirWithExpected(filePath1, dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
-    self.assertRelativePathWithDirWithExpected(filePath2, dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
-    self.assertRelativePathWithDirWithExpected(filePath3, dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
-
-  @staticmethod
-  def getExpectedRelativePath(filePath, directoryPathType):
-    return os.path.relpath(filePath.getAbsoluteFilePath(),
-                           directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
-
-  def assertRelativePathWithDirWithExpected(self, filePath, directoryPathType):
-    self.assertEqual(filePath.getPathRelativeToDirectory(directoryPathType),
-                     self.getExpectedRelativePath(filePath, directoryPathType))

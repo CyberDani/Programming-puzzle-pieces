@@ -1,3 +1,5 @@
+import os
+
 from defTypes import dirPathType
 from defTypes import filePathType
 
@@ -21,3 +23,11 @@ def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
 def getRelativeFilePathToGitRepo(fPathType):
   checks.checkIfType(fPathType, filePathType.FilePathType)
   return fPathType.value.getRelativeFilePathToGitRepo()
+
+def getRelativeFilePathToDirectory(fPathType, directoryPathType):
+  checks.checkIfType(fPathType, filePathType.FilePathType)
+  checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
+  relPath = os.path.relpath(fPathType.value.getAbsoluteFilePath(),
+                            directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
+  relPath = relPath.replace("\\", "/")
+  return relPath
