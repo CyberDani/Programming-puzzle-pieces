@@ -247,3 +247,4 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(pathlib.Path(dirPath2.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
                      pathlib.Path(dirPath1.value.getAbsoluteDirPathEndingWithSlash()).resolve())
     self.assertFalse("\\" in relPath)
+    self.assertTrue(relPath[-1] == "/")
