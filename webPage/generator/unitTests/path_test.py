@@ -110,7 +110,7 @@ class StringUtilTests(unittest.TestCase):
       path.getRelativeDirPathToGitRepoEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
 
   def test_getRelativeDirPathToGitRepoEndingWithSlash_examples(self):
-    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType.DirectoryPathType.GIT_REPOSITORY)
     self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.GIT_REPOSITORY)
     self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
     self.assertRelDirPathToGit(gitRepoAbsPath, dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
@@ -118,10 +118,10 @@ class StringUtilTests(unittest.TestCase):
 
   def assertRelDirPathToGit(self, gitRepoAbsPath, directoryPathType):
     relDirPath = path.getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType)
-    self.assertFalse(relDirPath.startswith(gitRepoAbsPath))
-    self.assertTrue(len(relDirPath) == 0 or relDirPath[-1] == "/")
-    self.assertEqual(relDirPath, directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash())
-    self.assertEqual(gitRepoAbsPath + relDirPath, directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
+    self.assertTrue(len(relDirPath) > 0)
+    self.assertTrue(relDirPath[-1] == "/")
+    self.assertEqual(pathlib.Path(gitRepoAbsPath + relDirPath).resolve(),
+                     pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
 
   def test_getRelativeFilePathToGitRepo_nonSense(self):
     with self.assertRaises(Exception):
@@ -144,7 +144,7 @@ class StringUtilTests(unittest.TestCase):
       path.getRelativeFilePathToGitRepo(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
 
   def test_getRelativeFilePathToGitRepo_examples(self):
-    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType.DirectoryPathType.GIT_REPOSITORY)
     self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_FOOTER)
     self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
     self.assertRelFilePathToGit(gitRepoAbsPath, filePathType.FilePathType.HTML_INCLUDE_TOPQUOTE)
@@ -153,10 +153,9 @@ class StringUtilTests(unittest.TestCase):
 
   def assertRelFilePathToGit(self, gitRepoAbsPath, fileType):
     fileRelPathToGit = path.getRelativeFilePathToGitRepo(fileType)
-    self.assertFalse(fileRelPathToGit.startswith(gitRepoAbsPath))
     self.assertTrue(fileRelPathToGit.endswith(fileType.value.getFileName()))
-    self.assertEqual(gitRepoAbsPath + fileRelPathToGit, fileType.value.getAbsoluteFilePath())
-    self.assertEqual(fileRelPathToGit, fileType.value.getRelativeFilePathToGitRepo())
+    self.assertEqual(pathlib.Path(gitRepoAbsPath + fileRelPathToGit).resolve(),
+                     pathlib.Path(fileType.value.getAbsoluteFilePath()).resolve())
 
   def test_getRelativeFilePathToDirectory_nonSense(self):
     with self.assertRaises(Exception):

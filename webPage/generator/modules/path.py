@@ -16,14 +16,6 @@ def getAbsoluteFilePath(fPathType):
   checks.checkIfType(fPathType, filePathType.FilePathType)
   return fPathType.value.getAbsoluteFilePath()
 
-def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
-  checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
-  return directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash()
-
-def getRelativeFilePathToGitRepo(fPathType):
-  checks.checkIfType(fPathType, filePathType.FilePathType)
-  return fPathType.value.getRelativeFilePathToGitRepo()
-
 def getRelativeFilePathToDirectory(fPathType, directoryPathType):
   checks.checkIfType(fPathType, filePathType.FilePathType)
   checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
@@ -41,6 +33,12 @@ def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTy
   if len(relPath) > 0 and relPath[-1] != '/':
     relPath += '/'
   return relPath
+
+def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
+  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType, dirPathType.DirectoryPathType.GIT_REPOSITORY)
+
+def getRelativeFilePathToGitRepo(fPathType):
+  return getRelativeFilePathToDirectory(fPathType, dirPathType.DirectoryPathType.GIT_REPOSITORY)
 
 def getRelativeFilePathToIndexHtml(fPathType):
   return getRelativeFilePathToDirectory(fPathType, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
