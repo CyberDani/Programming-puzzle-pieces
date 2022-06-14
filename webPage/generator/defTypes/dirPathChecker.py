@@ -34,15 +34,11 @@ class DirectoryPathChecker:
       dirPathRelativeToGitRepo += "/"
     while len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo.startswith("./"):
       dirPathRelativeToGitRepo = dirPathRelativeToGitRepo[2:]
-    self.dirPathRelativeToGitRepo = dirPathRelativeToGitRepo
     self.absoluteDirPath = self.gitRepoAbsolutePath + dirPathRelativeToGitRepo
     checks.checkIfDirectoryPathExists(self.absoluteDirPath)
     for file in filesToCheck:
       absPath = self.absoluteDirPath + file
       checks.checkIfFilePathExists(absPath)
-
-  def getRelativeDirPathToGitRepoEndingWithSlash(self):
-    return self.dirPathRelativeToGitRepo
 
   def getAbsoluteDirPathEndingWithSlash(self):
     return self.absoluteDirPath

@@ -50,7 +50,6 @@ class StringUtilTests(unittest.TestCase):
   def assertAbsoluteDirPath(self, gitRepoAbsPath, dirType):
     absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
     self.assertTrue(absPath.startswith(gitRepoAbsPath))
-    self.assertEqual(absPath, gitRepoAbsPath + dirType.value.getRelativeDirPathToGitRepoEndingWithSlash())
     self.assertEqual(absPath, dirType.value.getAbsoluteDirPathEndingWithSlash())
     self.assertTrue(absPath[-1] == "/")
 
@@ -86,7 +85,6 @@ class StringUtilTests(unittest.TestCase):
     fileAbsolutePath = path.getAbsoluteFilePath(fileType)
     self.assertTrue(fileAbsolutePath.startswith(gitRepoAbsPath))
     self.assertTrue(fileAbsolutePath.endswith(fileType.value.getFileName()))
-    self.assertEqual(fileAbsolutePath, gitRepoAbsPath + fileType.value.getRelativeFilePathToGitRepo())
     self.assertEqual(fileAbsolutePath, fileType.value.getAbsoluteFilePath())
 
   def test_getRelativeDirPathToGitRepoEndingWithSlash_nonSense(self):

@@ -72,21 +72,6 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, ".git/refs")
 
-  def test_FilePathChecker_getRelativePathEndingWithSlash(self):
-    filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
-    self.assertEqual(filePath.getRelativeFilePathToGitRepo(),
-                     dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR.value.getRelativeDirPathToGitRepoEndingWithSlash()
-                     + "generator.py")
-    filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, "README.md")
-    self.assertEqual(filePath.getRelativeFilePathToGitRepo(),
-                     dirPathType.DirectoryPathType.GIT_REPOSITORY.value.getRelativeDirPathToGitRepoEndingWithSlash()
-                     + "README.md")
-    filePath = filePathChecker.FilePathChecker(
-                              dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    self.assertEqual(filePath.getRelativeFilePathToGitRepo(),
-                     dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS.value.getRelativeDirPathToGitRepoEndingWithSlash()
-                     + "checks_test.py")
-
   def test_FilePathChecker_getAbsolutePathEndingWithSlash(self):
     filePath = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getAbsoluteFilePath(),

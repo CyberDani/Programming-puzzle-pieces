@@ -8,11 +8,7 @@ class FilePathChecker:
     checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
     self.fileName = fileName
     self.absolutePath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + fileName
-    self.relativePathToGitRepo = directoryPathType.value.getRelativeDirPathToGitRepoEndingWithSlash() + fileName
     checks.checkIfFilePathExists(self.absolutePath)
-
-  def getRelativeFilePathToGitRepo(self):
-    return self.relativePathToGitRepo
 
   def getAbsoluteFilePath(self):
     return self.absolutePath

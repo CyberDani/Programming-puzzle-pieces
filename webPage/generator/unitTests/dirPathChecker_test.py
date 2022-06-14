@@ -101,14 +101,6 @@ class DirPathCheckerTests(unittest.TestCase):
     except Exception:
       self.fail("DirectoryPathChecker() raised Exception unexpectedly!")
 
-  def test_DirectoryPathChecker_getRelativePathEndingWithSlash(self):
-    dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
-    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "")
-    dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "webPage/generator/unitTests/")
-    dir = dirPathChecker.DirectoryPathChecker("./././././webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getRelativeDirPathToGitRepoEndingWithSlash(), "webPage/generator/unitTests/")
-
   def test_DirectoryPathChecker_getAbsolutePathEndingWithSlash(self):
     gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
