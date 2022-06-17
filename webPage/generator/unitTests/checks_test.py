@@ -324,6 +324,12 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, "abc")
     with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, None)
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, False)
+    with self.assertRaises(Exception):
+      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, 2)
+    with self.assertRaises(Exception):
       checks.checkIfStringDoesNotContainAnySubstringFromList("hello", "empty", 10, ["notMatch"])
     with self.assertRaises(Exception):
       checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 1, None, ["notMatch"])
