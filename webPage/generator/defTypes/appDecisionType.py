@@ -1,5 +1,7 @@
-from enum import Enum
+import enum
+from enum import Enum, unique
 
+@unique
 class AppDecisionType(Enum):
-    STOP_APP = 0
-    CONTINUE_RUNNING = 1
+    STOP_APP = enum.auto()
+    CONTINUE_RUNNING = enum.auto()

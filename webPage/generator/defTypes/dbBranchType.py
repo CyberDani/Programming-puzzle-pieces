@@ -1,5 +1,7 @@
-from enum import Enum
+import enum
+from enum import Enum, unique
 
+@unique
 class DbBranchType(Enum):
-  MASTER = 0
-  DEVEL = 1
+  MASTER = enum.auto()
+  DEVEL = enum.auto()
