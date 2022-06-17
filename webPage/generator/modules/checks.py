@@ -17,6 +17,7 @@ def checkIfValidJsonFileByFilePath(filePath):
 
 def checkIfStringDoesNotContainAnySubstringFromList(string, minLength, maxLength, listOfExceptionChars):
   checkIfString(string, minLength, maxLength)
+  checkIfPureListOfStrings(listOfExceptionChars)
   for stringToMatch in listOfExceptionChars:
     if stringToMatch in string:
       raise Exception("String '{}' should not contain '{}' in itself".format(string, stringToMatch))
