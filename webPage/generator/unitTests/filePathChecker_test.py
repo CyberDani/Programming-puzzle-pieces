@@ -4,7 +4,10 @@ import unittest
 sys.path.append('..')
 
 from defTypes import dirPathType
+from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes import filePathChecker
+
+from modules import filerw
 
 class FilePathCheckerTests(unittest.TestCase):
 
@@ -53,6 +56,18 @@ class FilePathCheckerTests(unittest.TestCase):
       filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, "generator.py")
       filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.GIT_REPOSITORY, "README.md")
       filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
+    except Exception:
+      self.fail("FilePathChecker raised Exception unexpectedly!")
+
+  def test_FilePathChecker_nonExistingFiles_doNotCheckExistence(self):
+    try:
+      generatorDirPath = dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR.value.getAbsoluteDirPathEndingWithSlash()
+      nonExistingFileName1 = "asdddawcvw.das"
+      self.assertFalse(filerw.fileExists(generatorDirPath + nonExistingFileName1))
+      ch = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, nonExistingFileName1,
+                                      fileAction.DONT_CHECK_FILE_EXISTENCE)
+      self.assertEqual(ch.getFileName(), nonExistingFileName1)
+      self.assertEqual(ch.getAbsoluteFilePath(), generatorDirPath + nonExistingFileName1)
     except Exception:
       self.fail("FilePathChecker raised Exception unexpectedly!")
 

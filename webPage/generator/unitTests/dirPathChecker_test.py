@@ -4,6 +4,7 @@ import unittest
 
 sys.path.append('..')
 
+from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 from defTypes import dirPathChecker
 
 from modules import filerw
@@ -47,6 +48,14 @@ class DirPathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py"])
     with self.assertRaises(Exception):
+      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py"],
+                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+    with self.assertRaises(Exception):
+      file = open("./unitTests/temp/testFile1.txt", "w")
+      file.close()
+      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp", ["testFile1.txt"],
+                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+    with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", [])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["checks_test.py", "nonExistingFile.py"])
@@ -88,7 +97,9 @@ class DirPathCheckerTests(unittest.TestCase):
     file.close()
     try:
       dirPathChecker.DirectoryPathChecker("", ["README.md"])
+      dirPathChecker.DirectoryPathChecker("", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
       dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", ["testFile.txt"])
+      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
       dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp", ["testFile.txt"])
       dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp/", ["testFile.txt"])
       dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp", ["testFile.txt"])

@@ -1,16 +1,19 @@
 from enum import Enum
 
 from defTypes import dirPathType
+from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes import filePathChecker
 
 class FilePathType(Enum):
   HTML_INCLUDE_TOPNAV = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
-                                                  "topNav.txt")
+                                                  "topNav.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_SIDENAV = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
-                                                  "sideNav.txt")
+                                                  "sideNav.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_TOPQUOTE = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
-                                                  "topQuote.txt")
+                                                  "topQuote.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_FOOTER = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
-                                                  "footer.txt")
+                                                  "footer.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_INLINEJS = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES,
-                                                  "inlineJs.js")
+                                                  "inlineJs.js", fileAction.ENSURE_FILE_EXISTS)
+  INDEX_HTML_MAIN = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.INDEX_HTML_LOCATION,
+                                                  "index.html", fileAction.DONT_CHECK_FILE_EXISTENCE)

@@ -91,6 +91,12 @@ def checkIfList(var):
   if type(var) != list:
     raise Exception("Not a list type")
 
+def checkIfEmptyList(var):
+  if type(var) != list:
+    raise Exception("Not a list type")
+  if len(var) > 0:
+    raise Exception("The list must be empty")
+
 def checkIfFile(file):
   if not isinstance(file, io.TextIOBase):
     raise Exception("The file is not a TextIOWrapper type argument")

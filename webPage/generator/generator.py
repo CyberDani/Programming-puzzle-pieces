@@ -4,12 +4,15 @@ import sys
 from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
+from defTypes.filePathType import FilePathType
 
 from modules import argumentParser
 from modules import counter
+from modules import filerw
 from modules import htmlBody
 from modules import htmlBuilder
 from modules import htmlHead
+from modules import path
 from modules import uTest
 
 # this is the main function being run
@@ -50,7 +53,7 @@ def handleBuildingIfRequired(buildOption, stepsCounter, dbBranch):
   if buildOption == buildType.BuildType.DO_NOT_BUILD:
     print(stepsCounter.getNextMessage('Skip building'))
     return
-  htmlOutputFilePath = "../../index.html"
+  htmlOutputFilePath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
   htmlFile = open(htmlOutputFilePath, "w")
   settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
                                          buildOption=buildOption,
@@ -99,6 +102,8 @@ def writeHtmlBodyContent(settings):
       .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
 
 def backupFiles():
-  os.replace("../../index.html", "./backup/index.html")
+  indexHtmlPath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
+  if filerw.fileExists(indexHtmlPath):
+    os.replace(indexHtmlPath, "./backup/index.html")
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()

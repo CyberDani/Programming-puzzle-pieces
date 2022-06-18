@@ -124,6 +124,32 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfList() raised Exception unexpectedly!")
 
+  def test_checkIfEmptyList_raiseException(self):
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList(0)
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList(None)
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList(False)
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList(["hello", "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList([0, "world", False])
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList(["hey", None])
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList([0, 2, 4, 1, 0])
+    with self.assertRaises(Exception):
+      checks.checkIfEmptyList([0])
+
+  def test_checkIfEmptyList_notRaiseException(self):
+    try:
+      checks.checkIfEmptyList([])
+    except Exception:
+      self.fail("checkIfList() raised Exception unexpectedly!")
+
   def test_checkIfPureListOfStrings_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings(0)

@@ -1,14 +1,17 @@
 from defTypes import dirPathType
 
+from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
+
 from modules import checks
 
 class FilePathChecker:
-  def __init__(self, directoryPathType, fileName):
+  def __init__(self, directoryPathType, fileName, actionType = fileAction.ENSURE_FILE_EXISTS):
     checks.checkIfStringDoesNotContainAnySubstringFromList(fileName, 1, 300, ["/", "\\"])
     checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
     self.fileName = fileName
     self.absolutePath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + fileName
-    checks.checkIfFilePathExists(self.absolutePath)
+    if actionType == fileAction.ENSURE_FILE_EXISTS:
+      checks.checkIfFilePathExists(self.absolutePath)
 
   def getAbsoluteFilePath(self):
     return self.absolutePath
