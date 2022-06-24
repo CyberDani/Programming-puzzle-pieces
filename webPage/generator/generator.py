@@ -4,6 +4,7 @@ import sys
 from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
+from defTypes.dirPathType import DirectoryPathType as dir
 from defTypes.filePathType import FilePathType
 
 from modules import argumentParser
@@ -103,7 +104,11 @@ def writeHtmlBodyContent(settings):
 
 def backupFiles():
   indexHtmlPath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
-  if filerw.fileExists(indexHtmlPath):
-    os.replace(indexHtmlPath, "./backup/index.html")
+  htmlBackupPath = path.getAbsoluteDirPathEndingWithSlash(dir.HTML_BACKUP)
+  if not filerw.fileExists(indexHtmlPath):
+    return
+  if not filerw.directoryExists(htmlBackupPath):
+    filerw.createDirectoryWithParentsIfNotExists(htmlBackupPath)
+  os.replace(indexHtmlPath, htmlBackupPath + "index.html")
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()

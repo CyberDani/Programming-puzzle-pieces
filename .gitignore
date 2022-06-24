@@ -1,4 +1,5 @@
 /webPage/generator/backup/*
+/webPage/backup/*
 **/__pycache__/
 /webPage/generator/unitTests/temp/*
 /webPage/generator/.idea/*
