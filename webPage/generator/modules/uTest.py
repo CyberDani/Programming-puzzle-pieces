@@ -6,8 +6,8 @@ from defTypes import appDecisionType
 from modules import checks
 from modules import filerw
 
-def runAndEvaluateUnitTestsUsingMultipleTempFolders(relativeDirPathContainingTests, filePattern,
-                                                    tempFolderNames, outputStream = None):
+def runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainingTests, filePattern,
+                                                        tempFolderNames, outputStream = None):
   checks.checkIfNonEmptyPureListOfStrings(tempFolderNames)
   for tempFolderName in tempFolderNames:
     checks.checkIfStringDoesNotContainAnySubstringFromList(tempFolderName, 1, 200, ['/'])
@@ -23,10 +23,10 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolders(relativeDirPathContainingTes
     filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
   return result, lines
 
-def runAndEvaluateUnitTestsUsingSingleTempFolder(relativeDirPathContainingTests, filePattern,
-                                                 tempFolderName, outputStream = None):
-  return runAndEvaluateUnitTestsUsingMultipleTempFolders(relativeDirPathContainingTests, filePattern,
-                                                    [tempFolderName], outputStream)
+def runAndEvaluateUnitTestsUsingSingleTempFolderName(relativeDirPathContainingTests, filePattern,
+                                                     tempFolderName, outputStream = None):
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainingTests, filePattern,
+                                                             [tempFolderName], outputStream)
 
 def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
   lines = []
