@@ -25,12 +25,12 @@ def getLinesWithEndingNewLine(file):
   return file.readlines()
 
 def getLinesByFilePath(filePath):
-  linesWithNewEndingline = getLinesByFilePathWithEndingNewLine(filePath)
-  return rTrimNewLines(linesWithNewEndingline)
+  linesWithNewEndingLine = getLinesByFilePathWithEndingNewLine(filePath)
+  return rTrimNewLines(linesWithNewEndingLine)
 
 def getLines(file):
-  linesWithNewEndingline = getLinesWithEndingNewLine(file)
-  return rTrimNewLines(linesWithNewEndingline)
+  linesWithNewEndingLine = getLinesWithEndingNewLine(file)
+  return rTrimNewLines(linesWithNewEndingLine)
 
 ###### Deletes ######
 
@@ -52,7 +52,7 @@ def writeLinesToFile(file, lines):
   n = len(lines)
   for i in range(n):
     file.write(lines[i])
-    if (i < n - 1):
+    if i < n - 1:
       file.write("\n")
 
 def writeLinesToFileByFilePathAndCloseFile(filePath, lines):
@@ -79,7 +79,7 @@ def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfPureListOfStrings(lines)
   checks.checkIfString(prefix, 0, 300)
   for line in lines:
-    if (line and line != "\n" and line != "\r\n"):
+    if line and line != "\n" and line != "\r\n":
       file.write(prefix + line)
     else:
       file.write("\n")
@@ -90,7 +90,7 @@ def writeLinesPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfPureListOfStrings(lines)
   checks.checkIfString(prefix, 0, 300)
   for line in lines:
-    if (line and line != "\n" and line != "\r\n"):
+    if line and line != "\n" and line != "\r\n":
       file.write(prefix + line + "\n")
     else:
       file.write("\n")
@@ -101,7 +101,7 @@ def writeLinesPrefixedToFile(file, prefix, lines):
   checks.checkIfPureListOfStrings(lines)
   checks.checkIfString(prefix, 0, 300)
   for line in lines:
-    if (line and line != "\n" and line != "\r\n"):
+    if line and line != "\n" and line != "\r\n":
       file.write(prefix + line + "\n")
     else:
       file.write("\n")
