@@ -85,47 +85,47 @@ class UnitTestTests(unittest.TestCase):
   def test_runAndEvaluateUnitTestsUsingTempFolder_nonSense(self):
     void = open(os.devnull, "w")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder(None, None, "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder(None, None, "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder("", "", "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder("", "", "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests/', "", "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests/', "", "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder("", "*.py", "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder("", "*.py", "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests/', True, "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests/', True, "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests/', "*.patternWithNoFounding", "temp", void)
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests/', "*.patternWithNoFounding", "temp", void)
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('./nonExistingFolder/', "*.py", "temp", void)
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./nonExistingFolder/', "*.py", "temp", void)
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder(False, "*.py", "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder(False, "*.py", "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder(False, True, "temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder(False, True, "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('unitTests', "*.py", "temp1/temp2")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('unitTests', "*.py", "temp1/temp2")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests/', "*.py", "")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests/', "*.py", "")
 
   def test_runAndEvaluateUnitTestsUsingTempFolder_examples_noTempFolderUsed(self):
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     void = open(os.devnull, "w")
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests4unitTests/',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests4unitTests/',
                                                                  "pass_*.py", "tempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     self.assertEqual(result, appDecisionType.AppDecisionType.CONTINUE_RUNNING)
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('unitTests4unitTests',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('unitTests4unitTests',
                                                                  "*_group2.py", "tempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     self.assertEqual(result, appDecisionType.AppDecisionType.CONTINUE_RUNNING)
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests4unitTests',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests4unitTests',
                                                                  "*_group1.py", "tempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     self.assertEqual(result, appDecisionType.AppDecisionType.STOP_APP)
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('unitTests4unitTests/',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('unitTests4unitTests/',
                                                                  "*_x_*.py", "tempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertEqual(result, appDecisionType.AppDecisionType.STOP_APP)
@@ -134,7 +134,7 @@ class UnitTestTests(unittest.TestCase):
   def test_runAndEvaluateUnitTestsUsingTempFolder_example_tempFolderUsed(self):
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     void = open(os.devnull, "w")
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests4unitTests/',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests4unitTests/',
                                                                  "*_tempDir.py", "tempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
@@ -143,7 +143,7 @@ class UnitTestTests(unittest.TestCase):
   def test_runAndEvaluateUnitTestsUsingTempFolder_example_wrongFolderUsed(self):
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     void = open(os.devnull, "w")
-    result, lines = uTest.runAndEvaluateUnitTestsUsingTempFolder('./unitTests4unitTests/',
+    result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder('./unitTests4unitTests/',
                                                                  "*_tempDir.py", "wrongTempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
