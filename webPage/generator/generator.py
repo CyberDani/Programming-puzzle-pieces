@@ -38,7 +38,8 @@ def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
     print(stepsCounter.getNextMessage('Skip unit tests'))
     return
   print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
-  result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolder("unitTests", '*_test.py', "temp")
+  unitTestsPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS)
+  result, lines = uTest.runAndEvaluateUnitTestsUsingMultipleTempFolders(unitTestsPath, '*_test.py', ["temp", "temp2"])
   print(*lines, sep="\n")
   if result == appDecisionType.AppDecisionType.STOP_APP:
     sys.exit()

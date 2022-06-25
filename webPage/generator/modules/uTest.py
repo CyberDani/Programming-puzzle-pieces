@@ -1,5 +1,4 @@
 import io
-import sys
 import unittest
 
 from defTypes import appDecisionType
@@ -7,15 +6,27 @@ from defTypes import appDecisionType
 from modules import checks
 from modules import filerw
 
-def runAndEvaluateUnitTestsUsingTempFolder(relativeDirPath, filePattern, tempFolderName, outputStream = None):
-  checks.checkIfStringDoesNotContainAnySubstringFromList(tempFolderName, 1, 200, ['/'])
-  if relativeDirPath[-1] != "/":
-    relativeDirPath += "/"
-  pathToTempFolder = relativeDirPath + tempFolderName
-  filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
-  result, lines = runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream)
-  filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
+def runAndEvaluateUnitTestsUsingMultipleTempFolders(relativeDirPathContainingTests, filePattern,
+                                                    tempFolderNames, outputStream = None):
+  checks.checkIfNonEmptyPureListOfStrings(tempFolderNames)
+  for tempFolderName in tempFolderNames:
+    checks.checkIfStringDoesNotContainAnySubstringFromList(tempFolderName, 1, 200, ['/'])
+  checks.checkIfString(relativeDirPathContainingTests, 0, 300)
+  if relativeDirPathContainingTests[-1] != "/":
+    relativeDirPathContainingTests += "/"
+  for tempFolderName in tempFolderNames:
+    pathToTempFolder = relativeDirPathContainingTests + tempFolderName
+    filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
+  result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
+  for tempFolderName in tempFolderNames:
+    pathToTempFolder = relativeDirPathContainingTests + tempFolderName
+    filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
   return result, lines
+
+def runAndEvaluateUnitTestsUsingSingleTempFolder(relativeDirPathContainingTests, filePattern,
+                                                 tempFolderName, outputStream = None):
+  return runAndEvaluateUnitTestsUsingMultipleTempFolders(relativeDirPathContainingTests, filePattern,
+                                                    [tempFolderName], outputStream)
 
 def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
   lines = []
