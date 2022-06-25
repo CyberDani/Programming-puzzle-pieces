@@ -4,7 +4,7 @@ import sys
 from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
-from defTypes.dirPathType import DirectoryPathType as dir
+from defTypes.dirPathType import DirectoryPathType as Dir
 from defTypes.filePathType import FilePathType
 
 from modules import argumentParser
@@ -103,12 +103,12 @@ def writeHtmlBodyContent(settings):
       .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
 
 def backupFiles():
-  indexHtmlPath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
-  htmlBackupPath = path.getAbsoluteDirPathEndingWithSlash(dir.HTML_BACKUP)
-  if not filerw.fileExists(indexHtmlPath):
+  filePath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
+  if not filerw.fileExists(filePath):
     return
-  if not filerw.directoryExists(htmlBackupPath):
-    filerw.createDirectoryWithParentsIfNotExists(htmlBackupPath)
-  os.replace(indexHtmlPath, htmlBackupPath + "index.html")
+  fileName = path.getFileName(FilePathType.INDEX_HTML_MAIN)
+  folderPath = path.getAbsoluteDirPathEndingWithSlash(Dir.HTML_BACKUP)
+  filerw.createDirectoryWithParentsIfNotExists(folderPath)
+  os.replace(filePath, folderPath + fileName)
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()

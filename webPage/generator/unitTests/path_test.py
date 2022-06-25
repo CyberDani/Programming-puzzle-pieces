@@ -20,6 +20,42 @@ class StringUtilTests(unittest.TestCase):
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRepoPath))
 
+  def test_getFileName_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getFileName(".")
+    with self.assertRaises(Exception):
+      path.getFileName("")
+    with self.assertRaises(Exception):
+      path.getFileName("webPage/generator")
+    with self.assertRaises(Exception):
+      path.getFileName(False)
+    with self.assertRaises(Exception):
+      path.getFileName(None)
+    with self.assertRaises(Exception):
+      path.getFileName(0)
+    with self.assertRaises(Exception):
+      path.getFileName(["webPage/generator"])
+    with self.assertRaises(Exception):
+      path.getFileName([])
+    with self.assertRaises(Exception):
+      path.getFileName(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+
+  def test_getFileName_examples(self):
+    self.assertGetFileName(filePathType.FilePathType.HTML_INCLUDE_TOPNAV)
+    self.assertGetFileName(filePathType.FilePathType.HTML_INCLUDE_FOOTER)
+    self.assertGetFileName(filePathType.FilePathType.HTML_INCLUDE_INLINEJS)
+    self.assertGetFileName(filePathType.FilePathType.HTML_INCLUDE_TOPQUOTE)
+    self.assertGetFileName(filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+    self.assertGetFileName(filePathType.FilePathType.INDEX_HTML_MAIN)
+
+  def assertGetFileName(self, fPathType):
+    fileName = path.getFileName(fPathType)
+    absolutFilePath = path.getAbsoluteFilePath(fPathType)
+    self.assertFalse("/" in fileName)
+    self.assertTrue("/" in absolutFilePath)
+    self.assertTrue(absolutFilePath.endswith(fileName))
+    self.assertEqual(fileName, fPathType.value.getFileName())
+
   def test_getAbsoluteDirPathEndingWithSlash_nonSense(self):
     with self.assertRaises(Exception):
       path.getAbsoluteDirPathEndingWithSlash(".")
