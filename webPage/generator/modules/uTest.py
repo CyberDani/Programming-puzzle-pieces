@@ -6,6 +6,24 @@ from defTypes import appDecisionType
 from modules import checks
 from modules import filerw
 
+def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
+                                                        tempFolderPaths, outputStream = None):
+  checks.checkIfNonEmptyPureListOfStrings(tempFolderPaths)
+  checks.checkIfString(relativeDirPathContainingTests, 0, 300)
+  if relativeDirPathContainingTests[-1] != "/":
+    relativeDirPathContainingTests += "/"
+  for pathToTempFolder in tempFolderPaths:
+    filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
+  result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
+  for pathToTempFolder in tempFolderPaths:
+    filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
+  return result, lines
+
+def runAndEvaluateUnitTestsUsingSingleTempFolderPath(relativeDirPathContainingTests, filePattern,
+                                                        tempFolderPath, outputStream = None):
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
+                                                      [tempFolderPath], outputStream)
+
 def runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainingTests, filePattern,
                                                         tempFolderNames, outputStream = None):
   checks.checkIfNonEmptyPureListOfStrings(tempFolderNames)
@@ -14,14 +32,12 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainin
   checks.checkIfString(relativeDirPathContainingTests, 0, 300)
   if relativeDirPathContainingTests[-1] != "/":
     relativeDirPathContainingTests += "/"
+  tempFolderPaths = []
   for tempFolderName in tempFolderNames:
     pathToTempFolder = relativeDirPathContainingTests + tempFolderName
-    filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
-  result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
-  for tempFolderName in tempFolderNames:
-    pathToTempFolder = relativeDirPathContainingTests + tempFolderName
-    filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
-  return result, lines
+    tempFolderPaths.append(pathToTempFolder)
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
+                                                             tempFolderPaths, outputStream)
 
 def runAndEvaluateUnitTestsUsingSingleTempFolderName(relativeDirPathContainingTests, filePattern,
                                                      tempFolderName, outputStream = None):

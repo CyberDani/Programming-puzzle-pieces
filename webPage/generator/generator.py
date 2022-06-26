@@ -39,7 +39,10 @@ def handleUnitTestsIfRequired(runUnitTests, stepsCounter):
     return
   print(stepsCounter.getNextMessage('Evaluate unit tests . . .\n'))
   unitTestsPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS)
-  result, lines = uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(unitTestsPath, '*_test.py', ["temp", "temp2"])
+  unitTestsTemp1Path = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+  unitTestsTemp2Path = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+  result, lines = uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(unitTestsPath, '*_test.py',
+                                                                            [unitTestsTemp1Path, unitTestsTemp2Path])
   print(*lines, sep="\n")
   if result == appDecisionType.AppDecisionType.STOP_APP:
     sys.exit()

@@ -13,6 +13,10 @@ class DirectoryPathType(Enum):
   PYTHON_GENERATOR_UNIT_TESTS = dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests",
                                                            ["checks_test.py", "argumentParser_test.py"],
                                                             dirAction.ENSURE_PATH_AND_FILES_EXIST)
+  PYTHON_GENERATOR_UNIT_TESTS_TEMP1 = dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp", [],
+                                                            dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_GENERATOR_UNIT_TESTS_TEMP2 = dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp2", [],
+                                                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   HTML_GENERAL_INCLUDES = dirPathChecker.DirectoryPathChecker("webPage/generator/htmlIncludes",
                                                            ["footer.txt", "topNav.txt", "sideNav.txt"],
                                                             dirAction.ENSURE_PATH_AND_FILES_EXIST)
