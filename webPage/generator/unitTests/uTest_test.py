@@ -96,6 +96,7 @@ class UnitTestTests(unittest.TestCase):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./unitTests/', True, "temp")
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./unitTests/', "*.patternWithNoFounding", "tempDir", void)
+    self.assertFalse(filerw.directoryExists('./unitTests/tempDir'))
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./nonExistingFolder/', "*.py", "temp", void)
     with self.assertRaises(Exception):
@@ -175,6 +176,7 @@ class UnitTestTests(unittest.TestCase):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.patternWithNoFounding", "tmp", void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.patternWith0Founding", ["tmp"], void)
+    self.assertFalse(filerw.directoryExists('./unitTests/tmp'))
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./nonExistingFolder/', "*.py", "temp", void)
     with self.assertRaises(Exception):
@@ -261,6 +263,7 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', "*.patternWithNoFounding",
                                                              "unitTests/temp12", void)
+    self.assertFalse(filerw.directoryExists("unitTests/temp12"))
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./nonExistingFolder/', "*.py",
                                                              "unitTests/temp12", void)
@@ -332,6 +335,7 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "*.patternWithNoFounding",
                                                                 ["unitTests4unitTests/temp"], void)
+    self.assertFalse(filerw.directoryExists("unitTests4unitTests/temp"))
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./nonExistingFolder/', "*.py",
                                                                 ["unitTests4unitTests/temp"], void)
