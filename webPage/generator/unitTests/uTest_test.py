@@ -95,7 +95,7 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./unitTests/', True, "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./unitTests/', "*.patternWithNoFounding", "temp", void)
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./unitTests/', "*.patternWithNoFounding", "tempDir", void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderName('./nonExistingFolder/', "*.py", "temp", void)
     with self.assertRaises(Exception):
@@ -156,23 +156,45 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames("", "", "temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "", "temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(None, None, ["temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames("", "*.py", "temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames("", "", ["temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', True, "temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "", "temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.patternWithNoFounding", "temp", void)
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "", ["temp12"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames("", "*.py", "temp23")
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames("", "*.py", ["temp23"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', True, "temp23")
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', True, ["temp23"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.patternWithNoFounding", "tmp", void)
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.patternWith0Founding", ["tmp"], void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./nonExistingFolder/', "*.py", "temp", void)
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./nonExistingFolder/', "*.py", ["temp"], void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(False, "*.py", "temp")
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(False, True, "temp")
     with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(False, "*.py", ["temp"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames(False, True, ["temp"])
+    with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('unitTests', "*.py", "temp1/temp2")
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.py", "")
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('unitTests', "*.py", ["temp1/temp2"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests/', "*.py", [""])
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderNames('./unitTests4unitTests/', "*_tempDir.py",
                                                                 "tempDir", void)
@@ -227,25 +249,25 @@ class UnitTestTests(unittest.TestCase):
   def test_runAndEvaluateUnitTestsUsingSingleTempFolderPath_nonSense(self):
     void = open(os.devnull, "w")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(None, None, "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(None, None, "unitTests/temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath("", "", "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath("", "", "unitTests/temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', "", "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', "", "unitTests/temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath("", "*.py", "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath("", "*.py", "unitTests/temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', True, "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', True, "unitTests/temp12")
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', "*.patternWithNoFounding",
-                                                             "webPage/generator/unitTests/temp", void)
+                                                             "unitTests/temp12", void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./nonExistingFolder/', "*.py",
-                                                             "webPage/generator/unitTests/temp", void)
+                                                             "unitTests/temp12", void)
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(False, "*.py", "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(False, "*.py", "unitTests/temp12")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(False, True, "webPage/generator/unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath(False, True, "unitTests/temp12")
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests/', "*.py", "")
 
@@ -286,7 +308,7 @@ class UnitTestTests(unittest.TestCase):
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     void = open(os.devnull, "w")
     result, lines = uTest.runAndEvaluateUnitTestsUsingSingleTempFolderPath('./unitTests4unitTests/',
-                                                                 "*_tempDir.py", "unitTests4unitTests/wrongTempDir", void)
+                                                               "*_tempDir.py", "unitTests4unitTests/wrongTempDir", void)
     checks.checkIfPureListOfStrings(lines)
     self.assertFalse(filerw.directoryExists("unitTests4unitTests/tempDir"))
     self.assertEqual(result, appDecisionType.AppDecisionType.STOP_APP)
@@ -296,27 +318,31 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(None, None, "unitTests4unitTests/temp")
     with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(None, None, ["unitTests4unitTests/temp"])
+    with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths("", "", "unitTests4unitTests/temp")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "", "unitTests4unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths("", "", ["unitTests4unitTests/temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths("", "*.py", "unitTests4unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "", ["unitTests4unitTests/temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', True, "unitTests4unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths("", "*.py", ["unitTests4unitTests/temp"])
+    with self.assertRaises(Exception):
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', True, ["unitTests4unitTests/temp"])
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "*.patternWithNoFounding",
-                                                                "unitTests4unitTests/temp", void)
+                                                                ["unitTests4unitTests/temp"], void)
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./nonExistingFolder/', "*.py",
-                                                                "unitTests4unitTests/temp", void)
+                                                                ["unitTests4unitTests/temp"], void)
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(False, "*.py", "unitTests4unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(False, "*.py", ["unitTests4unitTests/temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(False, True, "unitTests4unitTests/temp")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(False, True, ["unitTests4unitTests/temp"])
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('unitTests', "*.py", "unitTests4unitTests/temp1/temp2")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('unitTests', "*.py", "unitTests4unitTests/temp1")
     with self.assertRaises(Exception):
-      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "*.py", "")
+      uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests/', "*.py", [""])
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPaths('./unitTests4unitTests/', "*_tempDir.py",
                                                                 "unitTests4unitTests/tempDir", void)

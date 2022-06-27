@@ -10,13 +10,22 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainin
                                                         tempFolderPaths, outputStream = None):
   checks.checkIfNonEmptyPureListOfStrings(tempFolderPaths)
   checks.checkIfString(relativeDirPathContainingTests, 0, 300)
+  checks.checkIfString(filePattern, 1, 300)
+  if outputStream is not None:
+    checks.checkIfType(outputStream, io.TextIOWrapper)
   if relativeDirPathContainingTests[-1] != "/":
     relativeDirPathContainingTests += "/"
   for pathToTempFolder in tempFolderPaths:
     filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
-  result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
-  for pathToTempFolder in tempFolderPaths:
-    filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
+  lines = []
+  result = appDecisionType.AppDecisionType.STOP_APP
+  try:
+    result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
+  except Exception as e:
+    raise e
+  finally:
+    for pathToTempFolder in tempFolderPaths:
+      filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
   return result, lines
 
 def runAndEvaluateUnitTestsUsingSingleTempFolderPath(relativeDirPathContainingTests, filePattern,
