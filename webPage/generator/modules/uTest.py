@@ -2,9 +2,22 @@ import io
 import unittest
 
 from defTypes import appDecisionType
+from defTypes.dirPathType import DirectoryPathType
 
 from modules import checks
 from modules import filerw
+from modules import path
+
+def runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(relativeDirPathTypeContainingTests, filePattern,
+                                                              tempFolderPathTypes, outputStream = None):
+  checks.checkIfType(relativeDirPathTypeContainingTests, DirectoryPathType)
+  checks.checkIfNonEmptyPureListOfType(tempFolderPathTypes, DirectoryPathType)
+  testPath = path.getAbsoluteDirPathEndingWithSlash(relativeDirPathTypeContainingTests)
+  tempFolderPaths = []
+  for tempDirType in tempFolderPathTypes:
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(tempDirType)
+    tempFolderPaths.append(dirPath)
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(testPath, filePattern, tempFolderPaths, outputStream)
 
 def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
                                                         tempFolderPaths, outputStream = None):

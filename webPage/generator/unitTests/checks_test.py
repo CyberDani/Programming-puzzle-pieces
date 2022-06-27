@@ -150,6 +150,82 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfList() raised Exception unexpectedly!")
 
+  def test_checkIfNonEmptyList_raiseException(self):
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyList(0)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyList(None)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyList(False)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyList("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyList([])
+
+  def test_checkIfNonEmptyList_validExample(self):
+    try:
+      checks.checkIfNonEmptyList([1, 2, 3])
+      checks.checkIfNonEmptyList(["hello"])
+      checks.checkIfNonEmptyList([True, "hello", 32])
+    except Exception:
+      self.fail("checkIfNonEmptyList() raised Exception unexpectedly!")
+
+  def test_checkIfNonEmptyPureListOfType_invalidExamples(self):
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(12, int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType("Hello", int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(12, 23)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(12, 12)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(True, False)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([1, 2, 3], False)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([False, False, False], False)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([False, False, False], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([False, False, False], list)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, None, 3], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, 32, 123, 35, 33, 67, 23, 13, [44, 11], 0, 12, 44, 566, 1256, 335], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([None, 3, 4], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(["NaN", 3, 4, 5, 6, 7, 1, 2, 3, 4, 1, 2, 2, 5, 6, 1, 3, 5, 6, 3], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5, None], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5, 2, 2, 4, 4, 2, 2, 1, 2, 3, 5, 6, 6, 3, 1, 3, 33, False], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([], int)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([], list)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([], None)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5], bool)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5], list)
+    with self.assertRaises(Exception):
+      checks.checkIfNonEmptyPureListOfType(int, [2, 3, 4, 5])
+
+  def test_checkIfNonEmptyPureListOfType_validExamples(self):
+    try:
+      checks.checkIfNonEmptyPureListOfType([1, 2, 3], int)
+      checks.checkIfNonEmptyPureListOfType([1], int)
+      checks.checkIfNonEmptyPureListOfType([1, 2, 3, 4, 5, 6, 7, 8, 9, 12323, 213123, 1234, 41, 53], int)
+      checks.checkIfNonEmptyPureListOfType(["hello"], str)
+      checks.checkIfNonEmptyPureListOfType([""], str)
+      checks.checkIfNonEmptyPureListOfType(["", "bye", "hi"], str)
+      checks.checkIfNonEmptyPureListOfType([True, False, True], bool)
+    except Exception:
+      self.fail("checkIfNonEmptyPureListOfType() raised Exception unexpectedly!")
+
   def test_checkIfPureListOfStrings_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings(0)

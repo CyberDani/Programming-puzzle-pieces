@@ -17,6 +17,24 @@ class DirectoryPathType(Enum):
                                                             dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   PYTHON_GENERATOR_UNIT_TESTS_TEMP2 = dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp2", [],
                                                                           dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  NON_EXISTING_DIRECTORY = dirPathChecker.DirectoryPathChecker("webPage/generator/nonExistingFolder", [],
+                                                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_UNIT_TESTS_4_UNIT_TESTS = dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests4unitTests",
+                                                                       ["fail_x_group1.py", "pass_x_group1.py",
+                                                                        "pass_x_group2.py", "test_tempDir.py"],
+                                                                        dirAction.ENSURE_PATH_AND_FILES_EXIST)
+  PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR = dirPathChecker.DirectoryPathChecker(
+                                                                      "webPage/generator/unitTests4unitTests/tempDir",
+                                                                      [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR1 = dirPathChecker.DirectoryPathChecker(
+                                                                      "webPage/generator/unitTests4unitTests/tempDir1",
+                                                                      [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR2 = dirPathChecker.DirectoryPathChecker(
+                                                                      "webPage/generator/unitTests4unitTests/tempDir2",
+                                                                      [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34 = dirPathChecker.DirectoryPathChecker(
+                                                                      "webPage/generator/unitTests4unitTests/tempDir34",
+                                                                      [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   HTML_GENERAL_INCLUDES = dirPathChecker.DirectoryPathChecker("webPage/generator/htmlIncludes",
                                                            ["footer.txt", "topNav.txt", "sideNav.txt"],
                                                             dirAction.ENSURE_PATH_AND_FILES_EXIST)
