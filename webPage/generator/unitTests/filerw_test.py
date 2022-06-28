@@ -3,8 +3,13 @@ import sys
 import unittest
 
 sys.path.append('..')
+
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import filerw
 from modules import htmlBuilder
+from modules import path
 
 class FileReadWriterTests(unittest.TestCase):
 
@@ -913,3 +918,138 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(result[0], "Hello")
     self.assertEqual(result[1], "hey")
     self.assertEqual(result[2], "hi")
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_nonSense(self):
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP,
+                                                                        File.FOR_TEST_TEXTFILE3)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP,
+                                                                          Dir.HTML_BACKUP)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE2,
+                                                                          File.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory("Readme.md",
+                                                                        Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.HTML_INCLUDE_TOPNAV, "unitTests/temp")
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory("unitTests/temp", "Readme.md")
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory("Readme.md", "webPage/generator/unitTests/temp")
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(None, None)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(12, 32)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(["Readme.md"], False)
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(23, ["webPage/generator/unitTests/temp"])
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory([], [])
+    with self.assertRaises(Exception):
+      filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory("", "")
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_example1(self):
+    testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    fileName = path.getFileName(File.FOR_TEST_TEXTFILE1)
+    destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    filerw.writeLinesToFileByFilePathAndCloseFile(testFilePath, ["hello", "world", "smile"])
+    self.assertTrue(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    expectedDestFilePath = destTempDirPath + fileName
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE1,
+                                                                      Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "hello")
+    self.assertEqual(lines[1], "world")
+    self.assertEqual(lines[2], "smile")
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_example2(self):
+    testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    fileName = path.getFileName(File.FOR_TEST_TEXTFILE2)
+    destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    filerw.writeLinesToFileByFilePathAndCloseFile(testFilePath,
+                                                  ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
+    self.assertTrue(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    expectedDestFilePath = destTempDirPath + fileName
+    if filerw.fileExists(expectedDestFilePath):
+      os.remove(expectedDestFilePath)
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE2,
+                                                                      Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "this is me:")
+    self.assertEqual(lines[1], "\tJohn Doe, VIP executor")
+    self.assertEqual(lines[2], "tel: 0875432123")
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_srcFileNotExists(self):
+    testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
+    fileName = path.getFileName(File.FOR_TEST_TEXTFILE3)
+    destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    if filerw.fileExists(testFilePath):
+      os.remove(testFilePath)
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    expectedDestFilePath = destTempDirPath + fileName
+    if filerw.fileExists(expectedDestFilePath):
+      os.remove(expectedDestFilePath)
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE2,
+                                                                      Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_destDirNotExists(self):
+    testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
+    fileName = path.getFileName(File.FOR_TEST_TEXTFILE3)
+    destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    filerw.writeLinesToFileByFilePathAndCloseFile(testFilePath, ["hello", "world", "smile"])
+    filerw.deleteNonEmptyDirectoryIfExists(destTempDirPath)
+    self.assertFalse(filerw.directoryExists(destTempDirPath))
+    self.assertTrue(filerw.fileExists(testFilePath))
+    expectedDestFilePath = destTempDirPath + fileName
+    if filerw.fileExists(expectedDestFilePath):
+      os.remove(expectedDestFilePath)
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE3,
+                                                                      Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "hello")
+    self.assertEqual(lines[1], "world")
+    self.assertEqual(lines[2], "smile")
+
+  def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_srcAndDestDirNotExists(self):
+    testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
+    fileName = path.getFileName(File.FOR_TEST_TEXTFILE3)
+    destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    if filerw.fileExists(testFilePath):
+      os.remove(testFilePath)
+    filerw.deleteNonEmptyDirectoryIfExists(destTempDirPath)
+    self.assertFalse(filerw.directoryExists(destTempDirPath))
+    self.assertFalse(filerw.fileExists(testFilePath))
+    expectedDestFilePath = destTempDirPath + fileName
+    if filerw.fileExists(expectedDestFilePath):
+      os.remove(expectedDestFilePath)
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE3,
+                                                                      Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertFalse(filerw.directoryExists(destTempDirPath))
+    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    # recreate temp folder, other tests might use it
+    filerw.createDirectoryWithParentsIfNotExists(destTempDirPath)

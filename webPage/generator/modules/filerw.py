@@ -2,7 +2,11 @@ import os
 import pathlib
 import shutil
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import checks
+from modules import path
 from modules import stringUtil
 
 ###### Reads ######
@@ -39,12 +43,27 @@ def deleteNonEmptyDirectoryIfExists(dirPath):
     return
   shutil.rmtree(dirPath)
 
-###### Writes ######
+###### Move & Copy ######
+
+def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dirPathType):
+  checks.checkIfType(filePathType, File)
+  checks.checkIfType(dirPathType, Dir)
+  filePath = path.getAbsoluteFilePath(filePathType)
+  if not fileExists(filePath):
+    return
+  fileName = path.getFileName(filePathType)
+  folderPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  createDirectoryWithParentsIfNotExists(folderPath)
+  os.replace(filePath, folderPath + fileName)
+
+###### Create ######
 
 def createDirectoryWithParentsIfNotExists(dirPath):
   if directoryExists(dirPath):
     return
   pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
+
+###### Writes ######
 
 def writeLinesToFile(file, lines):
   checks.checkIfFile(file)

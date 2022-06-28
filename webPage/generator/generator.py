@@ -5,7 +5,7 @@ from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
 from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType
+from defTypes.filePathType import FilePathType as File
 
 from modules import argumentParser
 from modules import counter
@@ -57,7 +57,7 @@ def handleBuildingIfRequired(buildOption, stepsCounter, dbBranch):
   if buildOption == buildType.BuildType.DO_NOT_BUILD:
     print(stepsCounter.getNextMessage('Skip building'))
     return
-  htmlOutputFilePath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
+  htmlOutputFilePath = path.getAbsoluteFilePath(File.INDEX_HTML_MAIN)
   htmlFile = open(htmlOutputFilePath, "w")
   settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
                                          buildOption=buildOption,
@@ -106,12 +106,6 @@ def writeHtmlBodyContent(settings):
       .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
 
 def backupFiles():
-  filePath = path.getAbsoluteFilePath(FilePathType.INDEX_HTML_MAIN)
-  if not filerw.fileExists(filePath):
-    return
-  fileName = path.getFileName(FilePathType.INDEX_HTML_MAIN)
-  folderPath = path.getAbsoluteDirPathEndingWithSlash(Dir.HTML_BACKUP)
-  filerw.createDirectoryWithParentsIfNotExists(folderPath)
-  os.replace(filePath, folderPath + fileName)
+  filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.INDEX_HTML_MAIN, Dir.HTML_BACKUP)
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()
