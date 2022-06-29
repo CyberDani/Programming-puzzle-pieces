@@ -1,11 +1,16 @@
+import os
 import sys
 import unittest
 
 sys.path.append('..')
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import htmlBuilder
 from modules import filerw
 from modules import htmlBody
+from modules import path
 
 class HtmlBodyTests(unittest.TestCase):
 
@@ -86,6 +91,93 @@ class HtmlBodyTests(unittest.TestCase):
         .includeFileThenAppendNewLine("./unitTests/temp/test3.txt")
     file.close()
     lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    self.assertEqual(len(lines), 8)
+    self.assertEqual(lines[0], "line 1")
+    self.assertEqual(lines[1], "line 2")
+    self.assertEqual(lines[2], "\t\t\tinclude 1")
+    self.assertEqual(lines[3], "\t\t\tinclude 2")
+    self.assertEqual(lines[4], "")
+    self.assertEqual(lines[5], "\t\t\tinclude 3")
+    self.assertEqual(lines[6], "\t\t\tinclude 4")
+    self.assertEqual(lines[7], "")
+
+  def test_includeFileByTypeThenAppendNewLine_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
+    body = htmlBody.HtmlBody(file, 2)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(file)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(["line3", "line4"])
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(None)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(True)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine("./unitTests/temp/test.txt")
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine("heyho")
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(Dir.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34)
+    # TODO removeFileIfExistsByPath + ByType
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    if filerw.fileExists(filePath):
+      os.remove(filePath)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeThenAppendNewLine(Dir.FOR_TEST_TEXTFILE1)
+
+  def test_includeFileByTypeThenAppendNewLine_includeEmptyFile(self):
+    testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    testFilePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    # TODO createEmptyFileByType
+    file2 = open(testFilePath2, "w")
+    file2.close()
+    file = open(testFilePath1, "w")
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
+    body = htmlBody.HtmlBody(file, 2)
+    body.includeFileByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2)
+    file.close()
+    lines = filerw.getLinesByFilePath(testFilePath1)
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "line 1")
+    self.assertEqual(lines[1], "line 2")
+    self.assertEqual(lines[2], "")
+
+  def test_includeFileByTypeThenAppendNewLine_includeNonEmptyFile(self):
+    testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    testFilePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(testFilePath2,
+                                                                                 ["include 1", "include 2"])
+    file = open(testFilePath1, "w")
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
+    body = htmlBody.HtmlBody(file, 3)
+    body.includeFileByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2)
+    file.close()
+    lines = filerw.getLinesByFilePath(testFilePath1)
+    self.assertEqual(len(lines), 5)
+    self.assertEqual(lines[0], "line 1")
+    self.assertEqual(lines[1], "line 2")
+    self.assertEqual(lines[2], "\t\t\tinclude 1")
+    self.assertEqual(lines[3], "\t\t\tinclude 2")
+    self.assertEqual(lines[4], "")
+
+  def test_includeFileByTypeThenAppendNewLine_chaining(self):
+    testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    testFilePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    testFilePath3 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
+    # TODO writeLinesByType
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(testFilePath2,
+                                                                                 ["include 1", "include 2"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(testFilePath3,
+                                                                                 ["include 3", "include 4"])
+    file = open(testFilePath1, "w")
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
+    body = htmlBody.HtmlBody(file, 3)
+    body.includeFileByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2) \
+        .includeFileByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE3)
+    file.close()
+    # TODO getLinesByType
+    lines = filerw.getLinesByFilePath(testFilePath1)
     self.assertEqual(len(lines), 8)
     self.assertEqual(lines[0], "line 1")
     self.assertEqual(lines[1], "line 2")

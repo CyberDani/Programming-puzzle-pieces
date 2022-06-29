@@ -34,3 +34,5 @@ class DirectoryPathType(Enum):
   HTML_GENERAL_INCLUDES = DirectoryPathChecker("webPage/generator/htmlIncludes",
                                                ["footer.txt", "topNav.txt", "sideNav.txt"],
                                                 dirAction.ENSURE_PATH_AND_FILES_EXIST)
+  HTML_PAGES_MAIN = DirectoryPathChecker("webPage/pages/mainPage", ["svgCurve1.txt", "svgCurve2.txt", "svgCurve3.txt"],
+                                         dirAction.ENSURE_PATH_AND_FILES_EXIST)

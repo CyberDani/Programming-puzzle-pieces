@@ -1,5 +1,9 @@
+from defTypes.filePathType import FilePathType as File
+
 from modules import checks
 from modules import htmlBuilder
+from modules import path
+
 
 class HtmlBody:
   def __init__(self, htmlFile, indentDepth):
@@ -8,6 +12,10 @@ class HtmlBody:
     self.htmlFile = htmlFile
     self.indentDepth = indentDepth
     self.openedHtmlTags = []
+
+  def includeFileByTypeThenAppendNewLine(self, filePathType):
+    filePath = path.getAbsoluteFilePath(filePathType)
+    return self.includeFileThenAppendNewLine(filePath)
 
   def includeFileThenAppendNewLine(self, filePath):
     htmlBuilder.includeFileThenAppendNewLine(self.htmlFile, filePath, self.indentDepth)
