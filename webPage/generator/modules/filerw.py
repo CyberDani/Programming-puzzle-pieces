@@ -9,7 +9,7 @@ from modules import checks
 from modules import path
 from modules import stringUtil
 
-###### Reads ######
+###### Existence ######
 
 def fileExists(filePath):
   checks.checkIfString(filePath, 2, 300)
@@ -19,12 +19,14 @@ def directoryExists(dirPath):
   checks.checkIfString(dirPath, 1, 300)
   return os.path.isdir(dirPath)
 
+###### Reads ######
+
 def getLinesByFilePathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)
   f = open(filePath, "r")
   return f.readlines()
 
-def getLinesWithEndingNewLine(file):
+def getLinesByFileWithEndingNewLine(file):
   checks.checkIfFile(file)
   return file.readlines()
 
@@ -32,8 +34,8 @@ def getLinesByFilePath(filePath):
   linesWithNewEndingLine = getLinesByFilePathWithEndingNewLine(filePath)
   return rTrimNewLines(linesWithNewEndingLine)
 
-def getLines(file):
-  linesWithNewEndingLine = getLinesWithEndingNewLine(file)
+def getLinesByFile(file):
+  linesWithNewEndingLine = getLinesByFileWithEndingNewLine(file)
   return rTrimNewLines(linesWithNewEndingLine)
 
 ###### Deletes ######
@@ -74,23 +76,23 @@ def writeLinesToFile(file, lines):
     if i < n - 1:
       file.write("\n")
 
-def writeLinesToFileByFilePathAndCloseFile(filePath, lines):
+def writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, lines):
   checks.checkIfString(filePath, 2, 300)
   file = open(filePath, "w")
   writeLinesToFile(file, lines)
   file.close()
 
-def writeLinesToFileThenAppendNewLine(file, lines):
+def writeLinesToExistingFileThenAppendNewLine(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
   for line in lines:
     file.write(line)
     file.write("\n")
 
-def writeLinesToFileByFilePathThenAppendNewLineAndCloseFile(filePath, lines):
+def writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, lines):
   checks.checkIfString(filePath, 2, 300)
   file = open(filePath, "w")
-  writeLinesToFileThenAppendNewLine(file, lines)
+  writeLinesToExistingFileThenAppendNewLine(file, lines)
   file.close()
 
 def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):

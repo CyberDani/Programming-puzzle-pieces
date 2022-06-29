@@ -31,32 +31,32 @@ def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, h
 # <script src=".js" />   ->  file
 def addJsScriptSrcToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   lines = getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, lines)
 
 # <link href=".css" />   ->  file
 def addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):
   lines = getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, lines)
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, lines)
 
 # <br\> <br\> <br\>  ->  file
 def addHtmlNewLineToFile(htmlFile, indentDepth, nrOfNewLines=1):
   newLinesString = getHtmlNewLines(indentDepth, nrOfNewLines)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [newLinesString])
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, [newLinesString])
 
 # <title> Page title </title>  ->  file
 def addTitleToHtmlOutputFile(htmlFile, titleString, indentDepth):
   htmlTitle = getHtmlTitle(titleString, indentDepth)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlTitle])
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, [htmlTitle])
 
 # <link rel="icon" href="favicon.png">  ->  file
 def addFaviconToHtmlOutputFile(htmlFile, faviconPath, indentDepth):
   htmlFavicon = getHtmlFavicon(faviconPath, indentDepth)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [htmlFavicon])
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, [htmlFavicon])
 
 # <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  ->  file
 def addMetaScreenOptimizedForMobileToHtmlOutputFile(htmlFile, indentDepth):
   metaTag = getMetaScreenOptimizedForMobile(indentDepth)
-  filerw.writeLinesToFileThenAppendNewLine(htmlFile, [metaTag])
+  filerw.writeLinesToExistingFileThenAppendNewLine(htmlFile, [metaTag])
 
 # <script src=".js" />
 def getJsScriptSrc(indentDepth, url, integrity=None, crossorigin=None, referrerpolicy=None):

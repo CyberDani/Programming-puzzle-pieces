@@ -49,7 +49,7 @@ class HtmlHeadTests(unittest.TestCase):
   def test_setTitle_example(self):
     for title in ["title", "my page", "Look At This 23!#"]:
       file = open("./unitTests/temp/test.txt", "w")
-      filerw.writeLinesToFileThenAppendNewLine(file, ["random string", "another random string"])
+      filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
       head = htmlHead.HtmlHead(file, 2)
       head.setTitle(title)
       file.close()
@@ -80,7 +80,7 @@ class HtmlHeadTests(unittest.TestCase):
 
   def test_setFavicon_example(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["random string", "another random string"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
     head = htmlHead.HtmlHead(file, 2)
     head.setFavicon("./images/logo.ico")
     file.close()
@@ -101,7 +101,7 @@ class HtmlHeadTests(unittest.TestCase):
 
   def test_setMetaScreenOptimizedForMobile_example(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["random string", "another random string"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
     head = htmlHead.HtmlHead(file, 2)
     head.setMetaScreenOptimizedForMobile()
     file.close()
@@ -125,10 +125,10 @@ class HtmlHeadTests(unittest.TestCase):
 
   def test_includeFileAsInlineCSS_example(self):
     file = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["random string", "another random string"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
     file.close()
     fileDest = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(fileDest, ["<html>", "\t<head>"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(fileDest, ["<html>", "\t<head>"])
     head = htmlHead.HtmlHead(fileDest, 3)
     head.includeFileAsInlineCSS("./unitTests/temp/test2.txt")
     fileDest.close()
@@ -158,7 +158,7 @@ class HtmlHeadTests(unittest.TestCase):
     faLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 3)
     head.addFontAwesome_v611()
     file.close()
@@ -189,7 +189,7 @@ class HtmlHeadTests(unittest.TestCase):
     libLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 3)
     head.addJquery_v360()
     file.close()
@@ -220,7 +220,7 @@ class HtmlHeadTests(unittest.TestCase):
     libLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 4)
     head.addGoogleIcons()
     file.close()
@@ -251,7 +251,7 @@ class HtmlHeadTests(unittest.TestCase):
     libLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 4)
     head.addMaterialize_v110_alpha()
     file.close()
@@ -294,7 +294,7 @@ class HtmlHeadTests(unittest.TestCase):
     libLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 5)
     head.addGoogleFont("?fontName=TimesNewRoman&type=bold")
     file.close()
@@ -325,7 +325,7 @@ class HtmlHeadTests(unittest.TestCase):
     libLines = filerw.getLinesByFilePath("./unitTests/temp/test2.txt")
     # add lib and compare
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2", "line 3"])
     head = htmlHead.HtmlHead(file, 5)
     head.addJQueryLoadingOverlay_v217()
     file.close()
@@ -340,10 +340,10 @@ class HtmlHeadTests(unittest.TestCase):
       i += 1
 
   def test_function_chaining(self):
-    filerw.writeLinesToFileByFilePathThenAppendNewLineAndCloseFile("./unitTests/temp/test2.txt",
-                                                                   ["first line", "second line"])
-    filerw.writeLinesToFileByFilePathThenAppendNewLineAndCloseFile("./unitTests/temp/test3.txt",
-                                                                   ["first line in this as well", "I also have a second line"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose("./unitTests/temp/test2.txt",
+                                                                                 ["first line", "second line"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose("./unitTests/temp/test3.txt",
+                                                                                 ["first line in this as well", "I also have a second line"])
     file = open("./unitTests/temp/test.txt", "w")
     head = htmlHead.HtmlHead(file, 2)
     head.setTitle("Programming puzzle-pieces") \

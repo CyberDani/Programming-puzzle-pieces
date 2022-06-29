@@ -19,11 +19,11 @@ def emptyHtmlBodyContent(settings):
 
 def minimalistHtmlHeadContent(settings):
   htmlTabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
-  filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<title>Hey!</title>"])
+  filerw.writeLinesToExistingFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<title>Hey!</title>"])
 
 def minimalistHtmlBodyContent(settings):
   htmlTabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
-  filerw.writeLinesToFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<h1>Hello!</h1>"])
+  filerw.writeLinesToExistingFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<h1>Hello!</h1>"])
 
 class HtmlBuilderTests(unittest.TestCase):
 
@@ -591,10 +591,10 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(self, indent, lines, htmlTag, htmlTagOption):
     src = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
     dest = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(dest, ["line 1", "\tline 2", "\t\t\tline 3"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(dest, ["line 1", "\tline 2", "\t\t\tline 3"])
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
                                                                 htmlTagOption, indent)
     dest.close()
@@ -602,7 +602,7 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
     src = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
@@ -671,17 +671,17 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def helper_includeFileToHtmlOutputFile_2(self, indent, lines):
     src = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
     dest = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(dest, ["> first line", ">> second line", ">>> third line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(dest, ["> first line", ">> second line", ">>> third line"])
     htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
     dest.close()
     return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
 
   def helper_includeFileToHtmlOutputFile(self, indent, lines):
     src = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(src, lines)
+    filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)

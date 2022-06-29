@@ -28,7 +28,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_includeFileThenAppendNewLine_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
     body = htmlBody.HtmlBody(file, 2)
     with self.assertRaises(Exception):
       body.includeFileThenAppendNewLine(file)
@@ -45,7 +45,7 @@ class HtmlBodyTests(unittest.TestCase):
     file2 = open("./unitTests/temp/test2.txt", "w")
     file2.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
     body = htmlBody.HtmlBody(file, 2)
     body.includeFileThenAppendNewLine("./unitTests/temp/test2.txt")
     file.close()
@@ -57,10 +57,10 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_includeFileThenAppendNewLine_includeNonEmptyFile(self):
     file2 = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file2, ["include 1", "include 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file2, ["include 1", "include 2"])
     file2.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
     body = htmlBody.HtmlBody(file, 3)
     body.includeFileThenAppendNewLine("./unitTests/temp/test2.txt")
     file.close()
@@ -74,13 +74,13 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_includeFileThenAppendNewLine_chaining(self):
     file2 = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file2, ["include 1", "include 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file2, ["include 1", "include 2"])
     file2.close()
     file3 = open("./unitTests/temp/test3.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file3, ["include 3", "include 4"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file3, ["include 3", "include 4"])
     file3.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["line 1", "line 2"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
     body = htmlBody.HtmlBody(file, 3)
     body.includeFileThenAppendNewLine("./unitTests/temp/test2.txt") \
         .includeFileThenAppendNewLine("./unitTests/temp/test3.txt")
@@ -131,7 +131,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_openHtmlTagThenAppendNewLine_addOneTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 3)
     body.openHtmlTagThenAppendNewLine("div", "class='magicalDiv'")
     file.close()
@@ -143,7 +143,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_openHtmlTagThenAppendNewLine_addTwoTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 1)
     body.openHtmlTagThenAppendNewLine("div", "class='magicalDiv'") \
         .openHtmlTagThenAppendNewLine("table")
@@ -157,7 +157,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_openHtmlTagThenAppendNewLine_addThreeTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 2)
     body.openHtmlTagThenAppendNewLine("div", "class='magicalDiv'") \
         .openHtmlTagThenAppendNewLine("table") \
@@ -173,10 +173,10 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_openHtmlTagThenAppendNewLine_indentationWith1HtmlTag(self):
     file2 = open("./unitTests/temp/test2.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file2, ["1. include", "2. include"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file2, ["1. include", "2. include"])
     file2.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 1)
     body.openHtmlTagThenAppendNewLine("div", "class='magicalDiv'") \
         .includeFileThenAppendNewLine("./unitTests/temp/test2.txt")
@@ -198,7 +198,7 @@ class HtmlBodyTests(unittest.TestCase):
     filerw.writeLinesToFile(file3, ["next", "next -> next", "next -> next -> next"])
     file3.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 1)
     body.openHtmlTagThenAppendNewLine("div", "class='magicalDiv'") \
         .includeFileThenAppendNewLine("./unitTests/temp/test2.txt") \
@@ -245,7 +245,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_closeLastOpenedHtmlTag_oneTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 1)
     body.openHtmlTagThenAppendNewLine("a", "href='link.com'").closeLastOpenedHtmlTag()
     file.close()
@@ -258,7 +258,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_closeLastOpenedHtmlTag_twoTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 1)
     body.openHtmlTagThenAppendNewLine("h2").openHtmlTagThenAppendNewLine("a", "href='link.com'") \
         .closeLastOpenedHtmlTag().closeLastOpenedHtmlTag()
@@ -274,7 +274,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_closeLastOpenedHtmlTag_threeTag(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 3)
     body.openHtmlTagThenAppendNewLine("div").openHtmlTagThenAppendNewLine("div", "class='myDiv'") \
         .openHtmlTagThenAppendNewLine("span") \
@@ -299,7 +299,7 @@ class HtmlBodyTests(unittest.TestCase):
     filerw.writeLinesToFile(file3, ["next", "next -> next", "next -> next -> next"])
     file3.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["first line", "second line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
     body = htmlBody.HtmlBody(file, 2)
     body.openHtmlTagThenAppendNewLine("table").includeFileThenAppendNewLine("./unitTests/temp/test2.txt")
     body.openHtmlTagThenAppendNewLine("tr").includeFileThenAppendNewLine("./unitTests/temp/test3.txt")
@@ -342,7 +342,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addHtmlNewLineThenAppendNewLine_1br(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["simple line"])
     body = htmlBody.HtmlBody(file, 1)
     body.addHtmlNewLineThenAppendNewLine(1)
     file.close()
@@ -353,7 +353,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addHtmlNewLineThenAppendNewLine_2br(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["simple line"])
     body = htmlBody.HtmlBody(file, 3)
     body.addHtmlNewLineThenAppendNewLine(2)
     file.close()
@@ -364,7 +364,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addHtmlNewLineThenAppendNewLine_5br(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["simple line"])
     body = htmlBody.HtmlBody(file, 2)
     body.addHtmlNewLineThenAppendNewLine(5)
     file.close()
@@ -375,7 +375,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addHtmlNewLineThenAppendNewLine_2brAnd5br(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["simple line"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["simple line"])
     body = htmlBody.HtmlBody(file, 4)
     body.addHtmlNewLineThenAppendNewLine(2).addHtmlNewLineThenAppendNewLine(5)
     file.close()
@@ -417,7 +417,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addJsScriptSrcThenAppendNewLine_justUrl(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
     body = htmlBody.HtmlBody(file, 1)
     body.addJsScriptSrcThenAppendNewLine("myAwesomeSite.com/randomScript.js", None, None, None)
     file.close()
@@ -431,7 +431,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_addJsScriptSrcThenAppendNewLine_urlIntegrityCrossoriginReferrerpolicy(self):
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
     body = htmlBody.HtmlBody(file, 6)
     body.addJsScriptSrcThenAppendNewLine("https://lookatthis.com/itsascript.js",
                                         "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
@@ -464,7 +464,7 @@ class HtmlBodyTests(unittest.TestCase):
     filerw.writeLinesToFile(file2, ["function getTwo() {", "\treturn 2;", "}"])
     file2.close()
     file = open("./unitTests/temp/test.txt", "w")
-    filerw.writeLinesToFileThenAppendNewLine(file, ["\tsome line", "\tsome another line here"])
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["\tsome line", "\tsome another line here"])
     body = htmlBody.HtmlBody(file, 1)
     body.includeFileAsInlineJs("./unitTests/temp/test2.txt")
     file.close()

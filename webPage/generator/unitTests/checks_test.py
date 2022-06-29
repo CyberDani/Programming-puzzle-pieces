@@ -533,37 +533,37 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfValidJsonFile(False)
 
   def test_checkIfValidJsonFile_invalid(self):
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt", [""])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", [""])
     file = open("./unitTests/temp/test.txt", "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt", ["hello internet"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", ["hello internet"])
     file = open("./unitTests/temp/test.txt", "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "true", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "true", "}"])
     file = open("./unitTests/temp/test.txt", "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["1", "2", "3", "4"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["1", "2", "3", "4"])
     file = open("./unitTests/temp/test.txt", "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
 
   def test_checkIfValidJsonFile_valid(self):
     try:
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "}"])
       file = open("./unitTests/temp/test.txt", "r")
       checks.checkIfValidJsonFile(file)
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
       file = open("./unitTests/temp/test.txt", "r")
       checks.checkIfValidJsonFile(file)
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "\"boolValue\": ", "true", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "\"boolValue\": ", "true", "}"])
       file = open("./unitTests/temp/test.txt", "r")
       checks.checkIfValidJsonFile(file)
     except Exception:
@@ -583,53 +583,53 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfValidJsonFileByFilePath(False)
 
   def test_checkIfValidJsonFileByFilePath_invalid(self):
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt", [""])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", [""])
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt", ["hello internet"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", ["hello internet"])
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "true", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "true", "}"])
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["1", "2", "3", "4"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["1", "2", "3", "4"])
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
 
   def test_checkIfValidJsonFileByFilePath_valid(self):
     try:
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "}"])
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-      filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                    ["{", "\"boolValue\": ", "true", "}"])
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                  ["{", "\"boolValue\": ", "true", "}"])
       checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
     except Exception:
       self.fail("checkIfValidJsonFileByFilePath() raised Exception unexpectedly!")
 
   def test_checkIfValidJsonFileByFilePath_returnedJson(self):
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "\"boolValue\": ", "true", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "\"boolValue\": ", "true", "}"])
     jsonVals = checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
     self.assertEqual(jsonVals["boolValue"], True)
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "\"intValue\": ", "23", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "\"intValue\": ", "23", "}"])
     jsonVals = checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
     self.assertEqual(jsonVals["intValue"], 23)
 
   def test_checkIfValidJsonFile_returnedJson(self):
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "\"boolValue\": ", "true", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "\"boolValue\": ", "true", "}"])
     file = open("./unitTests/temp/test.txt", "r")
     jsonVals = checks.checkIfValidJsonFile(file)
     self.assertEqual(jsonVals["boolValue"], True)
-    filerw.writeLinesToFileByFilePathAndCloseFile("./unitTests/temp/test.txt",
-                                                  ["{", "\"intValue\": ", "23", "}"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+                                                                ["{", "\"intValue\": ", "23", "}"])
     file = open("./unitTests/temp/test.txt", "r")
     jsonVals = checks.checkIfValidJsonFile(file)
     self.assertEqual(jsonVals["intValue"], 23)
