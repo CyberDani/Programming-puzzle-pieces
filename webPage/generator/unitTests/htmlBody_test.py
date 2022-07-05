@@ -119,7 +119,6 @@ class HtmlBodyTests(unittest.TestCase):
       body.includeFileByTypeThenAppendNewLine("heyho")
     with self.assertRaises(Exception):
       body.includeFileByTypeThenAppendNewLine(Dir.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34)
-    # TODO removeFileIfExistsByPath + ByType
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     if filerw.fileExists(filePath):
       os.remove(filePath)
@@ -128,10 +127,7 @@ class HtmlBodyTests(unittest.TestCase):
 
   def test_includeFileByTypeThenAppendNewLine_includeEmptyFile(self):
     testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    testFilePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
-    # TODO createEmptyFileByType
-    file2 = open(testFilePath2, "w")
-    file2.close()
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE2)
     file = open(testFilePath1, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, ["line 1", "line 2"])
     body = htmlBody.HtmlBody(file, 2)

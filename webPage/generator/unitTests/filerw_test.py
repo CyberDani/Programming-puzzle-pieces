@@ -13,6 +13,88 @@ from modules import path
 
 class FileReadWriterTests(unittest.TestCase):
 
+  def test_createOrOverwriteWithEmptyFileByType_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType(file)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType("")
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType()
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType(None)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType(23)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType(False)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType(Dir.HTML_PAGES_MAIN)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByType("./unitTests/temp/test.txt")
+
+  def test_createOrOverwriteWithEmptyFileByType_example_fileNotExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    if filerw.fileExists(filePath):
+      os.remove(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(lines), 0)
+
+  def test_createOrOverwriteWithEmptyFileByType_example_fileExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
+                                                                                 ["first line", "second line", "hi"])
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePath(filePath)
+    self.assertEqual(len(lines), 3)
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(lines), 0)
+
+  def test_createOrOverwriteWithEmptyFileByPath_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(file)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath("")
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath()
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(None)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(23)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(False)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(Dir.HTML_PAGES_MAIN)
+    with self.assertRaises(Exception):
+      filerw.createOrOverwriteWithEmptyFileByPath(File.FOR_TEST_TEXTFILE1)
+
+  def test_createOrOverwriteWithEmptyFileByPath_example_fileNotExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    if filerw.fileExists(filePath):
+      os.remove(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(lines), 0)
+
+  def test_createOrOverwriteWithEmptyFileByPath_example_fileExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
+                                                                                 ["first line", "second line", "hi"])
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePath(filePath)
+    self.assertEqual(len(lines), 3)
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(lines), 0)
+
   def test_fileExists_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")
     with self.assertRaises(Exception):
@@ -97,6 +179,74 @@ class FileReadWriterTests(unittest.TestCase):
     os.rmdir("./unitTests/testDir3")
     self.assertFalse(filerw.directoryExists("unitTests/testDir3/testDir4/"))
     self.assertFalse(filerw.directoryExists("unitTests/testDir3"))
+
+  def test_deleteFileIfExistsByType_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(file)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(["unitTests/temp/test1.txt"])
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType()
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(None)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(23)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(False)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType("unitTests/temp/test1.txt")
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByType(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+
+  def test_deleteFileIfExistsByType_fileExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
+    self.assertFalse(filerw.fileExists(filePath))
+
+  def test_deleteFileIfExistsByType_fileNotExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    if filerw.fileExists(filePath):
+      os.remove(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+    filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
+    self.assertFalse(filerw.fileExists(filePath))
+
+  def test_deleteFileIfExistsByPath_nonSense(self):
+    file = open("./unitTests/temp/test.txt", "w")
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(file)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(["unitTests/temp/test1.txt"])
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath()
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(None)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(23)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(False)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(File.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      filerw.deleteFileIfExistsByPath(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+
+  def test_deleteFileIfExistsByPath_fileExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    filerw.deleteFileIfExistsByPath(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+
+  def test_deleteFileIfExistsByPath_fileNotExists(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    if filerw.fileExists(filePath):
+      os.remove(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+    filerw.deleteFileIfExistsByPath(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
 
   def test_deleteNonEmptyDirectoryIfExists_nonSense(self):
     file = open("./unitTests/temp/test.txt", "w")

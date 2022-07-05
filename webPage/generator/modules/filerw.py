@@ -9,6 +9,8 @@ from modules import checks
 from modules import path
 from modules import stringUtil
 
+# TODO every function should have a byPath + byType alternative
+
 ###### Existence ######
 
 def fileExists(filePath):
@@ -45,6 +47,15 @@ def deleteNonEmptyDirectoryIfExists(dirPath):
     return
   shutil.rmtree(dirPath)
 
+def deleteFileIfExistsByPath(filePath):
+  if not fileExists(filePath):
+    return
+  os.remove(filePath)
+
+def deleteFileIfExistsByType(fileType):
+  fileType = path.getAbsoluteFilePath(fileType)
+  deleteFileIfExistsByPath(fileType)
+
 ###### Move & Copy ######
 
 def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dirPathType):
@@ -64,6 +75,16 @@ def createDirectoryWithParentsIfNotExists(dirPath):
   if directoryExists(dirPath):
     return
   pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
+
+def createOrOverwriteWithEmptyFileByPath(filePath):
+  checks.checkIfString(filePath, 1, 300)
+  file = open(filePath, "w")
+  file.close()
+
+def createOrOverwriteWithEmptyFileByType(fileType):
+  filePath = path.getAbsoluteFilePath(fileType)
+  file = open(filePath, "w")
+  file.close()
 
 ###### Writes ######
 
