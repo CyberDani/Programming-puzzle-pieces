@@ -2,39 +2,39 @@ import io
 import unittest
 
 from defTypes import appDecisionType
-from defTypes.dirPathType import DirectoryPathType
+from defTypes.dirPathType import DirectoryPathType as Dir
 
 from modules import checks
 from modules import filerw
 from modules import path
 
-def runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(relativeDirPathTypeContainingTests, filePattern,
+def runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(dirPathTypeContainingTests, filePattern,
                                                               tempFolderPathTypes, outputStream = None):
-  checks.checkIfType(relativeDirPathTypeContainingTests, DirectoryPathType)
-  checks.checkIfNonEmptyPureListOfType(tempFolderPathTypes, DirectoryPathType)
-  testPath = path.getAbsoluteDirPathEndingWithSlash(relativeDirPathTypeContainingTests)
+  checks.checkIfType(dirPathTypeContainingTests, Dir)
+  checks.checkIfNonEmptyPureListOfType(tempFolderPathTypes, Dir)
+  testPath = path.getAbsoluteDirPathEndingWithSlash(dirPathTypeContainingTests)
   tempFolderPaths = []
   for tempDirType in tempFolderPathTypes:
     dirPath = path.getAbsoluteDirPathEndingWithSlash(tempDirType)
     tempFolderPaths.append(dirPath)
   return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(testPath, filePattern, tempFolderPaths, outputStream)
 
-def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
+def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(dirPathContainingTests, filePattern,
                                                         tempFolderPaths, outputStream = None):
   checks.checkIfNonEmptyPureListOfStrings(tempFolderPaths)
-  checks.checkIfString(relativeDirPathContainingTests, 0, 300)
+  checks.checkIfString(dirPathContainingTests, 0, 300)
   checks.checkIfString(filePattern, 1, 300)
-  checks.checkIfDirectoryPathExists(relativeDirPathContainingTests)
+  checks.checkIfDirectoryPathExists(dirPathContainingTests)
   if outputStream is not None:
     checks.checkIfType(outputStream, io.TextIOWrapper)
-  if relativeDirPathContainingTests[-1] != "/":
-    relativeDirPathContainingTests += "/"
+  if dirPathContainingTests[-1] != "/":
+    dirPathContainingTests += "/"
   for pathToTempFolder in tempFolderPaths:
     filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
   lines = []
   result = appDecisionType.AppDecisionType.STOP_APP
   try:
-    result, lines = runAndEvaluateUnitTests(relativeDirPathContainingTests, filePattern, outputStream)
+    result, lines = runAndEvaluateUnitTests(dirPathContainingTests, filePattern, outputStream)
   except Exception as e:
     raise e
   finally:
@@ -42,34 +42,34 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainin
       filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
   return result, lines
 
-def runAndEvaluateUnitTestsUsingSingleTempFolderPath(relativeDirPathContainingTests, filePattern,
-                                                        tempFolderPath, outputStream = None):
-  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
-                                                      [tempFolderPath], outputStream)
+def runAndEvaluateUnitTestsUsingSingleTempFolderPath(dirPathContainingTests, filePattern,
+                                                     tempFolderPath, outputStream = None):
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(dirPathContainingTests, filePattern,
+                                                             [tempFolderPath], outputStream)
 
-def runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainingTests, filePattern,
+def runAndEvaluateUnitTestsUsingMultipleTempFolderNames(dirPathContainingTests, filePattern,
                                                         tempFolderNames, outputStream = None):
   checks.checkIfNonEmptyPureListOfStrings(tempFolderNames)
   for tempFolderName in tempFolderNames:
     checks.checkIfStringDoesNotContainAnySubstringFromList(tempFolderName, 1, 200, ['/'])
-  checks.checkIfString(relativeDirPathContainingTests, 0, 300)
-  if relativeDirPathContainingTests[-1] != "/":
-    relativeDirPathContainingTests += "/"
+  checks.checkIfString(dirPathContainingTests, 0, 300)
+  if dirPathContainingTests[-1] != "/":
+    dirPathContainingTests += "/"
   tempFolderPaths = []
   for tempFolderName in tempFolderNames:
-    pathToTempFolder = relativeDirPathContainingTests + tempFolderName
+    pathToTempFolder = dirPathContainingTests + tempFolderName
     tempFolderPaths.append(pathToTempFolder)
-  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainingTests, filePattern,
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(dirPathContainingTests, filePattern,
                                                              tempFolderPaths, outputStream)
 
-def runAndEvaluateUnitTestsUsingSingleTempFolderName(relativeDirPathContainingTests, filePattern,
+def runAndEvaluateUnitTestsUsingSingleTempFolderName(dirPathContainingTests, filePattern,
                                                      tempFolderName, outputStream = None):
-  return runAndEvaluateUnitTestsUsingMultipleTempFolderNames(relativeDirPathContainingTests, filePattern,
+  return runAndEvaluateUnitTestsUsingMultipleTempFolderNames(dirPathContainingTests, filePattern,
                                                              [tempFolderName], outputStream)
 
-def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
+def runAndEvaluateUnitTests(dirPath, filePattern, outputStream = None):
   lines = []
-  unitTestsResult = collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStream)
+  unitTestsResult = collectAndRunUnitTestsByFilePattern(dirPath, filePattern, outputStream)
   if unitTestsResult.wasSuccessful():
     lines.append(' - ALL UNIT TESTS PASSED -\n')
     return appDecisionType.AppDecisionType.CONTINUE_RUNNING, lines
@@ -77,8 +77,8 @@ def runAndEvaluateUnitTests(relativeDirPath, filePattern, outputStream = None):
   lines.append('\n [!] No operation can be done until all tests pass!')
   return appDecisionType.AppDecisionType.STOP_APP, lines
 
-def collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStream = None):
-  checks.checkIfString(relativeDirPath, 2, 300)
+def collectAndRunUnitTestsByFilePattern(dirPath, filePattern, outputStream = None):
+  checks.checkIfString(dirPath, 2, 300)
   checks.checkIfString(filePattern, 1, 300)
   if outputStream is not None:
     checks.checkIfType(outputStream, io.TextIOWrapper)
@@ -86,7 +86,7 @@ def collectAndRunUnitTestsByFilePattern(relativeDirPath, filePattern, outputStre
   loader = unittest.TestLoader()
   runner = unittest.TextTestRunner(stream = outputStream, verbosity = 0)
   # suites.addTest(loader.loadTestsFromName('unitTests.unitTestsRunner_test'))
-  suites.addTest(loader.discover(relativeDirPath, pattern = filePattern))
+  suites.addTest(loader.discover(dirPath, pattern = filePattern))
   result = runner.run(suites)
   if result.testsRun == 0:
     raise Exception('No tests found to run!')
