@@ -89,6 +89,91 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(absPath, dirType.value.getAbsoluteDirPathEndingWithSlash())
     self.assertTrue(absPath[-1] == "/")
 
+  def test_getAbsoluteDirParentPathEndingWithSlash_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(".")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash("")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash("webPage/generator")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(False)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(None)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(0)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(["webPage/generator"])
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash([])
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentPathEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+
+  def test_getAbsoluteDirParentPathEndingWithSlash_examples(self):
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.GIT_REPOSITORY)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.HTML_PAGES_MAIN)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertAbsoluteDirParentPath(dirPathType.DirectoryPathType.HTML_BACKUP)
+
+  def assertAbsoluteDirParentPath(self, dirType):
+    absParentPath = path.getAbsoluteDirParentPathEndingWithSlash(dirType)
+    absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
+    self.assertTrue(absParentPath[-1] == "/")
+    self.assertTrue(absPath[-1] == "/")
+    self.assertTrue(absPath.startswith(absParentPath))
+    absPathParts = absPath.split("/")
+    absParentPathParts = absParentPath.split("/")
+    self.assertEqual(len(absPathParts), len(absParentPathParts) + 1)
+    self.assertEqual(absParentPathParts[:-1], absPathParts[:-2])
+
+  def test_getAbsoluteDirParentX2PathEndingWithSlash_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(".")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash("")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash("webPage/generator")
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(False)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(None)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(0)
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(["webPage/generator"])
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash([])
+    with self.assertRaises(Exception):
+      path.getAbsoluteDirParentX2PathEndingWithSlash(filePathType.FilePathType.HTML_INCLUDE_SIDENAV)
+
+  def test_getAbsoluteDirParentX2PathEndingWithSlash_examples(self):
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.HTML_PAGES_MAIN)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR1)
+    self.assertAbsoluteDirParentX2Path(dirPathType.DirectoryPathType.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR2)
+
+  def assertAbsoluteDirParentX2Path(self, dirType):
+    absParentPath = path.getAbsoluteDirParentX2PathEndingWithSlash(dirType)
+    absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
+    self.assertTrue(absParentPath[-1] == "/")
+    self.assertTrue(absPath[-1] == "/")
+    self.assertTrue(absPath.startswith(absParentPath))
+    absPathParts = absPath.split("/")
+    absParentPathParts = absParentPath.split("/")
+    self.assertEqual(len(absPathParts), len(absParentPathParts) + 2)
+    self.assertEqual(absParentPathParts[:-1], absPathParts[:-3])
+
   def test_getAbsoluteFilePath_nonSense(self):
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath(".")

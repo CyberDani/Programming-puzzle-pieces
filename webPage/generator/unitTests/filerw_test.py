@@ -137,14 +137,13 @@ class FileReadWriterTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filerw.directoryExists(False)
 
-  # TODO do not use raw data for existing dirs
   def test_directoryExists_example(self):
-    self.assertTrue(filerw.directoryExists("./unitTests"))
-    self.assertTrue(filerw.directoryExists("unitTests"))
-    self.assertTrue(filerw.directoryExists("modules"))
-    self.assertFalse(filerw.directoryExists("Xmodules"))
-    self.assertFalse(filerw.directoryExists("modulesX"))
-    self.assertFalse(filerw.directoryExists("ASfwefSAffASfj"))
+    existingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    nonExistingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.NON_EXISTING_DIRECTORY)
+    self.assertTrue(filerw.directoryExists(existingDirPath))
+    self.assertTrue(filerw.directoryExists(existingDirPath[:-1]))
+    self.assertFalse(filerw.directoryExists(nonExistingDirPath))
+    self.assertFalse(filerw.directoryExists(nonExistingDirPath[:-1]))
 
   def test_createDirectoryWithParentsIfNotExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -179,16 +178,21 @@ class FileReadWriterTests(unittest.TestCase):
     os.rmdir(dirPath)
     self.assertFalse(filerw.directoryExists(dirPath))
 
-  # TODO dirpathChecker.getParent
   def test_createDirectoryWithParentsIfNotExists_nonExistingNestedFolder(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/"))
-    filerw.createDirectoryWithParentsIfNotExists("./unitTests/testDir3/testDir4")
-    self.assertTrue(filerw.directoryExists("./unitTests/testDir3/testDir4/"))
-    os.rmdir("./unitTests/testDir3/testDir4")
-    os.rmdir("./unitTests/testDir3")
-    self.assertFalse(filerw.directoryExists("unitTests/testDir3/testDir4/"))
-    self.assertFalse(filerw.directoryExists("unitTests/testDir3"))
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2)
+    dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2)
+    if filerw.directoryExists(dirPath):
+      os.rmdir(dirPath)
+    if filerw.directoryExists(dirParentPath):
+      os.rmdir(dirParentPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExists(dirParentPath))
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    os.rmdir(dirPath)
+    os.rmdir(dirParentPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExists(dirParentPath))
 
   def test_deleteFileIfExistsByType_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -260,13 +264,14 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.deleteFileIfExistsByPath(filePath)
     self.assertFalse(filerw.fileExists(filePath))
 
-  # TODO remove hardcoded paths
   def test_deleteNonEmptyDirectoryIfExists_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath)
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
     with self.assertRaises(Exception):
       filerw.deleteNonEmptyDirectoryIfExists(file)
     with self.assertRaises(Exception):
-      filerw.deleteNonEmptyDirectoryIfExists(["unitTests/temp"])
+      filerw.deleteNonEmptyDirectoryIfExists([dirPath])
     with self.assertRaises(Exception):
       filerw.deleteNonEmptyDirectoryIfExists()
     with self.assertRaises(Exception):
@@ -276,60 +281,78 @@ class FileReadWriterTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filerw.deleteNonEmptyDirectoryIfExists(False)
 
-  # TODO DirChecker.getParent
   def test_deleteNonEmptyDirectoryIfExists_nonExistingDirectory(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
-    self.assertTrue(filerw.directoryExists("unitTests"))
-    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir3/testDir4")
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3/testDir4"))
-    self.assertTrue(filerw.directoryExists("unitTests"))
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
+    dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(pathType)
+    dirParentOfParentPath = path.getAbsoluteDirParentX2PathEndingWithSlash(pathType)
+    if filerw.directoryExists(dirPath):
+      os.rmdir(dirPath)
+    if filerw.directoryExists(dirParentPath):
+      os.rmdir(dirParentPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExists(dirParentPath))
+    self.assertTrue(filerw.directoryExists(dirParentOfParentPath))
+    filerw.deleteNonEmptyDirectoryIfExists(dirPath)
+    self.assertFalse(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExists(dirParentOfParentPath))
 
-  # TODO
   def test_deleteNonEmptyDirectoryIfExists_nonExistingDirectory_2(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
-    self.assertTrue(filerw.directoryExists("unitTests"))
-    filerw.deleteNonEmptyDirectoryIfExists("unitTests/testDir3")
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir3"))
-    self.assertTrue(filerw.directoryExists("unitTests"))
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
+    dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(pathType)
+    if filerw.directoryExists(dirPath):
+      os.rmdir(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExists(dirParentPath))
+    filerw.deleteNonEmptyDirectoryIfExists(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExists(dirParentPath))
 
-  # TODO
   def test_deleteNonEmptyDirectoryIfExists_emptyDirectory(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
-    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12")
-    self.assertTrue(filerw.directoryExists("./unitTests/testDir12"))
-    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    filerw.deleteNonEmptyDirectoryIfExists(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
 
-  # TODO
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFiles(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
-    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12")
-    self.assertTrue(filerw.directoryExists("./unitTests/testDir12"))
-    file = open("./unitTests/testDir12/test.txt", "w")
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
+    filePath1 = dirPath + "test1.txt"
+    filePath2 = dirPath + "test2.txt"
+    filePath3 = dirPath + "test3.txt"
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    file = open(filePath1, "w")
     file.close()
-    file = open("./unitTests/testDir12/test2.txt", "w")
+    file = open(filePath2, "w")
     file.close()
-    file = open("./unitTests/testDir12/test3.txt", "w")
+    file = open(filePath3, "w")
     file.close()
-    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.deleteNonEmptyDirectoryIfExists(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
 
-  # TODO
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFilesAndDirs(self):
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
-    filerw.createDirectoryWithParentsIfNotExists("unitTests/testDir12/testDir22")
-    self.assertTrue(filerw.directoryExists("./unitTests/testDir12/testDir22"))
-    file = open("./unitTests/testDir12/test.txt", "w")
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
+    dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(pathType)
+    filePath1 = dirParentPath + "test1.txt"
+    filePath2 = dirParentPath + "test2.txt"
+    filePath3 = dirParentPath + "test3.txt"
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    file = open(filePath1, "w")
     file.close()
-    file = open("./unitTests/testDir12/test2.txt", "w")
+    file = open(filePath2, "w")
     file.close()
-    file = open("./unitTests/testDir12/test3.txt", "w")
+    file = open(filePath3, "w")
     file.close()
-    filerw.deleteNonEmptyDirectoryIfExists("./unitTests/testDir12")
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12/testDir22"))
-    self.assertFalse(filerw.directoryExists("./unitTests/testDir12"))
+    filerw.deleteNonEmptyDirectoryIfExists(dirParentPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExists(dirParentPath))
 
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -818,7 +841,7 @@ class FileReadWriterTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filerw.writeLinesToExistingFileThenAppendNewLine(file, None)
     with self.assertRaises(Exception):
-      filerw.writeLinesToExistingFileThenAppendNewLine("text.txt", ["firstLine"])
+      filerw.writeLinesToExistingFileThenAppendNewLine(filePath, ["firstLine"])
 
   def test_writeLinesToFileThenAppendNewLine_noLine(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)

@@ -19,6 +19,8 @@ class DirectoryPathType(Enum):
                                                             dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   PYTHON_GENERATOR_UNIT_TESTS_TEST1 = DirectoryPathChecker("webPage/generator/unitTests/testDir1", [],
                                                            dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2 = DirectoryPathChecker("webPage/generator/unitTests/nestedTest11/nestedTest12",
+                                                               [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   NON_EXISTING_DIRECTORY = DirectoryPathChecker("webPage/generator/nonExistingFolder", [],
                                                 dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   PYTHON_UNIT_TESTS_4_UNIT_TESTS = DirectoryPathChecker("webPage/generator/unitTests4unitTests",

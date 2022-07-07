@@ -16,6 +16,18 @@ def getAbsoluteDirPathEndingWithSlash(directoryPathType):
   checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
   return directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
 
+def getAbsoluteDirParentPathEndingWithSlash(directoryPathType):
+  absolutePath = getAbsoluteDirPathEndingWithSlash(directoryPathType)
+  absolutePath = absolutePath[:-1]
+  idx = absolutePath.rfind("/")
+  return absolutePath[:idx + 1]
+
+def getAbsoluteDirParentX2PathEndingWithSlash(directoryPathType):
+  absoluteParentPath = getAbsoluteDirParentPathEndingWithSlash(directoryPathType)
+  absoluteParentPath = absoluteParentPath[:-1]
+  idx = absoluteParentPath.rfind("/")
+  return absoluteParentPath[:idx + 1]
+
 def getAbsoluteFilePath(fPathType):
   checks.checkIfType(fPathType, filePathType.FilePathType)
   return fPathType.value.getAbsoluteFilePath()
