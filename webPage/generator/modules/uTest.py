@@ -24,6 +24,7 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(relativeDirPathContainin
   checks.checkIfNonEmptyPureListOfStrings(tempFolderPaths)
   checks.checkIfString(relativeDirPathContainingTests, 0, 300)
   checks.checkIfString(filePattern, 1, 300)
+  checks.checkIfDirectoryPathExists(relativeDirPathContainingTests)
   if outputStream is not None:
     checks.checkIfType(outputStream, io.TextIOWrapper)
   if relativeDirPathContainingTests[-1] != "/":

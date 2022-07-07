@@ -453,6 +453,7 @@ class UnitTestTests(unittest.TestCase):
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(Dir.NON_EXISTING_DIRECTORY, "*.py",
                                                                    [Dir.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR], void)
+    self.assertFalse(filerw.directoryExists(path.getAbsoluteDirPathEndingWithSlash(Dir.NON_EXISTING_DIRECTORY)))
     with self.assertRaises(Exception):
       uTest.runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(False, "*.py", "unitTests4unitTests/temp")
     with self.assertRaises(Exception):
