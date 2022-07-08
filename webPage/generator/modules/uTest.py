@@ -39,7 +39,7 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(dirPathContainingTests, 
     raise e
   finally:
     for pathToTempFolder in tempFolderPaths:
-      filerw.deleteNonEmptyDirectoryIfExists(pathToTempFolder)
+      filerw.deleteNonEmptyDirectoryByPathIfExists(pathToTempFolder)
   return result, lines
 
 def runAndEvaluateUnitTestsUsingSingleTempFolderPath(dirPathContainingTests, filePattern,

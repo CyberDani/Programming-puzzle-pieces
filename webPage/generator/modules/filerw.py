@@ -58,10 +58,14 @@ def getLinesByFile(file):
 
 ###### Deletes ######
 
-def deleteNonEmptyDirectoryIfExists(dirPath):
+def deleteNonEmptyDirectoryByPathIfExists(dirPath):
   if not directoryExistsByPath(dirPath):
     return
   shutil.rmtree(dirPath)
+
+def deleteNonEmptyDirectoryByTypeIfExists(dirPathType):
+  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  deleteNonEmptyDirectoryByPathIfExists(dirPath)
 
 def deleteFileIfExistsByPath(filePath):
   if not fileExistsByPath(filePath):
