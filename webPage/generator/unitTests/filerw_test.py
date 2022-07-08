@@ -97,6 +97,18 @@ class FileReadWriterTests(unittest.TestCase):
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
+  def test_createOrOverwriteWithEmptyFileByPath_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
+                                                                                 ["first line", "second line", "hi"])
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePath(filePath)
+    self.assertEqual(len(lines), 3)
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(lines), 0)
+
   def test_fileExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
@@ -115,6 +127,14 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_fileExists_example(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.close()
+    self.assertTrue(filerw.fileExists(filePath))
+    os.remove(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+
+  def test_fileExists_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     file = open(filePath, "w")
     file.close()
     self.assertTrue(filerw.fileExists(filePath))
@@ -145,6 +165,16 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertFalse(filerw.directoryExists(nonExistingDirPath))
     self.assertFalse(filerw.directoryExists(nonExistingDirPath[:-1]))
 
+  def test_directoryExists_relPath(self):
+    existingDirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
+                                                                        Dir.PYTHON_MAIN_GENERATOR)
+    nonExistingDirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.NON_EXISTING_DIRECTORY,
+                                                                           Dir.PYTHON_MAIN_GENERATOR)
+    self.assertTrue(filerw.directoryExists(existingDirPath))
+    self.assertTrue(filerw.directoryExists(existingDirPath[:-1]))
+    self.assertFalse(filerw.directoryExists(nonExistingDirPath))
+    self.assertFalse(filerw.directoryExists(nonExistingDirPath[:-1]))
+
   def test_createDirectoryWithParentsIfNotExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
@@ -163,6 +193,16 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_createDirectoryWithParentsIfNotExists_existingFolder(self):
     dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+    os.mkdir(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    os.rmdir(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+
+  def test_createDirectoryWithParentsIfNotExists_relPath(self):
+    dirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1,
+                                                                Dir.PYTHON_MAIN_GENERATOR)
     os.mkdir(dirPath)
     self.assertTrue(filerw.directoryExists(dirPath))
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
@@ -256,6 +296,13 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.deleteFileIfExistsByPath(filePath)
     self.assertFalse(filerw.fileExists(filePath))
 
+  def test_deleteFileIfExistsByPath_fileExists_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    self.assertTrue(filerw.fileExists(filePath))
+    filerw.deleteFileIfExistsByPath(filePath)
+    self.assertFalse(filerw.fileExists(filePath))
+
   def test_deleteFileIfExistsByPath_fileNotExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     if filerw.fileExists(filePath):
@@ -335,6 +382,23 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
     self.assertFalse(filerw.directoryExists(dirPath))
 
+  def test_deleteNonEmptyDirectoryIfExists_directoryWithFiles_relPath(self):
+    pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
+    dirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(pathType, Dir.PYTHON_MAIN_GENERATOR)
+    filePath1 = dirPath + "test1.txt"
+    filePath2 = dirPath + "test2.txt"
+    filePath3 = dirPath + "test3.txt"
+    filerw.createDirectoryWithParentsIfNotExists(dirPath)
+    self.assertTrue(filerw.directoryExists(dirPath))
+    file = open(filePath1, "w")
+    file.close()
+    file = open(filePath2, "w")
+    file.close()
+    file = open(filePath3, "w")
+    file.close()
+    filerw.deleteNonEmptyDirectoryIfExists(dirPath)
+    self.assertFalse(filerw.directoryExists(dirPath))
+
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFilesAndDirs(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2
     dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
@@ -383,6 +447,17 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertEqual(linesFromFile[0], "hello dear\n")
     self.assertEqual(linesFromFile[1], "this is the tester\n")
 
+  def test_getLinesByFilePathWithEndingNewLine_2lines_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
+    file = open(filePath, "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    linesFromFile = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear\n")
+    self.assertEqual(linesFromFile[1], "this is the tester\n")
+
   def test_getLinesByFilePath_1line(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
@@ -403,6 +478,17 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_getLinesByFilePath_2lines(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    linesFromFile = filerw.getLinesByFilePath(filePath)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear")
+    self.assertEqual(linesFromFile[1], "this is the tester")
+
+  def test_getLinesByFilePath_2lines_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     file = open(filePath, "w")
     file.write("hello dear\n")
     file.write("this is the tester\n")
@@ -912,7 +998,7 @@ class FileReadWriterTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(file, ["firstLine"])
 
-  def test_writeLinesToFileByFilePathThenAppendNewLine_emptyLine(self):
+  def test_writeLinesToFileByFilePathThenAppendNewLine_emptyList(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [])
     readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
@@ -927,6 +1013,15 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_writeLinesToFileByFilePathThenAppendNewLine_emptyLine_afterSomethingElse(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
+                                                                                 ["first", "second", "third", "fourth"])
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [""])
+    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(readLines), 1)
+    self.assertEqual(readLines[0], "\n")
+
+  def test_writeLinesToFileByFilePathThenAppendNewLine_emptyLine_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first", "second", "third", "fourth"])
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [""])
@@ -1091,6 +1186,16 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_writeLinesToFileByFilePath_3lines(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
+                                                        ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
+    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    self.assertEqual(len(readLines), 3)
+    self.assertEqual(readLines[0], "this is me:\n")
+    self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
+    self.assertEqual(readLines[2], "tel: 0875432123")
+
+  def test_writeLinesToFileByFilePath_3lines_relPath(self):
+    filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                         ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
     readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
