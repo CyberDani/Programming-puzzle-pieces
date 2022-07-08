@@ -120,7 +120,7 @@ class HtmlBodyTests(unittest.TestCase):
     with self.assertRaises(Exception):
       body.includeFileByTypeThenAppendNewLine(Dir.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34)
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    if filerw.fileExists(filePath):
+    if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
     with self.assertRaises(Exception):
       body.includeFileByTypeThenAppendNewLine(Dir.FOR_TEST_TEXTFILE1)

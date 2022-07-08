@@ -14,7 +14,7 @@ class GitUtilTests(unittest.TestCase):
     gitRoot = git.getRepoRootDirectory()
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRoot))
-    self.assertTrue(filerw.fileExists(gitRoot + "/.git/HEAD"))
+    self.assertTrue(filerw.fileExistsByPath(gitRoot + "/.git/HEAD"))
 
   def test_getCurrentBranch(self):
     currentBranch = git.getCurrentBranch()

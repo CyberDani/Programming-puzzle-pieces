@@ -14,7 +14,7 @@ class DirPathCheckerTests(unittest.TestCase):
   def test_getGitRepoAbsolutePathEndingWithSlash(self):
     gitRepoPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     self.assertEqual(gitRepoPath[-1], "/")
-    self.assertTrue(filerw.fileExists(gitRepoPath + ".git/HEAD"))
+    self.assertTrue(filerw.fileExistsByPath(gitRepoPath + ".git/HEAD"))
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRepoPath))
 

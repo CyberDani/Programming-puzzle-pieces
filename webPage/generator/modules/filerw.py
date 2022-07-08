@@ -13,13 +13,21 @@ from modules import stringUtil
 
 ###### Existence ######
 
-def fileExists(filePath):
+def fileExistsByPath(filePath):
   checks.checkIfString(filePath, 2, 300)
   return os.path.isfile(filePath)
 
-def directoryExists(dirPath):
+def fileExistsByType(filePathType):
+  filePathType = path.getAbsoluteFilePath(filePathType)
+  return fileExistsByPath(filePathType)
+
+def directoryExistsByPath(dirPath):
   checks.checkIfString(dirPath, 1, 300)
   return os.path.isdir(dirPath)
+
+def directoryExistsByType(dirPath):
+  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPath)
+  return directoryExistsByPath(dirPath)
 
 ###### Reads ######
 
@@ -43,12 +51,12 @@ def getLinesByFile(file):
 ###### Deletes ######
 
 def deleteNonEmptyDirectoryIfExists(dirPath):
-  if not directoryExists(dirPath):
+  if not directoryExistsByPath(dirPath):
     return
   shutil.rmtree(dirPath)
 
 def deleteFileIfExistsByPath(filePath):
-  if not fileExists(filePath):
+  if not fileExistsByPath(filePath):
     return
   os.remove(filePath)
 
@@ -62,7 +70,7 @@ def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dir
   checks.checkIfType(filePathType, File)
   checks.checkIfType(dirPathType, Dir)
   filePath = path.getAbsoluteFilePath(filePathType)
-  if not fileExists(filePath):
+  if not fileExistsByPath(filePath):
     return
   fileName = path.getFileName(filePathType)
   folderPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
@@ -72,7 +80,7 @@ def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dir
 ###### Create ######
 
 def createDirectoryWithParentsIfNotExists(dirPath):
-  if directoryExists(dirPath):
+  if directoryExistsByPath(dirPath):
     return
   pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
 

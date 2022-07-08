@@ -35,11 +35,11 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_createOrOverwriteWithEmptyFileByType_example_fileNotExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    if filerw.fileExists(filePath):
+    if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
@@ -47,11 +47,11 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
@@ -77,11 +77,11 @@ class FileReadWriterTests(unittest.TestCase):
 
   def test_createOrOverwriteWithEmptyFileByPath_example_fileNotExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    if filerw.fileExists(filePath):
+    if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
@@ -89,11 +89,11 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
@@ -101,11 +101,11 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
@@ -113,67 +113,117 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
     with self.assertRaises(Exception):
-      filerw.fileExists(file)
+      filerw.fileExistsByPath(file)
     with self.assertRaises(Exception):
-      filerw.fileExists("")
+      filerw.fileExistsByPath("")
     with self.assertRaises(Exception):
-      filerw.fileExists()
+      filerw.fileExistsByPath()
     with self.assertRaises(Exception):
-      filerw.fileExists(None)
+      filerw.fileExistsByPath(None)
     with self.assertRaises(Exception):
-      filerw.fileExists(23)
+      filerw.fileExistsByPath(23)
     with self.assertRaises(Exception):
-      filerw.fileExists(False)
+      filerw.fileExistsByPath(False)
 
   def test_fileExists_example(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
     file.close()
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_fileExists_relPath(self):
     filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     file = open(filePath, "w")
     file.close()
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
+
+  def test_fileExistsByType_nonSense(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType(file)
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType("")
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType()
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType(None)
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType(23)
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType(False)
+    with self.assertRaises(Exception):
+      filerw.fileExistsByType(filePath)
+
+  def test_fileExistsByType_example(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.close()
+    self.assertTrue(filerw.fileExistsByType(File.FOR_TEST_TEXTFILE1))
+    os.remove(filePath)
+    self.assertFalse(filerw.fileExistsByType(File.FOR_TEST_TEXTFILE1))
 
   def test_directoryExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
     with self.assertRaises(Exception):
-      filerw.directoryExists(file)
+      filerw.directoryExistsByPath(file)
     with self.assertRaises(Exception):
-      filerw.directoryExists("")
+      filerw.directoryExistsByPath("")
     with self.assertRaises(Exception):
-      filerw.directoryExists()
+      filerw.directoryExistsByPath()
     with self.assertRaises(Exception):
-      filerw.directoryExists(None)
+      filerw.directoryExistsByPath(None)
     with self.assertRaises(Exception):
-      filerw.directoryExists(23)
+      filerw.directoryExistsByPath(23)
     with self.assertRaises(Exception):
-      filerw.directoryExists(False)
+      filerw.directoryExistsByPath(False)
 
   def test_directoryExists_example(self):
     existingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
     nonExistingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.NON_EXISTING_DIRECTORY)
-    self.assertTrue(filerw.directoryExists(existingDirPath))
-    self.assertTrue(filerw.directoryExists(existingDirPath[:-1]))
-    self.assertFalse(filerw.directoryExists(nonExistingDirPath))
-    self.assertFalse(filerw.directoryExists(nonExistingDirPath[:-1]))
+    self.assertTrue(filerw.directoryExistsByPath(existingDirPath))
+    self.assertTrue(filerw.directoryExistsByPath(existingDirPath[:-1]))
+    self.assertFalse(filerw.directoryExistsByPath(nonExistingDirPath))
+    self.assertFalse(filerw.directoryExistsByPath(nonExistingDirPath[:-1]))
 
   def test_directoryExists_relPath(self):
     existingDirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
                                                                         Dir.PYTHON_MAIN_GENERATOR)
     nonExistingDirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.NON_EXISTING_DIRECTORY,
                                                                            Dir.PYTHON_MAIN_GENERATOR)
-    self.assertTrue(filerw.directoryExists(existingDirPath))
-    self.assertTrue(filerw.directoryExists(existingDirPath[:-1]))
-    self.assertFalse(filerw.directoryExists(nonExistingDirPath))
-    self.assertFalse(filerw.directoryExists(nonExistingDirPath[:-1]))
+    self.assertTrue(filerw.directoryExistsByPath(existingDirPath))
+    self.assertTrue(filerw.directoryExistsByPath(existingDirPath[:-1]))
+    self.assertFalse(filerw.directoryExistsByPath(nonExistingDirPath))
+    self.assertFalse(filerw.directoryExistsByPath(nonExistingDirPath[:-1]))
+
+  def test_directoryExistsByType_nonSense(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(file)
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType("")
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType()
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(None)
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(23)
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(False)
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(filePath)
+    with self.assertRaises(Exception):
+      filerw.directoryExistsByType(path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1))
+
+  def test_directoryExistsByType_example(self):
+    self.assertTrue(filerw.directoryExistsByType(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1))
+    self.assertFalse(filerw.directoryExistsByType(Dir.NON_EXISTING_DIRECTORY))
 
   def test_createDirectoryWithParentsIfNotExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -194,45 +244,45 @@ class FileReadWriterTests(unittest.TestCase):
   def test_createDirectoryWithParentsIfNotExists_existingFolder(self):
     dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
     os.mkdir(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     os.rmdir(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_createDirectoryWithParentsIfNotExists_relPath(self):
     dirPath = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1,
                                                                 Dir.PYTHON_MAIN_GENERATOR)
     os.mkdir(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     os.rmdir(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_createDirectoryWithParentsIfNotExists_nonExistingFolder(self):
     dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     os.rmdir(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_createDirectoryWithParentsIfNotExists_nonExistingNestedFolder(self):
     dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2)
     dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2)
-    if filerw.directoryExists(dirPath):
+    if filerw.directoryExistsByPath(dirPath):
       os.rmdir(dirPath)
-    if filerw.directoryExists(dirParentPath):
+    if filerw.directoryExistsByPath(dirParentPath):
       os.rmdir(dirParentPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertFalse(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirParentPath))
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     os.rmdir(dirPath)
     os.rmdir(dirParentPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertFalse(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirParentPath))
 
   def test_deleteFileIfExistsByType_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -257,17 +307,17 @@ class FileReadWriterTests(unittest.TestCase):
   def test_deleteFileIfExistsByType_fileExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_deleteFileIfExistsByType_fileNotExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    if filerw.fileExists(filePath):
+    if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_deleteFileIfExistsByPath_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -292,24 +342,24 @@ class FileReadWriterTests(unittest.TestCase):
   def test_deleteFileIfExistsByPath_fileExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     filerw.deleteFileIfExistsByPath(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_deleteFileIfExistsByPath_fileExists_relPath(self):
     filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    self.assertTrue(filerw.fileExists(filePath))
+    self.assertTrue(filerw.fileExistsByPath(filePath))
     filerw.deleteFileIfExistsByPath(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_deleteFileIfExistsByPath_fileNotExists(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
-    if filerw.fileExists(filePath):
+    if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.deleteFileIfExistsByPath(filePath)
-    self.assertFalse(filerw.fileExists(filePath))
+    self.assertFalse(filerw.fileExistsByPath(filePath))
 
   def test_deleteNonEmptyDirectoryIfExists_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -333,37 +383,37 @@ class FileReadWriterTests(unittest.TestCase):
     dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
     dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(pathType)
     dirParentOfParentPath = path.getAbsoluteDirParentX2PathEndingWithSlash(pathType)
-    if filerw.directoryExists(dirPath):
+    if filerw.directoryExistsByPath(dirPath):
       os.rmdir(dirPath)
-    if filerw.directoryExists(dirParentPath):
+    if filerw.directoryExistsByPath(dirParentPath):
       os.rmdir(dirParentPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertFalse(filerw.directoryExists(dirParentPath))
-    self.assertTrue(filerw.directoryExists(dirParentOfParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirParentPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirParentOfParentPath))
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
-    self.assertFalse(filerw.directoryExists(dirParentPath))
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertTrue(filerw.directoryExists(dirParentOfParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirParentOfParentPath))
 
   def test_deleteNonEmptyDirectoryIfExists_nonExistingDirectory_2(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
     dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
     dirParentPath = path.getAbsoluteDirParentPathEndingWithSlash(pathType)
-    if filerw.directoryExists(dirPath):
+    if filerw.directoryExistsByPath(dirPath):
       os.rmdir(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertTrue(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirParentPath))
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertTrue(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirParentPath))
 
   def test_deleteNonEmptyDirectoryIfExists_emptyDirectory(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
     dirPath = path.getAbsoluteDirPathEndingWithSlash(pathType)
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFiles(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
@@ -372,7 +422,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath2 = dirPath + "test2.txt"
     filePath3 = dirPath + "test3.txt"
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     file = open(filePath1, "w")
     file.close()
     file = open(filePath2, "w")
@@ -380,7 +430,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath3, "w")
     file.close()
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFiles_relPath(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1
@@ -389,7 +439,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath2 = dirPath + "test2.txt"
     filePath3 = dirPath + "test3.txt"
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     file = open(filePath1, "w")
     file.close()
     file = open(filePath2, "w")
@@ -397,7 +447,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath3, "w")
     file.close()
     filerw.deleteNonEmptyDirectoryIfExists(dirPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
 
   def test_deleteNonEmptyDirectoryIfExists_directoryWithFilesAndDirs(self):
     pathType = Dir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2
@@ -407,7 +457,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath2 = dirParentPath + "test2.txt"
     filePath3 = dirParentPath + "test3.txt"
     filerw.createDirectoryWithParentsIfNotExists(dirPath)
-    self.assertTrue(filerw.directoryExists(dirPath))
+    self.assertTrue(filerw.directoryExistsByPath(dirPath))
     file = open(filePath1, "w")
     file.close()
     file = open(filePath2, "w")
@@ -415,8 +465,8 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath3, "w")
     file.close()
     filerw.deleteNonEmptyDirectoryIfExists(dirParentPath)
-    self.assertFalse(filerw.directoryExists(dirPath))
-    self.assertFalse(filerw.directoryExists(dirParentPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirPath))
+    self.assertFalse(filerw.directoryExistsByPath(dirParentPath))
 
   def test_getLinesByFilePathWithEndingNewLine_1line(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -1302,14 +1352,14 @@ class FileReadWriterTests(unittest.TestCase):
     fileName = path.getFileName(File.FOR_TEST_TEXTFILE1)
     destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(testFilePath, ["hello", "world", "smile"])
-    self.assertTrue(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    self.assertTrue(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
     expectedDestFilePath = destTempDirPath + fileName
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
     filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE1,
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
     lines = filerw.getLinesByFilePath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "hello")
@@ -1322,16 +1372,16 @@ class FileReadWriterTests(unittest.TestCase):
     destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(testFilePath,
                                                         ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
-    self.assertTrue(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    self.assertTrue(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
     expectedDestFilePath = destTempDirPath + fileName
-    if filerw.fileExists(expectedDestFilePath):
+    if filerw.fileExistsByPath(expectedDestFilePath):
       os.remove(expectedDestFilePath)
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
     filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE2,
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
     lines = filerw.getLinesByFilePath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "this is me:")
@@ -1342,19 +1392,19 @@ class FileReadWriterTests(unittest.TestCase):
     testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
     fileName = path.getFileName(File.FOR_TEST_TEXTFILE3)
     destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
-    if filerw.fileExists(testFilePath):
+    if filerw.fileExistsByPath(testFilePath):
       os.remove(testFilePath)
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.directoryExists(destTempDirPath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
     expectedDestFilePath = destTempDirPath + fileName
-    if filerw.fileExists(expectedDestFilePath):
+    if filerw.fileExistsByPath(expectedDestFilePath):
       os.remove(expectedDestFilePath)
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
     filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE2,
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
-    self.assertTrue(filerw.directoryExists(destTempDirPath))
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
 
   def test_moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory_destDirNotExists(self):
     testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
@@ -1362,17 +1412,17 @@ class FileReadWriterTests(unittest.TestCase):
     destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(testFilePath, ["hello", "world", "smile"])
     filerw.deleteNonEmptyDirectoryIfExists(destTempDirPath)
-    self.assertFalse(filerw.directoryExists(destTempDirPath))
-    self.assertTrue(filerw.fileExists(testFilePath))
+    self.assertFalse(filerw.directoryExistsByPath(destTempDirPath))
+    self.assertTrue(filerw.fileExistsByPath(testFilePath))
     expectedDestFilePath = destTempDirPath + fileName
-    if filerw.fileExists(expectedDestFilePath):
+    if filerw.fileExistsByPath(expectedDestFilePath):
       os.remove(expectedDestFilePath)
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
     filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE3,
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
-    self.assertTrue(filerw.directoryExists(destTempDirPath))
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertTrue(filerw.fileExists(expectedDestFilePath))
+    self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
     lines = filerw.getLinesByFilePath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "hello")
@@ -1383,17 +1433,17 @@ class FileReadWriterTests(unittest.TestCase):
     testFilePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
     fileName = path.getFileName(File.FOR_TEST_TEXTFILE3)
     destTempDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
-    if filerw.fileExists(testFilePath):
+    if filerw.fileExistsByPath(testFilePath):
       os.remove(testFilePath)
     filerw.deleteNonEmptyDirectoryIfExists(destTempDirPath)
-    self.assertFalse(filerw.directoryExists(destTempDirPath))
-    self.assertFalse(filerw.fileExists(testFilePath))
+    self.assertFalse(filerw.directoryExistsByPath(destTempDirPath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
     expectedDestFilePath = destTempDirPath + fileName
-    if filerw.fileExists(expectedDestFilePath):
+    if filerw.fileExistsByPath(expectedDestFilePath):
       os.remove(expectedDestFilePath)
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))
     filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.FOR_TEST_TEXTFILE3,
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
-    self.assertFalse(filerw.directoryExists(destTempDirPath))
-    self.assertFalse(filerw.fileExists(testFilePath))
-    self.assertFalse(filerw.fileExists(expectedDestFilePath))
+    self.assertFalse(filerw.directoryExistsByPath(destTempDirPath))
+    self.assertFalse(filerw.fileExistsByPath(testFilePath))
+    self.assertFalse(filerw.fileExistsByPath(expectedDestFilePath))

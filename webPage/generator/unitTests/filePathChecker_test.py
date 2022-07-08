@@ -63,7 +63,7 @@ class FilePathCheckerTests(unittest.TestCase):
     try:
       generatorDirPath = dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR.value.getAbsoluteDirPathEndingWithSlash()
       nonExistingFileName1 = "asdddawcvw.das"
-      self.assertFalse(filerw.fileExists(generatorDirPath + nonExistingFileName1))
+      self.assertFalse(filerw.fileExistsByPath(generatorDirPath + nonExistingFileName1))
       ch = filePathChecker.FilePathChecker(dirPathType.DirectoryPathType.PYTHON_MAIN_GENERATOR, nonExistingFileName1,
                                       fileAction.DONT_CHECK_FILE_EXISTENCE)
       self.assertEqual(ch.getFileName(), nonExistingFileName1)
