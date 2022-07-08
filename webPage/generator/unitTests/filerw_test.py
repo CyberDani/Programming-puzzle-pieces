@@ -40,7 +40,7 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    lines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
   def test_createOrOverwriteWithEmptyFileByType_example_fileExists(self):
@@ -48,11 +48,11 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePath(filePath)
+    lines = filerw.getLinesByPath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    lines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
   def test_createOrOverwriteWithEmptyFileByPath_nonSense(self):
@@ -82,7 +82,7 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertFalse(filerw.fileExistsByPath(filePath))
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    lines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
   def test_createOrOverwriteWithEmptyFileByPath_example_fileExists(self):
@@ -90,11 +90,11 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePath(filePath)
+    lines = filerw.getLinesByPath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    lines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
   def test_createOrOverwriteWithEmptyFileByPath_relPath(self):
@@ -102,11 +102,11 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first line", "second line", "hi"])
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePath(filePath)
+    lines = filerw.getLinesByPath(filePath)
     self.assertEqual(len(lines), 3)
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
     self.assertTrue(filerw.fileExistsByPath(filePath))
-    lines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    lines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(lines), 0)
 
   def test_fileExists_nonSense(self):
@@ -473,7 +473,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     file.write("HEY")
     file.close()
-    linesFromFile = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    linesFromFile = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(linesFromFile), 1)
     self.assertEqual(linesFromFile[0], "HEY")
 
@@ -482,7 +482,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     file.write("HEY\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    linesFromFile = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(linesFromFile), 1)
     self.assertEqual(linesFromFile[0], "HEY\n")
 
@@ -492,7 +492,7 @@ class FileReadWriterTests(unittest.TestCase):
     file.write("hello dear\n")
     file.write("this is the tester\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    linesFromFile = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(linesFromFile), 2)
     self.assertEqual(linesFromFile[0], "hello dear\n")
     self.assertEqual(linesFromFile[1], "this is the tester\n")
@@ -503,7 +503,36 @@ class FileReadWriterTests(unittest.TestCase):
     file.write("hello dear\n")
     file.write("this is the tester\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    linesFromFile = filerw.getLinesByPathWithEndingNewLine(filePath)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear\n")
+    self.assertEqual(linesFromFile[1], "this is the tester\n")
+
+  def test_getLinesByTypeWithEndingNewLine_1line(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("HEY")
+    file.close()
+    linesFromFile = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLinesByTypeWithEndingNewLine_1line_1emptyLine(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("HEY\n")
+    file.close()
+    linesFromFile = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY\n")
+
+  def test_getLinesByTypeWithEndingNewLine_2lines(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    linesFromFile = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(linesFromFile), 2)
     self.assertEqual(linesFromFile[0], "hello dear\n")
     self.assertEqual(linesFromFile[1], "this is the tester\n")
@@ -513,7 +542,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     file.write("HEY")
     file.close()
-    linesFromFile = filerw.getLinesByFilePath(filePath)
+    linesFromFile = filerw.getLinesByPath(filePath)
     self.assertEqual(len(linesFromFile), 1)
     self.assertEqual(linesFromFile[0], "HEY")
 
@@ -522,7 +551,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     file.write("HEY\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePath(filePath)
+    linesFromFile = filerw.getLinesByPath(filePath)
     self.assertEqual(len(linesFromFile), 1)
     self.assertEqual(linesFromFile[0], "HEY")
 
@@ -532,7 +561,7 @@ class FileReadWriterTests(unittest.TestCase):
     file.write("hello dear\n")
     file.write("this is the tester\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePath(filePath)
+    linesFromFile = filerw.getLinesByPath(filePath)
     self.assertEqual(len(linesFromFile), 2)
     self.assertEqual(linesFromFile[0], "hello dear")
     self.assertEqual(linesFromFile[1], "this is the tester")
@@ -543,7 +572,36 @@ class FileReadWriterTests(unittest.TestCase):
     file.write("hello dear\n")
     file.write("this is the tester\n")
     file.close()
-    linesFromFile = filerw.getLinesByFilePath(filePath)
+    linesFromFile = filerw.getLinesByPath(filePath)
+    self.assertEqual(len(linesFromFile), 2)
+    self.assertEqual(linesFromFile[0], "hello dear")
+    self.assertEqual(linesFromFile[1], "this is the tester")
+
+  def test_getLinesByType_1line(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("HEY")
+    file.close()
+    linesFromFile = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLinesByType_1line_1emptyLine(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("HEY\n")
+    file.close()
+    linesFromFile = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(linesFromFile), 1)
+    self.assertEqual(linesFromFile[0], "HEY")
+
+  def test_getLinesByType_2lines(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    file.write("hello dear\n")
+    file.write("this is the tester\n")
+    file.close()
+    linesFromFile = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(linesFromFile), 2)
     self.assertEqual(linesFromFile[0], "hello dear")
     self.assertEqual(linesFromFile[1], "this is the tester")
@@ -723,7 +781,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesPrefixedToFile(file, prefix, lines)
     file.close()
-    return filerw.getLinesByFilePath(filePath)
+    return filerw.getLinesByPath(filePath)
 
   def test_writeLinesPrefixedToFileThenAppendNewLine_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -850,7 +908,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesPrefixedToFileThenAppendNewLine(file, prefix, lines)
     file.close()
-    return filerw.getLinesByFilePath(filePath)
+    return filerw.getLinesByPath(filePath)
 
   def test_writeStringsPrefixedToFileThenAppendNewLine_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
@@ -964,7 +1022,7 @@ class FileReadWriterTests(unittest.TestCase):
     tabs = htmlBuilder.getEscapedTabs(indent)
     filerw.writeStringsPrefixedToFileThenAppendNewLine(file, tabs, lines)
     file.close()
-    return filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    return filerw.getLinesByPathWithEndingNewLine(filePath)
 
   def test_writeLinesToFileThenAppendNewLine_nonSense(self):
     # TODO getFileByType (Type, READ | WRITE)
@@ -984,7 +1042,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, [])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFileThenAppendNewLine_emptyLine(self):
@@ -992,7 +1050,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, [""])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\n")
 
@@ -1001,7 +1059,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, ["this is me"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me\n")
 
@@ -1010,7 +1068,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, ["this is me\n"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me\n")
     self.assertEqual(readLines[1], "\n")
@@ -1020,7 +1078,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, ["this is me:", "\tJohn Doe, VIP executor"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1030,7 +1088,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToExistingFileThenAppendNewLine(file, ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1051,13 +1109,13 @@ class FileReadWriterTests(unittest.TestCase):
   def test_writeLinesToFileByFilePathThenAppendNewLine_emptyList(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFileByFilePathThenAppendNewLine_emptyLine(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [""])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\n")
 
@@ -1066,7 +1124,7 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first", "second", "third", "fourth"])
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [""])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\n")
 
@@ -1075,21 +1133,21 @@ class FileReadWriterTests(unittest.TestCase):
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                                  ["first", "second", "third", "fourth"])
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, [""])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "\n")
 
   def test_writeLinesToFileByFilePathThenAppendNewLine_1line(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, ["this is me"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me\n")
 
   def test_writeLinesToFileByFilePathThenAppendNewLine_1lineEndingWithNewline(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, ["this is me\n"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me\n")
     self.assertEqual(readLines[1], "\n")
@@ -1098,7 +1156,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                                            ["this is me:", "\tJohn Doe, VIP executor"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1107,7 +1165,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath,
                                                          ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1130,7 +1188,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, [])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFile_emptyLine(self):
@@ -1138,7 +1196,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, [""])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFile_1line(self):
@@ -1146,7 +1204,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, ["this is me"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me")
 
@@ -1155,7 +1213,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, ["this is me\n"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me\n")
 
@@ -1164,7 +1222,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, ["this is me:", "\tJohn Doe, VIP executor"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor")
@@ -1174,7 +1232,7 @@ class FileReadWriterTests(unittest.TestCase):
     file = open(filePath, "w")
     filerw.writeLinesToFile(file, ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1195,33 +1253,33 @@ class FileReadWriterTests(unittest.TestCase):
   def test_writeLinesToFileByFilePath_noLine(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFileByFilePath_noLine_afterSomeLines(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["hey", "little", "man"])
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFileByFilePath_emptyLine(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [""])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 0)
 
   def test_writeLinesToFileByFilePath_1line(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["this is me"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me")
 
   def test_writeLinesToFileByFilePath_1lineEndingWithNewline(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["this is me\n"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 1)
     self.assertEqual(readLines[0], "this is me\n")
 
@@ -1229,7 +1287,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                                 ["this is me:", "\tJohn Doe, VIP executor"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 2)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor")
@@ -1238,7 +1296,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                         ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1248,7 +1306,7 @@ class FileReadWriterTests(unittest.TestCase):
     filePath = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                         ["this is me:", "\tJohn Doe, VIP executor", "tel: 0875432123"])
-    readLines = filerw.getLinesByFilePathWithEndingNewLine(filePath)
+    readLines = filerw.getLinesByPathWithEndingNewLine(filePath)
     self.assertEqual(len(readLines), 3)
     self.assertEqual(readLines[0], "this is me:\n")
     self.assertEqual(readLines[1], "\tJohn Doe, VIP executor\n")
@@ -1360,7 +1418,7 @@ class FileReadWriterTests(unittest.TestCase):
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
     self.assertFalse(filerw.fileExistsByPath(testFilePath))
     self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
-    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    lines = filerw.getLinesByPath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "hello")
     self.assertEqual(lines[1], "world")
@@ -1382,7 +1440,7 @@ class FileReadWriterTests(unittest.TestCase):
                                                                       Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
     self.assertFalse(filerw.fileExistsByPath(testFilePath))
     self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
-    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    lines = filerw.getLinesByPath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "this is me:")
     self.assertEqual(lines[1], "\tJohn Doe, VIP executor")
@@ -1423,7 +1481,7 @@ class FileReadWriterTests(unittest.TestCase):
     self.assertTrue(filerw.directoryExistsByPath(destTempDirPath))
     self.assertFalse(filerw.fileExistsByPath(testFilePath))
     self.assertTrue(filerw.fileExistsByPath(expectedDestFilePath))
-    lines = filerw.getLinesByFilePath(expectedDestFilePath)
+    lines = filerw.getLinesByPath(expectedDestFilePath)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "hello")
     self.assertEqual(lines[1], "world")

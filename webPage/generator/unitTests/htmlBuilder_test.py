@@ -54,7 +54,7 @@ class HtmlBuilderTests(unittest.TestCase):
                                            indentDepth=2)
     htmlBuilder.buildIndexHtmlFile(emptyHtmlHeadContent, emptyHtmlBodyContent, settings)
     file.close()
-    emptyHtmlLines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    emptyHtmlLines = filerw.getLinesByPath("./unitTests/temp/test.txt")
     self.assertEqual(len(emptyHtmlLines), 6)
     self.assertEqual(emptyHtmlLines[0], "<html>")
     self.assertEqual(emptyHtmlLines[1], "\t<head>")
@@ -72,7 +72,7 @@ class HtmlBuilderTests(unittest.TestCase):
                                            indentDepth=2)
     htmlBuilder.buildIndexHtmlFile(minimalistHtmlHeadContent, minimalistHtmlBodyContent, settings)
     file.close()
-    emptyHtmlLines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    emptyHtmlLines = filerw.getLinesByPath("./unitTests/temp/test.txt")
     self.assertEqual(len(emptyHtmlLines), 8)
     self.assertEqual(emptyHtmlLines[0], "<html>")
     self.assertEqual(emptyHtmlLines[1], "\t<head>")
@@ -183,7 +183,7 @@ class HtmlBuilderTests(unittest.TestCase):
       file = open("./unitTests/temp/test.txt", "w")
       htmlBuilder.addHtmlNewLineToFile(file, indent)
       file.close()
-      readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+      readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
       self.assertEqual(len(readLines), 1)
       self.assertEqual(readLines[0], newLines + "\n")
 
@@ -212,7 +212,7 @@ class HtmlBuilderTests(unittest.TestCase):
         file = open("./unitTests/temp/test.txt", "w")
         htmlBuilder.addFaviconToHtmlOutputFile(file, favicon, indent)
         file.close()
-        line = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+        line = filerw.getLinesByPath("./unitTests/temp/test.txt")
         self.assertEqual(len(line), 1)
         self.assertEqual(line[0], htmlBuilder.getHtmlFavicon(favicon, indent))
 
@@ -241,7 +241,7 @@ class HtmlBuilderTests(unittest.TestCase):
         file = open("./unitTests/temp/test.txt", "w")
         htmlBuilder.addTitleToHtmlOutputFile(file, title, indent)
         file.close()
-        line = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+        line = filerw.getLinesByPath("./unitTests/temp/test.txt")
         self.assertEqual(len(line), 1)
         self.assertEqual(line[0], htmlBuilder.getHtmlTitle(title, indent))
 
@@ -259,7 +259,7 @@ class HtmlBuilderTests(unittest.TestCase):
       file = open("./unitTests/temp/test.txt", "w")
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, indent)
       file.close()
-      lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+      lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
       self.assertEqual(len(lines), 1)
       self.assertEqual(lines[0], htmlBuilder.getMetaScreenOptimizedForMobile(indent))
 
@@ -357,7 +357,7 @@ class HtmlBuilderTests(unittest.TestCase):
     lines = htmlBuilder.getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i], lines[i] + "\n")
@@ -466,7 +466,7 @@ class HtmlBuilderTests(unittest.TestCase):
     lines = htmlBuilder.getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addJsScriptSrcToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i], lines[i] + "\n")
@@ -534,7 +534,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "a", "href='url.com'", 1)
     dest.close()
-    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
     self.assertEqual(len(lines), 2)
     self.assertEqual(lines[0], "\t<a href='url.com'>")
     self.assertEqual(lines[1], "\t</a>")
@@ -545,7 +545,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", "", 2)
     dest.close()
-    lines = filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
     self.assertEqual(len(lines), 2)
     self.assertEqual(lines[0], "\t\t<div>")
     self.assertEqual(lines[1], "\t\t</div>")
@@ -598,7 +598,7 @@ class HtmlBuilderTests(unittest.TestCase):
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
                                                                 htmlTagOption, indent)
     dest.close()
-    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    return filerw.getLinesByPath("./unitTests/temp/test.txt")
 
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
     src = open("./unitTests/temp/test2.txt", "w")
@@ -608,7 +608,7 @@ class HtmlBuilderTests(unittest.TestCase):
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
                                                                 htmlTagOption, indent)
     dest.close()
-    return filerw.getLinesByFilePath("./unitTests/temp/test.txt")
+    return filerw.getLinesByPath("./unitTests/temp/test.txt")
 
   def test_includeFileToHtmlOutputFile_nonSense(self):
     dest = open("./unitTests/temp/test.txt", "w")
@@ -635,7 +635,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", 1)
     dest.close()
-    lines = filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "\n")
 
@@ -677,7 +677,7 @@ class HtmlBuilderTests(unittest.TestCase):
     filerw.writeLinesToExistingFileThenAppendNewLine(dest, ["> first line", ">> second line", ">>> third line"])
     htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
     dest.close()
-    return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    return filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
 
   def helper_includeFileToHtmlOutputFile(self, indent, lines):
     src = open("./unitTests/temp/test2.txt", "w")
@@ -686,7 +686,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest = open("./unitTests/temp/test.txt", "w")
     htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
     dest.close()
-    return filerw.getLinesByFilePathWithEndingNewLine("./unitTests/temp/test.txt")
+    return filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):

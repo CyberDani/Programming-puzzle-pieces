@@ -16,7 +16,7 @@ def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction,
 
 # file1 += file2
 def includeFileThenAppendNewLine(htmlFile, includeFilePath, indentDepth):
-  lines = filerw.getLinesByFilePathWithEndingNewLine(includeFilePath)
+  lines = filerw.getLinesByPathWithEndingNewLine(includeFilePath)
   tabs = getEscapedTabs(indentDepth)
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
@@ -24,7 +24,7 @@ def includeFileThenAppendNewLine(htmlFile, includeFilePath, indentDepth):
 def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
   tabs = getEscapedTabs(indentDepth)
   htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlTagOption) + "\n")
-  fileLines = filerw.getLinesByFilePath(includeFilePath)
+  fileLines = filerw.getLinesByPath(includeFilePath)
   filerw.writeLinesPrefixedToFile(htmlFile, tabs + "\t", fileLines)
   htmlFile.write(tabs + getClosedHtmlTag(htmlTag) + "\n")
 

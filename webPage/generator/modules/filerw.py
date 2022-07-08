@@ -31,18 +31,26 @@ def directoryExistsByType(dirPath):
 
 ###### Reads ######
 
-def getLinesByFilePathWithEndingNewLine(filePath):
+def getLinesByPathWithEndingNewLine(filePath):
   checks.checkIfString(filePath, 2, 300)
   f = open(filePath, "r")
   return f.readlines()
+
+def getLinesByTypeWithEndingNewLine(filePathType):
+  filePath = path.getAbsoluteFilePath(filePathType)
+  return getLinesByPathWithEndingNewLine(filePath)
 
 def getLinesByFileWithEndingNewLine(file):
   checks.checkIfFile(file)
   return file.readlines()
 
-def getLinesByFilePath(filePath):
-  linesWithNewEndingLine = getLinesByFilePathWithEndingNewLine(filePath)
+def getLinesByPath(filePath):
+  linesWithNewEndingLine = getLinesByPathWithEndingNewLine(filePath)
   return rTrimNewLines(linesWithNewEndingLine)
+
+def getLinesByType(filePathType):
+  filePath = path.getAbsoluteFilePath(filePathType)
+  return getLinesByPath(filePath)
 
 def getLinesByFile(file):
   linesWithNewEndingLine = getLinesByFileWithEndingNewLine(file)
