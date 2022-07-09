@@ -35,6 +35,7 @@ class DirectoryPathType(Enum):
                                                                  dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
   PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR34 = DirectoryPathChecker("webPage/generator/unitTests4unitTests/tempDir34", [],
                                                                   dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  HTML_IMAGES = DirectoryPathChecker("webPage/images", ["favicon.png"], dirAction.ENSURE_PATH_AND_FILES_EXIST)
   HTML_GENERAL_INCLUDES = DirectoryPathChecker("webPage/generator/htmlIncludes",
                                                ["footer.txt", "topNav.txt", "sideNav.txt"],
                                                 dirAction.ENSURE_PATH_AND_FILES_EXIST)

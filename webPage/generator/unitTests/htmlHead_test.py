@@ -3,9 +3,13 @@ import unittest
 
 sys.path.append('..')
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import htmlBuilder
 from modules import filerw
 from modules import htmlHead
+from modules import path
 from modules import webLibs
 
 class HtmlHeadTests(unittest.TestCase):
@@ -77,6 +81,8 @@ class HtmlHeadTests(unittest.TestCase):
       head.setFavicon("icon1.png")
     with self.assertRaises(Exception):
       head.setFavicon("icon2.png")
+    with self.assertRaises(Exception):
+      head.setFaviconByType(File.FOR_TEST_TEXTFILE3)
 
   def test_setFavicon_example(self):
     file = open("./unitTests/temp/test.txt", "w")
@@ -89,6 +95,45 @@ class HtmlHeadTests(unittest.TestCase):
     self.assertEqual(line[0], "random string")
     self.assertEqual(line[1], "another random string")
     self.assertEqual(line[2], htmlBuilder.getHtmlFavicon("./images/logo.ico", 2))
+
+  def test_setFaviconByType_nonSense(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    head = htmlHead.HtmlHead(file, 2)
+    with self.assertRaises(Exception):
+      head.setFaviconByType("")
+    with self.assertRaises(Exception):
+      head.setFaviconByType(filePath)
+    with self.assertRaises(Exception):
+      head.setFaviconByType(None)
+    with self.assertRaises(Exception):
+      head.setFaviconByType(23)
+
+  def test_setFaviconByType_multipleTimes(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    head = htmlHead.HtmlHead(file, 2)
+    head.setFaviconByType(File.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      head.setFaviconByType(File.FOR_TEST_TEXTFILE2)
+    with self.assertRaises(Exception):
+      head.setFaviconByType(File.FOR_TEST_TEXTFILE3)
+    with self.assertRaises(Exception):
+      head.setFavicon("icon2.png")
+
+  def test_setFaviconByType_example(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "w")
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
+    head = htmlHead.HtmlHead(file, 2)
+    head.setFaviconByType(File.FOR_TEST_TEXTFILE2)
+    file.close()
+    line = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(line), 3)
+    self.assertEqual(line[0], "random string")
+    self.assertEqual(line[1], "another random string")
+    self.assertEqual(line[2], htmlBuilder.getHtmlFavicon(path.getRelativeFilePathToIndexHtml(File.FOR_TEST_TEXTFILE2),
+                                                         2))
 
   def test_setMetaScreenOptimizedForMobile_multipleTimes(self):
     file = open("./unitTests/temp/test.txt", "w")

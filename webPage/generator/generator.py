@@ -75,7 +75,7 @@ def generateNewHtmlOutputFile(settings):
 def writeHtmlHeadContent(settings):
   head = htmlHead.HtmlHead(settings.htmlOutputFile, settings.indentDepth)
   head.setTitle("Programming puzzle-pieces") \
-      .setFavicon("./webPage/images/favicon.png") \
+      .setFaviconByType(File.HTML_FAVICON) \
       .setMetaScreenOptimizedForMobile() \
       .includeFileAsInlineCSS("./htmlIncludes/inlineCssStyle.css")
   head.addFontAwesome_v611() \
