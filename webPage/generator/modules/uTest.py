@@ -30,7 +30,7 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(dirPathContainingTests, 
   if dirPathContainingTests[-1] != "/":
     dirPathContainingTests += "/"
   for pathToTempFolder in tempFolderPaths:
-    filerw.createDirectoryWithParentsIfNotExists(pathToTempFolder)
+    filerw.createDirectoryWithParentsByPathIfNotExists(pathToTempFolder)
   lines = []
   result = appDecisionType.AppDecisionType.STOP_APP
   try:

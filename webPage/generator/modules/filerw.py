@@ -9,8 +9,6 @@ from modules import checks
 from modules import path
 from modules import stringUtil
 
-# TODO every function should have a byPath + byType alternative
-
 ###### Existence ######
 
 def fileExistsByPath(filePath):
@@ -86,15 +84,19 @@ def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dir
     return
   fileName = path.getFileName(filePathType)
   folderPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
-  createDirectoryWithParentsIfNotExists(folderPath)
+  createDirectoryWithParentsByPathIfNotExists(folderPath)
   os.replace(filePath, folderPath + fileName)
 
 ###### Create ######
 
-def createDirectoryWithParentsIfNotExists(dirPath):
+def createDirectoryWithParentsByPathIfNotExists(dirPath):
   if directoryExistsByPath(dirPath):
     return
   pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
+
+def createDirectoryWithParentsByTypeIfNotExists(dirPathType):
+  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  createDirectoryWithParentsByPathIfNotExists(dirPath)
 
 def createOrOverwriteWithEmptyFileByPath(filePath):
   checks.checkIfString(filePath, 1, 300)
@@ -123,6 +125,10 @@ def writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, lines):
   writeLinesToFile(file, lines)
   file.close()
 
+def writeLinesToExistingOrNewlyCreatedFileByTypeAndClose(filePathType, lines):
+  filePath = path.getAbsoluteFilePath(filePathType)
+  writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, lines)
+
 def writeLinesToExistingFileThenAppendNewLine(file, lines):
   checks.checkIfFile(file)
   checks.checkIfPureListOfStrings(lines)
@@ -135,6 +141,10 @@ def writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePa
   file = open(filePath, "w")
   writeLinesToExistingFileThenAppendNewLine(file, lines)
   file.close()
+
+def writeLinesToExistingOrNewlyCreatedFileByTypeThenAppendNewLineAndClose(filePathType, lines):
+  filePath = path.getAbsoluteFilePath(filePathType)
+  writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(filePath, lines)
 
 def writeStringsPrefixedToFileThenAppendNewLine(file, prefix, lines):
   checks.checkIfFile(file)

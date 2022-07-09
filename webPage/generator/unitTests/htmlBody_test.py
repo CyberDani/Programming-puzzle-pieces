@@ -161,7 +161,6 @@ class HtmlBodyTests(unittest.TestCase):
     testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     testFilePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
     testFilePath3 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)
-    # TODO writeLinesByType
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(testFilePath2,
                                                                                  ["include 1", "include 2"])
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathThenAppendNewLineAndClose(testFilePath3,
