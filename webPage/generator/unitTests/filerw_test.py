@@ -13,6 +13,24 @@ from modules import path
 
 class FileReadWriterTests(unittest.TestCase):
 
+  def test_getFileWithWritePerm_nonSense(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      filerw.getFileWithWritePerm(filePath)
+    with self.assertRaises(Exception):
+      filerw.getFileWithWritePerm("")
+    with self.assertRaises(Exception):
+      filerw.getFileWithWritePerm(12)
+
+  def test_getFileWithWritePerm_example(self):
+    filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    file.write("Hello test!\n")
+    file.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(lines), 1)
+    self.assertEqual(lines[0], "Hello test!")
+
   def test_createOrOverwriteWithEmptyFileByType_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")

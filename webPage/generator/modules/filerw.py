@@ -9,6 +9,13 @@ from modules import checks
 from modules import path
 from modules import stringUtil
 
+###### File ######
+
+def getFileWithWritePerm(filePathType):
+  filePathType = path.getAbsoluteFilePath(filePathType)
+  file = open(filePathType, "w")
+  return file
+
 ###### Existence ######
 
 def fileExistsByPath(filePath):
