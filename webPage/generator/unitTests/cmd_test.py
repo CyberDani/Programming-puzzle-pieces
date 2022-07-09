@@ -3,7 +3,10 @@ import sys
 
 sys.path.append('..')
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+
 from modules import cmd
+from modules import path
 from modules import stringUtil
 
 class CmdTests(unittest.TestCase):
@@ -22,7 +25,9 @@ class CmdTests(unittest.TestCase):
 
   def test_getOutputFromCommand_simpleExamples(self):
     ans = cmd.getOutputFromCommand("cd")
-    self.assertTrue(stringUtil.rTrimNewLines(ans).endswith("\webPage\generator"))
+    generatorPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_MAIN_GENERATOR)[:-1]
+    generatorPath = generatorPath.replace("/", "\\")
+    self.assertEqual(stringUtil.rTrimNewLines(ans), generatorPath)
     ans = cmd.getOutputFromCommand("echo hello")
     self.assertEqual(stringUtil.rTrimNewLines(ans), "hello")
     ans = cmd.getOutputFromCommand("git --version")
