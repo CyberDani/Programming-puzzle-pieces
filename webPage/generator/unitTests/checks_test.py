@@ -4,8 +4,12 @@ import sys
 
 sys.path.append('..')
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import checks
 from modules import filerw
+from modules import path
 
 class ChecksTests(unittest.TestCase):
 
@@ -86,8 +90,9 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfFile(0)
     with self.assertRaises(Exception):
       checks.checkIfFile(None)
+    nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
     with self.assertRaises(Exception):
-      checks.checkIfFile("file.txt")
+      checks.checkIfFile(nonExistingFilePath)
     with self.assertRaises(Exception):
       checks.checkIfFile([2, 3, 4])
     with self.assertRaises(Exception):
@@ -95,10 +100,10 @@ class ChecksTests(unittest.TestCase):
 
   def test_checkIfFile_notRaiseException(self):
     try:
-      fileWrite = open("unitTests/temp/test.txt", "w")
+      fileWrite = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
       checks.checkIfFile(fileWrite)
       fileWrite.close()
-      fileRead = open("unitTests/temp/test.txt", "r")
+      fileRead = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
       fileRead.close()
     except Exception:
       self.fail("checkIfFile() raised Exception unexpectedly!")
@@ -296,7 +301,7 @@ class ChecksTests(unittest.TestCase):
       self.fail("checkIfPureListOfStrings() raised Exception unexpectedly!")
 
   def test_checkIfFilePathExists_nonSense(self):
-    file = open("./unitTests/temp/testFile.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     file.close()
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists(file)
@@ -310,38 +315,36 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfFilePathExists(23)
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists(False)
+    nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
     with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp/notExistingFile.txt")
+      checks.checkIfFilePathExists(nonExistingFilePath)
+    dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
     with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp/notExistingFile")
+      checks.checkIfFilePathExists(dirPath)
     with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp/testFile")
+      checks.checkIfFilePathExists(dirPath[:-1])
     with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp/test")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp/")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/temp")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests/")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./unitTests")
+      checks.checkIfFilePathExists("./" + dirPath)
 
   def test_checkIfFilePathExists_example(self):
     try:
-      file = open("./unitTests/temp/testFile.txt", "w")
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
       file.close()
-      file = open("./unitTests/temp/testFile2.txt", "w")
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
       file.close()
-      checks.checkIfFilePathExists("./unitTests/temp/testFile.txt")
-      checks.checkIfFilePathExists("./unitTests/temp/testFile2.txt")
-      checks.checkIfFilePathExists("unitTests/temp/testFile.txt")
-      checks.checkIfFilePathExists("unitTests/temp/testFile2.txt")
+      filePath1abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+      filePath2abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+      filePath1rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
+      filePath2rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE2, Dir.PYTHON_MAIN_GENERATOR)
+      checks.checkIfFilePathExists(filePath1abs)
+      checks.checkIfFilePathExists(filePath2abs)
+      checks.checkIfFilePathExists(filePath1rel)
+      checks.checkIfFilePathExists(filePath2rel)
     except Exception:
       self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
 
   def test_checkIfDirectoryPathExists_nonSense(self):
-    file = open("./unitTests/temp/testFile.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     file.close()
     with self.assertRaises(Exception):
       checks.checkIfDirectoryPathExists(file)
@@ -353,31 +356,27 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfDirectoryPathExists(23)
     with self.assertRaises(Exception):
       checks.checkIfDirectoryPathExists(False)
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
+    nonExistingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.NON_EXISTING_DIRECTORY)
     with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/temp/testFile.txt")
+      checks.checkIfDirectoryPathExists(filePath)
     with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/temp/testFile")
+      checks.checkIfDirectoryPathExists(nonExistingFilePath)
     with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/temp/notExistingFile.txt")
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/temp/testDir/")
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/temp/test/")
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTests/tempX")
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("./unitTestsX")
+      checks.checkIfDirectoryPathExists(nonExistingDirPath)
 
   def test_checkIfDirectoryPathExists_example(self):
     try:
-      file = open("./unitTests/temp/testFile.txt", "w")
-      file.close()
-      checks.checkIfDirectoryPathExists("./unitTests/temp/")
-      checks.checkIfDirectoryPathExists("./unitTests/temp")
-      checks.checkIfDirectoryPathExists("./unitTests/")
-      checks.checkIfDirectoryPathExists("./unitTests")
-      checks.checkIfDirectoryPathExists("unitTests/")
-      checks.checkIfDirectoryPathExists("unitTests")
+      dirPathAbs = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+      dirPathRel = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
+                                                                     Dir.PYTHON_MAIN_GENERATOR)
+
+      checks.checkIfDirectoryPathExists(dirPathAbs)
+      checks.checkIfDirectoryPathExists(dirPathAbs[:-1])
+      checks.checkIfDirectoryPathExists(dirPathRel)
+      checks.checkIfDirectoryPathExists(dirPathRel[:-1])
+      checks.checkIfDirectoryPathExists("./" + dirPathRel)
       checks.checkIfDirectoryPathExists(".")
       checks.checkIfDirectoryPathExists("./")
       checks.checkIfDirectoryPathExists("..")
@@ -533,48 +532,46 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfValidJsonFile(False)
 
   def test_checkIfValidJsonFile_invalid(self):
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", [""])
-    file = open("./unitTests/temp/test.txt", "r")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [""])
+    file = open(filePath, "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", ["hello internet"])
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["hello internet"])
+    file = open(filePath, "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["{", "true", "}"])
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "true", "}"])
+    file = open(filePath, "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["1", "2", "3", "4"])
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["1", "2", "3", "4"])
+    file = open(filePath, "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFile(file)
 
   def test_checkIfValidJsonFile_valid(self):
     try:
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "}"])
-      file = open("./unitTests/temp/test.txt", "r")
+      filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "}"])
+      file = open(filePath, "r")
       checks.checkIfValidJsonFile(file)
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
-      file = open("./unitTests/temp/test.txt", "r")
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
+      file = open(filePath, "r")
       checks.checkIfValidJsonFile(file)
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "\"boolValue\": ", "true", "}"])
-      file = open("./unitTests/temp/test.txt", "r")
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"boolValue\": ", "true", "}"])
+      file = open(filePath, "r")
       checks.checkIfValidJsonFile(file)
     except Exception:
       self.fail("checkIfValidJsonFile() raised Exception unexpectedly!")
 
   def test_checkIfValidJsonFileByFilePath_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "r")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePath, "r")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath(file)
     with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/notExistingFile.extension")
+      checks.checkIfValidJsonFileByFilePath("notExistingFile.extension")
     with self.assertRaises(Exception):
       checks.checkIfValidJsonFileByFilePath(None)
     with self.assertRaises(Exception):
@@ -583,63 +580,61 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfValidJsonFileByFilePath(False)
 
   def test_checkIfValidJsonFileByFilePath_invalid(self):
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", [""])
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [""])
     with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt", ["hello internet"])
+      checks.checkIfValidJsonFileByFilePath(filePath)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["hello internet"])
     with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+      checks.checkIfValidJsonFileByFilePath(filePath)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                                 ["{", "true", "}"])
     with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
+      checks.checkIfValidJsonFileByFilePath(filePath)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                                 ["1", "2", "3", "4"])
     with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
+      checks.checkIfValidJsonFileByFilePath(filePath)
 
   def test_checkIfValidJsonFileByFilePath_valid(self):
     try:
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "}"])
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
-      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                  ["{", "\"boolValue\": ", "true", "}"])
-      checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
+      filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "}"])
+      checks.checkIfValidJsonFileByFilePath(filePath)
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"numbers\": ", "[1,2,3,4,5]", "}"])
+      checks.checkIfValidJsonFileByFilePath(filePath)
+      filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"boolValue\": ", "true", "}"])
+      checks.checkIfValidJsonFileByFilePath(filePath)
     except Exception:
       self.fail("checkIfValidJsonFileByFilePath() raised Exception unexpectedly!")
 
   def test_checkIfValidJsonFileByFilePath_returnedJson(self):
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["{", "\"boolValue\": ", "true", "}"])
-    jsonVals = checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"boolValue\": ", "true", "}"])
+    jsonVals = checks.checkIfValidJsonFileByFilePath(filePath)
     self.assertEqual(jsonVals["boolValue"], True)
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["{", "\"intValue\": ", "23", "}"])
-    jsonVals = checks.checkIfValidJsonFileByFilePath("./unitTests/temp/test.txt")
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"intValue\": ", "23", "}"])
+    jsonVals = checks.checkIfValidJsonFileByFilePath(filePath)
     self.assertEqual(jsonVals["intValue"], 23)
 
   def test_checkIfValidJsonFile_returnedJson(self):
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["{", "\"boolValue\": ", "true", "}"])
-    file = open("./unitTests/temp/test.txt", "r")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"boolValue\": ", "true", "}"])
+    file = open(filePath, "r")
     jsonVals = checks.checkIfValidJsonFile(file)
     self.assertEqual(jsonVals["boolValue"], True)
-    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose("./unitTests/temp/test.txt",
-                                                                ["{", "\"intValue\": ", "23", "}"])
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "\"intValue\": ", "23", "}"])
+    file = open(filePath, "r")
     jsonVals = checks.checkIfValidJsonFile(file)
     self.assertEqual(jsonVals["intValue"], 23)
 
   def test_checkIfType_invalid(self):
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
+    file = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
     with self.assertRaises(Exception):
       checks.checkIfType(file, 12)
     with self.assertRaises(Exception):
-      checks.checkIfType(12, "./unitTests/temp/notExistingFile.extension")
+      checks.checkIfType(12, "notExistingFile.extension")
     with self.assertRaises(Exception):
       checks.checkIfType(None, None)
     with self.assertRaises(Exception):
@@ -648,7 +643,8 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfType(False, Exception)
 
   def test_checkIfType_wrongType(self):
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
+    file = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
     with self.assertRaises(Exception):
       checks.checkIfType(file, int)
     with self.assertRaises(Exception):
@@ -661,7 +657,8 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfType(False, io.TextIOWrapper)
 
   def test_checkIfType_correctType(self):
-    file = open("./unitTests/temp/test.txt", "r")
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
+    file = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
     checks.checkIfType(file, io.TextIOWrapper)
     checks.checkIfType(12, int)
     checks.checkIfType("", str)

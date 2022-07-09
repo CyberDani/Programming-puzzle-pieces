@@ -130,6 +130,7 @@ class DirPathCheckerTests(unittest.TestCase):
     gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath)
+    filerw.createOrOverwriteWithEmptyFileByPath("unitTests/temp/testFile.txt")
     dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
     dir = dirPathChecker.DirectoryPathChecker("./././././webPage/generator/unitTests", ["/temp/testFile.txt"])
