@@ -6,13 +6,15 @@ sys.path.append('..')
 from defTypes import buildSettings
 from defTypes import buildType
 from defTypes import dbBranchType
+from defTypes.filePathType import FilePathType as File
 
 from modules import counter
+from modules import filerw
 
 class BuildSettingsTests(unittest.TestCase):
 
   def test_validateDataMembers_oneExample(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     ctr = counter.SimpleCounter(1)
     settings = buildSettings.BuildSettings(dbBranch=dbBranchType.DbBranchType.DEVEL,
                                            htmlOutputFile=file,
@@ -26,7 +28,7 @@ class BuildSettingsTests(unittest.TestCase):
     self.assertEqual(settings.stepsCounter.getNextInt(), 1)
 
   def test_validateDataMembers_anotherExample(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     ctr = counter.SimpleCounter(11)
     settings = buildSettings.BuildSettings(dbBranch=dbBranchType.DbBranchType.MASTER,
                                            htmlOutputFile=file,
@@ -40,7 +42,7 @@ class BuildSettingsTests(unittest.TestCase):
     self.assertEqual(settings.stepsCounter.getNextInt(), 11)
 
   def test_setDataMembers_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     ctr = counter.SimpleCounter(11)
     with self.assertRaises(Exception):
       buildSettings.BuildSettings(dbBranch="master",
