@@ -1195,7 +1195,6 @@ class FileReadWriterTests(unittest.TestCase):
     return filerw.getLinesByPathWithEndingNewLine(filePath)
 
   def test_writeLinesToFileThenAppendNewLine_nonSense(self):
-    # TODO getFileByType (Type, READ | WRITE)
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "w")
     with self.assertRaises(Exception):
