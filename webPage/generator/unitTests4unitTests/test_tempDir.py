@@ -1,10 +1,14 @@
 import unittest
 
+from defTypes.dirPathType import DirectoryPathType as Dir
+
 from modules import filerw
+from modules import path
 
 class TempDirTests(unittest.TestCase):
 
   def test_quickPass1(self):
-    self.assertTrue(filerw.directoryExistsByPath("unitTests4unitTests/tempDir"))
-    self.assertFalse(filerw.directoryExistsByPath("unitTests4unitTests/tempDir1"))
-    self.assertFalse(filerw.directoryExistsByPath("unitTests4unitTests/tempDir2"))
+    utPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_UNIT_TESTS_4_UNIT_TESTS)
+    self.assertTrue(filerw.directoryExistsByPath(utPath + "tempDir"))
+    self.assertFalse(filerw.directoryExistsByPath(utPath + "tempDir1"))
+    self.assertFalse(filerw.directoryExistsByPath(utPath + "tempDir2"))
