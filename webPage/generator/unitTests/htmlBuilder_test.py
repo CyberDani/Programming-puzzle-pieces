@@ -1,15 +1,17 @@
-import os
 import sys
 import unittest
 
 sys.path.append('..')
+
 from defTypes import buildType
 from defTypes import dbBranchType
 from defTypes import buildSettings
+from defTypes.filePathType import FilePathType as File
+
 from modules import htmlBuilder
 from modules import filerw
 from modules import counter
-
+from modules import path
 
 def emptyHtmlHeadContent(settings):
   a = 2
@@ -27,12 +29,8 @@ def minimalistHtmlBodyContent(settings):
 
 class HtmlBuilderTests(unittest.TestCase):
 
-  def setUp(self):
-    if not os.path.exists('./unitTests/temp'):
-      os.makedirs('./unitTests/temp')
-
   def test_writeIndexHtmlToFile_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     settings = buildSettings.BuildSettings(htmlOutputFile=file,
                                            buildOption=buildType.BuildType.BUILD,
                                            dbBranch=dbBranchType.DbBranchType.DEVEL,
@@ -46,7 +44,7 @@ class HtmlBuilderTests(unittest.TestCase):
       htmlBuilder.buildIndexHtmlFile(True, False, settings)
 
   def test_writeIndexHtmlToFile_emptyHtml(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     settings = buildSettings.BuildSettings(htmlOutputFile=file,
                                            buildOption=buildType.BuildType.BUILD,
                                            dbBranch=dbBranchType.DbBranchType.DEVEL,
@@ -54,7 +52,7 @@ class HtmlBuilderTests(unittest.TestCase):
                                            indentDepth=2)
     htmlBuilder.buildIndexHtmlFile(emptyHtmlHeadContent, emptyHtmlBodyContent, settings)
     file.close()
-    emptyHtmlLines = filerw.getLinesByPath("./unitTests/temp/test.txt")
+    emptyHtmlLines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(emptyHtmlLines), 6)
     self.assertEqual(emptyHtmlLines[0], "<html>")
     self.assertEqual(emptyHtmlLines[1], "\t<head>")
@@ -64,7 +62,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(emptyHtmlLines[5], "</html>")
 
   def test_writeIndexHtmlToFile_minimalistHtml(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     settings = buildSettings.BuildSettings(htmlOutputFile=file,
                                            buildOption=buildType.BuildType.BUILD,
                                            dbBranch=dbBranchType.DbBranchType.DEVEL,
@@ -72,7 +70,7 @@ class HtmlBuilderTests(unittest.TestCase):
                                            indentDepth=2)
     htmlBuilder.buildIndexHtmlFile(minimalistHtmlHeadContent, minimalistHtmlBodyContent, settings)
     file.close()
-    emptyHtmlLines = filerw.getLinesByPath("./unitTests/temp/test.txt")
+    emptyHtmlLines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(emptyHtmlLines), 8)
     self.assertEqual(emptyHtmlLines[0], "<html>")
     self.assertEqual(emptyHtmlLines[1], "\t<head>")
@@ -156,7 +154,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(newLines, "\t\t\t\t<br\\> <br\\>")
 
   def test_addNewLineToHtmlOutputFile_nonsense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file =filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addHtmlNewLineToFile("heyho", indentDepth = 2, nrOfNewLines = 2)
     with self.assertRaises(Exception):
@@ -180,15 +178,15 @@ class HtmlBuilderTests(unittest.TestCase):
   def test_addNewLineToHtmlOutputFile_defaultParameter_nrOfNewLines_1(self):
     for indent in range(1, 6):
       newLines = htmlBuilder.getHtmlNewLines(indent)
-      file = open("./unitTests/temp/test.txt", "w")
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
       htmlBuilder.addHtmlNewLineToFile(file, indent)
       file.close()
-      readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+      readLines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
       self.assertEqual(len(readLines), 1)
       self.assertEqual(readLines[0], newLines + "\n")
 
   def test_addFaviconToHtmlOutputFile_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addFaviconToHtmlOutputFile(file, "favicon.png", -1)
     with self.assertRaises(Exception):
@@ -204,20 +202,20 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.addFaviconToHtmlOutputFile(file, "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.addFaviconToHtmlOutputFile("./unitTests/temp/test.txt", "myFavicon.ico", 2)
+      htmlBuilder.addFaviconToHtmlOutputFile(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "myFavicon.ico", 2)
 
   def test_addFaviconToHtmlOutputFile_examples(self):
     for indent in [3, 4, 5]:
       for favicon in ["fav.png", "./media/img/icon.ico", "../../myFavIcon.jpg"]:
-        file = open("./unitTests/temp/test.txt", "w")
+        file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
         htmlBuilder.addFaviconToHtmlOutputFile(file, favicon, indent)
         file.close()
-        line = filerw.getLinesByPath("./unitTests/temp/test.txt")
+        line = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
         self.assertEqual(len(line), 1)
         self.assertEqual(line[0], htmlBuilder.getHtmlFavicon(favicon, indent))
 
   def test_addTitleToHtmlOutputFile_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addTitleToHtmlOutputFile(file, "title", -1)
     with self.assertRaises(Exception):
@@ -233,33 +231,33 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.addTitleToHtmlOutputFile(file, "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.addTitleToHtmlOutputFile("./unitTests/temp/test.txt", "title", 2)
+      htmlBuilder.addTitleToHtmlOutputFile(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "title", 2)
 
   def test_addTitleToHtmlOutputFile_examples(self):
     for indent in [2, 3, 4]:
       for title in ["title", "my page", "Look At This 23!#"]:
-        file = open("./unitTests/temp/test.txt", "w")
+        file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
         htmlBuilder.addTitleToHtmlOutputFile(file, title, indent)
         file.close()
-        line = filerw.getLinesByPath("./unitTests/temp/test.txt")
+        line = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
         self.assertEqual(len(line), 1)
         self.assertEqual(line[0], htmlBuilder.getHtmlTitle(title, indent))
 
   def test_addMetaScreenOptimizedForMobileToHtmlOutputFile_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, -3)
     with self.assertRaises(Exception):
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, "2")
     with self.assertRaises(Exception):
-      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile("./unitTests/temp/test.txt", 2)
+      htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), 2)
 
   def test_addMetaScreenOptimizedForMobileToHtmlOutputFile_examples(self):
     for indent in range(1, 5):
-      file = open("./unitTests/temp/test.txt", "w")
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
       htmlBuilder.addMetaScreenOptimizedForMobileToHtmlOutputFile(file, indent)
       file.close()
-      lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
+      lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
       self.assertEqual(len(lines), 1)
       self.assertEqual(lines[0], htmlBuilder.getMetaScreenOptimizedForMobile(indent))
 
@@ -312,7 +310,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(result[2], "\t\t\t\trel=\"stylesheet\" crossorigin=\"techguy\" referrerpolicy=\"refferrer\" />")
 
   def test_addCssLinkHrefToHtmlOutputFile_nonsense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile=file, indentDepth=-3, url="www.mysite.com/res.css",
                                                  integrity=None, crossorigin=None, referrerpolicy=None)
@@ -353,11 +351,11 @@ class HtmlBuilderTests(unittest.TestCase):
     self.cssLinkHrefTestHelper(3, "https://www.randomsite.com/resource.css", "asdsadbsdsadbi32gr3ur", "techguy", "refferrer")
 
   def cssLinkHrefTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     lines = htmlBuilder.getCssLinkHref(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i], lines[i] + "\n")
@@ -462,11 +460,11 @@ class HtmlBuilderTests(unittest.TestCase):
     self.jsScriptSrcTestHelper(3, "https://www.randomsite.com/resource.js", "asfldfohsdofsdflndjfbfd", "TechGuy", "refferrer")
 
   def jsScriptSrcTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     lines = htmlBuilder.getJsScriptSrc(indentDepth, url, integrity, crossorigin, referrerpolicy)
     htmlBuilder.addJsScriptSrcToHtmlOutputFile(file, indentDepth, url, integrity, crossorigin, referrerpolicy)
     file.close()
-    readLines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    readLines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(readLines), len(lines))
     for i in range(len(readLines)):
       self.assertEqual(readLines[i], lines[i] + "\n")
@@ -498,11 +496,12 @@ class HtmlBuilderTests(unittest.TestCase):
                      "\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
 
   def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_nonSense(self):
-    dest = open("./unitTests/temp/test.txt", "w")
-    src = open("./unitTests/temp/test2.txt", "w")
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     src.close()
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", "", -1)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "div", "", -1)
     with self.assertRaises(Exception):
       htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, src, "div", "", 2)
     with self.assertRaises(Exception):
@@ -510,42 +509,44 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(None, None, "div", "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(None, "./unitTests/temp/test2.txt", "div", "", 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(None, filePath2, "div", "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", "", False)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "div", "", False)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", "", None)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "div", "", None)
     with self.assertRaises(Exception):
       htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(None, None, "div", "", None)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "", "", 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "", "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", None, 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "div", None, 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "span", 12, 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "span", 12, 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", 22, "", 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, 22, "", 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", None, "", 2)
+      htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, None, "", 2)
 
   def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_emptyFile(self):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "a", "href='url.com'", 1)
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "a", "href='url.com'", 1)
     dest.close()
-    lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 2)
     self.assertEqual(lines[0], "\t<a href='url.com'>")
     self.assertEqual(lines[1], "\t</a>")
 
   def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_emptyFile_2(self):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", "div", "", 2)
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, "div", "", 2)
     dest.close()
-    lines = filerw.getLinesByPath("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 2)
     self.assertEqual(lines[0], "\t\t<div>")
     self.assertEqual(lines[1], "\t\t</div>")
@@ -590,52 +591,54 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[7], "\t\t</footer>")
 
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(self, indent, lines, htmlTag, htmlTagOption):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingFileThenAppendNewLine(dest, ["line 1", "\tline 2", "\t\t\tline 3"])
-    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
-                                                                htmlTagOption, indent)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, htmlTag, htmlTagOption, indent)
     dest.close()
-    return filerw.getLinesByPath("./unitTests/temp/test.txt")
+    return filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
 
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, "./unitTests/temp/test2.txt", htmlTag,
-                                                                htmlTagOption, indent)
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(dest, filePath2, htmlTag, htmlTagOption, indent)
     dest.close()
-    return filerw.getLinesByPath("./unitTests/temp/test.txt")
+    return filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
 
   def test_includeFileToHtmlOutputFile_nonSense(self):
-    dest = open("./unitTests/temp/test.txt", "w")
-    src = open("./unitTests/temp/test2.txt", "w")
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     src.close()
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", -1)
+      htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, -1)
     with self.assertRaises(Exception):
       htmlBuilder.includeFileThenAppendNewLine(dest, None, 2)
     with self.assertRaises(Exception):
       htmlBuilder.includeFileThenAppendNewLine(None, None, 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileThenAppendNewLine(None, "./unitTests/temp/test2.txt", 2)
+      htmlBuilder.includeFileThenAppendNewLine(None, filePath2, 2)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", False)
+      htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, False)
     with self.assertRaises(Exception):
-      htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", None)
+      htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, None)
     with self.assertRaises(Exception):
       htmlBuilder.includeFileThenAppendNewLine(None, None, None)
 
   def test_includeFileToHtmlOutputFile_emptyFile(self):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", 1)
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, 1)
     dest.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "\n")
 
@@ -670,23 +673,25 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[6], "\n")
 
   def helper_includeFileToHtmlOutputFile_2(self, indent, lines):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingFileThenAppendNewLine(dest, ["> first line", ">> second line", ">>> third line"])
-    htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, indent)
     dest.close()
-    return filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    return filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
 
   def helper_includeFileToHtmlOutputFile(self, indent, lines):
-    src = open("./unitTests/temp/test2.txt", "w")
+    src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
-    dest = open("./unitTests/temp/test.txt", "w")
-    htmlBuilder.includeFileThenAppendNewLine(dest, "./unitTests/temp/test2.txt", indent)
+    dest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filePath2 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
+    htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, indent)
     dest.close()
-    return filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    return filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):
