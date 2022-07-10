@@ -3,8 +3,13 @@ import sys
 import unittest
 
 sys.path.append('..')
+
+from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.filePathType import FilePathType as File
+
 from modules import webReq
 from modules import filerw
+from modules import path
 
 class WebReqTests(unittest.TestCase):
 
@@ -37,9 +42,12 @@ class WebReqTests(unittest.TestCase):
     self.assertTrue(len(html) > 300)
 
   def test_downloadFromUrlToFile_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "wb")
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    tempDir = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    downloadPath = tempDir + "logo.binary"
+    file = open(filePath, "wb")
     with self.assertRaises(Exception):
-      webReq.downloadFromUrlToFileIfStatusIs200("io", "./unitTests/temp/logo.binary")
+      webReq.downloadFromUrlToFileIfStatusIs200("io", downloadPath)
     with self.assertRaises(Exception):
       webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png", file)
     with self.assertRaises(Exception):
@@ -47,30 +55,39 @@ class WebReqTests(unittest.TestCase):
     with self.assertRaises(Exception):
       webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png", None)
     with self.assertRaises(Exception):
-      webReq.downloadFromUrlToFileIfStatusIs200(None, "./unitTests/temp/logo.binary")
+      webReq.downloadFromUrlToFileIfStatusIs200(None, downloadPath)
     with self.assertRaises(Exception):
       webReq.downloadFromUrlToFileIfStatusIs200(None, None)
-    self.assertFalse(filerw.fileExistsByPath("./unitTests/temp/logo.binary"))
+    self.assertFalse(filerw.fileExistsByPath(downloadPath))
 
   def test_downloadFromUrlToFile_incorrectUrl(self):
-    if filerw.fileExistsByPath("./unitTests/temp/download.binary"):
-      os.remove("./unitTests/temp/download.binary")
+    tempDir = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    downloadPath = tempDir + "download.binary"
+    if filerw.fileExistsByPath(downloadPath):
+      os.remove(downloadPath)
     with self.assertRaises(Exception):
-      statusCode, encoding, html = webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi", "./unitTests/temp/download.binary")
-    self.assertFalse(filerw.fileExistsByPath("./unitTests/temp/download.binary"))
+      statusCode, encoding, html = webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi",
+                                                                             downloadPath)
+    self.assertFalse(filerw.fileExistsByPath(downloadPath))
 
   def test_downloadFromUrlToFile_404(self):
+    tempDir = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    downloadPath = tempDir + "download.binary"
     with self.assertRaises(Exception):
-      webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi", "./unitTests/temp/download.binary")
+      webReq.downloadFromUrlToFileIfStatusIs200("https://www.google.com/asdfeogeroiyfgwieuapfbi", downloadPath)
 
   def test_downloadFromUrlToFile_correctUrl200(self):
-    webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png", "./unitTests/temp/download.png")
-    self.assertTrue(filerw.fileExistsByPath("./unitTests/temp/download.png"))
-    size1 = os.path.getsize("./unitTests/temp/download.png") / 1024
+    tempDir = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    downloadPath = tempDir + "download.png"
+    webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png",
+                                              downloadPath)
+    self.assertTrue(filerw.fileExistsByPath(downloadPath))
+    size1 = os.path.getsize(downloadPath) / 1024
     self.assertTrue(size1 > 15)
     self.assertTrue(size1 < 150)
-    webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png", "./unitTests/temp/download.png")
-    self.assertTrue(filerw.fileExistsByPath("./unitTests/temp/download.png"))
-    size2 = os.path.getsize("./unitTests/temp/download.png") / 1024
+    webReq.downloadFromUrlToFileIfStatusIs200("https://cyberdani.github.io/Programming-puzzle-pieces/webPage/images/Logo_text.png",
+                                              downloadPath)
+    self.assertTrue(filerw.fileExistsByPath(downloadPath))
+    size2 = os.path.getsize(downloadPath) / 1024
     self.assertEqual(size1, size2)
-    os.remove("./unitTests/temp/download.png")
+    os.remove(downloadPath)
