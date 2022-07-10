@@ -2,13 +2,16 @@ import sys
 import unittest
 
 sys.path.append('..')
+
+from defTypes.filePathType import FilePathType as File
+
 from modules import filerw
 from modules import webLibs
 
 class WebLibsTests(unittest.TestCase):
 
   def test_addFontAwesome_v611_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addFontAwesome_v611(file, None)
     with self.assertRaises(Exception):
@@ -21,10 +24,10 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addFontAwesome_v611(None, 3)
 
   def test_addFontAwesome_v611_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addFontAwesome_v611(file, 2)
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 6)
     self.assertEqual(lines[0], "\t\t<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css\"\n")
     self.assertEqual(lines[1], "\t\t\tintegrity=\"sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==\"\n")
@@ -34,7 +37,7 @@ class WebLibsTests(unittest.TestCase):
     self.assertEqual(lines[5], "\t\t\tcrossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>\n")
 
   def test_addJquery_v360_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addJquery_v360(file, None)
     with self.assertRaises(Exception):
@@ -47,17 +50,17 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addJquery_v360(None, 3)
 
   def test_addJquery_v360_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addJquery_v360(file, 3)
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "\t\t\t<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js\"\n")
     self.assertEqual(lines[1], "\t\t\t\tintegrity=\"sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==\"\n")
     self.assertEqual(lines[2], "\t\t\t\tcrossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>\n")
 
   def test_addMaterialize_v110_alpha_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addMaterialize_v110_alpha(file, None)
     with self.assertRaises(Exception):
@@ -70,17 +73,17 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addMaterialize_v110_alpha(None, 3)
 
   def test_addMaterialize_v110_alpha_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addMaterialize_v110_alpha(file, 1)
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "\t<link href=\"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css\"\n")
     self.assertEqual(lines[1], "\t\trel=\"stylesheet\" />\n")
     self.assertEqual(lines[2], "\t<script src=\"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/js/materialize.min.js\"></script>\n")
 
   def test_addGoogleIcons_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addGoogleIcons(file, None)
     with self.assertRaises(Exception):
@@ -93,15 +96,15 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addGoogleIcons(None, 3)
 
   def test_addGoogleIcons_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addGoogleIcons(file, 4)
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "\t\t\t\t<link href=\"https://fonts.googleapis.com/icon?family=Material+Icons\" rel=\"stylesheet\" />\n")
 
   def test_addJQueryLoadingOverlay_v217_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addJQueryLoadingOverlay_v217(file, None)
     with self.assertRaises(Exception):
@@ -114,15 +117,15 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addJQueryLoadingOverlay_v217(None, 3)
 
   def test_addJQueryLoadingOverlay_v217_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addJQueryLoadingOverlay_v217(file, 5)
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "\t\t\t\t\t<script src=\"https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js\"></script>\n")
 
   def test_addGoogleFont_nonSense(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       webLibs.addGoogleFont(file, None, "Dani Sans")
     with self.assertRaises(Exception):
@@ -137,10 +140,10 @@ class WebLibsTests(unittest.TestCase):
       webLibs.addGoogleFont(file, 3, 24)
 
   def test_addGoogleFont_normalCase(self):
-    file = open("./unitTests/temp/test.txt", "w")
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     webLibs.addGoogleFont(file, 6, "?family=Heyho+Joe:wght@500&display=something")
     file.close()
-    lines = filerw.getLinesByPathWithEndingNewLine("./unitTests/temp/test.txt")
+    lines = filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "\t\t\t\t\t\t<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n")
     self.assertEqual(lines[1], "\t\t\t\t\t\t<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n")

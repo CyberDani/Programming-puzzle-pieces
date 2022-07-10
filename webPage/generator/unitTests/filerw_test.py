@@ -7,6 +7,7 @@ sys.path.append('..')
 from defTypes.dirPathType import DirectoryPathType as Dir
 from defTypes.filePathType import FilePathType as File
 
+from modules import checks
 from modules import filerw
 from modules import htmlBuilder
 from modules import path
@@ -25,6 +26,7 @@ class FileReadWriterTests(unittest.TestCase):
   def test_getFileWithWritePerm_example(self):
     filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    checks.checkIfFile(file)
     file.write("Hello test!\n")
     file.close()
     lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
