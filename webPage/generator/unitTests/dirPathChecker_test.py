@@ -6,6 +6,7 @@ sys.path.append('..')
 
 from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 from defTypes import dirPathChecker
+from defTypes import pppConfig as config
 
 from modules import filerw
 
@@ -20,71 +21,73 @@ class DirPathCheckerTests(unittest.TestCase):
 
   def test_DirectoryPathChecker_nonSense(self):
     self.dirPatchCheckWithoutAndWithActions(None, ["file.txt"])
-    self.dirPatchCheckWithoutAndWithActions("./unitTests", None)
+    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_GENERATOR_TO_UNIT_TESTS, None)
     self.dirPatchCheckWithoutAndWithActions(True, ["file.txt"])
-    self.dirPatchCheckWithoutAndWithActions("./webPage/generator/unitTests", False)
-    self.dirPatchCheckWithoutAndWithActions("./webPage/generator/unitTests", 34)
+    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_REPO_TO_UNIT_TESTS, False)
+    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_REPO_TO_UNIT_TESTS, 34)
     self.dirPatchCheckWithoutAndWithActions(None, ["checks.py"])
     self.dirPatchCheckWithoutAndWithActions(12, ["checks.py"])
     self.dirPatchCheckWithoutAndWithActions(None, None)
     self.dirPatchCheckWithoutAndWithActions(False, True)
     self.dirPatchCheckWithoutAndWithActions(1, 5)
-    self.dirPatchCheckWithoutAndWithActions("webPage\\generator\\unitTests\\temp", ["testFile.txt"])
+    pathWithAlteredSlash = config.PATH_FROM_REPO_TO_UNIT_TESTS.replace("/", "\\")
+    self.dirPatchCheckWithoutAndWithActions(pathWithAlteredSlash, ["testFile.txt"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", "checks_test.py")
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, "checks_test.py")
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("checks.py", ["checks_test.py"])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("nonExistingFolder", ["checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
                                           dirAction.ENSURE_PATH_EXISTS_ONLY)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/nonExistingDirectory", ["nonExistingFile.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory",
+                                          ["nonExistingFile.py"], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+    with self.assertRaises(Exception):
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
                                           dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py"],
                                           dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["checks_test.py"],
-                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
-    with self.assertRaises(Exception):
-      file = open("./unitTests/temp/testFile1.txt", "w")
+      filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile1.txt"
+      file = open(filePath, "w")
       file.close()
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp", ["testFile1.txt"],
-                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile1.txt"], dirAction.ENSURE_PATH_EXISTS_ONLY)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/", ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/", [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/", ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/", ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests", ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests", [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests", ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests", ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("", ["READMENOT.md"])
 
@@ -99,30 +102,43 @@ class DirPathCheckerTests(unittest.TestCase):
       dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
 
   def test_DirectoryPathChecker_validExamples(self):
-    file = open("./unitTests/temp/testFile.txt", "w")
+    filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
+    filePath2 = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile2.txt"
+    filePath3 = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile3.txt"
+    file = open(filePath, "w")
     file.close()
-    file = open("./unitTests/temp/testFile2.txt", "w")
+    file = open(filePath2, "w")
     file.close()
-    file = open("./unitTests/temp/testFile3.txt", "w")
+    file = open(filePath3, "w")
     file.close()
     try:
       dirPathChecker.DirectoryPathChecker("", ["README.md"])
       dirPathChecker.DirectoryPathChecker("", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", [],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
+                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                           dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/nonExistingDirectory", [],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
                                           dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp", ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp/", ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/temp", ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", ["temp/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("webPage/generator/unitTests/", ["/temp/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("webPage/generator", ["unitTests/temp/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", ["testFile.txt", "testFile2.txt"])
-      dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", ["testFile.txt", "testFile2.txt",
-                                                                               "testFile3.txt"])
+      dirPathChecker.DirectoryPathChecker("./" + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+                                          [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+                                          [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_PY_GENERATOR,
+                                          [config.PATH_FROM_GENERATOR_TO_UNIT_TESTS +
+                                           config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt", "testFile2.txt"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+                                          ["testFile.txt", "testFile2.txt", "testFile3.txt"])
     except Exception:
       self.fail("DirectoryPathChecker() raised Exception unexpectedly!")
 
@@ -130,16 +146,19 @@ class DirPathCheckerTests(unittest.TestCase):
     gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath)
-    filerw.createOrOverwriteWithEmptyFileByPath("unitTests/temp/testFile.txt")
-    dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
-    dir = dirPathChecker.DirectoryPathChecker("./././././webPage/generator/unitTests", ["/temp/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + "webPage/generator/unitTests/")
-    dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/nonExistingDirectory", [],
+    filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
+    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+                                              [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
+    dir = dirPathChecker.DirectoryPathChecker("./././././" + config.PATH_FROM_REPO_TO_UNIT_TESTS,
+                                              [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
                                         dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     gitRepoAbsPath + "webPage/generator/nonExistingDirectory/")
-    dir = dirPathChecker.DirectoryPathChecker("./webPage/generator/unitTests/temp/", [],
+                     gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                               dirAction.ENSURE_PATH_EXISTS_ONLY)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     gitRepoAbsPath + "webPage/generator/unitTests/temp/")
+                     gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")

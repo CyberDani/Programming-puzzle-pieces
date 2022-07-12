@@ -6,6 +6,7 @@ sys.path.append('..')
 
 from defTypes import dirPathType
 from defTypes import filePathType
+from defTypes import pppConfig as config
 
 from modules import filerw
 from modules import path
@@ -26,7 +27,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getFileName("")
     with self.assertRaises(Exception):
-      path.getFileName("webPage/generator")
+      path.getFileName(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getFileName(False)
     with self.assertRaises(Exception):
@@ -34,7 +35,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getFileName(0)
     with self.assertRaises(Exception):
-      path.getFileName(["webPage/generator"])
+      path.getFileName([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getFileName([])
     with self.assertRaises(Exception):
@@ -62,7 +63,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirPathEndingWithSlash("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash("webPage/generator")
+      path.getAbsoluteDirPathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirPathEndingWithSlash(False)
     with self.assertRaises(Exception):
@@ -70,7 +71,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirPathEndingWithSlash(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(["webPage/generator"])
+      path.getAbsoluteDirPathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirPathEndingWithSlash([])
     with self.assertRaises(Exception):
@@ -95,7 +96,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPathEndingWithSlash("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash("webPage/generator")
+      path.getAbsoluteDirParentPathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPathEndingWithSlash(False)
     with self.assertRaises(Exception):
@@ -103,7 +104,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPathEndingWithSlash(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(["webPage/generator"])
+      path.getAbsoluteDirParentPathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPathEndingWithSlash([])
     with self.assertRaises(Exception):
@@ -137,7 +138,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2PathEndingWithSlash("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash("webPage/generator")
+      path.getAbsoluteDirParentX2PathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2PathEndingWithSlash(False)
     with self.assertRaises(Exception):
@@ -145,7 +146,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2PathEndingWithSlash(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(["webPage/generator"])
+      path.getAbsoluteDirParentX2PathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2PathEndingWithSlash([])
     with self.assertRaises(Exception):
@@ -180,7 +181,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteFilePath("webPage/generator")
+      path.getAbsoluteFilePath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath(False)
     with self.assertRaises(Exception):
@@ -188,7 +189,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteFilePath(["webPage/generator"])
+      path.getAbsoluteFilePath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath([])
     with self.assertRaises(Exception):
@@ -214,7 +215,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeDirPathToGitRepoEndingWithSlash("")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash("webPage/generator")
+      path.getRelativeDirPathToGitRepoEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getRelativeDirPathToGitRepoEndingWithSlash(False)
     with self.assertRaises(Exception):
@@ -222,7 +223,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeDirPathToGitRepoEndingWithSlash(0)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(["webPage/generator"])
+      path.getRelativeDirPathToGitRepoEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getRelativeDirPathToGitRepoEndingWithSlash([])
     with self.assertRaises(Exception):
@@ -248,7 +249,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeFilePathToGitRepo("")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo("webPage/generator")
+      path.getRelativeFilePathToGitRepo(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getRelativeFilePathToGitRepo(False)
     with self.assertRaises(Exception):
@@ -256,7 +257,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeFilePathToGitRepo(0)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(["webPage/generator"])
+      path.getRelativeFilePathToGitRepo([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getRelativeFilePathToGitRepo([])
     with self.assertRaises(Exception):
@@ -284,11 +285,11 @@ class StringUtilTests(unittest.TestCase):
       path.getRelativeFilePathToDirectory(filePathType.FilePathType.HTML_INCLUDE_TOPNAV,
                                           "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/webPage/generator/generator.py",
-                                          dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR +
+                                          "generator.py", dirPathType.DirectoryPathType.PYTHON_GENERATOR_UNIT_TESTS)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/webPage/generator/generator.py",
-                                          "D:/Programming puzzle pieces/webPage")
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR +
+                                          "generator.py", "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeFilePathToDirectory(None, None)
     with self.assertRaises(Exception):
@@ -333,11 +334,13 @@ class StringUtilTests(unittest.TestCase):
       path.getRelativeDirPathToDirectoryEndingWithSlash(dirPathType.DirectoryPathType.GIT_REPOSITORY,
                                                          "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/webPage/generator",
+      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/" +
+                                                            config.PATH_FROM_REPO_TO_PY_GENERATOR,
                                                         dirPathType.DirectoryPathType.HTML_GENERAL_INCLUDES)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/webPage/generator/",
-                                          "D:/Programming puzzle pieces/webPage")
+      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/" +
+                                                            config.PATH_FROM_REPO_TO_PY_GENERATOR,
+                                                        "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeDirPathToDirectoryEndingWithSlash(None, None)
     with self.assertRaises(Exception):

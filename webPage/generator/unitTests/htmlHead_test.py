@@ -3,7 +3,6 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathType import DirectoryPathType as Dir
 from defTypes.filePathType import FilePathType as File
 
 from modules import htmlBuilder

@@ -6,6 +6,7 @@ sys.path.append('..')
 from defTypes import dirPathType
 from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes import filePathChecker
+from defTypes import pppConfig as config
 
 from modules import filerw
 
@@ -25,11 +26,11 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(True, ["file.txt"])
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker("./webPage/generator/unitTests", False)
+      filePathChecker.FilePathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, False)
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker("./webPage/generator/unitTests", 34)
+      filePathChecker.FilePathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, 34)
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker("./webPage/generator/unitTests", "checks_test.py")
+      filePathChecker.FilePathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, "checks_test.py")
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(12, ["checks.py"])
     with self.assertRaises(Exception):

@@ -40,7 +40,7 @@ class CounterTests(unittest.TestCase):
     self.assertEqual(strVal, "[0] Hello")
     self.assertEqual(count.getNextMessage("Bye"), "[1] Bye")
     self.assertEqual(count.getNextMessage("hey"), "[2] hey")
-    self.assertEqual(count.getNextMessage("just a sumple string"), "[3] just a sumple string")
+    self.assertEqual(count.getNextMessage("just a simple string"), "[3] just a simple string")
 
   def test_getNextIntAndMessage(self):
     count = counter.SimpleCounter(55)
