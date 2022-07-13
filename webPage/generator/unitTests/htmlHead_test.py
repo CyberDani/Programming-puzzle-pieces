@@ -186,6 +186,38 @@ class HtmlHeadTests(unittest.TestCase):
     self.assertEqual(lines[4], "\t\t\t\tanother random string")
     self.assertEqual(lines[5], "\t\t\t</style>")
 
+  def test_includeFileByTypeAsInlineCSS_nonSense(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    head = htmlHead.HtmlHead(file, 2)
+    with self.assertRaises(Exception):
+      head.includeFileByTypeAsInlineCSS(file)
+    with self.assertRaises(Exception):
+      head.includeFileByTypeAsInlineCSS("")
+    with self.assertRaises(Exception):
+      head.includeFileByTypeAsInlineCSS(None)
+    with self.assertRaises(Exception):
+      head.includeFileByTypeAsInlineCSS(23)
+    with self.assertRaises(Exception):
+      head.includeFileByTypeAsInlineCSS(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2))
+
+  def test_includeFileByTypeAsInlineCSS_example(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["random string", "another random string"])
+    file.close()
+    fileDest = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingFileThenAppendNewLine(fileDest, ["<html>", "\t<head>"])
+    head = htmlHead.HtmlHead(fileDest, 3)
+    head.includeFileByTypeAsInlineCSS(File.FOR_TEST_TEXTFILE2)
+    fileDest.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(lines), 6)
+    self.assertEqual(lines[0], "<html>")
+    self.assertEqual(lines[1], "\t<head>")
+    self.assertEqual(lines[2], "\t\t\t<style>")
+    self.assertEqual(lines[3], "\t\t\t\trandom string")
+    self.assertEqual(lines[4], "\t\t\t\tanother random string")
+    self.assertEqual(lines[5], "\t\t\t</style>")
+
   def test_addFontAwesome_v611_multipleTimes(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     head = htmlHead.HtmlHead(file, 2)
@@ -226,7 +258,7 @@ class HtmlHeadTests(unittest.TestCase):
     with self.assertRaises(Exception):
       head.addJquery_v360()
 
-  def test_addFontAwesome_v611_example(self):
+  def test_addjQuery_v360_example(self):
     # get lines to compare with
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     webLibs.addJquery_v360(file, 3)

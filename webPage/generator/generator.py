@@ -1,4 +1,3 @@
-import os
 import sys
 
 from defTypes import appDecisionType
@@ -77,7 +76,7 @@ def writeHtmlHeadContent(settings):
   head.setTitle("Programming puzzle-pieces") \
       .setFaviconByType(File.HTML_FAVICON) \
       .setMetaScreenOptimizedForMobile() \
-      .includeFileAsInlineCSS("./htmlIncludes/inlineCssStyle.css")
+      .includeFileByTypeAsInlineCSS(File.HTML_INCLUDE_INLINECSS)
   head.addFontAwesome_v611() \
       .addJquery_v360() \
       .addGoogleIcons() \

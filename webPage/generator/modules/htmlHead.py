@@ -52,6 +52,10 @@ class HtmlHead:
                                                                 "style", "", self.indentDepth)
     return self
 
+  def includeFileByTypeAsInlineCSS(self, filePathType):
+    filePath = path.getAbsoluteFilePath(filePathType)
+    return self.includeFileAsInlineCSS(filePath)
+
   def addFontAwesome_v611(self):
     if self.fontAwesomeLibAdded:
       raise Exception("Fontawesome library had already been added")

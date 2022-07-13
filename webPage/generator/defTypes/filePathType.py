@@ -20,6 +20,8 @@ class FilePathType(Enum):
   HTML_INCLUDE_TOPQUOTE = FilePathChecker(Dir.HTML_GENERAL_INCLUDES, "topQuote.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_FOOTER = FilePathChecker(Dir.HTML_GENERAL_INCLUDES, "footer.txt", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_INLINEJS = FilePathChecker(Dir.HTML_GENERAL_INCLUDES, "inlineJs.js", fileAction.ENSURE_FILE_EXISTS)
+  HTML_INCLUDE_INLINECSS = FilePathChecker(Dir.HTML_GENERAL_INCLUDES, "inlineCssStyle.css",
+                                           fileAction.ENSURE_FILE_EXISTS)
   INDEX_HTML_MAIN = FilePathChecker(Dir.INDEX_HTML_LOCATION, "index.html", fileAction.DONT_CHECK_FILE_EXISTENCE)
   MAIN_PAGE_SVG_CURVE1 = FilePathChecker(Dir.HTML_PAGES_MAIN, "svgCurve1.txt", fileAction.ENSURE_FILE_EXISTS)
   MAIN_PAGE_SVG_CURVE2 = FilePathChecker(Dir.HTML_PAGES_MAIN, "svgCurve2.txt", fileAction.ENSURE_FILE_EXISTS)
