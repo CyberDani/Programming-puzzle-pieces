@@ -42,22 +42,22 @@ class DirPathCheckerTests(unittest.TestCase):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
-                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+                                          dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory",
-                                          ["nonExistingFile.py"], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                          ["nonExistingFile.py"], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
-                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                          dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py"],
-                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                          dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
       filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile1.txt"
       file = open(filePath, "w")
       file.close()
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
-                                          ["testFile1.txt"], dirAction.ENSURE_PATH_EXISTS_ONLY)
+                                          ["testFile1.txt"], dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
@@ -95,11 +95,11 @@ class DirPathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(firstArg, secondArg)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.ENSURE_PATH_EXISTS_ONLY)
+      dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.ENSURE_PATH_AND_FILES_EXIST)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+      dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
 
   def test_DirectoryPathChecker_validExamples(self):
     filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
@@ -113,15 +113,15 @@ class DirPathCheckerTests(unittest.TestCase):
     file.close()
     try:
       dirPathChecker.DirectoryPathChecker("", ["README.md"])
-      dirPathChecker.DirectoryPathChecker("", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
+      dirPathChecker.DirectoryPathChecker("", [], dirAction.ENSURE_DIR_EXISTS_ONLY)
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
-                                          dirAction.ENSURE_PATH_EXISTS_ONLY)
+                                          dirAction.ENSURE_DIR_EXISTS_ONLY)
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
-                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                          dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
-                                          dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                          dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
       dirPathChecker.DirectoryPathChecker("./" + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
@@ -155,10 +155,10 @@ class DirPathCheckerTests(unittest.TestCase):
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
-                                        dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+                                        dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
                      gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
-                                              dirAction.ENSURE_PATH_EXISTS_ONLY)
+                                              dirAction.ENSURE_DIR_EXISTS_ONLY)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
                      gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")

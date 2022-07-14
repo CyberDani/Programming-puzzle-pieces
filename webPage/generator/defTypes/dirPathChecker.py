@@ -28,20 +28,20 @@ class DirectoryPathChecker:
 
   gitRepoAbsolutePath = getGitRepoAbsolutePathEndingWithSlash()
 
-  def __init__(self, dirPathRelativeToGitRepo, filesToCheck, actionType = dirAction.ENSURE_PATH_AND_FILES_EXIST):
+  def __init__(self, dirPathRelativeToGitRepo, filesToCheck, actionType = dirAction.ENSURE_DIR_AND_FILES_EXIST):
     """The associated path must be relative to the git root repository"""
     checks.checkIfStringDoesNotContainAnySubstringFromList(dirPathRelativeToGitRepo, 0, 300, ["\\"])
-    if actionType == dirAction.ENSURE_PATH_AND_FILES_EXIST:
+    if actionType == dirAction.ENSURE_DIR_AND_FILES_EXIST:
       checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
-    elif actionType == dirAction.ENSURE_PATH_EXISTS_ONLY \
-            or actionType == dirAction.DO_NOT_CHECK_PATH_EXISTENCE:
+    elif actionType == dirAction.ENSURE_DIR_EXISTS_ONLY \
+            or actionType == dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
       checks.checkIfEmptyList(filesToCheck)
     if len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo[-1] != "/":
       dirPathRelativeToGitRepo += "/"
     while len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo.startswith("./"):
       dirPathRelativeToGitRepo = dirPathRelativeToGitRepo[2:]
     self.absoluteDirPath = self.gitRepoAbsolutePath + dirPathRelativeToGitRepo
-    if actionType != dirAction.DO_NOT_CHECK_PATH_EXISTENCE:
+    if actionType != dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
       checks.checkIfDirectoryPathExists(self.absoluteDirPath)
     for file in filesToCheck:
       absPath = self.absoluteDirPath + file
