@@ -12,7 +12,6 @@ from modules import filerw
 from modules import htmlBody
 from modules import htmlBuilder
 from modules import htmlHead
-from modules import path
 from modules import uTest
 
 # this is the main function being run
@@ -56,8 +55,7 @@ def handleBuildingIfRequired(buildOption, stepsCounter, dbBranch):
   if buildOption == buildType.BuildType.DO_NOT_BUILD:
     print(stepsCounter.getNextMessage('Skip building'))
     return
-  htmlOutputFilePath = path.getAbsoluteFilePath(File.INDEX_HTML_MAIN)
-  htmlFile = open(htmlOutputFilePath, "w")
+  htmlFile = filerw.getFileWithWritePerm(File.INDEX_HTML_MAIN)
   settings = buildSettings.BuildSettings(htmlOutputFile=htmlFile,
                                          buildOption=buildOption,
                                          dbBranch=dbBranch,
@@ -100,8 +98,8 @@ def writeHtmlBodyContent(settings):
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_BELOW_CURVE3) \
       .closeLastOpenedHtmlTag()  # div#webContent TODO
   body.includeFileByTypeThenAppendNewLine(File.HTML_INCLUDE_FOOTER) \
-      .addJsScriptSrcThenAppendNewLine("./webPage/scripts/githubApiScripts.js") \
-      .addJsScriptSrcThenAppendNewLine("./webPage/scripts/navigationScripts.js") \
+      .addJsScriptSrcByTypeThenAppendNewLine(File.SCRIPT_GITHUB_API) \
+      .addJsScriptSrcByTypeThenAppendNewLine(File.SCRIPT_NAVIGATION) \
       .includeFileByTypeAsInlineJs(File.HTML_INCLUDE_INLINEJS)
 
 def backupFiles():

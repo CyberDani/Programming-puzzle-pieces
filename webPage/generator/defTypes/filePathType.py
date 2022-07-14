@@ -31,3 +31,5 @@ class FilePathType(Enum):
   MAIN_PAGE_PERSONAL_RECOMMENDATION = FilePathChecker(Dir.HTML_PAGES_MAIN, "personalRecommendation.txt",
                                                       fileAction.ENSURE_FILE_EXISTS)
   MAIN_PAGE_BELOW_CURVE3 = FilePathChecker(Dir.HTML_PAGES_MAIN, "textBelowCurves.txt", fileAction.ENSURE_FILE_EXISTS)
+  SCRIPT_GITHUB_API = FilePathChecker(Dir.HTML_SCRIPTS, "githubApiScripts.js", fileAction.ENSURE_FILE_EXISTS)
+  SCRIPT_NAVIGATION = FilePathChecker(Dir.HTML_SCRIPTS, "navigationScripts.js", fileAction.ENSURE_FILE_EXISTS)

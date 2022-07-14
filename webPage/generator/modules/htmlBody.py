@@ -49,6 +49,10 @@ class HtmlBody:
                                                integrity, crossorigin, referrerpolicy)
     return self
 
+  def addJsScriptSrcByTypeThenAppendNewLine(self, filePathType, integrity=None, crossorigin=None, referrerpolicy=None):
+    localRelUrl = path.getRelativeFilePathToIndexHtml(filePathType)
+    return self.addJsScriptSrcThenAppendNewLine(localRelUrl, integrity, crossorigin, referrerpolicy)
+
   def includeFileAsInlineJs(self, filePath):
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(self.htmlFile, filePath,
                                                                 "script", "", self.indentDepth)

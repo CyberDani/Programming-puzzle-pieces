@@ -541,6 +541,72 @@ class HtmlBodyTests(unittest.TestCase):
     for i in range(0, len(jsLines)):
       self.assertEqual(lines[2 + i], jsLines[i])
 
+  def test_addJsScriptSrcByTypeThenAppendNewLine_nonSense(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    body = htmlBody.HtmlBody(file, 4)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(False, None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine("", None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine("hello", None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "sha215-23", None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, None, "anonymous", None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, None, None, "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, None, "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "sha512-23", None, "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "sha512-23", "anonymous", None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "a", "x", "z")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "abc", "anonymous", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "sha512-asdasdc-xcx", "abc", "no-refferer")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, "sha512-asdasdc-xcx", "anonymous", "ab")
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine("myAwesomeSite.com/randomScript.js", None, None, None)
+    with self.assertRaises(Exception):
+      body.addJsScriptSrcByTypeThenAppendNewLine("https://lookatthis.com/itsascript.js",
+                                               "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
+
+  def test_addJsScriptSrcByTypeThenAppendNewLine_justUrl(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    body = htmlBody.HtmlBody(file, 1)
+    body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE2, None, None, None)
+    file.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    jsFilePath = path.getRelativeFilePathToIndexHtml(File.FOR_TEST_TEXTFILE2)
+    jsLines = htmlBuilder.getJsScriptSrc(1, jsFilePath, None, None, None)
+    self.assertEqual(len(lines), 2 + len(jsLines))
+    self.assertEqual(lines[0], "- 1 -")
+    self.assertEqual(lines[1], "- 2 -")
+    for i in range(0, len(jsLines)):
+      self.assertEqual(lines[2 + i], jsLines[i])
+
+  def test_addJsScriptSrcByTypeThenAppendNewLine_urlIntegrityCrossoriginReferrerpolicy(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["- 1 -", "- 2 -"])
+    body = htmlBody.HtmlBody(file, 6)
+    body.addJsScriptSrcByTypeThenAppendNewLine(File.FOR_TEST_TEXTFILE3,
+                                                "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
+    file.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    jsFilePath = path.getRelativeFilePathToIndexHtml(File.FOR_TEST_TEXTFILE3)
+    jsLines = htmlBuilder.getJsScriptSrc(6, jsFilePath, "sha512-wgn28cn12ed02d==", "geekyBoy", "no-refferrer")
+    self.assertEqual(len(lines), 2 + len(jsLines))
+    self.assertEqual(lines[0], "- 1 -")
+    self.assertEqual(lines[1], "- 2 -")
+    for i in range(0, len(jsLines)):
+      self.assertEqual(lines[2 + i], jsLines[i])
+
   def test_includeFileAsInlineJs_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     body = htmlBody.HtmlBody(file, 1)

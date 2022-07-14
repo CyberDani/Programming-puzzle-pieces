@@ -9,6 +9,8 @@ class DirectoryPathType(Enum):
   GIT_REPOSITORY = DirectoryPathChecker("", ["README.md", ".git/HEAD"], dirAction.ENSURE_PATH_AND_FILES_EXIST)
   INDEX_HTML_LOCATION = DirectoryPathChecker("", [], dirAction.ENSURE_PATH_EXISTS_ONLY)
   HTML_BACKUP = DirectoryPathChecker("webPage/backup", [], dirAction.DO_NOT_CHECK_PATH_EXISTENCE)
+  HTML_SCRIPTS = DirectoryPathChecker("webPage/scripts", ["githubApiScripts.js", "navigationScripts.js"],
+                                      dirAction.ENSURE_PATH_AND_FILES_EXIST)
   PYTHON_MAIN_GENERATOR = DirectoryPathChecker(config.PATH_FROM_REPO_TO_PY_GENERATOR, ["generator.py"],
                                                dirAction.ENSURE_PATH_AND_FILES_EXIST)
   PYTHON_GENERATOR_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
