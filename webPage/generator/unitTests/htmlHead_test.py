@@ -433,4 +433,5 @@ class HtmlHeadTests(unittest.TestCase):
       .addMaterialize_v110_alpha() \
       .addGoogleFont("?family=Arima+Madurai:wght@500&display=swap") \
       .addJQueryLoadingOverlay_v217() \
-      .includeFileAsInlineCSS(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3))
+      .includeFileAsInlineCSS(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE3)) \
+      .includeFileByTypeAsInlineCSS(File.FOR_TEST_TEXTFILE3)

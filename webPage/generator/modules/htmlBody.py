@@ -53,3 +53,7 @@ class HtmlBody:
     htmlBuilder.includeFileSurroundedByHtmlTagThenAppendNewLine(self.htmlFile, filePath,
                                                                 "script", "", self.indentDepth)
     return self
+
+  def includeFileByTypeAsInlineJs(self, filePathType):
+    filePath = path.getAbsoluteFilePath(filePathType)
+    return self.includeFileAsInlineJs(filePath)

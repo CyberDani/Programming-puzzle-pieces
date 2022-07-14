@@ -102,7 +102,7 @@ def writeHtmlBodyContent(settings):
   body.includeFileByTypeThenAppendNewLine(File.HTML_INCLUDE_FOOTER) \
       .addJsScriptSrcThenAppendNewLine("./webPage/scripts/githubApiScripts.js") \
       .addJsScriptSrcThenAppendNewLine("./webPage/scripts/navigationScripts.js") \
-      .includeFileAsInlineJs("./htmlIncludes/inlineJs.js")
+      .includeFileByTypeAsInlineJs(File.HTML_INCLUDE_INLINEJS)
 
 def backupFiles():
   filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.INDEX_HTML_MAIN, Dir.HTML_BACKUP)

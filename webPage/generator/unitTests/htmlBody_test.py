@@ -574,3 +574,38 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(lines[4], "\t\t\treturn 2;")
     self.assertEqual(lines[5], "\t\t}")
     self.assertEqual(lines[6], "\t</script>")
+
+  def test_includeFileByTypeAsInlineJs_nonSense(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    body = htmlBody.HtmlBody(file, 1)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs("nonExistingFile.js")
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2))
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs(None)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs(False)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs(file)
+    with self.assertRaises(Exception):
+      body.includeFileByTypeAsInlineJs(122)
+
+  def test_includeFileByTypeAsInlineJs_example(self):
+    file2 = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
+    filerw.writeLinesToFile(file2, ["function getTwo() {", "\treturn 2;", "}"])
+    file2.close()
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["\tsome line", "\tsome another line here"])
+    body = htmlBody.HtmlBody(file, 1)
+    body.includeFileByTypeAsInlineJs(File.FOR_TEST_TEXTFILE2)
+    file.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(lines), 7)
+    self.assertEqual(lines[0], "\tsome line")
+    self.assertEqual(lines[1], "\tsome another line here")
+    self.assertEqual(lines[2], "\t<script>")
+    self.assertEqual(lines[3], "\t\tfunction getTwo() {")
+    self.assertEqual(lines[4], "\t\t\treturn 2;")
+    self.assertEqual(lines[5], "\t\t}")
+    self.assertEqual(lines[6], "\t</script>")
