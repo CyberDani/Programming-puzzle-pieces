@@ -1,5 +1,6 @@
 from modules import checks
 from modules import filerw
+from modules import stringUtil
 
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
@@ -126,13 +127,32 @@ def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
       result += " "
   return result
 
+def filterJqueryLikeHtmlSelector(specialHtmlTag):
+  classes, ids = stringUtil.doubleSplit(specialHtmlTag, ".", "#")
+  checks.checkIfNonEmptyList(classes)
+  htmlTag = classes[0]
+  classes = classes[1:]
+  checks.checkIfStringIsAlphaNumerical(htmlTag)
+  checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(classes)
+  checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(ids)
+  idString = stringUtil.stringListToString(ids, prefix="", suffix="", delimiter=" ")
+  classString = stringUtil.stringListToString(classes, prefix="", suffix="", delimiter=" ")
+  htmlOptions = ""
+  if idString:
+    htmlOptions += "id=\"" + idString + "\""
+    if classString:
+      htmlOptions += " "
+  if classString:
+    htmlOptions += "class=\"" + classString + "\""
+  return htmlTag, htmlOptions
+
 # <htmlTag options>
 def getOpenedHtmlTag(htmlTag, options = ""):
   checks.checkIfString(htmlTag, 1, 100)
   checks.checkIfString(options, 0, 500)
   checks.checkIfStringIsAlphaNumerical(htmlTag)
   result = "<" + htmlTag
-  if len(options) > 0:
+  if options:
     result += " " + options
   result += ">"
   return result

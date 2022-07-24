@@ -76,6 +76,91 @@ class StringUtilTests(unittest.TestCase):
     ans = stringUtil.getStringStartsWithEndsWithNoOverlap("abcabcQWAEabcabc", "abc", "abc")
     self.assertEqual(ans, "abcabc")
 
+  def test_stringListToString_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString(["element1", "element2"], "[", "]", 2)
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString(["element1", "element2"], "[", None, "-")
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString(["element1", "element2"], False, "]", "-")
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString("this is just a simple string", "[", "]", "-")
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString([True, False], "[", "]", "-")
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString([1, 2, 3, 4, 5, 6], "[", "]", "-")
+    with self.assertRaises(Exception):
+      stringUtil.stringListToString(["one", "two", "three", []], "[", "]", "-")
+
+  def test_stringListToString_examples(self):
+    res = stringUtil.stringListToString([], "-<(", ")>-", "|")
+    self.assertEqual(res, "-<()>-")
+    res = stringUtil.stringListToString([], "", "", "|")
+    self.assertEqual(res, "")
+    res = stringUtil.stringListToString([], "", "", "")
+    self.assertEqual(res, "")
+    res = stringUtil.stringListToString(["one", "two", "three"], "", "", "")
+    self.assertEqual(res, "onetwothree")
+    res = stringUtil.stringListToString(["one", "two", "three"], "", "", "|")
+    self.assertEqual(res, "one|two|three")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "(", ")", "|")
+    self.assertEqual(res, "(hey|bye|hello)")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "(", ")", "")
+    self.assertEqual(res, "(heybyehello)")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "-<(", ")>-", "|")
+    self.assertEqual(res, "-<(hey|bye|hello)>-")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "-<(", ")>-", ", ")
+    self.assertEqual(res, "-<(hey, bye, hello)>-")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "", "", ", ")
+    self.assertEqual(res, "hey, bye, hello")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "", "", " --> ")
+    self.assertEqual(res, "hey --> bye --> hello")
+    res = stringUtil.stringListToString(["hey", "bye", "hello"], "<<<== ", " ==>>>", " --> ")
+    self.assertEqual(res, "<<<== hey --> bye --> hello ==>>>")
+
+  def test_doubleSplit_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit("test", "|", "|")
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit("test string", "", "_")
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit("test string", "_", "")
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit("test string", 12, "_")
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit("test string", "_", True)
+    with self.assertRaises(Exception):
+      stringUtil.doubleSplit(["test string", "HEY"], "[]", "_")
+
+  def test_doubleSplit_examples(self):
+    parts1, parts2 = stringUtil.doubleSplit("", "_", "|")
+    self.assertEqual(parts1, [""])
+    self.assertEqual(parts2, [])
+    parts1, parts2 = stringUtil.doubleSplit("random test string", "$", "@")
+    self.assertEqual(parts1, ["random test string"])
+    self.assertEqual(parts2, [])
+    parts1, parts2 = stringUtil.doubleSplit("random test string@username", "$", "@")
+    self.assertEqual(parts1, ["random test string"])
+    self.assertEqual(parts2, ["username"])
+    parts1, parts2 = stringUtil.doubleSplit("random test string@username$100", "$", "@")
+    self.assertEqual(parts1, ["random test string", "100"])
+    self.assertEqual(parts2, ["username"])
+    parts1, parts2 = stringUtil.doubleSplit("$100@random", "$", "@")
+    self.assertEqual(parts1, ["", "100"])
+    self.assertEqual(parts2, ["random"])
+    parts1, parts2 = stringUtil.doubleSplit("@random$100", "$", "@")
+    self.assertEqual(parts1, ["", "100"])
+    self.assertEqual(parts2, ["random"])
+    parts1, parts2 = stringUtil.doubleSplit("key:value_db_something", ":", "_")
+    self.assertEqual(parts1, ["key", "value"])
+    self.assertEqual(parts2, ["db", "something"])
+    parts1, parts2 = stringUtil.doubleSplit("key:value_db_something:default_numeric", ":", "_")
+    self.assertEqual(parts1, ["key", "value", "default"])
+    self.assertEqual(parts2, ["db", "something", "numeric"])
+    parts1, parts2 = stringUtil.doubleSplit("key:value_db_something:default_numeric", ":", "//")
+    self.assertEqual(parts1, ["key", "value_db_something", "default_numeric"])
+    self.assertEqual(parts2, [])
+
   def test_rTrimNewLines_nonSense(self):
     with self.assertRaises(Exception):
       stringUtil.rTrimNewLines()

@@ -154,7 +154,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(newLines, "\t\t\t\t<br\\> <br\\>")
 
   def test_addNewLineToHtmlOutputFile_nonsense(self):
-    file =filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     with self.assertRaises(Exception):
       htmlBuilder.addHtmlNewLineToFile("heyho", indentDepth = 2, nrOfNewLines = 2)
     with self.assertRaises(Exception):
@@ -296,9 +296,11 @@ class HtmlBuilderTests(unittest.TestCase):
     result = htmlBuilder.getCssLinkHref(1, "www.mysite.com/res.css", None, None, None)
     self.assertEqual(len(result), 1)
     self.assertEqual(result[0], "\t<link href=\"www.mysite.com/res.css\" rel=\"stylesheet\" />")
-    result = htmlBuilder.getCssLinkHref(2, "https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css", None, None, None)
+    result = htmlBuilder.getCssLinkHref(2, "https://cdn.jsdelivr.net/npm/@materializecss/materialize"
+                                           "@1.1.0-alpha/dist/css/materialize.min.css", None, None, None)
     self.assertEqual(len(result), 2)
-    self.assertEqual(result[0], "\t\t<link href=\"https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css\"")
+    self.assertEqual(result[0], "\t\t<link href=\"https://cdn.jsdelivr.net/npm/@materializecss/materialize"
+                                "@1.1.0-alpha/dist/css/materialize.min.css\"")
     self.assertEqual(result[1], "\t\t\trel=\"stylesheet\" />")
 
   def test_getCssLinkHref_containsIntegrity(self):
@@ -339,16 +341,20 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "abc", "anonymous", "no-refferer")
     with self.assertRaises(Exception):
-      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "abc", "no-refferer")
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx",
+                                                 "abc", "no-refferer")
     with self.assertRaises(Exception):
-      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx", "anonymous", "ab")
+      htmlBuilder.addCssLinkHrefToHtmlOutputFile(file, 1, "www.mysite.com/res.css", "sha512-asdasdc-xcx",
+                                                 "anonymous", "ab")
     file.close()
 
   def test_addCssLinkHrefToHtmlOutputFile_normalCases(self):
     self.cssLinkHrefTestHelper(1, "www.mysite.com/res.css", None, None, None)
-    self.cssLinkHrefTestHelper(5, "https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha/dist/css/materialize.min.css", 
+    self.cssLinkHrefTestHelper(5, "https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.1.0-alpha"
+                                  "/dist/css/materialize.min.css",
                         None, None, None)
-    self.cssLinkHrefTestHelper(3, "https://www.randomsite.com/resource.css", "asdsadbsdsadbi32gr3ur", "techguy", "refferrer")
+    self.cssLinkHrefTestHelper(3, "https://www.randomsite.com/resource.css", "asdsadbsdsadbi32gr3ur",
+                               "techguy", "refferrer")
 
   def cssLinkHrefTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
@@ -455,9 +461,11 @@ class HtmlBuilderTests(unittest.TestCase):
 
   def test_addJsScriptSrcToHtmlOutputFile_normalCases(self):
     self.jsScriptSrcTestHelper(1, "www.myAwesomeSite.com/script.js", None, None, None)
-    self.jsScriptSrcTestHelper(5, "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js", 
-                        None, None, None)
-    self.jsScriptSrcTestHelper(3, "https://www.randomsite.com/resource.js", "asfldfohsdofsdflndjfbfd", "TechGuy", "refferrer")
+    self.jsScriptSrcTestHelper(5, "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay"
+                                  "@2.1.7/dist/loadingoverlay.min.js",
+                                  None, None, None)
+    self.jsScriptSrcTestHelper(3, "https://www.randomsite.com/resource.js", "asfldfohsdofsdflndjfbfd",
+                                  "TechGuy", "refferrer")
 
   def jsScriptSrcTestHelper(self, indentDepth, url, integrity, crossorigin, referrerpolicy):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
@@ -590,7 +598,8 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[6], "\t\t\t</div>")
     self.assertEqual(lines[7], "\t\t</footer>")
 
-  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(self, indent, lines, htmlTag, htmlTagOption):
+  @staticmethod
+  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(indent, lines, htmlTag, htmlTagOption):
     src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
@@ -601,7 +610,8 @@ class HtmlBuilderTests(unittest.TestCase):
     dest.close()
     return filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
 
-  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(self, indent, lines, htmlTag, htmlTagOption):
+  @staticmethod
+  def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(indent, lines, htmlTag, htmlTagOption):
     src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
@@ -672,7 +682,8 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[5], "\t\t</div>\n")
     self.assertEqual(lines[6], "\n")
 
-  def helper_includeFileToHtmlOutputFile_2(self, indent, lines):
+  @staticmethod
+  def helper_includeFileToHtmlOutputFile_2(indent, lines):
     src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
@@ -683,7 +694,8 @@ class HtmlBuilderTests(unittest.TestCase):
     dest.close()
     return filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
 
-  def helper_includeFileToHtmlOutputFile(self, indent, lines):
+  @staticmethod
+  def helper_includeFileToHtmlOutputFile(indent, lines):
     src = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
     filerw.writeLinesToExistingFileThenAppendNewLine(src, lines)
     src.close()
@@ -692,6 +704,143 @@ class HtmlBuilderTests(unittest.TestCase):
     htmlBuilder.includeFileThenAppendNewLine(dest, filePath2, indent)
     dest.close()
     return filerw.getLinesByTypeWithEndingNewLine(File.FOR_TEST_TEXTFILE1)
+
+  def test_filterJqueryLikeHtmlSelector_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(None)
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(False)
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(["div"])
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(2)
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("[div]")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("3+2")
+
+  def test_filterJqueryLikeHtmlSelector_invalidSelector(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("#hello")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(".hello")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("..........")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("####")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector(".")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("#")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello..")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello##")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#.")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.#")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.abc.")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#abc#")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.abc#")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#abc.")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.#abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#.abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello# abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello. abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#  abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.  abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#qwe abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.123 abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#123  abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.123  abc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#\nabc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.\nabc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello#qwe\nabc")
+    with self.assertRaises(Exception):
+      htmlBuilder.filterJqueryLikeHtmlSelector("hello.qwe\nabc")
+
+  def test_filterJqueryLikeHtmlSelector_onlyHtmlTag(self):
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div")
+    self.assertEqual(htmlTag, "div")
+    self.assertFalse(htmlOptions)
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("table")
+    self.assertEqual(htmlTag, "table")
+    self.assertFalse(htmlOptions)
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("span")
+    self.assertEqual(htmlTag, "span")
+    self.assertFalse(htmlOptions)
+
+  def test_filterJqueryLikeHtmlSelector_oneSelector(self):
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.My-clasS")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "class=\"My-clasS\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("table#importantId")
+    self.assertEqual(htmlTag, "table")
+    self.assertEqual(htmlOptions, "id=\"importantId\"")
+
+  def test_filterJqueryLikeHtmlSelector_twoSelector(self):
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.My-clasS.secondClass")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "class=\"My-clasS secondClass\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("table#importantId#secondId")
+    self.assertEqual(htmlTag, "table")
+    self.assertEqual(htmlOptions, "id=\"importantId secondId\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("span.class#id")
+    self.assertEqual(htmlTag, "span")
+    self.assertEqual(htmlOptions, "id=\"id\" class=\"class\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("h1#myId.myClass")
+    self.assertEqual(htmlTag, "h1")
+    self.assertEqual(htmlOptions, "id=\"myId\" class=\"myClass\"")
+
+  def test_filterJqueryLikeHtmlSelector_threeSelector(self):
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1.cl2.cl3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "class=\"cl1 cl2 cl3\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1.cl2#id3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id3\" class=\"cl1 cl2\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1#id2.cl3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id2\" class=\"cl1 cl3\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1#id2#id3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id2 id3\" class=\"cl1\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div#id1.cl2.cl3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1\" class=\"cl2 cl3\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div#id1.cl2#id3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1 id3\" class=\"cl2\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div#id1#id2.cl3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1 id2\" class=\"cl3\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div#id1#id2#id3")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1 id2 id3\"")
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):

@@ -231,6 +231,192 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfNonEmptyPureListOfType() raised Exception unexpectedly!")
 
+  def test_checkIfPureListOfNonEmptyStrings_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(0)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(None)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(False)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["hello", "my", "world", 12])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings([True, "hello", "my", "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["hello", "my", ["one", "two"], "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings([True])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings([0, 1, 2, 3, 4, 5, 6])
+
+  def test_checkIfPureListOfNonEmptyStrings_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings([""])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["", "HEY"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["HEY", ""])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["hello", "", "be happy"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStrings(["don't worry", "be happy", ""])
+
+  def test_checkIfPureListOfNonEmptyStrings_valid(self):
+    try:
+      checks.checkIfPureListOfNonEmptyStrings([])
+      checks.checkIfPureListOfNonEmptyStrings(["one"])
+      checks.checkIfPureListOfNonEmptyStrings(["1"])
+      checks.checkIfPureListOfNonEmptyStrings(["1", "two"])
+      checks.checkIfPureListOfNonEmptyStrings(["1", "two", "3", "4", "5"])
+    except Exception:
+      self.fail("checkIfPureListOfNonEmptyStrings() raised Exception unexpectedly!")
+
+  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(0)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(None)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(False)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["hello", "my", "world", 12])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([True, "hello", "my", "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["hello", "my", ["one", "two"], "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([True])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([0, 1, 2, 3, 4, 5, 6])
+
+  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([" "])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["       "])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\t       \t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\r"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\n"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["apple", "Hey you!"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["firstLine\nsecondLine", "banana"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "\t\tbird"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "bird\t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "my\tbird"])
+
+  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_valid(self):
+    try:
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([])
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([""])
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["1"])
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["1", "two"])
+      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["1", "two", "3_das!wfoewffasS", "4", "5", "//"])
+    except Exception:
+      self.fail("checkIfPureListOfNonEmptyStrings() raised Exception unexpectedly!")
+
+  def test_checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(0)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(None)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(False)
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter("hey")
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["hello", "my", "world", 12])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([True, "hello", "my", "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["hello", "my", ["one", "two"], "world"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([True])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([0, 1, 2, 3, 4, 5, 6])
+
+  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([""])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([" "])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["       "])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\t       \t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\r"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\n"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "Hey you!"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "pear", ""])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "", "ananas"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["", "detail", "question"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["firstLine\nsecondLine", "banana"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "\t\tbird"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "bird\t"])
+    with self.assertRaises(Exception):
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "my\tbird"])
+
+  def test_checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter_valid(self):
+    try:
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([])
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["1"])
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["1", "two"])
+      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["1", "two", "3_das!wfoewffasS",
+                                                                                "4", "5", "//"])
+    except Exception:
+      self.fail("checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter() raised Exception unexpectedly!")
+
+  def test_checkIfTwoNonEmptyStringsAreDifferent_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent(False, True)
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent(45, 2)
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent(None, [])
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent("test", "")
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent("", "test")
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent("", "")
+
+  def test_checkIfTwoNonEmptyStringsAreDifferent_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent("test", "test")
+    with self.assertRaises(Exception):
+      checks.checkIfTwoNonEmptyStringsAreDifferent("123_abc_!@#", "123_abc_!@#")
+
+  def test_checkIfTwoNonEmptyStringsAreDifferent_valid(self):
+    try:
+      checks.checkIfTwoNonEmptyStringsAreDifferent("test1", "test2")
+      checks.checkIfTwoNonEmptyStringsAreDifferent("1. line", "2. line")
+      checks.checkIfTwoNonEmptyStringsAreDifferent("apple", "mushroom")
+    except Exception:
+      self.fail("checkIfTwoNonEmptyStringsAreDifferent() raised Exception unexpectedly!")
+
   def test_checkIfPureListOfStrings_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfStrings(0)

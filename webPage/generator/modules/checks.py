@@ -79,6 +79,32 @@ def checkIfPureListOfStrings(var):
     if type(val) != str:
       raise Exception("The list has a non-string element: '{0}'".format(str(val)))
 
+def checkIfPureListOfNonEmptyStrings(var):
+  checkIfPureListOfStrings(var)
+  for string in var:
+    if not string:
+      raise Exception("Empty string found in list: '{0}'".format(str(var)))
+
+def checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(var):
+  checkIfPureListOfStrings(var)
+  for string in var:
+    for char in string:
+      if char.isspace():
+        raise Exception("Whitespace character found in string: '{0}'".format(str(string)))
+
+def checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(var):
+  checkIfPureListOfNonEmptyStrings(var)
+  for string in var:
+    for char in string:
+      if char.isspace():
+        raise Exception("Whitespace character found in string: '{0}'".format(str(string)))
+
+def checkIfTwoNonEmptyStringsAreDifferent(string1, string2):
+  checkIfString(string1, 1, 5000)
+  checkIfString(string2, 1, 5000)
+  if string1 == string2:
+    raise Exception("String '{}' is equal with '{}'".format(string1, string2))
+
 def checkIfNonEmptyPureListOfStrings(var):
   checkIfList(var)
   if len(var) == 0:
