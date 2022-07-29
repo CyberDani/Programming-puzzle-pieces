@@ -146,6 +146,62 @@ def filterJqueryLikeHtmlSelector(specialHtmlTag):
     htmlOptions += "class=\"" + classString + "\""
   return htmlTag, htmlOptions
 
+def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
+  """Does not raise error if htmlAttributes is corrupt, it returns an empty list"""
+  checks.checkIfString(htmlAttributes, 0, 800)
+  checks.checkIfString(key, 1, 30)
+  result = []
+  if not htmlAttributes:
+    return result
+  # TODO beforeOnlyWhitespaceAfterWhiteSpaceOrCharDelimitedFind
+  firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
+  while firstIdx != -1 and firstIdx + len(key) < len(htmlAttributes) \
+    and not htmlAttributes[firstIdx + len(key)].isspace() and htmlAttributes[firstIdx + len(key)] != "=":
+    firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
+  if firstIdx == -1:
+    return result
+  # TODO maybe write a function for this: search for the first character after the whitespaces
+  startIdx = firstIdx + len(key)
+  if startIdx == len(htmlAttributes):
+    return result
+  nonSpaceIdxAfterKey = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, len(htmlAttributes))
+  if nonSpaceIdxAfterKey == -1:
+    return result
+  firstCharAfterAttribute = htmlAttributes[nonSpaceIdxAfterKey]
+  if firstCharAfterAttribute != '=':
+    return result
+  # TODO maybe write function for this: skip whitespaces
+  startIdx = nonSpaceIdxAfterKey + 1
+  if len(htmlAttributes) == startIdx:
+    return result
+  firstNonSpaceIdxAfterEqual = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, len(htmlAttributes))
+  if firstNonSpaceIdxAfterEqual == -1:
+    return result
+  firstCharAfterEqual = htmlAttributes[firstNonSpaceIdxAfterEqual]
+  if firstCharAfterEqual != "'" and firstCharAfterEqual != "\"":
+    return result
+  quoteCharUsed = firstCharAfterEqual
+  startIdx = firstNonSpaceIdxAfterEqual + 1
+  if len(htmlAttributes) == startIdx:
+    return result
+  closingQuotePos = htmlAttributes.find(quoteCharUsed, startIdx)
+  if closingQuotePos == -1:
+    return result
+  # TODO this is just the first occurrence, you want to get all occurrences
+  # TODO splitByWhiteSpace
+  if closingQuotePos == startIdx:
+    return result
+  valueIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, closingQuotePos)
+  if valueIdx == -1:
+    return result
+  startValueIdx = valueIdx
+  # TODO getFirstWhiteSpaceCharIdx
+  while valueIdx < closingQuotePos and not htmlAttributes[valueIdx].isspace():
+    valueIdx += 1
+  # TODO append alphabetically if not already exists
+  result.append(htmlAttributes[startValueIdx:valueIdx])
+  return result
+
 # <htmlTag options>
 def getOpenedHtmlTag(htmlTag, options = ""):
   checks.checkIfString(htmlTag, 1, 100)

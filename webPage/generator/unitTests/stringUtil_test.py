@@ -4,6 +4,7 @@ import unittest
 sys.path.append('..')
 from modules import stringUtil
 
+
 class StringUtilTests(unittest.TestCase):
 
   def test_getStringStartsWithEndsWith_nonSense(self):
@@ -160,6 +161,209 @@ class StringUtilTests(unittest.TestCase):
     parts1, parts2 = stringUtil.doubleSplit("key:value_db_something:default_numeric", ":", "//")
     self.assertEqual(parts1, ["key", "value_db_something", "default_numeric"])
     self.assertEqual(parts2, [])
+
+  def test_getFirstNonWhiteSpaceCharIdx_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("example test string", None, None)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("another test string", 2, True)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("again a string", "0", 3)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", -1, 3)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 3, 61)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 8, 5)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 11, 11)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx(123, 3, 61)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx(["let me use this example"], 3, 61)
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx(None, 3, 61)
+
+  def test_getFirstNonWhiteSpaceCharIdx_specialCaseEmptyString(self):
+    with self.assertRaises(Exception):
+      idx = stringUtil.getFirstNonWhiteSpaceCharIdx("", 0, 1)
+    with self.assertRaises(Exception):
+      idx = stringUtil.getFirstNonWhiteSpaceCharIdx("", 0, 0)
+
+  def test_getFirstNonWhiteSpaceCharIdx_notFound(self):
+    string = " \t \r\n \t"
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
+    self.assertEqual(idx, -1)
+    string = "here comes some whitespaces: \t\t\t \r\r\n\n    \t      "
+    self.assertEqual(string[27], ':')
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 28, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 28, len(string) - 4)
+    self.assertEqual(idx, -1)
+    string = " \t\t\t \r\r\n\n    \t      : these are my whitespaces"
+    colonIdx = string.find(':')
+    self.assertEqual(string[colonIdx], ':')
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, colonIdx)
+    self.assertEqual(idx, -1)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, 1)
+    self.assertEqual(idx, -1)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, colonIdx - 1, colonIdx)
+    self.assertEqual(idx, -1)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 6, colonIdx - 4)
+    self.assertEqual(idx, -1)
+    string = "look at these whitespaces: \t\t\t \r\r\n\n    \t      => beautiful"
+    self.assertEqual(string[25], ':')
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 26, string.find("=>"), )
+    self.assertEqual(idx, -1)
+
+  def test_getFirstNonWhiteSpaceCharIdx_found(self):
+    string = "\ta\r\nb \r\n \t \n cwer\nd\nd"
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
+    self.assertEqual(idx, 1)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 2, len(string))
+    self.assertEqual(idx, 4)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 5, len(string))
+    self.assertTrue(idx > 0)
+    self.assertEqual(string[idx], 'c')
+    string = "a\tb\tc\nd\nd"
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
+    self.assertEqual(idx, 0)
+    string = "a\tb\tc\nd\nd"
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 4, len(string))
+    self.assertEqual(idx, 4)
+    string = " \t  asad\tbrev\tcSasd\ndbrt\ndqwY      \r\n\r\n X"
+    self.assertEqual(string[4], 'a')
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
+    self.assertEqual(idx, 4)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, 13)
+    self.assertEqual(idx, 4)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 2, 8)
+    self.assertEqual(idx, 4)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 4, 5)
+    self.assertEqual(idx, 4)
+    startIdx = string.find('Y')
+    self.assertTrue(startIdx > 0)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, startIdx + 1, len(string))
+    self.assertEqual(idx, len(string) - 1)
+    string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
+    self.assertEqual(idx, 0)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string) - 12)
+    self.assertEqual(idx, 0)
+    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, string.find("$"), len(string) - 12)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("$"))
+
+  def test_beforeWhitespaceDelimitedFind_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind(True, "word", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind(None, "word", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind(415, "word", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind(["hello", "world"], "word", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", True, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", None, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", 312, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", [], 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", -1, 5)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 2, 95)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 10, 4)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 3, 3)
+
+  def test_beforeWhitespaceDelimitedFind_emptyStrings(self):
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, len("sample string"))
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("", "apple", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.beforeWhitespaceDelimitedFind("", ".", 0, 1)
+
+  def test_beforeWhitespaceDelimitedFind_notFound(self):
+    string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "putty", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, ",", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "soft", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "itty", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "oft", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "!", 0, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "Soft", 1, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "fur!", string.find("fur") + 1, len(string))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "fur!", string.find("fur!"), len(string) - 1)
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "Soft", string.find("warm"), string.find("ball"))
+    self.assertEqual(idx, -1)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "fur!", string.find("warm"), string.find("ball"))
+    self.assertEqual(idx, -1)
+
+  def test_beforeWhitespaceDelimitedFind_found(self):
+    string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "Soft", 0, len(string))
+    self.assertEqual(idx, 0)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "So", 0, len(string))
+    self.assertEqual(idx, 0)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "S", 0, len(string))
+    self.assertEqual(idx, 0)
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "fur", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("fur"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "fur!", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("fur"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "little", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("little"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "warm", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("warm"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "warm", string.find("\twarm"), len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("warm"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "ball", string.find("\twarm"), string.find("\tof fur"))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ball"))
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "kitty", string.find("\twarm"), string.find("\tof fur"))
+    self.assertEqual(string[17], 'k')
+    self.assertTrue(idx != string.find("kitty"))
+    self.assertEqual(idx, 17)
+    string = "Bill is feeling ill."
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "ill", 0, len(string))
+    self.assertEqual(string[16], 'i')
+    self.assertEqual(idx, string.find("ill."))
+    self.assertEqual(idx, 16)
+    string = "Bill on the hill is feeling ill."
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "ill", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill."))
+    string = "Bill on the hill is feeling ill while doing sth illegal."
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "ill", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill while doing sth"))
+    string = "Kill Bill on the hill is feeling ill while doing sth illegally illegitimate."
+    idx = stringUtil.beforeWhitespaceDelimitedFind(string, "ill", 0, len(string))
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill while doing sth"))
 
   def test_rTrimNewLines_nonSense(self):
     with self.assertRaises(Exception):
