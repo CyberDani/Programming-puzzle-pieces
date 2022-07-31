@@ -146,23 +146,25 @@ def filterJqueryLikeHtmlSelector(specialHtmlTag):
     htmlOptions += "class=\"" + classString + "\""
   return htmlTag, htmlOptions
 
+# TODO this function is too long, make it shorter
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
-  """Does not raise error if htmlAttributes is corrupt, it returns an empty list"""
+  """Does not raise error if htmlAttributes is corrupt, it returns an empty list\n
+  Only the first declaration is taken (if there are multiple) as declared by the standard:
+  https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
   checks.checkIfString(htmlAttributes, 0, 800)
   checks.checkIfString(key, 1, 30)
   result = []
   if not htmlAttributes:
     return result
-  # TODO beforeOnlyWhitespaceAfterWhiteSpaceOrCharDelimitedFind
+  # TODO delimitedFind(string, key,  before=[whitespace, "<"], after=[whitespace, "="], 0, len(string))
   firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
   while firstIdx != -1 and firstIdx + len(key) < len(htmlAttributes) \
     and not htmlAttributes[firstIdx + len(key)].isspace() and htmlAttributes[firstIdx + len(key)] != "=":
     firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
   if firstIdx == -1:
     return result
-  # TODO maybe write a function for this: search for the first character after the whitespaces
   startIdx = firstIdx + len(key)
-  if startIdx == len(htmlAttributes):
+  if startIdx >= len(htmlAttributes):
     return result
   nonSpaceIdxAfterKey = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, len(htmlAttributes))
   if nonSpaceIdxAfterKey == -1:
@@ -170,7 +172,6 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   firstCharAfterAttribute = htmlAttributes[nonSpaceIdxAfterKey]
   if firstCharAfterAttribute != '=':
     return result
-  # TODO maybe write function for this: skip whitespaces
   startIdx = nonSpaceIdxAfterKey + 1
   if len(htmlAttributes) == startIdx:
     return result
@@ -180,6 +181,7 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   firstCharAfterEqual = htmlAttributes[firstNonSpaceIdxAfterEqual]
   if firstCharAfterEqual != "'" and firstCharAfterEqual != "\"":
     return result
+  startingQuoteIdx = firstNonSpaceIdxAfterEqual
   quoteCharUsed = firstCharAfterEqual
   startIdx = firstNonSpaceIdxAfterEqual + 1
   if len(htmlAttributes) == startIdx:
@@ -187,19 +189,18 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   closingQuotePos = htmlAttributes.find(quoteCharUsed, startIdx)
   if closingQuotePos == -1:
     return result
-  # TODO this is just the first occurrence, you want to get all occurrences
-  # TODO splitByWhiteSpace
   if closingQuotePos == startIdx:
     return result
   valueIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, closingQuotePos)
   if valueIdx == -1:
     return result
-  startValueIdx = valueIdx
   # TODO getFirstWhiteSpaceCharIdx
-  while valueIdx < closingQuotePos and not htmlAttributes[valueIdx].isspace():
-    valueIdx += 1
-  # TODO append alphabetically if not already exists
-  result.append(htmlAttributes[startValueIdx:valueIdx])
+  # TODO getFirstCharIdx(string, skip=[WhiteSpace, ","], find=[AnyChar, "="])
+  attrValues = htmlAttributes[startingQuoteIdx + 1 : closingQuotePos]
+  values = attrValues.split()
+  for value in values:
+    if value not in result:
+      result.append(value)
   return result
 
 # <htmlTag options>

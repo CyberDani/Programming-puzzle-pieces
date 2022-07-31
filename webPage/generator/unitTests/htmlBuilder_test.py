@@ -852,7 +852,8 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("option='audi' value='A'", None)
     with self.assertRaises(Exception):
-      htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("option='audi' value='A'", ["option"])
+      htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("option='audi' value='A'",
+                                                                                   ["option"])
     with self.assertRaises(Exception):
       htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(None, "option")
     with self.assertRaises(Exception):
@@ -877,7 +878,7 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(
                                                                               "src=\"jsbin/spf.vflset/spf.js\"", "alt")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"animated\"", "id")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"anim\"", "id")
     self.assertEqual(attributes, [])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"animated bold\"",
                                                                                          "id")
@@ -885,34 +886,44 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"animated bold\" "
                                                                                 "selected class=\"active-tab\"", "id")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "upgrade")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "upgrade")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "masthead")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "masthead")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "dark")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "dark")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "shell")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "shell")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "chunked")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "chunked")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-                 "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "e")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "e")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-               "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "disable")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "disable")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-               "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "clas")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "clas")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-               "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "lot")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "lot")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("_value=\"audi\"", "value")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("_value=\"audi\"",
+                                                                                              "value")
     self.assertEqual(attributes, [])
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrIsNotKeyValue(self):
@@ -935,7 +946,8 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(attributes, [])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"\t\"", "value")
     self.assertEqual(attributes, [])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\" \r\n \t \"", "value")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\" \r\n \t \"",
+                                                                                              "value")
     self.assertEqual(attributes, [])
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_corrupt(self):
@@ -969,11 +981,14 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(attributes, ["audi"])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value='audi'", "value")
     self.assertEqual(attributes, ["audi"])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi'A3\"", "value")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi'A3\"",
+                                                                                              "value")
     self.assertEqual(attributes, ["audi'A3"])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi'A3'\"", "value")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi'A3'\"",
+                                                                                              "value")
     self.assertEqual(attributes, ["audi'A3'"])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value='audi\"A3'", "value")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value='audi\"A3'",
+                                                                                              "value")
     self.assertEqual(attributes, ["audi\"A3"])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value='\"audi\"A3\"'",
                                                                                          "value")
@@ -997,8 +1012,9 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(
                                                                             "nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce")
     self.assertEqual(attributes, ["lix9PsSUHJxW7ghXrU5s0A"])
-    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" logo-type="
-         "\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" disable-upgrade=\"true\"", "disable-upgrade")
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
+                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
+                                            "disable-upgrade=\"true\"", "disable-upgrade")
     self.assertEqual(attributes, ["true"])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("rel=\"preload\" href="
                                 "\"https://r3---sn-8vq54voxgv-vu26.googlevideo.com/generate_204\" as=\"fetch\"", "rel")
@@ -1020,6 +1036,43 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(
                                 "\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
     self.assertEqual(attributes, ["preload"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(
+          "\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload \t\t\t\n\t  \" href=\"generate_204\" as=\"fetch\"", "rel")
+    self.assertEqual(attributes, ["preload"])
+
+  def test_extractDifferentValuesFromHtmlAttributesByKey_multipleValuesFound(self):
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+                                "method=\"get\" class=\"add_search_params pure-form\" style=\"display:inline-block\"",
+                                "class")
+    self.assertEqual(attributes, ["add_search_params", "pure-form"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+                                "method=\"get\" class=\"add_search_params pure-form hide-xs hide-sm hide-md\" "
+                                "style=\"display:inline-block\"", "class")
+    self.assertEqual(attributes, ["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+                                "method=\"get\" class\n=\n\"add_search_params\tpure-form\r\nhide-xs     hide-sm"
+                                "\t\t\t\n\r   \n\r    hide-md\n\" style=\"display:inline-block\"", "class")
+    self.assertEqual(attributes, ["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
+
+  def test_extractDifferentValuesFromHtmlAttributesByKey_multipleDeclarations(self):
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+              "method=\"get\" class=\"add_search_params cl2 cl3\" class=\"pure-form\" style=\"display:inline-block\"",
+              "class")
+    self.assertEqual(attributes, ["add_search_params", "cl2", "cl3"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+              "method=\"get\" class=\"add_search_params\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"",
+              "class")
+    self.assertEqual(attributes, ["add_search_params"])
+
+  def test_extractDifferentValuesFromHtmlAttributesByKey_valueRepeats(self):
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+                                "method=\"get\" class=\"cl1 cl1\" style=\"display:inline-block\"",
+                                "class")
+    self.assertEqual(attributes, ["cl1"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
+                  "method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" style=\"display:inline-block\"",
+                  "class")
+    self.assertEqual(attributes, ["cl1", "cl2", "cl3"])
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):
