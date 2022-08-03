@@ -2,6 +2,8 @@ from modules import checks
 from modules import filerw
 from modules import stringUtil
 
+# TODO create a new file for HTML attributes
+
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
   htmlFile = settings.htmlOutputFile
@@ -149,18 +151,12 @@ def filterJqueryLikeHtmlSelector(specialHtmlTag):
 # TODO this function is too long, make it shorter
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
   """Does not raise error if htmlAttributes is corrupt, it returns an empty list\n
-  Only the first declaration is taken (if there are multiple) as declared by the standard:
+  Only the first declaration is taken (if there are multiple) as stated by the standard:
   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
   checks.checkIfString(htmlAttributes, 0, 800)
   checks.checkIfString(key, 1, 30)
   result = []
-  if not htmlAttributes:
-    return result
-  # TODO delimitedFind(string, key,  before=[whitespace, "<"], after=[whitespace, "="], 0, len(string))
-  firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
-  while firstIdx != -1 and firstIdx + len(key) < len(htmlAttributes) \
-    and not htmlAttributes[firstIdx + len(key)].isspace() and htmlAttributes[firstIdx + len(key)] != "=":
-    firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
+  firstIdx = getAttributeIdx(htmlAttributes, key)
   if firstIdx == -1:
     return result
   startIdx = firstIdx + len(key)
@@ -201,6 +197,33 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   for value in values:
     if value not in result:
       result.append(value)
+  return result
+
+def getAttributeIdx(htmlAttributes, key):
+  """Returns -1 if attribute not found and for empty string \n
+   Only the first declaration is taken (if there are multiple) as stated by the standard:
+   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
+  checks.checkIfString(htmlAttributes, 0, 3000)
+  checks.checkIfString(key, 0, 60)
+  if not htmlAttributes or not key:
+    return -1
+  # TODO delimitedFind(string, key,  before=[whitespace, "<"], after=[whitespace, "="], 0, len(string))
+  firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
+  while firstIdx != -1 and firstIdx + len(key) < len(htmlAttributes) \
+          and not htmlAttributes[firstIdx + len(key)].isspace() and htmlAttributes[firstIdx + len(key)] != "=":
+    firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
+  return firstIdx
+
+def getListOfHtmlAttributes(attributesString):
+  """Returns empty list if attribute not found and for empty string \n
+     Only the first declaration is taken (if there are multiple) as stated by the standard:
+     https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
+  checks.checkIfString(attributesString, 0, 1000)
+  result = []
+  currentAttribute = ""
+  for idx in range(len(attributesString)):
+    currentChar = attributesString[idx]
+    currentAttribute += attributesString[idx]
   return result
 
 # <htmlTag options>

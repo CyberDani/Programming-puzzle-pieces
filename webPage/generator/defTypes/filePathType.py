@@ -4,6 +4,8 @@ from defTypes.dirPathType import DirectoryPathType as Dir
 from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes.filePathChecker import FilePathChecker
 
+# TODO downloadFileFromGithubIfNotExists
+# TODO mimeType check (one of: [png, jpg, ...])
 
 class FilePathType(Enum):
   # FOR TESTS

@@ -1063,16 +1063,158 @@ class HtmlBuilderTests(unittest.TestCase):
               "method=\"get\" class=\"add_search_params\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"",
               "class")
     self.assertEqual(attributes, ["add_search_params"])
+    attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" class "
+                              "method=\"get\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class")
+    self.assertEqual(attributes, [])
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_valueRepeats(self):
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
-                                "method=\"get\" class=\"cl1 cl1\" style=\"display:inline-block\"",
-                                "class")
+                                            "method=\"get\" class=\"cl1 cl1\" style=\"display:inline-block\"", "class")
     self.assertEqual(attributes, ["cl1"])
     attributes = htmlBuilder.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
-                  "method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" style=\"display:inline-block\"",
-                  "class")
+                            "method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" style=\"display:inline-block\"", "class")
     self.assertEqual(attributes, ["cl1", "cl2", "cl3"])
+
+  def test_getAttributeIdx_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx("htmlAttribute", 12)
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx("htmlAttribute", None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx(None, None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx(12, False)
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx(None, "class")
+    with self.assertRaises(Exception):
+      htmlBuilder.getAttributeIdx(False, "id")
+
+  def test_getAttributeIdx_emptyString(self):
+    idx = htmlBuilder.getAttributeIdx("", "class")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("id=\"content\" class=\"clearfix\"", "")
+    self.assertEqual(idx, -1)
+
+  def test_getAttributeIdx_attrNotFound(self):
+    idx = htmlBuilder.getAttributeIdx("htmlAttribute", "class")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("htmlAttribute no-href", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("htmlAttribute hrefx", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("htmlAttribute hrefhref", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("no-href class='idk'", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("hrefx class='idk'", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("hrefhref class='idk'", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("selected no-href class='idk'", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("selected hrefx class='idk'", "href")
+    self.assertEqual(idx, -1)
+    idx = htmlBuilder.getAttributeIdx("selected hrefhref class='idk'", "href")
+    self.assertEqual(idx, -1)
+
+  def test_getAttributeIdx_attrFound(self):
+    idx = htmlBuilder.getAttributeIdx("selected", "selected")
+    self.assertEqual(idx, 0)
+    idx = htmlBuilder.getAttributeIdx("default='1'", "default")
+    self.assertEqual(idx, 0)
+    idx = htmlBuilder.getAttributeIdx("default=\"1\"", "default")
+    self.assertEqual(idx, 0)
+    string = "value='234' selected"
+    idx = htmlBuilder.getAttributeIdx(string, "selected")
+    self.assertEqual(idx, string.find("selected"))
+    idx = htmlBuilder.getAttributeIdx("selected class=\"className\"", "selected")
+    self.assertEqual(idx, 0)
+    idx = htmlBuilder.getAttributeIdx("selected greyed-out", "selected")
+    self.assertEqual(idx, 0)
+    string = "value='234' selected=\"false\""
+    idx = htmlBuilder.getAttributeIdx(string, "selected")
+    self.assertEqual(idx, string.find("selected"))
+    idx = htmlBuilder.getAttributeIdx("selected=\"false\" class=\"className\"", "selected")
+    self.assertEqual(idx, 0)
+    idx = htmlBuilder.getAttributeIdx("selected=\"false\" greyed-out", "selected")
+    self.assertEqual(idx, 0)
+    string = "htmlAttribute no-href href"
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find(" href") + 1)
+    string = "htmlAttribute hrefx href=\"value\""
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find("href="))
+    string = "htmlAttribute hrefhref='value2' href='value3'"
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find("href='value3'"))
+    string = "no-href=\"noValue\" href class='idk'"
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find("href class"))
+    string = "hrefx href class='idk'"
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find("href class"))
+
+  def test_getAttributeIdx_attrFoundMultipleTime(self):
+    idx = htmlBuilder.getAttributeIdx("selected selected='false' selected selected", "selected")
+    self.assertEqual(idx, 0)
+    idx = htmlBuilder.getAttributeIdx("default='1' class=\"myClass\" default", "default")
+    self.assertEqual(idx, 0)
+    string = "htmlAttribute hrefhref='value2' href='value3' href href='val4'"
+    idx = htmlBuilder.getAttributeIdx(string, "href")
+    self.assertEqual(idx, string.find("href='value3'"))
+
+  def test_getListOfHtmlAttributes_nonSense(self):
+    with self.assertRaises(Exception):
+      htmlBuilder.getListOfHtmlAttributes(12)
+    with self.assertRaises(Exception):
+      htmlBuilder.getListOfHtmlAttributes(None)
+    with self.assertRaises(Exception):
+      htmlBuilder.getListOfHtmlAttributes(False)
+    with self.assertRaises(Exception):
+      htmlBuilder.getListOfHtmlAttributes([])
+
+  def test_getListOfHtmlAttributes_emptyAndWhiteSpace(self):
+    attributes = htmlBuilder.getListOfHtmlAttributes("")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" ")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\t")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\n")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("  \t\t\t\t \r\r  ")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\n      \t   \t        \n")
+    self.assertEqual(attributes, [])
+
+  def test_getListOfHtmlAttributes_emptyAndWhiteSpace(self):
+    attributes = htmlBuilder.getListOfHtmlAttributes("")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" ")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\t")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\n")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("  \t\t\t\t \r\r  ")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\n      \t   \t        \n")
+    self.assertEqual(attributes, [])
+
+  def test_getListOfHtmlAttributes_oneAttribute(self):
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected")
+    self.assertEqual(attributes, ["selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" \n  \t selected \n\r \t ")
+    self.assertEqual(attributes, ["selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("style=\"float:right;margin:11px 14px 0 0;"
+                                                     "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98\"")
+    self.assertEqual(attributes, ["style"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("style='float:right;margin:11px 14px 0 0;"
+                                                     "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98'")
+    self.assertEqual(attributes, ["style"])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" \n\r style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
+                                               "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98' \n\r ")
+    self.assertEqual(attributes, ["style"])
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):

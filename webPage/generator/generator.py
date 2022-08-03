@@ -14,6 +14,11 @@ from modules import htmlBuilder
 from modules import htmlHead
 from modules import uTest
 
+# TODO unit test if all files and functions are unit tested
+# TODO acceptance test
+# TODO Move htmlIncludes from generator
+# TODO What happens if you delete .git? Can you make a build?
+
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
   args = argumentParser.getCommandLineArgs()
@@ -104,5 +109,6 @@ def writeHtmlBodyContent(settings):
 
 def backupFiles():
   filerw.moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(File.INDEX_HTML_MAIN, Dir.HTML_BACKUP)
+
 
 backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments()
