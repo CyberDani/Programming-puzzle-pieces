@@ -1187,6 +1187,26 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.getListOfHtmlAttributes("\n      \t   \t        \n")
     self.assertEqual(attributes, [])
 
+  def test_getListOfHtmlAttributes_corruptAttributes(self):
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected=")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" \t\t selected\n = \t")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = \"")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = '")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = \"value")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = 'value")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = \"value'")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected = 'value\"")
+    self.assertEqual(attributes, [])
+    attributes = htmlBuilder.getListOfHtmlAttributes("class=\"example\" selected = 'value\" animated")
+    self.assertEqual(attributes, [])
+
   def test_getListOfHtmlAttributes_oneAttribute(self):
     attributes = htmlBuilder.getListOfHtmlAttributes("selected")
     self.assertEqual(attributes, ["selected"])
@@ -1214,6 +1234,21 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(attributes, ["property"])
     attributes = htmlBuilder.getListOfHtmlAttributes("property\n=\n\"\narticle:published_time\n\"\n")
     self.assertEqual(attributes, ["property"])
+
+  def test_getListOfHtmlAttributes_moreAttributes(self):
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected id=\"logo\"")
+    self.assertEqual(attributes, ["selected", "id"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("id=\"logo\" selected")
+    self.assertEqual(attributes, ["id", "selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("id=\"logo\" selected id=\"otherId\" selected='true'")
+    self.assertEqual(attributes, ["id", "selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\tonclick\t=\t\"\tlocation.reload();\t\" style\n=\"float:right;"
+          "display:inline-block;position:relative;top:15px;right:3px;margin-left:10px;font-size:13px;cursor:pointer\" "
+                                                     "title='Exclude inappropriate or explicit images'")
+    self.assertEqual(attributes, ["onclick", "style", "title"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("rel=\"alternate\" type=\"application/rss+xml\" "
+                     "title=\"Matematika és Informatika Kar RSS Feed\" href=\"https://www.cs.ubbcluj.ro/hu/feed/\"")
+    self.assertEqual(attributes, ["rel", "type", "title", "href"])
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):

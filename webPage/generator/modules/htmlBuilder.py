@@ -214,6 +214,7 @@ def getAttributeIdx(htmlAttributes, key):
     firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
   return firstIdx
 
+# TODO this function is too long, make it shorter
 def getListOfHtmlAttributes(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:
@@ -227,12 +228,15 @@ def getListOfHtmlAttributes(attributesString):
     if currentChar.isspace() or currentChar == "=":
       if currentAttribute and currentChar.isspace():
         if idx + 1 == len(attributesString) or \
-            (not attributesString[idx + 1].isspace() and attributesString[idx + 1] != "="):
-          result.append(currentAttribute)
+          (not attributesString[idx + 1].isspace() and attributesString[idx + 1] != "="):
+          if currentAttribute not in result:
+            result.append(currentAttribute)
           currentAttribute = ""
         idx += 1
         continue
       elif currentAttribute and currentChar == "=":
+        if idx == len(attributesString) - 1:
+          return []
         nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx + 1, len(attributesString))
         if nextNonSpaceCharIdx == -1:
           return []
@@ -243,7 +247,8 @@ def getListOfHtmlAttributes(attributesString):
         closingQuoteIdx = attributesString.find(quoteCharUsed, nextNonSpaceCharIdx + 1)
         if closingQuoteIdx == -1:
           return []
-        result.append(currentAttribute)
+        if currentAttribute not in result:
+          result.append(currentAttribute)
         currentAttribute = ""
         idx = closingQuoteIdx + 1
         continue
@@ -255,7 +260,7 @@ def getListOfHtmlAttributes(attributesString):
       currentAttribute += currentChar
       idx += 1
       continue
-  if currentAttribute:
+  if currentAttribute and currentAttribute not in result:
     result.append(currentAttribute)
   return result
 
