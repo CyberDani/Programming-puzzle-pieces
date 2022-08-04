@@ -120,7 +120,7 @@ def getMetaScreenOptimizedForMobile(indentDepth):
   return metaTag
 
 # <br\> <br\> <br\>
-def getHtmlNewLines(indentDepth, nrOfNewLines = 1):
+def getHtmlNewLines(indentDepth, nrOfNewLines=1):
   checks.checkIntIsBetween(nrOfNewLines, 1, 50)
   result = getEscapedTabs(indentDepth)
   for i in range(nrOfNewLines):
@@ -215,19 +215,52 @@ def getAttributeIdx(htmlAttributes, key):
   return firstIdx
 
 def getListOfHtmlAttributes(attributesString):
-  """Returns empty list if attribute not found and for empty string \n
+  """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:
      https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
   checks.checkIfString(attributesString, 0, 1000)
   result = []
   currentAttribute = ""
-  for idx in range(len(attributesString)):
+  idx = 0
+  while idx < len(attributesString):
     currentChar = attributesString[idx]
-    currentAttribute += attributesString[idx]
+    if currentChar.isspace() or currentChar == "=":
+      if currentAttribute and currentChar.isspace():
+        if idx + 1 == len(attributesString) or \
+            (not attributesString[idx + 1].isspace() and attributesString[idx + 1] != "="):
+          result.append(currentAttribute)
+          currentAttribute = ""
+        idx += 1
+        continue
+      elif currentAttribute and currentChar == "=":
+        nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx + 1, len(attributesString))
+        if nextNonSpaceCharIdx == -1:
+          return []
+        nextNonSpaceChar = attributesString[nextNonSpaceCharIdx]
+        if nextNonSpaceChar != "\"" and nextNonSpaceChar != "'":
+          return []
+        quoteCharUsed = nextNonSpaceChar
+        closingQuoteIdx = attributesString.find(quoteCharUsed, nextNonSpaceCharIdx + 1)
+        if closingQuoteIdx == -1:
+          return []
+        result.append(currentAttribute)
+        currentAttribute = ""
+        idx = closingQuoteIdx + 1
+        continue
+      elif not currentAttribute and currentChar.isspace():
+        idx += 1
+        continue
+      return []
+    else:
+      currentAttribute += currentChar
+      idx += 1
+      continue
+  if currentAttribute:
+    result.append(currentAttribute)
   return result
 
 # <htmlTag options>
-def getOpenedHtmlTag(htmlTag, options = ""):
+def getOpenedHtmlTag(htmlTag, options=""):
   checks.checkIfString(htmlTag, 1, 100)
   checks.checkIfString(options, 0, 500)
   checks.checkIfStringIsAlphaNumerical(htmlTag)

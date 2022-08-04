@@ -1173,21 +1173,7 @@ class HtmlBuilderTests(unittest.TestCase):
     with self.assertRaises(Exception):
       htmlBuilder.getListOfHtmlAttributes([])
 
-  def test_getListOfHtmlAttributes_emptyAndWhiteSpace(self):
-    attributes = htmlBuilder.getListOfHtmlAttributes("")
-    self.assertEqual(attributes, [])
-    attributes = htmlBuilder.getListOfHtmlAttributes(" ")
-    self.assertEqual(attributes, [])
-    attributes = htmlBuilder.getListOfHtmlAttributes("\t")
-    self.assertEqual(attributes, [])
-    attributes = htmlBuilder.getListOfHtmlAttributes("\n")
-    self.assertEqual(attributes, [])
-    attributes = htmlBuilder.getListOfHtmlAttributes("  \t\t\t\t \r\r  ")
-    self.assertEqual(attributes, [])
-    attributes = htmlBuilder.getListOfHtmlAttributes("\n      \t   \t        \n")
-    self.assertEqual(attributes, [])
-
-  def test_getListOfHtmlAttributes_emptyAndWhiteSpace(self):
+  def test_getListOfHtmlAttributes_onlyEmptyAndWhiteSpace(self):
     attributes = htmlBuilder.getListOfHtmlAttributes("")
     self.assertEqual(attributes, [])
     attributes = htmlBuilder.getListOfHtmlAttributes(" ")
@@ -1206,6 +1192,10 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(attributes, ["selected"])
     attributes = htmlBuilder.getListOfHtmlAttributes(" \n  \t selected \n\r \t ")
     self.assertEqual(attributes, ["selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("selected \n\r \t ")
+    self.assertEqual(attributes, ["selected"])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" \n  \t selected")
+    self.assertEqual(attributes, ["selected"])
     attributes = htmlBuilder.getListOfHtmlAttributes("style=\"float:right;margin:11px 14px 0 0;"
                                                      "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98\"")
     self.assertEqual(attributes, ["style"])
@@ -1215,6 +1205,15 @@ class HtmlBuilderTests(unittest.TestCase):
     attributes = htmlBuilder.getListOfHtmlAttributes(" \n\r style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
                                                "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98' \n\r ")
     self.assertEqual(attributes, ["style"])
+    attributes = htmlBuilder.getListOfHtmlAttributes(" \n\r style\t\t\t=\n'\t\tfloat:right;margin:11px 14px 0 0;"
+                                         "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98\t\t' \n\r ")
+    self.assertEqual(attributes, ["style"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\nproperty\n=\n\"\narticle:published_time\n\"\n")
+    self.assertEqual(attributes, ["property"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("\nproperty\n=\n\"\narticle:published_time\"")
+    self.assertEqual(attributes, ["property"])
+    attributes = htmlBuilder.getListOfHtmlAttributes("property\n=\n\"\narticle:published_time\n\"\n")
+    self.assertEqual(attributes, ["property"])
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):
