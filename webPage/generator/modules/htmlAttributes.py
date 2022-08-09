@@ -16,9 +16,9 @@ def getAttributeIdx(htmlAttributes, key):
     firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
   return firstIdx
 
-# TODO this function is too long, make it shorter
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
-  """Does not raise error if htmlAttributes is corrupt, it returns an empty list\n
+  """Does not raise error if htmlAttributes is corrupt, it returns **None**\n
+  Returns **None** if there is no attribute value, and an **empty list** if the value is empty or has only whitespaces\n
   Only the first declaration is taken (if there are multiple) as stated by the standard:
   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
   checks.checkIfString(htmlAttributes, 0, 800)
@@ -26,42 +26,12 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   result = []
   firstIdx = getAttributeIdx(htmlAttributes, key)
   if firstIdx == -1:
-    return result
-  startIdx = firstIdx + len(key)
-  if startIdx >= len(htmlAttributes):
-    return result
-  nonSpaceIdxAfterKey = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, len(htmlAttributes))
-  if nonSpaceIdxAfterKey == -1:
-    return result
-  firstCharAfterAttribute = htmlAttributes[nonSpaceIdxAfterKey]
-  if firstCharAfterAttribute != '=':
-    return result
-  startIdx = nonSpaceIdxAfterKey + 1
-  if len(htmlAttributes) == startIdx:
-    return result
-  firstNonSpaceIdxAfterEqual = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, len(htmlAttributes))
-  if firstNonSpaceIdxAfterEqual == -1:
-    return result
-  firstCharAfterEqual = htmlAttributes[firstNonSpaceIdxAfterEqual]
-  if firstCharAfterEqual != "'" and firstCharAfterEqual != "\"":
-    return result
-  startingQuoteIdx = firstNonSpaceIdxAfterEqual
-  quoteCharUsed = firstCharAfterEqual
-  startIdx = firstNonSpaceIdxAfterEqual + 1
-  if len(htmlAttributes) == startIdx:
-    return result
-  closingQuotePos = htmlAttributes.find(quoteCharUsed, startIdx)
-  if closingQuotePos == -1:
-    return result
-  if closingQuotePos == startIdx:
-    return result
-  valueIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, startIdx, closingQuotePos)
-  if valueIdx == -1:
-    return result
-  # TODO getFirstWhiteSpaceCharIdx
-  # TODO getFirstCharIdx(string, skip=[WhiteSpace, ","], find=[AnyChar, "="])
-  attrValues = htmlAttributes[startingQuoteIdx + 1: closingQuotePos]
-  values = attrValues.split()
+    return None
+  attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
+  if attributeValue is None:
+    return None
+  # TODO getSplitUniqueElements
+  values = attributeValue.split()
   for value in values:
     if value not in result:
       result.append(value)
@@ -135,6 +105,7 @@ there is no first index. \n
       return currentAttribute, None, attrStartIdx, len(attributesString) - 1
   return None, None, -1, -1
 
+# TODO getListOfHtmlAttributeNames
 def getListOfHtmlAttributes(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:

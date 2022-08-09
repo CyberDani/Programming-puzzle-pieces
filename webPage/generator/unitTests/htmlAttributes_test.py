@@ -115,79 +115,79 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_emptyAttributes(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("", "title")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("", "src")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_attrNotFound(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("rel=\"shortcut icon\" "
                                                              "href=\"img/favicon.ico\" type=\"image/x-icon\"", "title")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\""
                                                        "masthead_custom_styles\" is=\"custom-style\" id=\"ext-styles\" "
                                                        "nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(
                                                                               "src=\"jsbin/spf.vflset/spf.js\"", "alt")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"anim\"", "id")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"animated bold\"", "id")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("class=\"animated bold\" "
                                                                                 "selected class=\"active-tab\"", "id")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "upgrade")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "masthead")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "dark")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "shell")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "chunked")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "e")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "disable")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "clas")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("id=\"masthead\" "
                                             "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
                                             "disable-upgrade=\"true\"", "lot")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("_value=\"audi\"", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrIsNotKeyValue(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi\" selected",
                                                                                          "selected")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi\" selected "
                                                                                        "class=\"myClass\"", "selected")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("selected value=\"audi\"",
                                                                                          "selected")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("selected", "selected")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_emptyValue(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"\"", "value")
@@ -201,29 +201,29 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_corrupt(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"   ", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value= ", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value= \n \t ", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi'", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value='audi\"", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value \"audi\"", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value\"audi\"", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value 'audi'", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value'audi'", "value")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_quotes(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("value=\"audi\"", "value")
@@ -313,7 +313,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(attributes, ["add_search_params"])
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" class "
                               "method=\"get\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, [])
+    self.assertEqual(attributes, None)
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_valueRepeats(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey("action=\".\" "
@@ -367,6 +367,26 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_getNextHtmlAttribute_corrupt(self):
     attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("=", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("'", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("\"", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("'\"", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("\"'", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("\"\"", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("''", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("\"value\"", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("'value'", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("\"\"\"", 0)
+    self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
+    attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("'''", 0)
     self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
     attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("=value", 0)
     self.helper_getNextHtmlAttribute_testInvalidOutput(attributeName, attributeValue, startIdx, endIdx)
