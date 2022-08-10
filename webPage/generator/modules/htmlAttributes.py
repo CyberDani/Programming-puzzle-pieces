@@ -30,7 +30,7 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
   if attributeValue is None:
     return None
-  # TODO getSplitUniqueElements
+  # TODO getSplitUniqueElements(Char::WHITESPACE)
   values = attributeValue.split()
   for value in values:
     if value not in result:
@@ -106,7 +106,7 @@ there is no first index. \n
   return None, None, -1, -1
 
 # TODO getListOfHtmlAttributeNames
-def getListOfHtmlAttributes(attributesString):
+def getListOfHtmlAttributeNames(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:
      https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
