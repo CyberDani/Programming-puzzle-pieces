@@ -49,63 +49,44 @@ there is no first index. \n
   checks.checkIfString(attributesString, 0, 1000)
   checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
   attrStartIdx = -1
-  currentIdx = startIdx
+  currentIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
+  if currentIdx == -1:
+    return None, None, -1, -1
   currentAttribute = ""
-  lastEndIdx = -2
+  lastEndIdx = -1
+  equalFound = False
   while currentIdx < len(attributesString):
     currentChar = attributesString[currentIdx]
-    nextChar = None
-    if currentIdx + 1 != len(attributesString):
-      nextChar = attributesString[currentIdx + 1]
-    if not currentChar.isspace() and currentChar != "=":
-      if currentChar == "'" or currentChar == "\"":
+    # Equal
+    if currentChar == "=":
+      if equalFound or not currentAttribute:
         return None, None, -1, -1
+      equalFound = True
+    # Apostrophe
+    elif currentChar == "'" or currentChar == "\"":
+      if not equalFound:
+        return None, None, -1, -1
+      closingQuoteCharIdx = attributesString.find(currentChar, currentIdx + 1)
+      if closingQuoteCharIdx == -1:
+        return None, None, -1, -1
+      return currentAttribute, attributesString[currentIdx + 1:closingQuoteCharIdx], attrStartIdx, closingQuoteCharIdx
+    # Not equal, not apostrophe and not space
+    elif not currentChar.isspace():
+      if lastEndIdx > 0:
+        return currentAttribute, None, attrStartIdx, lastEndIdx
       if not currentAttribute:
         attrStartIdx = currentIdx
       currentAttribute += currentChar
-      currentIdx += 1
-      continue
-    if currentAttribute and currentChar.isspace():
-      if nextChar is None or (not nextChar.isspace() and nextChar != "="):
-        if nextChar != "'" and nextChar != "\"":
-          if lastEndIdx > 0:
-            return currentAttribute, None, attrStartIdx, lastEndIdx
-          else:
-            return currentAttribute, None, attrStartIdx, currentIdx - 1
-        else:
-          return None, None, -1, -1
-      if currentIdx > startIdx and not attributesString[currentIdx - 1].isspace():
-        lastEndIdx = currentIdx - 1
-      currentIdx += 1
-      continue
-    elif currentAttribute and currentChar == "=":
-      if currentIdx == len(attributesString) - 1:
-        return None, None, -1, -1
-      nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, currentIdx + 1,
-                                                                    len(attributesString))
-      if nextNonSpaceCharIdx == -1:
-        return None, None, -1, -1
-      nextNonSpaceChar = attributesString[nextNonSpaceCharIdx]
-      if nextNonSpaceChar != "\"" and nextNonSpaceChar != "'":
-        return None, None, -1, -1
-      quoteCharUsed = nextNonSpaceChar
-      closingQuoteIdx = attributesString.find(quoteCharUsed, nextNonSpaceCharIdx + 1)
-      if closingQuoteIdx == -1:
-        return None, None, -1, -1
-      return currentAttribute, attributesString[nextNonSpaceCharIdx+1:closingQuoteIdx], attrStartIdx, closingQuoteIdx
-    elif not currentAttribute and currentChar.isspace():
-      currentIdx += 1
-      continue
-    elif not currentAttribute and currentChar == "=":
-      return None, None, -1, -1
-  if currentAttribute:
-    if lastEndIdx > 0:
-      return currentAttribute, None, attrStartIdx, lastEndIdx
-    else:
-      return currentAttribute, None, attrStartIdx, len(attributesString) - 1
-  return None, None, -1, -1
+    # First space
+    elif currentChar.isspace() and not attributesString[currentIdx - 1].isspace():
+      lastEndIdx = currentIdx - 1
+    currentIdx += 1
+  if equalFound:
+    return None, None, -1, -1
+  if lastEndIdx > 0:
+    return currentAttribute, None, attrStartIdx, lastEndIdx
+  return currentAttribute, None, attrStartIdx, len(attributesString) - 1
 
-# TODO getListOfHtmlAttributeNames
 def getListOfHtmlAttributeNames(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:
