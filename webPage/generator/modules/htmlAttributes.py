@@ -3,8 +3,10 @@ from modules import stringUtil
 
 def getAttributeIdx(htmlAttributes, key):
   """Returns -1 if attribute not found and for empty string \n
+   Does not check for corrupt <htmlAttributes>, e.g.: \"key "invalid, no '=' before"\"\n
    Only the first declaration is taken (if there are multiple) as stated by the standard:
-   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
+   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
+   """
   checks.checkIfString(htmlAttributes, 0, 3000)
   checks.checkIfString(key, 0, 60)
   if not htmlAttributes or not key:
@@ -54,22 +56,22 @@ there is no first index. \n
     return None, None, -1, -1
   currentAttribute = ""
   lastEndIdx = -1
-  equalFound = False
   while currentIdx < len(attributesString):
     currentChar = attributesString[currentIdx]
     # Equal
     if currentChar == "=":
-      if equalFound or not currentAttribute:
+      if not currentAttribute:
         return None, None, -1, -1
-      equalFound = True
+      corrupt, firstQuoteIdx, secondQuoteIdx = getNextHtmlAttributeValueIfExists(attributesString, currentIdx)
+      if corrupt:
+        return None, None, -1, -1
+      return currentAttribute, attributesString[firstQuoteIdx + 1:secondQuoteIdx], attrStartIdx, secondQuoteIdx
     # Apostrophe
     elif currentChar == "'" or currentChar == "\"":
-      if not equalFound:
-        return None, None, -1, -1
-      closingQuoteCharIdx = attributesString.find(currentChar, currentIdx + 1)
-      if closingQuoteCharIdx == -1:
-        return None, None, -1, -1
-      return currentAttribute, attributesString[currentIdx + 1:closingQuoteCharIdx], attrStartIdx, closingQuoteCharIdx
+      return None, None, -1, -1
+    # First space
+    elif currentChar.isspace() and not attributesString[currentIdx - 1].isspace():
+      lastEndIdx = currentIdx - 1
     # Not equal, not apostrophe and not space
     elif not currentChar.isspace():
       if lastEndIdx > 0:
@@ -77,12 +79,7 @@ there is no first index. \n
       if not currentAttribute:
         attrStartIdx = currentIdx
       currentAttribute += currentChar
-    # First space
-    elif currentChar.isspace() and not attributesString[currentIdx - 1].isspace():
-      lastEndIdx = currentIdx - 1
     currentIdx += 1
-  if equalFound:
-    return None, None, -1, -1
   if lastEndIdx > 0:
     return currentAttribute, None, attrStartIdx, lastEndIdx
   return currentAttribute, None, attrStartIdx, len(attributesString) - 1
@@ -106,3 +103,31 @@ def getListOfHtmlAttributeNames(attributesString):
     idx = endIdx + 1
     continue
   return result
+
+# isInvalid, openingApostropheIdx, closingApostropheCharIdx
+def getNextHtmlAttributeValueIfExists(attributesString, startIdx):
+  """Raises error at empty string because <startIdx> cannot be set properly\n
+You DO NOT want to call this before checking for an attribute name first\n
+Return values:\n
+* corrupt : True | False
+* firstQuoteIdx, secondQuoteIdx: **-1** if corrupt or there is no attribute value """
+  checks.checkIfString(attributesString, 0, 1000)
+  checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
+  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
+  if firstNonSpaceCharIdx == -1:
+    return False, -1, -1
+  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
+  if firstNonSpaceChar != "=":
+    isCorrupt = firstNonSpaceChar == "'" or firstNonSpaceChar == "\""
+    return isCorrupt, -1, -1
+  if firstNonSpaceCharIdx == len(attributesString) - 1:
+    return True, -1, -1
+  nonSpaceCharIdxAfterEq = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, firstNonSpaceCharIdx + 1,
+                                                                   len(attributesString))
+  quoteChar = attributesString[nonSpaceCharIdxAfterEq]
+  if quoteChar != "'" and quoteChar != "\"":
+    return True, -1, -1
+  secondQuoteIdx = attributesString.find(quoteChar, nonSpaceCharIdxAfterEq + 1)
+  if secondQuoteIdx == -1:
+    return True, -1, -1
+  return False, nonSpaceCharIdxAfterEq, secondQuoteIdx
