@@ -953,3 +953,142 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(firstQuoteIdx, 3)
     self.assertEqual(secondQuoteIdx, 4)
 
+  def test_getNextHtmlAttributeName_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName(None, None)
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName(False, 0)
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName("= 'value'", True)
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName("= 'value'", 56)
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName("= 'value'", -1)
+
+  def test_getNextHtmlAttributeName_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getNextHtmlAttributeName("", 0)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("='value' ", 8)
+    self.assertFalse(corrupt)
+    self.assertIsNone(attributeName)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def helper_getNextHtmlAttributeName_checkIfNoName(self, corrupt, attributeName, firstCharIdx, lastCharIdx):
+    self.assertFalse(corrupt)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def helper_getNextHtmlAttributeName_checkIfCorrupt(self, corrupt, attributeName, firstCharIdx, lastCharIdx):
+    self.assertTrue(corrupt)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def test_getNextHtmlAttributeName_spaces(self):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \t\t\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \t\t \n ", 3)
+    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
+
+  def test_getNextHtmlAttributeName_corrupt(self):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("=", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("= ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" =", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" = ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t=\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("''''''''", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" '", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" ' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t'\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\"", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \"", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t\"\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("='value'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" = ' value ' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("=value'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("class'myClass'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+
+  def test_getNextHtmlAttributeName_attrNameFound(self):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("X", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "X")
+    self.assertEqual(firstCharIdx, 0)
+    self.assertEqual(lastCharIdx, 0)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\tX\t\t", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "X")
+    self.assertEqual(firstCharIdx, 2)
+    self.assertEqual(lastCharIdx, 2)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\tX\t\tY Z", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "X")
+    self.assertEqual(firstCharIdx, 2)
+    self.assertEqual(lastCharIdx, 2)
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("selected", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "selected")
+    self.assertEqual(firstCharIdx, 0)
+    self.assertEqual(lastCharIdx, len("selected") - 1)
+    string = "\t\tselected\n\n"
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "selected")
+    self.assertEqual(string[firstCharIdx], "s")
+    self.assertEqual(string[lastCharIdx], "d")
+    string = " class='my-Class' \t selected"
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "class")
+    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+    string = "\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected"
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "class")
+    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+    string = "multiple words in this string"
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "multiple")
+    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+
+  def test_getNextHtmlAttributeName_nonZeroStartIdx(self):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("selected", 3)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "ected")
+    self.assertEqual(firstCharIdx, 3)
+    self.assertEqual(lastCharIdx, len("selected") - 1)
+    string = "multiple words in this string"
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 22)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "string")
+    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)

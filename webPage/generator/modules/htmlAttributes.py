@@ -39,7 +39,6 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
       result.append(value)
   return result
 
-# TODO this function is too long, make it shorter
 def getNextHtmlAttribute(attributesString, startIdx):
   """ Raises exception if <startIdx> is not valid. This means that <attributesString> cannot be an empty string as
 there is no first index. \n
@@ -48,41 +47,17 @@ there is no first index. \n
 \n Return values:
 * <attributeName>, <attributeValue> : **None** if no attribute was found or <attributesString> is corrupt
 * <attrStartIdx>, <attrEndIdx> : inclusive, **-1** if no attribute was found or attributesString is corrupt"""
-  checks.checkIfString(attributesString, 0, 1000)
-  checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
-  attrStartIdx = -1
-  currentIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
-  if currentIdx == -1:
+  corrupt, attributeName, firstCharIdx, lastCharIdx = getNextHtmlAttributeName(attributesString, startIdx)
+  if corrupt or firstCharIdx == -1:
     return None, None, -1, -1
-  currentAttribute = ""
-  lastEndIdx = -1
-  while currentIdx < len(attributesString):
-    currentChar = attributesString[currentIdx]
-    # Equal
-    if currentChar == "=":
-      if not currentAttribute:
-        return None, None, -1, -1
-      corrupt, firstQuoteIdx, secondQuoteIdx = getNextHtmlAttributeValueIfExists(attributesString, currentIdx)
-      if corrupt:
-        return None, None, -1, -1
-      return currentAttribute, attributesString[firstQuoteIdx + 1:secondQuoteIdx], attrStartIdx, secondQuoteIdx
-    # Apostrophe
-    elif currentChar == "'" or currentChar == "\"":
-      return None, None, -1, -1
-    # First space
-    elif currentChar.isspace() and not attributesString[currentIdx - 1].isspace():
-      lastEndIdx = currentIdx - 1
-    # Not equal, not apostrophe and not space
-    elif not currentChar.isspace():
-      if lastEndIdx > 0:
-        return currentAttribute, None, attrStartIdx, lastEndIdx
-      if not currentAttribute:
-        attrStartIdx = currentIdx
-      currentAttribute += currentChar
-    currentIdx += 1
-  if lastEndIdx > 0:
-    return currentAttribute, None, attrStartIdx, lastEndIdx
-  return currentAttribute, None, attrStartIdx, len(attributesString) - 1
+  if lastCharIdx == len(attributesString) - 1:
+    return attributeName, None, firstCharIdx, lastCharIdx
+  corrupt, firstQuoteIdx, secondQuoteIdx = getNextHtmlAttributeValueIfExists(attributesString, lastCharIdx + 1)
+  if corrupt:
+    return None, None, -1, -1
+  if firstQuoteIdx == -1:
+    return attributeName, None, firstCharIdx, lastCharIdx
+  return attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
 def getListOfHtmlAttributeNames(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
@@ -104,10 +79,10 @@ def getListOfHtmlAttributeNames(attributesString):
     continue
   return result
 
-# isInvalid, openingApostropheIdx, closingApostropheCharIdx
+# TODO see if you can make it prettier
 def getNextHtmlAttributeValueIfExists(attributesString, startIdx):
   """Raises error at empty string because <startIdx> cannot be set properly\n
-You DO NOT want to call this before checking for an attribute name first\n
+You DO NOT want to call this before checking for an attribute name first, e.g. calling *getNextHtmlAttributeName()*\n
 Return values:\n
 * corrupt : True | False
 * firstQuoteIdx, secondQuoteIdx: **-1** if corrupt or there is no attribute value """
@@ -131,3 +106,31 @@ Return values:\n
   if secondQuoteIdx == -1:
     return True, -1, -1
   return False, nonSpaceCharIdxAfterEq, secondQuoteIdx
+
+# TODO see if you can make it look prettier
+def getNextHtmlAttributeName(attributesString, startIdx):
+  """Raises error at empty string because <startIdx> cannot be set properly\n
+You DO NOT want to call this before checking for an attribute name first, e.g. calling *getNextHtmlAttributeName()*\n
+Return values:\n
+* corrupt : True | False
+* attributeName: **None** if corrupt or there is no attribute name
+* firstCharIdx, lastCharIdx: **-1** if corrupt or there is no attribute name """
+  checks.checkIfString(attributesString, 0, 1000)
+  checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
+  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
+  if firstNonSpaceCharIdx == -1:
+    return False, None, -1, -1
+  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
+  if firstNonSpaceChar == "=" or firstNonSpaceChar == "'" or firstNonSpaceChar == "\"":
+    return True, None, -1, -1
+  currentIdx = firstNonSpaceCharIdx
+  attributeName = ""
+  while currentIdx < len(attributesString):
+    currentChar = attributesString[currentIdx]
+    if currentChar.isspace() or currentChar == "=":
+      return False, attributeName, firstNonSpaceCharIdx, currentIdx-1
+    if currentChar == "'" or currentChar == '"':
+      return True, None, -1, -1
+    attributeName += currentChar
+    currentIdx += 1
+  return False, attributeName, firstNonSpaceCharIdx, len(attributesString) - 1
