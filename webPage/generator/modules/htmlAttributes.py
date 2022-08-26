@@ -1,6 +1,7 @@
 from modules import checks
 from modules import stringUtil
 
+# TODO add corrupt return value
 def getAttributeIdx(htmlAttributes, key):
   """Returns -1 if attribute not found and for empty string \n
    Does not check for corrupt <htmlAttributes>, e.g.: \"key "invalid, no '=' before"\"\n
@@ -19,6 +20,7 @@ def getAttributeIdx(htmlAttributes, key):
     firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
   return firstIdx
 
+# TODO add corrupt return variable after you fix the unsure situation
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
   """Returns **None** if corrupt or there is no attribute value. Returns an **empty list** if the value is empty
   or has only whitespaces\n
@@ -46,31 +48,32 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
       result.append(value)
   return result
 
-# TODO return None if corrupt
 def getListOfHtmlAttributeNames(attributesString):
-  """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
-     Only the first declaration is taken (if there are multiple) as stated by the standard:
-     https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
+  """ Only the first declaration is taken per each attribute name (if there are multiple) as stated by the standard:
+https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
+\n Return values:
+* <corrupt>: True | False
+* <attributeNames>: empty list if corrupt or attribute not found"""
   checks.checkIfString(attributesString, 0, 1000)
   result = []
+  corruptResult = (True, [])
   idx = 0
   while idx < len(attributesString):
     corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(attributesString, idx)
     if corrupt:
-      return []
+      return corruptResult
     if attributeName is None:
       nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx, len(attributesString))
       if nextNonSpaceCharIdx != -1:
-        return []
+        return False, []
       break
     if attributeName not in result:
       result.append(attributeName)
     idx = endIdx + 1
     continue
-  return result
+  return False, result
 
 
-# TODO: add corrupt return variable
 def getNextHtmlAttribute(attributesString, startIdx):
   """ Raises exception if <startIdx> is not valid. This means that <attributesString> cannot be an empty string as
 there is no first index. \n
