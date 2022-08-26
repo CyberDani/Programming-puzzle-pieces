@@ -1,25 +1,42 @@
 from modules import checks
 from modules import stringUtil
 
-# TODO add corrupt return value
 def getAttributeIdx(htmlAttributes, key):
-  """Returns -1 if attribute not found and for empty string \n
-   Does not check for corrupt <htmlAttributes>, e.g.: \"key "invalid, no '=' before"\"\n
-   Only the first declaration is taken (if there are multiple) as stated by the standard:
-   https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
-   """
+  """Only the first declaration is taken (if there are multiple) as stated by the standard:
+https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
+\n Return values:
+* corrupt: True | False *(does not validate the attribute value)*
+* firstIdx: **-1** if attribute not found or corrupt """
   checks.checkIfString(htmlAttributes, 0, 3000)
   checks.checkIfString(key, 0, 60)
-  notFoundOrEmptyStringResult = -1
+  notFoundResult = (False, -1)
+  corruptResult = (True, -1)
   if not htmlAttributes or not key:
-    return notFoundOrEmptyStringResult
-  # TODO delimitedFind(string, key,  before=[whitespace, "<"], after=[whitespace, "="], 0, len(string))
-  firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
-  while firstIdx != -1 and firstIdx + len(key) < len(htmlAttributes) \
-          and not htmlAttributes[firstIdx + len(key)].isspace() and htmlAttributes[firstIdx + len(key)] != "=":
-    firstIdx = stringUtil.beforeWhitespaceDelimitedFind(htmlAttributes, key, firstIdx + 1, len(htmlAttributes))
-  return firstIdx
+    return notFoundResult
+  # TODO delimitedFind(string, key,  before=[whitespace, nothing, "<"], after=[whitespace, nothing, "="],
+  #                   corruptIfBefore = [",'] corruptIfAfter = [",'], 0, len(str))
+  firstIdx = htmlAttributes.find(key, 0, len(htmlAttributes))
+  while firstIdx != -1:
+    # TODO checkAttributeNameFromRight + checkAttributeNameFromLeft -> invalid, ok
+    # Right
+    thereIsNextChar = firstIdx + len(key) < len(htmlAttributes)
+    firstCharAfterKey = None
+    if thereIsNextChar:
+      firstCharAfterKey = htmlAttributes[firstIdx + len(key)]
+    if thereIsNextChar and (firstCharAfterKey == "'" or firstCharAfterKey == '"'):
+      return corruptResult
+    validatedFromRight = not thereIsNextChar or firstCharAfterKey == "=" or firstCharAfterKey.isspace()
+    # Left
+    if firstIdx > 0 and (htmlAttributes[firstIdx - 1] == '"' or htmlAttributes[firstIdx - 1] == "'"):
+      return corruptResult
+    validatedFromLeft = firstIdx == 0 or htmlAttributes[firstIdx - 1].isspace()
+    if validatedFromRight and validatedFromLeft:
+      return False, firstIdx
+    firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+  return notFoundResult
 
+# TODO test "class'myclass' class='myclass' -- should return corrupt
+#  without any error"
 # TODO add corrupt return variable after you fix the unsure situation
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
   """Returns **None** if corrupt or there is no attribute value. Returns an **empty list** if the value is empty
@@ -31,11 +48,11 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   result = []
   notFoundResult = None
   corruptResult = None
-  # TODO eliminate this unsure situation
-  notFoundOrCorruptResult = None
-  firstIdx = getAttributeIdx(htmlAttributes, key)
+  corrupt, firstIdx = getAttributeIdx(htmlAttributes, key)
+  if corrupt:
+    return corruptResult
   if firstIdx == -1:
-    return notFoundOrCorruptResult
+    return notFoundResult
   corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
   if corrupt:
     return corruptResult
@@ -129,11 +146,10 @@ Return values:\n
 # TODO see if you can make it look prettier
 def getNextHtmlAttributeName(attributesString, startIdx):
   """Raises error at empty string because <startIdx> cannot be set properly\n
-You DO NOT want to call this before checking for an attribute name first, e.g. calling *getNextHtmlAttributeName()*\n
 Return values:\n
-* corrupt : True | False
-* attributeName: **None** if corrupt or there is no attribute name
-* firstCharIdx, lastCharIdx: **-1** if corrupt or there is no attribute name """
+* corrupt : True | False *(does not validate the attribute value)*
+* attributeName: **None** if corrupt or there is no attribute
+* firstCharIdx, lastCharIdx: **-1** if corrupt or there is no attribute """
   checks.checkIfString(attributesString, 0, 1000)
   checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
   corruptResult = (True, None, -1, -1)
