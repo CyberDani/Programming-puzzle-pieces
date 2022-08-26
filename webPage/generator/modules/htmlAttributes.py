@@ -27,13 +27,18 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   checks.checkIfString(htmlAttributes, 0, 800)
   checks.checkIfString(key, 1, 30)
   result = []
+  notFoundResult = None
+  corruptResult = None
+  # TODO eliminate this unsure situation
   notFoundOrCorruptResult = None
   firstIdx = getAttributeIdx(htmlAttributes, key)
   if firstIdx == -1:
     return notFoundOrCorruptResult
-  attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
+  corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
+  if corrupt:
+    return corruptResult
   if attributeValue is None:
-    return notFoundOrCorruptResult
+    return notFoundResult
   # TODO getSplitUniqueElements(Char::WHITESPACE)
   values = attributeValue.split()
   for value in values:
@@ -41,6 +46,7 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
       result.append(value)
   return result
 
+# TODO return None if corrupt
 def getListOfHtmlAttributeNames(attributesString):
   """Returns empty list if attribute not found, for empty string and if **<attributesString>** is corrupt \n
      Only the first declaration is taken (if there are multiple) as stated by the standard:
@@ -49,7 +55,9 @@ def getListOfHtmlAttributeNames(attributesString):
   result = []
   idx = 0
   while idx < len(attributesString):
-    attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(attributesString, idx)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(attributesString, idx)
+    if corrupt:
+      return []
     if attributeName is None:
       nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx, len(attributesString))
       if nextNonSpaceCharIdx != -1:
@@ -61,28 +69,31 @@ def getListOfHtmlAttributeNames(attributesString):
     continue
   return result
 
+
+# TODO: add corrupt return variable
 def getNextHtmlAttribute(attributesString, startIdx):
   """ Raises exception if <startIdx> is not valid. This means that <attributesString> cannot be an empty string as
 there is no first index. \n
 Only the first attribute is taken and validated \n
 \n Return values:
+* <corrupt>: True | False
 * <attributeName>, <attributeValue> : **None** if no attribute was found or <attributesString> is corrupt
 * <attrStartIdx>, <attrEndIdx> : inclusive, **-1** if no attribute was found or attributesString is corrupt"""
-  noAttributeResult = (None, None, -1, -1)
-  corruptResult = (None, None, -1, -1)
+  noAttributeResult = (False, None, None, -1, -1)
+  corruptResult = (True, None, None, -1, -1)
   corrupt, attributeName, firstCharIdx, lastCharIdx = getNextHtmlAttributeName(attributesString, startIdx)
   if corrupt:
     return corruptResult
   if firstCharIdx == -1:
     return noAttributeResult
   if lastCharIdx == len(attributesString) - 1:
-    return attributeName, None, firstCharIdx, lastCharIdx
+    return False, attributeName, None, firstCharIdx, lastCharIdx
   corrupt, firstQuoteIdx, secondQuoteIdx = getNextHtmlAttributeValueIfExists(attributesString, lastCharIdx + 1)
   if corrupt:
     return corruptResult
   if firstQuoteIdx == -1:
-    return attributeName, None, firstCharIdx, lastCharIdx
-  return attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
+    return False, attributeName, None, firstCharIdx, lastCharIdx
+  return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
 # TODO see if you can make it prettier
 def getNextHtmlAttributeValueIfExists(attributesString, startIdx):
