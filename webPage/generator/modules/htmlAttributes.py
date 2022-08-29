@@ -115,19 +115,19 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, firstIdx
   return notFoundResult
 
-# TODO test "class'myclass' class='myclass' -- should return corrupt
-#  without any error"
-# TODO add corrupt return variable after you fix the unsure situation
+# TODO test 'class="note"id="red"' below functions, it is valid HTML even if there is no space in ' note"id '
+
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
-  """Returns **None** if corrupt or there is no attribute value. Returns an **empty list** if the value is empty
-  or has only whitespaces\n
-  Only the first declaration is taken (if there are multiple) as stated by the standard:
-  https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html"""
+  """Only the first declaration is taken (if there are multiple) as stated by the standard:
+https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
+\n Return values:
+* <corrupt>: True | False
+* <values>: **None** if corrupt or attribute name not found, empty list if the value is empty or whitspace"""
   checks.checkIfString(htmlAttributes, 0, 800)
   checks.checkIfString(key, 1, 30)
   result = []
-  notFoundResult = None
-  corruptResult = None
+  notFoundResult = (False, None)
+  corruptResult = (True, None)
   corrupt, firstIdx = getAttributeIdx(htmlAttributes, key)
   if corrupt:
     return corruptResult
@@ -143,7 +143,7 @@ def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttribu
   for value in values:
     if value not in result:
       result.append(value)
-  return result
+  return False, result
 
 def getListOfHtmlAttributeNames(attributesString):
   """ Only the first declaration is taken per each attribute name (if there are multiple) as stated by the standard:
