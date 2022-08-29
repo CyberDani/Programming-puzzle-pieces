@@ -7,6 +7,84 @@ from modules import stringUtil
 
 class StringUtilTests(unittest.TestCase):
 
+  def test_getNextChar_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar("Chuck Norris", None)
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar(False, True)
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar(None, 0)
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar("Dynamic", -1)
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar("Generation", 56)
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar("012345", 6)
+
+  def test_getNextChar_emptyString(self):
+    with self.assertRaises(Exception):
+      stringUtil.getNextChar("", 0)
+
+  def test_getNextChar_noNextChar(self):
+    char = stringUtil.getNextChar("012345", 5)
+    self.assertEqual(char, None)
+    char = stringUtil.getNextChar("Q", 0)
+    self.assertEqual(char, None)
+    char = stringUtil.getNextChar("oO", 1)
+    self.assertEqual(char, None)
+
+  def test_getNextChar_examples(self):
+    char = stringUtil.getNextChar("Ex", 0)
+    self.assertEqual(char, "x")
+    char = stringUtil.getNextChar("Explore", 0)
+    self.assertEqual(char, "x")
+    char = stringUtil.getNextChar("ABC", 1)
+    self.assertEqual(char, "C")
+    char = stringUtil.getNextChar("Generator", 1)
+    self.assertEqual(char, "n")
+    char = stringUtil.getNextChar("0123456789", 8)
+    self.assertEqual(char, "9")
+    char = stringUtil.getNextChar("0123456789", 4)
+    self.assertEqual(char, "5")
+
+  def test_getPreviousChar_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar("Chuck Norris", None)
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar(False, True)
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar(None, 0)
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar("Dynamic", -1)
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar("Generation", 56)
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar("012345", 6)
+
+  def test_getPreviousChar_emptyString(self):
+    with self.assertRaises(Exception):
+      stringUtil.getPreviousChar("", 0)
+
+  def test_getPreviousChar_noPrevChar(self):
+    char = stringUtil.getPreviousChar("tomato sauce", 0)
+    self.assertEqual(char, None)
+    char = stringUtil.getPreviousChar("Q", 0)
+    self.assertEqual(char, None)
+    char = stringUtil.getPreviousChar("oO", 0)
+    self.assertEqual(char, None)
+
+  def test_getNextChar_examples(self):
+    char = stringUtil.getPreviousChar("Ex", 1)
+    self.assertEqual(char, "E")
+    char = stringUtil.getPreviousChar("Explore", 1)
+    self.assertEqual(char, "E")
+    char = stringUtil.getPreviousChar("ABC", 2)
+    self.assertEqual(char, "B")
+    char = stringUtil.getPreviousChar("0123456789", 9)
+    self.assertEqual(char, "8")
+    char = stringUtil.getPreviousChar("0123456789", 4)
+    self.assertEqual(char, "3")
+
   def test_getStringStartsWithEndsWith_nonSense(self):
     with self.assertRaises(Exception):
       stringUtil.getStringStartsWithEndsWithNoOverlap(None, None, None)

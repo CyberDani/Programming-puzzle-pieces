@@ -1,8 +1,25 @@
 from modules import checks
 
-# <endsWithStr> must be after <startsWithStr>
-# Return empty string if 
+def getNextChar(string, index):
+  """Returns **None** if there is no next char. \n
+  Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(string, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(string) - 1)
+  if index == len(string) - 1:
+    return None
+  return string[index + 1]
+
+def getPreviousChar(string, index):
+  """Returns **None** if there is no previous char. \n
+  Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(string, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(string) - 1)
+  if index == 0:
+    return None
+  return string[index - 1]
+
 def getStringStartsWithEndsWithNoOverlap(src, startsWithStr, endsWithStr):
+  """Returns empty string if not found."""
   checks.checkIfString(src, 2, 500)
   checks.checkIfString(startsWithStr, 1, 500)
   checks.checkIfString(endsWithStr, 1, 500)

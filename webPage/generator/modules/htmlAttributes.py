@@ -18,22 +18,8 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
   #                   corruptIfBefore = [",'] corruptIfAfter = [",'], 0, len(str))
   firstIdx = htmlAttributes.find(key, 0, len(htmlAttributes))
   while firstIdx != -1:
-    # TODO getNextChar
-    thereIsNextChar = firstIdx + len(key) < len(htmlAttributes)
-    firstCharAfterKey = None
-    if thereIsNextChar:
-      firstCharAfterKey = htmlAttributes[firstIdx + len(key)]
-    # TODO getPrevChar
-    thereIsBeforeChar = firstIdx > 0
-    firstCharBeforeKey = None
-    if thereIsBeforeChar:
-      firstCharBeforeKey = htmlAttributes[firstIdx - 1]
-
-    # early continue
-    if (firstCharBeforeKey is not None and not firstCharBeforeKey.isspace()
-        and firstCharBeforeKey != "'" and firstCharBeforeKey != '"' and firstCharBeforeKey != '=') or \
-        (firstCharAfterKey is not None and not firstCharAfterKey.isspace()
-         and firstCharAfterKey != "'" and firstCharAfterKey != '"' and firstCharAfterKey != '='):
+    # continue if not a full word
+    if not stringIsHtmlDelimited(htmlAttributes, firstIdx, len(key)):
       firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
       continue
 
@@ -126,13 +112,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
       firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
       continue
 
-    # Right delimited check
-    validatedFromRight = firstCharAfterKey is None or firstCharAfterKey == "=" or firstCharAfterKey.isspace()
-    # Left delimited check
-    validatedFromLeft = firstIdx == 0 or firstCharBeforeKey.isspace()
-    if validatedFromRight and validatedFromLeft:
-      return False, firstIdx
-    firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+    return False, firstIdx
   return notFoundResult
 
 # TODO test "class'myclass' class='myclass' -- should return corrupt
@@ -216,6 +196,7 @@ Only the first attribute is taken and validated \n
   return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
 # TODO see if you can make it prettier
+# TODO use corruptResult as for the other functions
 def getNextHtmlAttributeValueIfExists(attributesString, startIdx):
   """Raises error at empty string because <startIdx> cannot be set properly\n
 You DO NOT want to call this before checking for an attribute name first, e.g. calling *getNextHtmlAttributeName()*\n
@@ -270,3 +251,26 @@ Return values:\n
     attributeName += currentChar
     currentIdx += 1
   return False, attributeName, firstNonSpaceCharIdx, len(attributesString) - 1
+
+def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
+  """Intended for full word check in case of HTML attribute names and values. \n
+Raises exception for empty string because the index cannot be set properly."""
+  return htmlDelimitedFromLeft(htmlString, firstCharIdx) and \
+         htmlDelimitedFromRight(htmlString, firstCharIdx + lengthOfString - 1)
+
+def htmlDelimitedFromLeft(htmlString, index):
+  """Intended for full word check in case of HTML attribute names and values. \n
+Raises exception for empty string because the index cannot be set properly."""
+  previousChar = stringUtil.getPreviousChar(htmlString, index)
+  return previousChar is None or charIsHtmlDelimiter(previousChar)
+
+def htmlDelimitedFromRight(htmlString, index):
+  """Intended for full word check in case of HTML attribute names and values. \n
+Raises exception for empty string because the index cannot be set properly."""
+  nextChar = stringUtil.getNextChar(htmlString, index)
+  return nextChar is None or charIsHtmlDelimiter(nextChar)
+
+def charIsHtmlDelimiter(ch):
+  """HTML attribute delimiters: Whitespace, equal, single-quote, double-quote"""
+  checks.checkIfChar(ch)
+  return ch.isspace() or ch == "=" or ch == '"' or ch == "'"

@@ -1193,3 +1193,197 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(attributeName, "string")
     self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+  def test_htmlDelimitedFromLeft_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft(False, 0)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft("This is a string sample", None)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft(0, "Something")
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft("Something", -1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft("Something", 341)
+
+  def test_htmlDelimitedFromLeft_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromLeft("", 0)
+
+  def test_htmlDelimitedFromLeft_indexZero(self):
+    self.assertTrue(attr.htmlDelimitedFromLeft("Q", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft(" Q", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("ab", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("a b", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft(" a b ", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("abc", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("'abc'", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("a b c", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft(" a b c ", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("heyho-engineer", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft("heyho engineer", 0))
+    self.assertTrue(attr.htmlDelimitedFromLeft(" heyho engineer ", 0))
+
+  def test_htmlDelimitedFromLeft_notDelimitated(self):
+    self.assertFalse(attr.htmlDelimitedFromLeft("special-table", 8))
+    self.assertFalse(attr.htmlDelimitedFromLeft("XtableX", 4))
+    self.assertFalse(attr.htmlDelimitedFromLeft("XtableX", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("[table]", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("[ table ]", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft(",'table','span'", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("(table)", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("-table-", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("<table>", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("<a href='img/logo.png'>", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("fa fa-btn fa-lg", 1))
+    self.assertFalse(attr.htmlDelimitedFromLeft("fa fa-btn fa-lg", 6))
+
+  def test_htmlDelimitedFromLeft_delimitated(self):
+    self.assertTrue(attr.htmlDelimitedFromLeft(" my-class", 1))
+    self.assertTrue(attr.htmlDelimitedFromLeft("class-1 my-class", 8))
+    self.assertTrue(attr.htmlDelimitedFromLeft("class='my-class'", 7))
+    self.assertTrue(attr.htmlDelimitedFromLeft('class="my-class"', 7))
+    self.assertTrue(attr.htmlDelimitedFromLeft("class='my-class'", 6))
+    self.assertTrue(attr.htmlDelimitedFromLeft('class="my-class"', 6))
+    self.assertTrue(attr.htmlDelimitedFromLeft("=2", 1))
+
+  def test_htmlDelimitedFromRight_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight(False, 0)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight("This is a string sample", None)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight(0, "Something")
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight("Something", -1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight("Something", 341)
+
+  def test_htmlDelimitedFromRight_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFromRight("", 0)
+
+  def test_htmlDelimitedFromRight_indexOfLastCharacter(self):
+    self.assertTrue(attr.htmlDelimitedFromRight("Q", 0))
+    self.assertTrue(attr.htmlDelimitedFromRight(" Q", 1))
+    self.assertTrue(attr.htmlDelimitedFromRight("ab", 1))
+    self.assertTrue(attr.htmlDelimitedFromRight("a b", 2))
+    self.assertTrue(attr.htmlDelimitedFromRight(" a b ", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight("abc", 2))
+    self.assertTrue(attr.htmlDelimitedFromRight("'abc'", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight("a b c", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight(" a b c ", 6))
+    self.assertTrue(attr.htmlDelimitedFromRight("heyho-engineer", 13))
+    self.assertTrue(attr.htmlDelimitedFromRight("heyho engineer", 13))
+    self.assertTrue(attr.htmlDelimitedFromRight(" heyho engineer ", 15))
+
+  def test_htmlDelimitedFromRight_notDelimitated(self):
+    self.assertFalse(attr.htmlDelimitedFromRight("special-table", 6))
+    self.assertFalse(attr.htmlDelimitedFromRight("tableX", 4))
+    self.assertFalse(attr.htmlDelimitedFromRight("table_X", 1))
+    self.assertFalse(attr.htmlDelimitedFromRight("table@X", 1))
+    self.assertFalse(attr.htmlDelimitedFromRight("[table]", 5))
+    self.assertFalse(attr.htmlDelimitedFromRight("'table','span'", 6))
+    self.assertFalse(attr.htmlDelimitedFromRight("(table)", 5))
+    self.assertFalse(attr.htmlDelimitedFromRight("-table-", 5))
+    self.assertFalse(attr.htmlDelimitedFromRight("<table>", 5))
+    self.assertFalse(attr.htmlDelimitedFromRight("<a xhref='img/logo.png'>", 3))
+    self.assertFalse(attr.htmlDelimitedFromRight("fa fa-btn fa-lg", 0))
+    self.assertFalse(attr.htmlDelimitedFromRight("fa fa-btn fa-lg", 4))
+
+  def test_htmlDelimitedFromRight_delimitated(self):
+    self.assertTrue(attr.htmlDelimitedFromRight("my-class ", 7))
+    self.assertTrue(attr.htmlDelimitedFromRight("class-1 my-class", 6))
+    self.assertTrue(attr.htmlDelimitedFromRight("class='my-class'", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight("class'my-class'", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight("class\"my-class\"", 4))
+    self.assertTrue(attr.htmlDelimitedFromRight("class='my-class'", 5))
+    self.assertTrue(attr.htmlDelimitedFromRight('class="my-class"', 5))
+    self.assertTrue(attr.htmlDelimitedFromRight("  class='my-class'", 0))
+    self.assertTrue(attr.htmlDelimitedFromRight(" 'my-class'", 0))
+    self.assertTrue(attr.htmlDelimitedFromRight(" \"my-class\"", 0))
+    self.assertTrue(attr.htmlDelimitedFromRight("class='my-class'", 14))
+    self.assertTrue(attr.htmlDelimitedFromRight("class='my-class your-class'", 14))
+    self.assertTrue(attr.htmlDelimitedFromRight('class="my-class"', 14))
+    self.assertTrue(attr.htmlDelimitedFromRight("=2 ", 1))
+
+  def test_charIsHtmlDelimiter_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.charIsHtmlDelimiter(None)
+    with self.assertRaises(Exception):
+      attr.charIsHtmlDelimiter(12)
+    with self.assertRaises(Exception):
+      attr.charIsHtmlDelimiter(True)
+    with self.assertRaises(Exception):
+      attr.charIsHtmlDelimiter([])
+    with self.assertRaises(Exception):
+      attr.charIsHtmlDelimiter("string")
+
+  def test_charIsHtmlDelimiter_delimiter(self):
+    self.assertTrue(attr.charIsHtmlDelimiter("="))
+    self.assertTrue(attr.charIsHtmlDelimiter("'"))
+    self.assertTrue(attr.charIsHtmlDelimiter('"'))
+    self.assertTrue(attr.charIsHtmlDelimiter(" "))
+    self.assertTrue(attr.charIsHtmlDelimiter("\t"))
+    self.assertTrue(attr.charIsHtmlDelimiter("\r"))
+    self.assertTrue(attr.charIsHtmlDelimiter("\n"))
+
+  def test_charIsHtmlDelimiter_notDelimiter(self):
+    self.assertFalse(attr.charIsHtmlDelimiter("<"))
+    self.assertFalse(attr.charIsHtmlDelimiter(">"))
+    self.assertFalse(attr.charIsHtmlDelimiter("["))
+    self.assertFalse(attr.charIsHtmlDelimiter("]"))
+    self.assertFalse(attr.charIsHtmlDelimiter("("))
+    self.assertFalse(attr.charIsHtmlDelimiter(")"))
+    self.assertFalse(attr.charIsHtmlDelimiter("0"))
+    self.assertFalse(attr.charIsHtmlDelimiter("a"))
+    self.assertFalse(attr.charIsHtmlDelimiter("Z"))
+    self.assertFalse(attr.charIsHtmlDelimiter("_"))
+    self.assertFalse(attr.charIsHtmlDelimiter("-"))
+    self.assertFalse(attr.charIsHtmlDelimiter("#"))
+    self.assertFalse(attr.charIsHtmlDelimiter("."))
+
+  def test_stringIsHtmlDelimited_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.stringIsHtmlDelimited("string", 0, False)
+    with self.assertRaises(Exception):
+      attr.stringIsHtmlDelimited("string", True, 2)
+    with self.assertRaises(Exception):
+      attr.stringIsHtmlDelimited(2341, 0, 2)
+    with self.assertRaises(Exception):
+      attr.stringIsHtmlDelimited(False, True, False)
+    with self.assertRaises(Exception):
+      attr.stringIsHtmlDelimited(None, None, None)
+
+  def test_stringIsHtmlDelimited_delimited(self):
+    self.assertTrue(attr.stringIsHtmlDelimited("012345678", 0, 9))
+    self.assertTrue(attr.stringIsHtmlDelimited("0", 0, 1))
+    self.assertTrue(attr.stringIsHtmlDelimited("01", 0, 2))
+    self.assertTrue(attr.stringIsHtmlDelimited("012", 0, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc def ghi", 0, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc def ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc def ghi", 8, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc=def=ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("=abc=def=ghi=", 5, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc'def'ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc\"def\"ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc'def\"ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc\"def'ghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc\tdef\tghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc\tdef\nghi", 4, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("abc'''def'''ghi", 6, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("'abc' 'def' 'ghi'", 7, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("'abc' =def' 'ghi'", 7, 3))
+    self.assertTrue(attr.stringIsHtmlDelimited("'abc' 'def= 'ghi'", 7, 3))
+
+  def test_stringIsHtmlDelimited_notDelimited(self):
+    self.assertFalse(attr.stringIsHtmlDelimited("012345678", 1, 7))
+    self.assertFalse(attr.stringIsHtmlDelimited("012345678", 1, 8))
+    self.assertFalse(attr.stringIsHtmlDelimited("012345678", 0, 4))
+    self.assertFalse(attr.stringIsHtmlDelimited("qwe_asd_zxc", 4, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("qwe[asd]zxc", 4, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("qwe [asd] zxc", 5, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("qwe <asd> zxc", 4, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("truth:1+1=2", 6, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("truth=1+1<3", 6, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited("truth: '1+1>1'", 8, 3))
+    self.assertFalse(attr.stringIsHtmlDelimited('truth: "3<1+1>1"', 10, 3))

@@ -57,6 +57,12 @@ def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   for val in listVar:
     checkIfString(val, minStringLength, maxStringLength)
 
+def checkIfChar(var):
+  if type(var) != str:
+    raise Exception("Not a string type: '{0}'!".format(str(var)))
+  if len(var) != 1:
+    raise Exception("The length of '{0}' is not 1 to be char!".format(str(var)))
+
 def checkIfString(var, minLength, maxLength):
   if type(var) != str:
     raise Exception("Not a string type: '{0}'".format(str(var)))

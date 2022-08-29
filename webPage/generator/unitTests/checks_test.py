@@ -570,6 +570,36 @@ class ChecksTests(unittest.TestCase):
     except Exception:
       self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
 
+  def test_checkIfChar_invalid(self):
+    with self.assertRaises(Exception):
+      checks.checkIfChar(123)
+    with self.assertRaises(Exception):
+      checks.checkIfChar(False)
+    with self.assertRaises(Exception):
+      checks.checkIfChar(None)
+    with self.assertRaises(Exception):
+      checks.checkIfChar("String")
+    with self.assertRaises(Exception):
+      checks.checkIfChar("")
+    with self.assertRaises(Exception):
+      checks.checkIfChar("AB")
+
+  def test_checkIfChar_valid(self):
+    try:
+      checks.checkIfChar("\t")
+      checks.checkIfChar("X")
+      checks.checkIfChar("0")
+      checks.checkIfChar("%")
+      checks.checkIfChar("*")
+      checks.checkIfChar("@")
+      checks.checkIfChar("\\")
+      checks.checkIfChar("/")
+      checks.checkIfChar("\r")
+      checks.checkIfChar("\n")
+      checks.checkIfChar("h")
+    except Exception:
+      self.fail("checkIfChar() raised Exception unexpectedly!")
+
   def test_checkIfString_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfString(123, 3, 10)
