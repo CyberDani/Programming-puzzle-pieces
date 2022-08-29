@@ -1,11 +1,12 @@
 from modules import checks
 from modules import stringUtil
 
+# TODO this function looks ugly, clean code it
 def getAttributeIdx(htmlAttributes, key):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
-* corrupt: True | False *(does not validate the attribute value)*
+* corrupt: True | False *(does not validate the attached attribute value and the rest of string out of key context)*
 * firstIdx: **-1** if attribute not found or corrupt """
   checks.checkIfString(htmlAttributes, 0, 3000)
   checks.checkIfString(key, 0, 60)
@@ -17,19 +18,118 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
   #                   corruptIfBefore = [",'] corruptIfAfter = [",'], 0, len(str))
   firstIdx = htmlAttributes.find(key, 0, len(htmlAttributes))
   while firstIdx != -1:
-    # TODO checkAttributeNameFromRight + checkAttributeNameFromLeft -> invalid, ok
-    # Right
+    # TODO getNextChar
     thereIsNextChar = firstIdx + len(key) < len(htmlAttributes)
     firstCharAfterKey = None
     if thereIsNextChar:
       firstCharAfterKey = htmlAttributes[firstIdx + len(key)]
-    if thereIsNextChar and (firstCharAfterKey == "'" or firstCharAfterKey == '"'):
+    # TODO getPrevChar
+    thereIsBeforeChar = firstIdx > 0
+    firstCharBeforeKey = None
+    if thereIsBeforeChar:
+      firstCharBeforeKey = htmlAttributes[firstIdx - 1]
+
+    # early continue
+    if (firstCharBeforeKey is not None and not firstCharBeforeKey.isspace()
+        and firstCharBeforeKey != "'" and firstCharBeforeKey != '"' and firstCharBeforeKey != '=') or \
+        (firstCharAfterKey is not None and not firstCharAfterKey.isspace()
+         and firstCharAfterKey != "'" and firstCharAfterKey != '"' and firstCharAfterKey != '='):
+      firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+      continue
+
+    # Check if seems to be part of attribute value from right
+    firstEqualIdxAfterKey = htmlAttributes.find("=", firstIdx + len(key))
+    referenceIdxFromRight = firstEqualIdxAfterKey
+    if referenceIdxFromRight == -1:
+      referenceIdxFromRight = len(htmlAttributes) - 1
+    nrOfSimpleQuotesAfter = htmlAttributes.count("'", firstIdx + len(key), referenceIdxFromRight + 1)
+    nrOfDoubleQuotesAfter = htmlAttributes.count('"', firstIdx + len(key), referenceIdxFromRight + 1)
+    seemsToBeAttributeValueFromRight = nrOfSimpleQuotesAfter > 0 or nrOfDoubleQuotesAfter > 0
+
+    # Check if seems to be part of attribute value from left
+    referenceIdxFromLeft = htmlAttributes.rfind("=", 0, firstIdx)
+    if referenceIdxFromLeft == 0:
       return corruptResult
-    validatedFromRight = not thereIsNextChar or firstCharAfterKey == "=" or firstCharAfterKey.isspace()
-    # Left
-    if firstIdx > 0 and (htmlAttributes[firstIdx - 1] == '"' or htmlAttributes[firstIdx - 1] == "'"):
+    equalFoundBefore = True
+    if referenceIdxFromLeft == -1:
+      referenceIdxFromLeft = 0
+      equalFoundBefore = False
+    # check if there is attribute name before equal
+    if equalFoundBefore:
+      idx = referenceIdxFromLeft - 1
+      while idx >= 0:
+        currentChar = htmlAttributes[idx]
+        if currentChar == "'" or currentChar == '"' or currentChar == "=":
+          return corruptResult
+        if not currentChar.isspace():
+          break
+        idx -= 1
+      if idx == -1:
+        return corruptResult
+    # another check
+    nrOfMainQuotesBefore = 0
+    if equalFoundBefore:
+      firstNonSpaceCharIdxAfterEqual = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, referenceIdxFromLeft + 1,
+                                                                            len(htmlAttributes))
+      firstNonSpaceCharAfterEqual = htmlAttributes[firstNonSpaceCharIdxAfterEqual]
+      if firstNonSpaceCharAfterEqual != "'" and firstNonSpaceCharAfterEqual != '"':
+        return corruptResult
+      nrOfMainQuotesBefore = htmlAttributes.count(firstNonSpaceCharAfterEqual, referenceIdxFromLeft, firstIdx)
+    nrOfSimpleQuotesBefore = htmlAttributes.count("'", referenceIdxFromLeft, firstIdx)
+    nrOfDoubleQuotesBefore = htmlAttributes.count('"', referenceIdxFromLeft, firstIdx)
+    if nrOfMainQuotesBefore > 3:
       return corruptResult
-    validatedFromLeft = firstIdx == 0 or htmlAttributes[firstIdx - 1].isspace()
+    seemsToBeAttributeValueFromLeft = nrOfMainQuotesBefore == 1 or nrOfMainQuotesBefore == 3
+
+    if equalFoundBefore != (nrOfSimpleQuotesBefore + nrOfDoubleQuotesBefore > 0):
+      return corruptResult
+
+    if seemsToBeAttributeValueFromLeft != seemsToBeAttributeValueFromRight:
+      return corruptResult
+
+    if seemsToBeAttributeValueFromLeft:
+      firstSimpleQuoteIdxBefore = htmlAttributes.rfind("'", referenceIdxFromLeft, firstIdx)
+      firstDoubleQuoteIdxBefore = htmlAttributes.rfind('"', referenceIdxFromLeft, firstIdx)
+      mainQuoteCharIdx = -1
+      if firstSimpleQuoteIdxBefore == -1:
+        mainQuoteCharIdx = firstDoubleQuoteIdxBefore
+      elif firstDoubleQuoteIdxBefore == -1:
+        mainQuoteCharIdx = firstSimpleQuoteIdxBefore
+      elif firstSimpleQuoteIdxBefore < firstDoubleQuoteIdxBefore:
+        mainQuoteCharIdx = firstSimpleQuoteIdxBefore
+      else:
+        mainQuoteCharIdx = firstDoubleQuoteIdxBefore
+      mainQuoteChar = htmlAttributes[mainQuoteCharIdx]
+      if mainQuoteChar == "'" and (nrOfSimpleQuotesBefore != 1 or nrOfSimpleQuotesAfter != 1):
+        return corruptResult
+      if mainQuoteChar == '"' and (nrOfDoubleQuotesBefore != 1 or nrOfDoubleQuotesAfter != 1):
+        return corruptResult
+      endingQuoteIdx = -1
+      if mainQuoteChar == "'":
+        endingQuoteIdx = htmlAttributes.find("'", mainQuoteCharIdx + 1, referenceIdxFromRight + 1)
+      else:
+        endingQuoteIdx = htmlAttributes.find('"', mainQuoteCharIdx + 1, referenceIdxFromRight + 1)
+      # after endingQuote there should be no more quotes
+      idx = endingQuoteIdx + 1
+      while idx < len(htmlAttributes):
+        currentChar = htmlAttributes[idx]
+        if currentChar.isspace():
+          idx += 1
+          continue
+        if currentChar == "=":
+          return corruptResult
+        if currentChar == "'" or currentChar == '"':
+          return corruptResult
+        break
+
+    if seemsToBeAttributeValueFromLeft and seemsToBeAttributeValueFromRight:
+      firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+      continue
+
+    # Right delimited check
+    validatedFromRight = firstCharAfterKey is None or firstCharAfterKey == "=" or firstCharAfterKey.isspace()
+    # Left delimited check
+    validatedFromLeft = firstIdx == 0 or firstCharBeforeKey.isspace()
     if validatedFromRight and validatedFromLeft:
       return False, firstIdx
     firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
