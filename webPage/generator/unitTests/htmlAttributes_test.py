@@ -35,6 +35,13 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(idx, -1)
 
   def test_getAttributeIdx_corrupt(self):
+    self.helper_getAttributeIdx_checkIfCorrupt("value='234'' selected", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value=''234' selected", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value='''234' selected", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value=''''234' selected", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value=''''234' selected'", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value='234''' selected", "selected")
+    self.helper_getAttributeIdx_checkIfCorrupt("value='234'''' selected", "selected")
     self.helper_getAttributeIdx_checkIfCorrupt("style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("style''", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("'style", "style")
@@ -48,6 +55,9 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeIdx_checkIfCorrupt("\" ='style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("' ='style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("'' ='style'", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("'class' ='style'", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("class ='style myClass", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("class ='style myClass'\"", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("''' ='style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("'''' ='style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("''''' ='style'", "style")
@@ -58,8 +68,17 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeIdx_checkIfCorrupt("title = 'style''", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title = ''style''", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title = style''", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = style'''", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = style''''", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title = '''style", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title = ''''style", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = '''''style", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = ''''''style", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = ''''style", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = 'style' =", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = 'style' '", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = 'style'''", "style")
+    self.helper_getAttributeIdx_checkIfCorrupt("title = 'style' \"something", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("'title' = 'style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title' = 'style'", "style")
     self.helper_getAttributeIdx_checkIfCorrupt("title'' = 'style'", "style")
@@ -88,6 +107,10 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeIdx_checkIfCorrupt("'class' title=\"heyo\"", "class")
 
   def test_getAttributeIdx_attrNotFound(self):
+    idx = attr.getAttributeIdx("title=\"'style\"", "style")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("title=\"''style\"", "style")
+    self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"''style'\"", "style")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"''style''\"", "style")
@@ -107,6 +130,8 @@ class HtmlAttributesTests(unittest.TestCase):
     idx = attr.getAttributeIdx('class="style"id="style"', "style")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("class='custom style red'", "style")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("id=\"myId\" class='custom style red'", "style")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("class='custom-style'", "style")
     self.assertEqual(idx, (False, -1))
@@ -1395,3 +1420,85 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(attr.stringIsHtmlDelimited("truth=1+1<3", 6, 3))
     self.assertFalse(attr.stringIsHtmlDelimited("truth: '1+1>1'", 8, 3))
     self.assertFalse(attr.stringIsHtmlDelimited('truth: "3<1+1>1"', 10, 3))
+
+  def test_thereIsAttributeNameBeforeIdx_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx("text", -1)
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx("text", 123)
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx("text", 4)
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx(12, 123)
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx(False, 0)
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx(None, None)
+
+  def test_thereIsAttributeNameBeforeIdx_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.thereIsAttributeNameBeforeIdx("", 0)
+
+  def test_thereIsAttributeNameBeforeIdx_thereIsNot(self):
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("text", 0))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("this is an another string", 0))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number=2", 7))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number='2'", 8))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number='2'", 7))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number = 2", 9))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number = '2'", 10))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx("number '2'", 8))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx('number="2"', 8))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx('number="2"', 7))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx('number = "2"', 10))
+    self.assertFalse(attr.thereIsAttributeNameBeforeIdx('number "2"', 8))
+
+  def test_thereIsAttributeNameBeforeIdx_thereIs(self):
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("text", 3))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("this is an another string", 11))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("this is an another string", 15))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("one-two-three", 4))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("one-two-three", 1))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("value = 'one'", 6))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("value= 'one'", 5))
+    self.assertTrue(attr.thereIsAttributeNameBeforeIdx("value='one'", 5))
+
+  def test_nextNonWhiteSpaceCharIsHtmlDelimiter_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter("string", -1)
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter("string", 523)
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter("string", 6)
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter(False, 0)
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter("string", True)
+    with self.assertRaises(Exception):
+      attr.nextNonWhiteSpaceCharIsHtmlDelimiter(None, [])
+
+  def test_nextNonWhiteSpaceCharIsHtmlDelimiter_itIsNot(self):
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X ", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("     ", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(" \t \r \n ", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X     ", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X     ", 1))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X\t\r\n", 0))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("X\t\r\n", 1))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("abcdefgh", 3))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("0123456789", 9))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("one-two-three", 2))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("one two three", 2))
+    self.assertFalse(attr.nextNonWhiteSpaceCharIsHtmlDelimiter("one\t\ttwo\t\t\tthree", 2))
+
+  def test_nextNonWhiteSpaceCharIsHtmlDelimiter_itIs(self):
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(" 'value'", 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(" 'value'", 6))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(" \t 'value' ", 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(" \t 'value ' ", 9))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(' "value"', 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter(' = "value"', 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('\t\t\r\n"value"', 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('\t\t\r\n="value"', 0))
+    self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('attr\t = "value"', 3))
