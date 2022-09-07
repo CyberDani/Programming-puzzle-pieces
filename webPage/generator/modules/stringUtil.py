@@ -68,6 +68,7 @@ def doubleSplit(string, primaryDelimiter, secondaryDelimiter):
       secondaryParts += secondaryPartials[1:]
   return primaryParts, secondaryParts
 
+# TODO rename: getNextNonWhiteSpaceCharIdx
 def getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx):
   """Returns **-1** if not found \n
   Raises error at empty string because indexes cannot be set properly"""
@@ -85,9 +86,8 @@ def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, inclusiveStartIdx,
   """Returns **-1** if not found \n
   Raises error at empty strings because indexes cannot be set properly for scanning an empty string,
   or it does not make sense to find an empty string"""
-  checks.checkIfString(stringToScan, 0, 5000)
+  checks.checkIfString(stringToScan, inclusiveStartIdx, 5000)
   checks.checkIfString(stringToFind, 1, 500)
-  checks.checkIntIsBetween(inclusiveStartIdx, 0, exclusiveEndIdx - 1)
   checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(stringToScan))
   findIdx = -1
   while findIdx == -1 and inclusiveStartIdx < exclusiveEndIdx:
@@ -98,3 +98,31 @@ def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, inclusiveStartIdx,
       inclusiveStartIdx = findIdx + 1
       findIdx = -1
   return findIdx
+
+def find(stringToScan, stringToFind, inclusiveStartIdx, inclusiveEndIdx, notFoundValue):
+  """Raises exception if any string is empty\n
+Return values:\n
+* found: True | False
+* index: position at which is the first find, otherwise <notFoundValue> if not found"""
+  checks.checkIfString(stringToScan, inclusiveStartIdx, 4000)
+  checks.checkIfString(stringToFind, 1, 400)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(stringToScan) - 1)
+  checks.checkIfType(notFoundValue, int)
+  idx = stringToScan.find(stringToFind, inclusiveStartIdx, inclusiveEndIdx + 1)
+  if idx == -1:
+    return False, notFoundValue
+  return True, idx
+
+def rfind(stringToScan, stringToFind, inclusiveStartIdx, inclusiveEndIdx, notFoundValue):
+  """Raises exception if any string is empty\n
+Return values:\n
+* found: True | False
+* index: position at which is the first find, otherwise <notFoundValue> if not found"""
+  checks.checkIfString(stringToScan, inclusiveStartIdx, 4000)
+  checks.checkIfString(stringToFind, 1, 400)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(stringToScan) - 1)
+  checks.checkIfType(notFoundValue, int)
+  idx = stringToScan.rfind(stringToFind, inclusiveStartIdx, inclusiveEndIdx + 1)
+  if idx == -1:
+    return False, notFoundValue
+  return True, idx

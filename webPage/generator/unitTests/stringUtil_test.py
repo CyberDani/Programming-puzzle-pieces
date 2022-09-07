@@ -73,7 +73,7 @@ class StringUtilTests(unittest.TestCase):
     char = stringUtil.getPreviousChar("oO", 0)
     self.assertEqual(char, None)
 
-  def test_getNextChar_examples(self):
+  def test_getPreviousChar_examples(self):
     char = stringUtil.getPreviousChar("Ex", 1)
     self.assertEqual(char, "E")
     char = stringUtil.getPreviousChar("Explore", 1)
@@ -484,3 +484,125 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(ans, "\nfirstRow\n\r\nsecondRow")
     ans = stringUtil.rTrimNewLines("\n\nfirstRow\n\r\n\nsecondRow\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n")
     self.assertEqual(ans, "\n\nfirstRow\n\r\n\nsecondRow")
+
+  def test_find_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", 1, 3, None)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", -1, 3, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", 4, 2, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", 0, 26, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", 0, 6, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", 0, None, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "substring", None, 2, -1)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", None, 2, 2, -1)
+
+  def test_find_emptyString(self):
+    with self.assertRaises(Exception):
+      stringUtil.find("", "substring", 1, 4, 3)
+    with self.assertRaises(Exception):
+      stringUtil.find("string", "", 1, 4, 3)
+
+  def test_find_notFound(self):
+    found, idx = stringUtil.find("string", "substring", 1, 5, 3)
+    self.assertFalse(found)
+    self.assertEqual(idx, 3)
+    found, idx = stringUtil.find("string", "substring", 1, 5, 12)
+    self.assertFalse(found)
+    self.assertEqual(idx, 12)
+    found, idx = stringUtil.find("string", "substring", 1, 5, -1)
+    self.assertFalse(found)
+    self.assertEqual(idx, -1)
+    found, idx = stringUtil.find("this is a longer string", "substring", 1, 5, -2)
+    self.assertFalse(found)
+    self.assertEqual(idx, -2)
+    found, idx = stringUtil.find("this is a longer string", "'", 1, 5, -2)
+    self.assertFalse(found)
+    self.assertEqual(idx, -2)
+
+  def test_find_found(self):
+    found, idx = stringUtil.find("string", "string", 0, 5, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 0)
+    found, idx = stringUtil.find("this is my string here", "string", 0, 21, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 11)
+    found, idx = stringUtil.find("'field' = 'value'", "'", 0, 6, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 0)
+    found, idx = stringUtil.find("'field' = 'value'", "'", 0, 16, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 0)
+    found, idx = stringUtil.find("'field' = 'value'", "'", 8, 16, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 10)
+    found, idx = stringUtil.find("'field' = 'value'", "'", 11, 16, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 16)
+
+  def test_rfind_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", 1, 3, None)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", -1, 3, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", 4, 2, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", 0, 26, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", 0, 6, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", 0, None, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "substring", None, 2, -1)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", None, 2, 2, -1)
+
+  def test_rfind_emptyString(self):
+    with self.assertRaises(Exception):
+      stringUtil.rfind("", "substring", 1, 4, 3)
+    with self.assertRaises(Exception):
+      stringUtil.rfind("string", "", 1, 4, 3)
+
+  def test_rfind_notFound(self):
+    found, idx = stringUtil.rfind("string", "substring", 1, 5, 3)
+    self.assertFalse(found)
+    self.assertEqual(idx, 3)
+    found, idx = stringUtil.rfind("string", "substring", 1, 5, 12)
+    self.assertFalse(found)
+    self.assertEqual(idx, 12)
+    found, idx = stringUtil.rfind("string", "substring", 1, 5, -1)
+    self.assertFalse(found)
+    self.assertEqual(idx, -1)
+    found, idx = stringUtil.rfind("this is a longer string", "substring", 1, 5, -2)
+    self.assertFalse(found)
+    self.assertEqual(idx, -2)
+    found, idx = stringUtil.rfind("this is a longer string", "'", 1, 5, -2)
+    self.assertFalse(found)
+    self.assertEqual(idx, -2)
+
+  def test_rfind_found(self):
+    found, idx = stringUtil.rfind("string", "string", 0, 5, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 0)
+    found, idx = stringUtil.rfind("this is my string here", "string", 0, 21, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 11)
+    found, idx = stringUtil.rfind("'field' = 'value'", "'", 0, 6, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 6)
+    found, idx = stringUtil.rfind("'field' = 'value'", "'", 0, 16, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 16)
+    found, idx = stringUtil.rfind("'field' = 'value' // comment", "'", 8, 27, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 16)
+    found, idx = stringUtil.rfind("'field' = 'value'", "'", 10, 16, -1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 16)

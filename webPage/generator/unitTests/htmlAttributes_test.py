@@ -107,6 +107,10 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeIdx_checkIfCorrupt("'class' title=\"heyo\"", "class")
 
   def test_getAttributeIdx_attrNotFound(self):
+    idx = attr.getAttributeIdx("title=\"'style\"selected", "style")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("title=\"'style\" selected", "style")
+    self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"'style\"", "style")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"''style\"", "style")
@@ -163,6 +167,9 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(idx, (False, -1))
 
   def test_getAttributeIdx_attrFound(self):
+    corrupt, idx = attr.getAttributeIdx("a", "a")
+    self.assertFalse(corrupt)
+    self.assertEqual(idx, 0)
     corrupt, idx = attr.getAttributeIdx("selected", "selected")
     self.assertFalse(corrupt)
     self.assertEqual(idx, 0)
@@ -170,6 +177,9 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(idx, 0)
     corrupt, idx = attr.getAttributeIdx("default=\"1\"", "default")
+    self.assertFalse(corrupt)
+    self.assertEqual(idx, 0)
+    corrupt, idx = attr.getAttributeIdx("default=\"1\"selected", "default")
     self.assertFalse(corrupt)
     self.assertEqual(idx, 0)
     string = "value='234' selected"
@@ -1226,6 +1236,53 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(attributeName, "string")
     self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+
+  def test_getHtmlAttributes_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes(None, 0)
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes(123, 0)
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("selected", False)
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("selected", [])
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("selected", -1)
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("selected", 58)
+
+  def test_getHtmlAttributes_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("", 0)
+    with self.assertRaises(Exception):
+      attr.getHtmlAttributes("", 1)
+
+  def helper_getHtmlAttributes_checkIfAttrNotFound(self, corrupt, attributes):
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, {})
+
+  def test_getHtmlAttributes_emptyString(self):
+    corrupt, attributes = attr.getHtmlAttributes(" ", 0)
+    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getHtmlAttributes("   ", 0)
+    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getHtmlAttributes("\t", 0)
+    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getHtmlAttributes("\r\n", 0)
+    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getHtmlAttributes("\t  \n  \t\r\n", 0)
+    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+
+  def helper_getHtmlAttributes_checkIfCorrupt(self, corrupt, attributes):
+    self.assertTrue(corrupt)
+    self.assertEqual(attributes, {})
+
+  def test_getHtmlAttributes_corrupt(self):
+    corrupt, attributes = attr.getHtmlAttributes("'", 0)
+    self.helper_getHtmlAttributes_checkIfCorrupt(corrupt, attributes)
+    corrupt, attributes = attr.getHtmlAttributes("'''", 0)
+    self.helper_getHtmlAttributes_checkIfCorrupt(corrupt, attributes)
+
   def test_htmlDelimitedFromLeft_nonSense(self):
     with self.assertRaises(Exception):
       attr.htmlDelimitedFromLeft(False, 0)
@@ -1502,3 +1559,138 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('\t\t\r\n"value"', 0))
     self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('\t\t\r\n="value"', 0))
     self.assertTrue(attr.nextNonWhiteSpaceCharIsHtmlDelimiter('attr\t = "value"', 3))
+
+  def test_isThereAnyQuoteChar_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", -1, 3)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", 0, 6)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", -20, 146)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", 2, True)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", "", 4)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("String", [], {})
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar(None, 0, 0)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar(None, None, None)
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar(True, False, True)
+
+  def test_isThereAnyQuoteChar_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.isThereAnyQuoteChar("", 0, 0)
+
+  def test_isThereAnyQuoteChar_thereIs(self):
+    self.assertTrue(attr.isThereAnyQuoteChar("'", 0, 0))
+    self.assertTrue(attr.isThereAnyQuoteChar("'''''''''", 0, 8))
+    self.assertTrue(attr.isThereAnyQuoteChar("\"\"\"\"'''''", 0, 8))
+    self.assertTrue(attr.isThereAnyQuoteChar("\"\"\"\"'''''", 2, 5))
+    self.assertTrue(attr.isThereAnyQuoteChar('"', 0, 0))
+    self.assertTrue(attr.isThereAnyQuoteChar('"""""""""', 0, 8))
+    self.assertTrue(attr.isThereAnyQuoteChar("1'2", 0, 2))
+    self.assertTrue(attr.isThereAnyQuoteChar("0123456789'9876543210", 0, 10))
+    self.assertTrue(attr.isThereAnyQuoteChar("0123456789'9876543210", 10, 20))
+    self.assertTrue(attr.isThereAnyQuoteChar("0123456789'9876543210", 5, 15))
+    self.assertTrue(attr.isThereAnyQuoteChar("'one' \" two \"", 0, 12))
+    self.assertTrue(attr.isThereAnyQuoteChar("'one' \" two \"", 2, 9))
+
+  def test_isThereAnyQuoteChar_thereIsNot(self):
+    self.assertFalse(attr.isThereAnyQuoteChar("Q", 0, 0))
+    self.assertFalse(attr.isThereAnyQuoteChar("string", 0, 5))
+    self.assertFalse(attr.isThereAnyQuoteChar("string", 1, 4))
+    self.assertFalse(attr.isThereAnyQuoteChar("'value'", 1, 5))
+    self.assertFalse(attr.isThereAnyQuoteChar("\"value\"", 1, 5))
+    self.assertFalse(attr.isThereAnyQuoteChar("'''\"\"TEXT\"''''", 5, 8))
+    self.assertFalse(attr.isThereAnyQuoteChar("'''\"\"TEXT\"''''", 6, 7))
+    self.assertFalse(attr.isThereAnyQuoteChar("'''\"\"TEXT\"''''", 6, 6))
+
+  def helper_validateAdjacentCharsNearEqualChar_checkIfThrows(self, arg1, arg2):
+    with self.assertRaises(Exception):
+      attr.validateAdjacentCharsNearEqualChar("string", -1)
+
+  def test_validateAdjacentCharsNearEqualChar_nonSense(self):
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("string", -1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("string", 52)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("string", True)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("string", {})
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("string", [])
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows({}, 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows(None, None)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows(True, False)
+
+  def test_validateAdjacentCharsNearEqualChar_emptyString(self):
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfThrows("", 0)
+
+  def helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt(self, htmlString, equalIndex):
+    result = attr.validateAdjacentCharsNearEqualChar(htmlString, equalIndex)
+    self.assertEqual(result, (True, -1))
+
+  def test_validateAdjacentCharsNearEqualChar_equalNotFound(self):
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("Q", 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("apple", 2)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("ab_cd", 2)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("01", 1)
+
+  def test_validateAdjacentCharsNearEqualChar_corrupt(self):
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("=", 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("= = =", 1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("= 2", 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("= '", 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt(" = '", 1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("= \"", 0)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt(" = \"", 1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("'='", 1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt('"="', 1)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("value = 2", 6)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt('value = \t', 6)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt('value =', 6)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("'field' = 'value'", 8)
+    self.helper_validateAdjacentCharsNearEqualChar_checkIfCorrupt("'field' = \"value\"", 8)
+
+  def test_validateAdjacentCharsNearEqualChar_valid(self):
+    corrupt, quoteIdx = attr.validateAdjacentCharsNearEqualChar("a='", 1)
+    self.assertFalse(corrupt)
+    self.assertEqual(quoteIdx, 2)
+    corrupt, quoteIdx = attr.validateAdjacentCharsNearEqualChar("a = '", 2)
+    self.assertFalse(corrupt)
+    self.assertEqual(quoteIdx, 4)
+    corrupt, quoteIdx = attr.validateAdjacentCharsNearEqualChar("a\t\n=\t\t\t\"", 3)
+    self.assertFalse(corrupt)
+    self.assertEqual(quoteIdx, 7)
+
+  def test_getAndValidateClosingQuote_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("clas = 'fa-lg2'", -1)
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("clas = 'fa-lg2'", 56)
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("clas = 'fa-lg2'", True)
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("clas = 'fa-lg2'", "")
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote(True, 0)
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote(True, True)
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote(None, None)
+
+  def test_getAndValidateClosingQuote_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("", 0)
+
+  def helper_getAndValidateClosingQuote_checkIfCorrupt(self, stringArg, indexArg):
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote(stringArg, indexArg)
+    self.assertTrue(corrupt)
+    self.assertEqual(closingQuoteIdx, -1)
+    self.assertEqual(quoteChar, "")
+
+  def test_getAndValidateClosingQuote_idxIsNotQuote(self):
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("Q", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("Lx", 1)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("apple", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("'apple'", 3)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = \"apple\"", 6)

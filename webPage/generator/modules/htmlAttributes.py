@@ -8,74 +8,65 @@ def getAttributeIdx(htmlAttributes, key):
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
 * corrupt: True | False *(does not validate the attached attribute value and the rest of string out of key context)*
-* firstIdx: **-1** if attribute not found or corrupt """
+* firstKeyIdx: **-1** if attribute not found or corrupt """
   checks.checkIfString(htmlAttributes, 0, 3000)
   checks.checkIfString(key, 0, 60)
   notFoundResult = (False, -1)
   corruptResult = (True, -1)
   if not htmlAttributes or not key:
     return notFoundResult
-  firstIdx = htmlAttributes.find(key, 0, len(htmlAttributes))
-  while firstIdx != -1:
+  firstKeyIdx = htmlAttributes.find(key, 0, len(htmlAttributes))
+  while firstKeyIdx != -1:
+    # eliminates handling special cases
+    if len(key) == len(htmlAttributes):
+      return False, 0
+
     # continue if not a full word
-    if not stringIsHtmlDelimited(htmlAttributes, firstIdx, len(key)):
-      firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+    lastKeyIdx = firstKeyIdx + len(key) - 1
+    if not stringIsHtmlDelimited(htmlAttributes, firstKeyIdx, len(key)):
+      firstKeyIdx = htmlAttributes.find(key, lastKeyIdx + 1, len(htmlAttributes))
       continue
 
-    # Check if seems to be part of attribute value from right
-    firstEqualIdxAfterKey = htmlAttributes.find("=", firstIdx + len(key))
-    referenceIdxFromRight = firstEqualIdxAfterKey
-    if referenceIdxFromRight == -1:
-      referenceIdxFromRight = len(htmlAttributes) - 1
-    nrOfSimpleQuotesAfter = htmlAttributes.count("'", firstIdx + len(key), referenceIdxFromRight + 1)
-    nrOfDoubleQuotesAfter = htmlAttributes.count('"', firstIdx + len(key), referenceIdxFromRight + 1)
-    seemsToBeAttributeValueFromRight = nrOfSimpleQuotesAfter + nrOfDoubleQuotesAfter > 0
-
-    # Check if seems to be part of attribute value from left
-    referenceIdxFromLeft = htmlAttributes.rfind("=", 0, firstIdx)
-    if referenceIdxFromLeft == 0:
-      return corruptResult
-    equalFoundBefore = referenceIdxFromLeft > 0
-    if referenceIdxFromLeft == -1:
-      referenceIdxFromLeft = 0
-    # check if there is attribute name before equal
-    if equalFoundBefore and not thereIsAttributeNameBeforeIdx(htmlAttributes, referenceIdxFromLeft):
-      return corruptResult
-    # another check
     nrOfMainQuotesBefore = 0
     nrOfMainQuotesAfter = 0
-    endingQuoteIdx = -1
+    equalFoundBefore, referenceIdxFromLeft = stringUtil.rfind(htmlAttributes, "=", 0, firstKeyIdx, notFoundValue = -1)
+    equalFoundAfter, referenceIdxFromRight = stringUtil.find(htmlAttributes, "=", lastKeyIdx,
+                                                             len(htmlAttributes) - 1,
+                                                             notFoundValue = len(htmlAttributes) - 1)
+    if not equalFoundBefore and isThereAnyQuoteChar(htmlAttributes, 0, firstKeyIdx):
+      return corruptResult
+    seemsToBeAttributeValueFromRight = isThereAnyQuoteChar(htmlAttributes, lastKeyIdx, referenceIdxFromRight)
     if equalFoundBefore:
-      mainQuoteCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlAttributes, referenceIdxFromLeft + 1,
-                                                                            len(htmlAttributes))
-      firstNonSpaceCharAfterEqual = htmlAttributes[mainQuoteCharIdx]
-      if firstNonSpaceCharAfterEqual != "'" and firstNonSpaceCharAfterEqual != '"':
+      corrupt, openingQuoteCharIdx = validateAdjacentCharsNearEqualChar(htmlAttributes, referenceIdxFromLeft)
+      if corrupt:
         return corruptResult
-      nrOfMainQuotesBefore = htmlAttributes.count(firstNonSpaceCharAfterEqual, referenceIdxFromLeft, firstIdx)
-      nrOfMainQuotesAfter = htmlAttributes.count(firstNonSpaceCharAfterEqual, firstIdx + len(key),
-                                                 referenceIdxFromRight + 1)
-      endingQuoteIdx = htmlAttributes.find(firstNonSpaceCharAfterEqual, mainQuoteCharIdx + 1, referenceIdxFromRight + 1)
-    nrOfSimpleQuotesBefore = htmlAttributes.count("'", referenceIdxFromLeft, firstIdx)
-    nrOfDoubleQuotesBefore = htmlAttributes.count('"', referenceIdxFromLeft, firstIdx)
+
+      # getAndValidateClosingQuote(htmlAttributes, openingQuoteCharIdx) -> corrupt, idx, char
+      mainQuoteChar = htmlAttributes[openingQuoteCharIdx]
+      closingQuoteIdx = htmlAttributes.find(mainQuoteChar, openingQuoteCharIdx + 1, len(htmlAttributes))
+      if closingQuoteIdx == -1:
+        return corruptResult
+      if nextNonWhiteSpaceCharIsHtmlDelimiter(htmlAttributes, closingQuoteIdx):
+        return corruptResult
+
+      nrOfMainQuotesBefore = htmlAttributes.count(mainQuoteChar, referenceIdxFromLeft + 1, firstKeyIdx)
+      nrOfMainQuotesAfter = htmlAttributes.count(mainQuoteChar, lastKeyIdx + 1, referenceIdxFromRight + 1)
+      if nrOfMainQuotesBefore > 2 or nrOfMainQuotesAfter > 1:
+        return corruptResult
+
     seemsToBeAttributeValueFromLeft = nrOfMainQuotesBefore == 1
 
-    if not equalFoundBefore and (nrOfSimpleQuotesBefore + nrOfDoubleQuotesBefore > 0):
+    if not seemsToBeAttributeValueFromLeft and seemsToBeAttributeValueFromRight:
       return corruptResult
 
-    if not seemsToBeAttributeValueFromLeft and (seemsToBeAttributeValueFromRight
-                                                or nrOfMainQuotesBefore > 2):
-      return corruptResult
-
-    if seemsToBeAttributeValueFromLeft and (not equalFoundBefore
-                                            or nrOfMainQuotesAfter != 1
-                                            or nextNonWhiteSpaceCharIsHtmlDelimiter(htmlAttributes, endingQuoteIdx)):
+    if seemsToBeAttributeValueFromLeft and (not equalFoundBefore or nrOfMainQuotesAfter == 0):
       return corruptResult
 
     if seemsToBeAttributeValueFromLeft:
-      firstIdx = htmlAttributes.find(key, firstIdx + 1, len(htmlAttributes))
+      firstKeyIdx = htmlAttributes.find(key, lastKeyIdx + 1, len(htmlAttributes))
       continue
 
-    return False, firstIdx
+    return False, firstKeyIdx
   return notFoundResult
 
 # TODO test 'class="note"id="red"' below functions, it is valid HTML even if there is no space in ' note"id '
@@ -133,6 +124,19 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
+# -> corrupt, attributes {name -> value}
+def getHtmlAttributes(attributesString, startIdx):
+  """Each attribute is taken and validated once at its first occurrence. \n
+Raises exception if <attributesString> is empty because startIdx cannot be set properly \n
+\n Return values: \n
+* corrupt: True | False
+* attributes: dictionary of {attributeName -> None | attributeString}"""
+  corruptReturn = (True, {})
+  notFoundReturn = (False, {})
+  corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(attributesString, startIdx)
+  if corrupt:
+    return corruptReturn
+  return notFoundReturn
 
 def getNextHtmlAttribute(attributesString, startIdx):
   """ Raises exception if <startIdx> is not valid. This means that <attributesString> cannot be an empty string as
@@ -230,6 +234,15 @@ def thereIsAttributeNameBeforeIdx(htmString, idx):
     idx -= 1
   return False
 
+def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
+  """Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(htmlString, 0, 4000)
+  checks.checkIntIsBetween(inclusiveStartIdx, 0, len(htmlString) - 1)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(htmlString) - 1)
+  if htmlString.find("'", inclusiveStartIdx, inclusiveEndIdx + 1) != -1:
+    return True
+  return htmlString.find('"', inclusiveStartIdx, inclusiveEndIdx + 1) != -1
+
 def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
   """Raises exception for empty string because the index cannot be set properly."""
   checks.checkIfString(htmlString, 0, 4000)
@@ -238,6 +251,32 @@ def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
     return False
   idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
   return idx != -1 and charIsHtmlDelimiter(htmlString[idx])
+
+def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
+  """Raises exception for empty string because the index cannot be set properly.\n
+\nReturn values: \n
+* corrupt: True | False (also validates the equal character)
+* attrOpeningQuoteIndex: -1 if corrupt"""
+  checks.checkIfString(htmlString, 0, 4000)
+  checks.checkIntIsBetween(equalIndex, 0, len(htmlString) - 1)
+  corruptResult = (True, -1)
+  if htmlString[equalIndex] != "=":
+    return corruptResult
+  if equalIndex == 0 or equalIndex == len(htmlString) - 1:
+    return corruptResult
+  if not thereIsAttributeNameBeforeIdx(htmlString, equalIndex):
+    return corruptResult
+  quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString))
+  if htmlString[quoteIdx] != "'" and htmlString[quoteIdx] != '"':
+    return corruptResult
+  return False, quoteIdx
+
+def getAndValidateClosingQuote(htmlAttributes, openingQuoteCharIdx):
+  """Validates between quoutes and near the closing quote char. \n
+Raises exception for empty string because the index cannot be set properly."""
+  corruptResult = (True, -1, "")
+  #-> corrupt, idx, char
+  return corruptResult
 
 def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
   """Intended for full word check in case of HTML attribute names and values. \n

@@ -154,6 +154,6 @@ def checkIntIsBetween(var, minValue, maxValue):
   if maxValue < minValue:
     raise Exception("max [{0}] < min[{1}]".format(maxValue, minValue))
   if var < minValue:
-    raise Exception("int < " + minValue + " for argument " + str(var))
+    raise Exception("var({}) < minValue({})?".format(var, minValue))
   if var > maxValue:
-    raise Exception("Do you really need that int to be {0}?".format(var))
+    raise Exception("var({}) > maxValue({})?".format(var, maxValue))
