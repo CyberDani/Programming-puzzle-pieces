@@ -1666,6 +1666,8 @@ class HtmlAttributesTests(unittest.TestCase):
     with self.assertRaises(Exception):
       attr.getAndValidateClosingQuote("clas = 'fa-lg2'", -1)
     with self.assertRaises(Exception):
+      attr.getAndValidateClosingQuote("clas = 'fa-lg2'", 15)
+    with self.assertRaises(Exception):
       attr.getAndValidateClosingQuote("clas = 'fa-lg2'", 56)
     with self.assertRaises(Exception):
       attr.getAndValidateClosingQuote("clas = 'fa-lg2'", True)
@@ -1690,7 +1692,60 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_getAndValidateClosingQuote_idxIsNotQuote(self):
     self.helper_getAndValidateClosingQuote_checkIfCorrupt("Q", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("QxQ", 0)
     self.helper_getAndValidateClosingQuote_checkIfCorrupt("Lx", 1)
     self.helper_getAndValidateClosingQuote_checkIfCorrupt("apple", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("'apple'", 1)
     self.helper_getAndValidateClosingQuote_checkIfCorrupt("'apple'", 3)
     self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = \"apple\"", 6)
+
+  def test_getAndValidateClosingQuote_thereIsNoClosingQuote(self):
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("'Q", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("\"Q", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'myClass yourClass", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'myClass\"", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = \"myClass yourClass", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = \"myClass'", 8)
+
+  def test_getAndValidateClosingQuote_thereIsClosingQuoteButCorrupt(self):
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("'Q'=", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("\"Q\"=", 0)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'number = 2'=3", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'number = 2'    =   3", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'number = 2''", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'number = 2'\n\t\t\n' hello", 8)
+    self.helper_getAndValidateClosingQuote_checkIfCorrupt("class = 'number = 2'\n\n' hello'", 8)
+
+  def test_getAndValidateClosingQuote_valid(self):
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote("'apple'", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 6)
+    self.assertEqual(quoteChar, "'")
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('"myClass yourClass"', 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 18)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('" myClass yourClass "', 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 20)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('title = "it\'s a title"', 8)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 21)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('title = "it\'s a title" id = "specialId"', 8)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 21)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('title = "it\'s a title" id = \'specId\'', 8)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 21)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote('class = "specialClass" id = "specialId"', 28)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 38)
+    self.assertEqual(quoteChar, '"')
+    corrupt, closingQuoteIdx, quoteChar = attr.getAndValidateClosingQuote("integrity=\"sha512-6PM0qxuIQ==\"", 10)
+    self.assertFalse(corrupt)
+    self.assertEqual(closingQuoteIdx, 29)
+    self.assertEqual(quoteChar, '"')

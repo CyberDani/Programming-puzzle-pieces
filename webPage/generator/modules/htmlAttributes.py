@@ -1,6 +1,9 @@
 from modules import checks
 from modules import stringUtil
 
+# TODO test integrity=\"sha512-6PM0qxuIQ==\"
+# ^ Equal character in value ^
+
 # TODO test key = ' = "myClass" '  <-- corrupt by key because it contains html delimiters
 # TODO this function looks ugly, clean code it
 def getAttributeIdx(htmlAttributes, key):
@@ -40,13 +43,8 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
       corrupt, openingQuoteCharIdx = validateAdjacentCharsNearEqualChar(htmlAttributes, referenceIdxFromLeft)
       if corrupt:
         return corruptResult
-
-      # getAndValidateClosingQuote(htmlAttributes, openingQuoteCharIdx) -> corrupt, idx, char
-      mainQuoteChar = htmlAttributes[openingQuoteCharIdx]
-      closingQuoteIdx = htmlAttributes.find(mainQuoteChar, openingQuoteCharIdx + 1, len(htmlAttributes))
-      if closingQuoteIdx == -1:
-        return corruptResult
-      if nextNonWhiteSpaceCharIsHtmlDelimiter(htmlAttributes, closingQuoteIdx):
+      corrupt, closingQuoteIdx, mainQuoteChar = getAndValidateClosingQuote(htmlAttributes, openingQuoteCharIdx)
+      if corrupt:
         return corruptResult
 
       nrOfMainQuotesBefore = htmlAttributes.count(mainQuoteChar, referenceIdxFromLeft + 1, firstKeyIdx)
@@ -272,11 +270,20 @@ def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
   return False, quoteIdx
 
 def getAndValidateClosingQuote(htmlAttributes, openingQuoteCharIdx):
-  """Validates between quoutes and near the closing quote char. \n
+  """Validates characters near the closing quote char, but not the opening \n
 Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(htmlAttributes, 0, 4000)
+  checks.checkIntIsBetween(openingQuoteCharIdx, 0, len(htmlAttributes) - 1)
   corruptResult = (True, -1, "")
-  #-> corrupt, idx, char
-  return corruptResult
+  mainQuoteChar = htmlAttributes[openingQuoteCharIdx]
+  if mainQuoteChar != "'" and mainQuoteChar != '"':
+    return corruptResult
+  closingQuoteIdx = htmlAttributes.find(mainQuoteChar, openingQuoteCharIdx + 1, len(htmlAttributes))
+  if closingQuoteIdx == -1:
+    return corruptResult
+  if nextNonWhiteSpaceCharIsHtmlDelimiter(htmlAttributes, closingQuoteIdx):
+    return corruptResult
+  return False, closingQuoteIdx, mainQuoteChar
 
 def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
   """Intended for full word check in case of HTML attribute names and values. \n
