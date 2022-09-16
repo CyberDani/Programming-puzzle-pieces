@@ -1749,3 +1749,156 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(closingQuoteIdx, 29)
     self.assertEqual(quoteChar, '"')
+
+  def test_getQuoteIndexesAfterEqualChar_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", -1)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", 42)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", 6)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", "")
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", True)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("string", None)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar(True, 0)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar(2, 0)
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar(None, None)
+
+  def test_getQuoteIndexesAfterEqualChar_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getQuoteIndexesAfterEqualChar("", 0)
+
+  def helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt(self, string, equalCharIdx):
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                            = attr.getQuoteIndexesAfterEqualChar(string, equalCharIdx)
+    self.assertTrue(corrupt)
+    self.assertEqual(openingQuoteCharIdx, -1)
+    self.assertEqual(closingQuoteIdx, -1)
+    self.assertEqual(mainQuoteChar, "")
+
+  def test_getQuoteIndexesAfterEqualChar_notEqualChar(self):
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("Q", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("'Q'", 1)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("apple", 4)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 5)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 5)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 7)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 7)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 8)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 8)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 11)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 11)
+
+  def test_getQuoteIndexesAfterEqualChar_noQuotes(self):
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("=", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2", 6)
+
+  def test_getQuoteIndexesAfterEqualChar_onlyOneMainQuote(self):
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= '2", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= \"2", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2'", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2\"", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value ='", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value =\"", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2'", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2\"", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2'", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2\"", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2\"\"\"", 6)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2'''", 6)
+
+  def test_getQuoteIndexesAfterEqualChar_otherInvalid(self):
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= '2'", 0)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\" = '2'", 2)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '2'", 4)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '2''", 4)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '''", 4)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = ''''", 4)
+    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '''''", 4)
+
+  def test_getQuoteIndexesAfterEqualChar_validEmptyValue(self):
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                  = attr.getQuoteIndexesAfterEqualChar("value=''\tdisabled='False'", 5)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value=''", 5)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value =''", 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 8, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value = ''", 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 9, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                        = attr.getQuoteIndexesAfterEqualChar("value\n\t=\t\r\n\t''", 7)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (12, 13, "'"))
+
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value=""', 5)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "\""))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value =""', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 8, "\""))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value = ""', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 9, "\""))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                        = attr.getQuoteIndexesAfterEqualChar('value\n\t=\t\r\n\t""', 7)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (12, 13, "\""))
+
+  def test_getQuoteIndexesAfterEqualChar_validNonEmptyValue(self):
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value=' '", 5)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 8, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value=" "', 5)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 8, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value =' '", 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 9, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value =" "', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 9, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value = ' '", 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 10, "'"))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value = " "', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 10, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                    = attr.getQuoteIndexesAfterEqualChar('value = " \t "', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 12, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                    = attr.getQuoteIndexesAfterEqualChar('value = "test"', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 13, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                    = attr.getQuoteIndexesAfterEqualChar('value = "\ttest1 test2 "', 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 22, '"'))
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                                    = attr.getQuoteIndexesAfterEqualChar("value = '\ttest1 test2 '", 6)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 22, "'"))
+
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+                                              = attr.getQuoteIndexesAfterEqualChar("integrity='sha512-6PM0qxuIQ=='", 9)
+    self.assertFalse(corrupt)
+    self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (10, 29, "'"))
