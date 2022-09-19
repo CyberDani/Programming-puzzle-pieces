@@ -34,6 +34,13 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertTrue(corrupt)
     self.assertEqual(idx, -1)
 
+  def test_getAttributeIdx_corrupt_keyContainsHtmlDelimiter(self):
+    self.helper_getAttributeIdx_checkIfCorrupt("selected default", " ")
+    self.helper_getAttributeIdx_checkIfCorrupt("class='cl1 cl2'", "cl1 cl2")
+    self.helper_getAttributeIdx_checkIfCorrupt("class='cl1 cl2'", " cl2")
+    self.helper_getAttributeIdx_checkIfCorrupt("class='cl1 cl2'", "class=")
+    self.helper_getAttributeIdx_checkIfCorrupt("class='myClass'", "'myClass'")
+
   def test_getAttributeIdx_corrupt(self):
     self.helper_getAttributeIdx_checkIfCorrupt("value='234'' selected", "selected")
     self.helper_getAttributeIdx_checkIfCorrupt("value=''234' selected", "selected")
@@ -107,6 +114,14 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeIdx_checkIfCorrupt("'class' title=\"heyo\"", "class")
 
   def test_getAttributeIdx_attrNotFound(self):
+    idx = attr.getAttributeIdx("ax xa", "a")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("aa", "a")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("aaa", "a")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("xacca", "a")
+    self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"'style\"selected", "style")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("title=\"'style\" selected", "style")
@@ -164,6 +179,12 @@ class HtmlAttributesTests(unittest.TestCase):
     idx = attr.getAttributeIdx("selected hrefx class='idk'", "href")
     self.assertEqual(idx, (False, -1))
     idx = attr.getAttributeIdx("selected hrefhref class='idk'", "href")
+    self.assertEqual(idx, (False, -1))
+
+  def test_getAttributeIdx_attrNotFound_equalWithinAttributeValue(self):
+    idx = attr.getAttributeIdx("title=\"class='myClass'\"", "class")
+    self.assertEqual(idx, (False, -1))
+    idx = attr.getAttributeIdx("title=\"class='class='myClass''\"", "class")
     self.assertEqual(idx, (False, -1))
 
   def test_getAttributeIdx_attrFound(self):
@@ -231,6 +252,12 @@ class HtmlAttributesTests(unittest.TestCase):
     string = "htmlAttribute hrefhref='value2' href='value3' href href='val4'"
     idx = attr.getAttributeIdx(string, "href")
     self.assertEqual(idx, (False, string.find("href='value3'")))
+
+  def test_getAttributeIdx_attrFound_equalWithinAttributeValue(self):
+    idx = attr.getAttributeIdx("title=\"class='myClass'\"class='myClass'", "class")
+    self.assertEqual(idx, (False, 23))
+    idx = attr.getAttributeIdx("title=\"class='myClass'\" class='myClass'", "class")
+    self.assertEqual(idx, (False, 24))
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_nonSense(self):
     with self.assertRaises(Exception):
@@ -1902,3 +1929,413 @@ class HtmlAttributesTests(unittest.TestCase):
                                               = attr.getQuoteIndexesAfterEqualChar("integrity='sha512-6PM0qxuIQ=='", 9)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (10, 29, "'"))
+
+  def test_htmlDelimitedFind_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind(None, "findThis", 0, 1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", None, 0, 1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind(0, 12, 0, 1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", None, 1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", 0, None)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", True, False)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", "", "")
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", 3, 3)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", -2, 3)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", 1, 56)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", 10, 4)
+
+  def test_htmlDelimitedFind_emptyStrings(self):
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("", "findThis", 0, 1)
+    with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("find something in this string", "", 0, 1)
+
+  def helper_htmlDelimitedFind_checkNotFound(self, stringToScan, stringToMatch, startIdx, endIdx):
+    found, firstIdx = attr.htmlDelimitedFind(stringToScan, stringToMatch, startIdx, endIdx)
+    self.assertFalse(found)
+    self.assertEqual(firstIdx, -1)
+
+  def test_htmlDelimitedFind_stringNotFoundAtAll(self):
+    self.helper_htmlDelimitedFind_checkNotFound("a", "b", 0, 1)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my string", "findMe", 0, 17)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "this", 1, 31)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 0, 27)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "my", 11, 24)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 11, 24)
+
+  def test_htmlDelimitedFind_foundStringIsNotHtmlDelimited(self):
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "pine", 0, 9)
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "apple", 0, 9)
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "neapple", 0, 9)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "one", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "two", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "three", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "one", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "two", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "three", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "one", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "two", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "three", 0, 13)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "one", 0, 16)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "two", 0, 16)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "three", 0, 16)
+
+  def test_htmlDelimitedFind_stringFound(self):
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "one", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 0)
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "three", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 8)
+    found, firstIdx = attr.htmlDelimitedFind("one=two=three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one'two'three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one\"two\"three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one'two\"three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one\"two'three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("one=two'three", "two", 0, 13)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 4)
+    found, firstIdx = attr.htmlDelimitedFind("'one'two=three", "two", 0, 14)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 5)
+    found, firstIdx = attr.htmlDelimitedFind("a", "a", 0, 1)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 0)
+    found, firstIdx = attr.htmlDelimitedFind("abc", "abc", 0, 3)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 0)
+    found, firstIdx = attr.htmlDelimitedFind("value=2", "2", 2, 7)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 6)
+    found, firstIdx = attr.htmlDelimitedFind("value=2", "value", 0, 7)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 0)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' href", "href", 0, 14)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 10)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' href", "href", 0, 26)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 22)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' hrefhrefhref href", "href", 0, 39)
+    self.assertTrue(found)
+    self.assertEqual(firstIdx, 35)
+
+  def test_indexIsWithinHtmlAttributeValue_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue("text", "")
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue(0, 0)
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue(None, None)
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue([], True)
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue("this is a text", -1)
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue("this is a text", 341)
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue("this is a text", 14)
+
+  def test_indexIsWithinHtmlAttributeValue_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.indexIsWithinHtmlAttributeValue("", 0)
+
+  def helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt(self, string, index):
+    corrupt, isAttributeValue = attr.indexIsWithinHtmlAttributeValue(string, index)
+    self.assertTrue(corrupt)
+    self.assertIsNone(isAttributeValue)
+
+  def helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName(self, string, index):
+    corrupt, isAttributeValue = attr.indexIsWithinHtmlAttributeValue(string, index)
+    self.assertFalse(corrupt)
+    self.assertFalse(isAttributeValue)
+
+  def helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue(self, string, index):
+    corrupt, isAttributeValue = attr.indexIsWithinHtmlAttributeValue(string, index)
+    self.assertFalse(corrupt)
+    self.assertTrue(isAttributeValue)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_quoteCharButNotEqualFound(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("''", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'''", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("''''", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("''''", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("''''", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("''", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"\"", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"\"", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'apple", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'apple", 4)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("apple'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("apple'", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("apple'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("ap'ple", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("ap'ple", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"apple\"", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"apple\"", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'apple'", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'carrot' 'apple'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'carrot apple'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'carrot apple'", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'carrot apple'", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot'apple", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot'apple", 6)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot'apple", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot''''''apple", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot''''''apple", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot' 'apple", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot\" 'apple", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot' \"apple", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("carrot\" \"apple", 7)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_equalButNotQuoteFound(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("=", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= ", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= ", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= 2", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= 2", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= 2", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 234", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 17)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 20)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 21)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 22)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value1 = text value2 = anotherText", 28)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_quotesAreNotCorrect(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = '2\"", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = \"2'", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = \"2", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = '2", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = '''2", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = '''2'", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = ''''2", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2'", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2''", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2'''", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2\"", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2\"'", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2\"\"'", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2\"''", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2'\"", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2'\"\"", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("value = 2''\"", 8)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_noAttributeValue(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= 'two'", 4)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\t\t\t=\t'two'", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt(" = 'two'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("= \"two\"", 4)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt(" = \"two\"", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'number' = 'two'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("'number' = \"two\"", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("\"number\" = 'two'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("' = 'two'", 7)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_tooMuchQuotes(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = 'two''", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = 'two'''", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = ''two'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = ''two''", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = '''two'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = '''two''", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = '''two'''", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = ''two'''", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = 'two'''", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = 'two''", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = 'two''", 11)
+
+  def test_indexIsWithinHtmlAttributeValue_corrupt_tooMuchEqual(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number == 'two'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number = = 'two'", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number ='two'=", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number =\t'two'\t=", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number =\t'two'\t==", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number =\t'two'\t= '2'", 11)
+
+  def test_indexIsWithinHtmlAttributeValue_attributeName(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName(" ", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("a", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("ab", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("ab", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 4)
+
+  def test_indexIsWithinHtmlAttributeValue_attributeValue(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' '", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = \" \"", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' 'notEmpty=\"value\"", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' 'notEmpty='value'", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' 'notEmpty='value'", 21)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = \" \" class = 'myClass'", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' ' class = 'myClass'", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' ' class = 'myClass'", 24)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("id\t\t\t=\n\n'mainContent\t\n\tanyContent'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("id\t\t\t=\n\n'mainContent\t\n\tanyContent'", 20)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("id\t\t\t=\n\n'mainContent\t\n\tanyContent'", 21)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("id\t\t\t=\n\n'mainContent\t\n\tanyContent'", 22)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("id\t\t\t=\n\n'mainContent\t\n\tanyContent'", 25)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class = 'cl1 cl2'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class = 'cl1\"cl2'", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class = \"cl1 cl2\"", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class = \"cl1'cl2\"", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class='cl1 cl2'", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class='cl1\"cl2'", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class=\"cl1 cl2\"", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("class=\"cl1'cl2\"", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the title'\"", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the title'\"", 15)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the title'\"", 16)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the title'\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the title'\"", 25)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the'title'\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the'title'\"", 25)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the=title'\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is 'the=title'\"", 25)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is =the=title=\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"this is =the=title=\"", 25)
+
+  def test_indexIsWithinHtmlAttributeValue_equalInAttributeValue(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title='='", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title='==='", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title='==='", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title='==='", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=two\"", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=two\"", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=two\"", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number='two'\"", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number='two'\"", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number='two'\"", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number='two'\"", 16)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 15)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 16)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"number=='two'\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 15)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 17)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 18)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 21)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 22)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"==number=='two'==\"", 23)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input=number=two\"", 8)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input=number=two\"", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input=number=two\"", 15)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input=number=two\"", 19)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input=number=two\"", 20)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 11)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 13)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 20)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 21)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 22)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 25)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"input='number='two''\"", 26)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"class='myClass'\"class='myClass'", 30)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"class='myClass'\"class='myClass'", 9)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"class='myClass'\"class='myClass'", 16)
+
+  def test_indexIsWithinHtmlAttributeValue_equalMainCharAndBetween(self):
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 6)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class = 'myClass'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class = 'myClass'", 7)
+
+  def test_stringContainsHtmlDelimiter_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 0, 67)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 0, 7)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 0, None)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 0, True)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", -1, 4)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 5, 2)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", None, 2)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", None, None)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter(None, 0, 2)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter(0, 0, 0)
+    with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter(None, None, None)
+
+  def test_stringContainsHtmlDelimiter_true(self):
+    result = attr.stringContainsHtmlDelimiter(" ", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("=", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("'", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("\"", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("\t", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("\n", 0, 1)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter(" '='= \"\" ", 0, 9)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 12)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 5, 12)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 6)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 2, 8)
+    self.assertTrue(result)
+    result = attr.stringContainsHtmlDelimiter("class='myClass'", 0, 15)
+    self.assertTrue(result)
+
+  def test_stringContainsHtmlDelimiter_false(self):
+    result = attr.stringContainsHtmlDelimiter("Q", 0, 1)
+    self.assertFalse(result)
+    result = attr.stringContainsHtmlDelimiter("apple", 0, 5)
+    self.assertFalse(result)
+    result = attr.stringContainsHtmlDelimiter("'apple'", 1, 6)
+    self.assertFalse(result)
+    result = attr.stringContainsHtmlDelimiter("true != false", 0, 4)
+    self.assertFalse(result)
+    result = attr.stringContainsHtmlDelimiter("true != false", 8, 13)
+    self.assertFalse(result)

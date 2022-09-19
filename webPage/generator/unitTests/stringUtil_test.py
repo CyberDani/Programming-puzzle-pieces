@@ -606,3 +606,89 @@ class StringUtilTests(unittest.TestCase):
     found, idx = stringUtil.rfind("'field' = 'value'", "'", 10, 16, -1)
     self.assertTrue(found)
     self.assertEqual(idx, 16)
+
+  def test_findAll_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", 0, True)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", 0, -1)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", 3, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", 1, 25)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", 1, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", -1, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", None, None)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "e", False, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", [], 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", None, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll(None, "x", 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll(None, None, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findAll(None, None, None, None)
+    with self.assertRaises(Exception):
+      stringUtil.findAll(1, 2, 3, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findAll(True, False, False, True)
+
+  def test_findAll_emptyStrings(self):
+    with self.assertRaises(Exception):
+      stringUtil.findAll("text", "", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.findAll("", "x", 0, 0)
+
+  def test_findAll_notFound(self):
+    idxs = stringUtil.findAll("a", "Q", 0, 0)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("a", "longer text", 0, 0)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("this a string", "square", 0, 0)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("this a string", "square", 0, 12)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("this a string", "square", 12, 12)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("this a string", "this is a longer text than the previous one", 0, 12)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("quantum entanglement", "quantum", 0, 4)
+    self.assertEqual(idxs, [])
+    idxs = stringUtil.findAll("quantum entanglement", "entanglement", 0, 18)
+    self.assertEqual(idxs, [])
+
+  def test_findAll_found(self):
+    idxs = stringUtil.findAll("Q", "Q", 0, 0)
+    self.assertEqual(idxs, [0])
+    idxs = stringUtil.findAll("QQ", "Q", 0, 1)
+    self.assertEqual(idxs, [0, 1])
+    idxs = stringUtil.findAll("QQ", "Q", 0, 0)
+    self.assertEqual(idxs, [0])
+    idxs = stringUtil.findAll("QQ", "Q", 1, 1)
+    self.assertEqual(idxs, [1])
+    idxs = stringUtil.findAll("QQQQQQ", "Q", 0, 1)
+    self.assertEqual(idxs, [0, 1])
+    idxs = stringUtil.findAll("QQQQQQ", "Q", 2, 2)
+    self.assertEqual(idxs, [2])
+    idxs = stringUtil.findAll("QQQQQQ", "Q", 2, 4)
+    self.assertEqual(idxs, [2, 3, 4])
+    idxs = stringUtil.findAll("QQQQQQ", "Q", 4, 5)
+    self.assertEqual(idxs, [4, 5])
+    idxs = stringUtil.findAll("ababa", "aba", 0, 4)
+    self.assertEqual(idxs, [0, 2])
+    idxs = stringUtil.findAll("this is my special string", "string", 0, 24)
+    self.assertEqual(idxs, [19])
+    idxs = stringUtil.findAll("this is my special string written in python", "string", 11, 32)
+    self.assertEqual(idxs, [19])
+    idxs = stringUtil.findAll("this is my special string written in python", "string", 19, 42)
+    self.assertEqual(idxs, [19])
+    idxs = stringUtil.findAll("this is my special string written in python", "string", 0, 24)
+    self.assertEqual(idxs, [19])
+    idxs = stringUtil.findAll("this is my special string written in python", "string", 19, 24)
+    self.assertEqual(idxs, [19])

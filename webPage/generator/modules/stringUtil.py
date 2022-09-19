@@ -126,3 +126,19 @@ Return values:\n
   if idx == -1:
     return False, notFoundValue
   return True, idx
+
+def findAll(stringToScan, stringToFind, inclusiveStartIdx, inclusiveEndIdx):
+  """Includes overlaps. Raises exception if any string is empty\n
+Return value:\n
+* indexes: list of ints in ascending order containing indexes for every match"""
+  checks.checkIfString(stringToScan, inclusiveStartIdx, 4000)
+  checks.checkIfString(stringToFind, 1, 400)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(stringToScan) - 1)
+  result = []
+  idx = stringToScan.find(stringToFind, inclusiveStartIdx, inclusiveEndIdx + 1)
+  while idx != -1:
+    result.append(idx)
+    if idx == inclusiveEndIdx:
+      break
+    idx = stringToScan.find(stringToFind, idx + 1, inclusiveEndIdx + 1)
+  return result
