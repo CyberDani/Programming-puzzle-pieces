@@ -1,8 +1,7 @@
 from modules import checks
 from modules import stringUtil
 
-# TODO rename getAttributeNameIdx
-def getAttributeIdx(htmlAttributes, key):
+def getAttributeNameIdx(htmlAttributes, key):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
@@ -22,9 +21,8 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     if corrupt:
       return corruptResult
     if isWithinAttributeValue:
-      lastKeyIdx = firstKeyIdx + len(key) - 1
-      # lastKeyIdx + 1 exists, it is at least the closing quote
-      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, key, lastKeyIdx + 1, len(htmlAttributes))
+      # firstKeyIdx + len(key) exists, it is at least the closing quote
+      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, key, firstKeyIdx + len(key), len(htmlAttributes))
       continue
     return False, firstKeyIdx
   return notFoundResult
@@ -44,7 +42,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
   result = []
   notFoundResult = (False, None)
   corruptResult = (True, None)
-  corrupt, firstIdx = getAttributeIdx(htmlAttributes, key)
+  corrupt, firstIdx = getAttributeNameIdx(htmlAttributes, key)
   if corrupt:
     return corruptResult
   if firstIdx == -1:
