@@ -31,7 +31,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 # TODO test attribute: title = '=====' and title = 'number="two"' and title = 'number == "two"'
 # TODO test 'class="note"id="red"' below functions, it is valid HTML even if there is no space in ' note"id '
 
-def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
+def extractDifferentWhiteSpaceSeparatedValuesByKey(htmlAttributes, key):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
