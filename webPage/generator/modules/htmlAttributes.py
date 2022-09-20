@@ -6,11 +6,12 @@ def getAttributeNameIdx(htmlAttributes, key):
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
 * corrupt: True | False *(invalidates empty strings, validates string only near the key)*
+* attributeNameFound: True | False, None if corrupt
 * firstKeyIdx: **-1** if attribute not found or corrupt """
   checks.checkIfString(htmlAttributes, 0, 3000)
   checks.checkIfString(key, 0, 60)
-  notFoundResult = (False, -1)
-  corruptResult = (True, -1)
+  notFoundResult = (False, False, -1)
+  corruptResult = (True, None, -1)
   if not htmlAttributes or not key:
     return notFoundResult
   if stringContainsHtmlDelimiter(key, 0, len(key)):
@@ -24,11 +25,10 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
       # firstKeyIdx + len(key) exists, it is at least the closing quote
       keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, key, firstKeyIdx + len(key), len(htmlAttributes))
       continue
-    return False, firstKeyIdx
+    return False, True, firstKeyIdx
   return notFoundResult
 
 # TODO test attribute: title = '=====' and title = 'number="two"' and title = 'number == "two"'
-# TODO test integrity=\"sha512-6PM0qxuIQ==\" for below functions (an equal character in value is still valid)
 # TODO test 'class="note"id="red"' below functions, it is valid HTML even if there is no space in ' note"id '
 
 def extractDifferentWhiteSpaceSeparatedValuesFromHtmlAttributesByKey(htmlAttributes, key):
@@ -42,10 +42,10 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
   result = []
   notFoundResult = (False, None)
   corruptResult = (True, None)
-  corrupt, firstIdx = getAttributeNameIdx(htmlAttributes, key)
+  corrupt, keyFound, firstIdx = getAttributeNameIdx(htmlAttributes, key)
   if corrupt:
     return corruptResult
-  if firstIdx == -1:
+  if not keyFound:
     return notFoundResult
   corrupt, attributeName, attributeValue, startIdx, endIdx = getNextHtmlAttribute(htmlAttributes, firstIdx)
   if corrupt:
