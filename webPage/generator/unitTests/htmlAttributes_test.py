@@ -284,7 +284,7 @@ class HtmlAttributesTests(unittest.TestCase):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("_value=\"audi\"", "value")
     self.assertEqual(attributes, (False, None))
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrIsNotKeyValue(self):
+  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrDoesNotHaveValue(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected",
                                                                                          "selected")
     self.assertEqual(attributes, (False, None))
@@ -339,7 +339,6 @@ class HtmlAttributesTests(unittest.TestCase):
                                                                                        "class='myclass'", "class")
     self.assertEqual(attributes, (True, None))
 
-
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_quotes(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\"", "value")
     self.assertEqual(attributes, (False, ["audi"]))
@@ -353,6 +352,9 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(attributes, (False, ["audi\"A3"]))
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value='\"audi\"A3\"'", "value")
     self.assertEqual(attributes, (False, ["\"audi\"A3\""]))
+    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class='myClass'title='titled title=\"title\"'",
+                                                                     "title")
+    self.assertEqual(attributes, (False, ["titled", "title=\"title\""]))
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_oneValueFound(self):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
@@ -361,8 +363,6 @@ class HtmlAttributesTests(unittest.TestCase):
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
                                                    "href=\"img/favicon.ico\" id='X' type=\"image/x-icon\"", "id")
     self.assertEqual(attributes, (False, ["X"]))
-    # I have found these tricky examples while implementing beforeWhitespaceDelimitedFind as an effort to minimize
-    # code length
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
                                             "xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href")
     self.assertEqual(attributes, (False, ["img/favicon.ico"]))
@@ -700,7 +700,29 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(attributeValue, "id1 id2")
     self.assertEqual(startIdx, 0)
     self.assertEqual(endIdx, 13)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("title=\"class='myClass'\"", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "title")
+    self.assertEqual(attributeValue, "class='myClass'")
+    self.assertEqual(startIdx, 0)
+    self.assertEqual(endIdx, 22)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("title=\"class='myClass'\""
+                                                                                         "selected", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "title")
+    self.assertEqual(attributeValue, "class='myClass'")
+    self.assertEqual(startIdx, 0)
+    self.assertEqual(endIdx, 22)
 
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("title=\"===>A'B'C<===\""
+                                                                                         "selected", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "title")
+    self.assertEqual(attributeValue, "===>A'B'C<===")
+    self.assertEqual(startIdx, 0)
+    self.assertEqual(endIdx, 20)
+
+# TODO do I want this to work like this? It should take the current full word
   def test_getNextHtmlAttribute_startIdxGreaterThan1(self):
     corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("selected", 2)
     self.assertFalse(corrupt)
@@ -828,8 +850,17 @@ class HtmlAttributesTests(unittest.TestCase):
     corrupt, attributes = attr.getListOfHtmlAttributeNames("property\n=\n\"\narticle:published_time\n\"\n")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["property"])
+    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"class='myClass'\"")
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, ["title"])
+    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"<=== A'B'C ===>\"")
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, ["title"])
 
   def test_getListOfHtmlAttributeNames_moreAttributes(self):
+    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"class='myClass'\"id='myId'\t\nselected")
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, ["title", "id", "selected"])
     corrupt, attributes = attr.getListOfHtmlAttributeNames("selected id=\"logo\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected", "id"])
@@ -1046,6 +1077,14 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(firstQuoteIdx, 7)
     self.assertEqual(secondQuoteIdx, 17)
+    corrupt, firstQuoteIdx, secondQuoteIdx = attr.getNextHtmlAttributeValueIfExists("=\"class='myClass'\"", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(firstQuoteIdx, 1)
+    self.assertEqual(secondQuoteIdx, 17)
+    corrupt, firstQuoteIdx, secondQuoteIdx = attr.getNextHtmlAttributeValueIfExists("=\"class='myClass'\"selected", 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(firstQuoteIdx, 1)
+    self.assertEqual(secondQuoteIdx, 17)
 
   def test_getNextHtmlAttributeValueIfExists_nonZeroStartIdx(self):
     corrupt, firstQuoteIdx, secondQuoteIdx = attr.getNextHtmlAttributeValueIfExists("\n\n\n=\t\t\t'\t value\n\n' ", 2)
@@ -1192,7 +1231,13 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(attributeName, "multiple")
     self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+    string = "title=\"class='myClass'==\""
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "title")
+    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
 
+  # TODO do I want this behavior?
   def test_getNextHtmlAttributeName_nonZeroStartIdx(self):
     corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("selected", 3)
     self.assertFalse(corrupt)

@@ -28,16 +28,12 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, True, firstKeyIdx
   return notFoundResult
 
-# TODO test attribute: title = '=====' and title = 'number="two"' and title = 'number == "two"'
-# TODO test 'class="note"id="red"' below functions, it is valid HTML even if there is no space in ' note"id '
-
 def extractDifferentWhiteSpaceSeparatedValuesByKey(htmlAttributes, key):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
 * <corrupt>: True | False
-* <values>: **None** if corrupt or attribute name not found, empty list if the value is empty or whitspace"""
-  checks.checkIfString(htmlAttributes, 0, 800)
+* <values>: **None** if corrupt or attribute name not found, empty list if the value is empty or whitespace"""
   checks.checkIfString(key, 1, 30)
   result = []
   notFoundResult = (False, None)
@@ -84,7 +80,6 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
-# -> corrupt, attributes {name -> value}
 def getHtmlAttributes(attributesString, startIdx):
   """Each attribute is taken and validated once at its first occurrence. \n
 Raises exception if <attributesString> is empty because startIdx cannot be set properly \n
@@ -99,8 +94,7 @@ Raises exception if <attributesString> is empty because startIdx cannot be set p
   return notFoundReturn
 
 def getNextHtmlAttribute(attributesString, startIdx):
-  """ Raises exception if <startIdx> is not valid. This means that <attributesString> cannot be an empty string as
-there is no first index. \n
+  """ Raises exception for empty string because the index cannot be set. \n
 Only the first attribute is taken and validated \n
 \n Return values:
 * <corrupt>: True | False
@@ -179,6 +173,7 @@ Return values:\n
     currentIdx += 1
   return False, attributeName, firstNonSpaceCharIdx, len(attributesString) - 1
 
+# TODO rename to sth similar thereIsNonDelimiterCharBeforeIdx
 def thereIsAttributeNameBeforeIdx(htmString, idx):
   checks.checkIfString(htmString, 0, 4000)
   checks.checkIntIsBetween(idx, 0, len(htmString) - 1)
