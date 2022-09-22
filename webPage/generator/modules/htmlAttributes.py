@@ -116,34 +116,29 @@ Only the first attribute is taken and validated \n
     return False, attributeName, None, firstCharIdx, lastCharIdx
   return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
-# TODO see if you can make it prettier
-# TODO use corruptResult as for the other functions
+# TODO getCurrentValueIfExists + test when idx is pointing to attribute name or within attribute value
 def getNextHtmlAttributeValueIfExists(attributesString, startIdx):
-  """Raises error at empty string because <startIdx> cannot be set properly\n
+  """<startIdx> must be a whitespace or an equal character. \n
+Raises error at empty string because <startIdx> cannot be set properly\n
 You DO NOT want to call this before checking for an attribute name first, e.g. calling *getNextHtmlAttributeName()*\n
 Return values:\n
 * corrupt : True | False
-* firstQuoteIdx, secondQuoteIdx: **-1** if corrupt or there is no attribute value """
-  checks.checkIfString(attributesString, 0, 1000)
-  checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
+* firstQuoteIdx, secondQuoteIdx: **-1** if corrupt or not found """
+  notFoundResult = (False, -1, -1)
+  corruptResult = (True, -1, -1)
+  # TODO getFirstNonWhiteSpaceHtmlDelimiter
   firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
   if firstNonSpaceCharIdx == -1:
-    return False, -1, -1
+    return notFoundResult
   firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
   if firstNonSpaceChar != "=":
     isCorrupt = firstNonSpaceChar == "'" or firstNonSpaceChar == "\""
     return isCorrupt, -1, -1
-  if firstNonSpaceCharIdx == len(attributesString) - 1:
-    return True, -1, -1
-  nonSpaceCharIdxAfterEq = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, firstNonSpaceCharIdx + 1,
-                                                                   len(attributesString))
-  quoteChar = attributesString[nonSpaceCharIdxAfterEq]
-  if quoteChar != "'" and quoteChar != "\"":
-    return True, -1, -1
-  secondQuoteIdx = attributesString.find(quoteChar, nonSpaceCharIdxAfterEq + 1)
-  if secondQuoteIdx == -1:
-    return True, -1, -1
-  return False, nonSpaceCharIdxAfterEq, secondQuoteIdx
+  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesAfterEqualChar(attributesString,
+                                                                                        firstNonSpaceCharIdx)
+  if corrupt:
+    return corruptResult
+  return False, openingQuoteIdx, closingQuoteIdx
 
 # TODO see if you can make it look prettier
 def getNextHtmlAttributeName(attributesString, startIdx):
@@ -173,8 +168,8 @@ Return values:\n
     currentIdx += 1
   return False, attributeName, firstNonSpaceCharIdx, len(attributesString) - 1
 
-# TODO rename to sth similar thereIsNonDelimiterCharBeforeIdx
-def thereIsAttributeNameBeforeIdx(htmString, idx):
+def isThereNonDelimiterCharBeforeIdx(htmString, idx):
+  """Skips whitespaces."""
   checks.checkIfString(htmString, 0, 4000)
   checks.checkIntIsBetween(idx, 0, len(htmString) - 1)
   if idx == 0:
@@ -182,11 +177,12 @@ def thereIsAttributeNameBeforeIdx(htmString, idx):
   idx -= 1
   while idx >= 0:
     currentChar = htmString[idx]
-    if currentChar == "'" or currentChar == '"' or currentChar == "=":
+    if currentChar.isspace():
+      idx -= 1
+      continue
+    if charIsHtmlDelimiter(currentChar):
       return False
-    if not currentChar.isspace():
-      return True
-    idx -= 1
+    return True
   return False
 
 def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
@@ -304,7 +300,7 @@ def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
     return corruptResult
   if equalIndex == 0 or equalIndex == len(htmlString) - 1:
     return corruptResult
-  if not thereIsAttributeNameBeforeIdx(htmlString, equalIndex):
+  if not isThereNonDelimiterCharBeforeIdx(htmlString, equalIndex):
     return corruptResult
   quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString))
   if htmlString[quoteIdx] != "'" and htmlString[quoteIdx] != '"':

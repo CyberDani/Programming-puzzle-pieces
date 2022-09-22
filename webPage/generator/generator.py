@@ -14,6 +14,7 @@ from modules import htmlBuilder
 from modules import htmlHead
 from modules import uTest
 
+# TODO check if generator is run from the right path
 # TODO unit test if all files and functions are unit tested
 # TODO acceptance test
 # TODO Move htmlIncludes from generator

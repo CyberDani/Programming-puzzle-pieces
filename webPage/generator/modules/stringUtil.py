@@ -68,7 +68,6 @@ def doubleSplit(string, primaryDelimiter, secondaryDelimiter):
       secondaryParts += secondaryPartials[1:]
   return primaryParts, secondaryParts
 
-# TODO rename: getNextNonWhiteSpaceCharIdx
 def getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx):
   """Returns **-1** if not found \n
   Raises error at empty string because indexes cannot be set properly"""
