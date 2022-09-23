@@ -14,6 +14,8 @@ from modules import htmlBuilder
 from modules import htmlHead
 from modules import uTest
 
+# TODO general test helpers using tuple unpacking:
+#  https://bobbyhadz.com/blog/python-unpack-tuple-as-arguments-to-function-call
 # TODO check if generator is run from the right path
 # TODO unit test if all files and functions are unit tested
 # TODO acceptance test
