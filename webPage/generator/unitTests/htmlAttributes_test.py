@@ -1018,6 +1018,27 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValueIfExists_checkIfFound("class=\"class='myClass'\"", 5, startsAt=6, endsAt=22)
     self.helper_getCurrentValueIfExists_checkIfFound("id=\"class='myClass'\"selected", 2, startsAt=3, endsAt=19)
 
+  def helper_getNextHtmlAttributeName_checkIfNotFound(self, string, startIdx):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def helper_getNextHtmlAttributeName_checkIfFound(self, string, startIdx, startsAt, endsAt):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(firstCharIdx, startsAt)
+    self.assertEqual(lastCharIdx, endsAt)
+    self.assertEqual(attributeName, string[startsAt:endsAt + 1])
+
+  def helper_getNextHtmlAttributeName_checkIfCorrupt(self, string, startIdx):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+    self.assertTrue(corrupt)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
   def test_getNextHtmlAttributeName_nonSense(self):
     with self.assertRaises(Exception):
       attr.getNextHtmlAttributeName(None, None)
@@ -1033,136 +1054,55 @@ class HtmlAttributesTests(unittest.TestCase):
   def test_getNextHtmlAttributeName_emptyString(self):
     with self.assertRaises(Exception):
       attr.getNextHtmlAttributeName("", 0)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("='value' ", 8)
-    self.assertFalse(corrupt)
-    self.assertIsNone(attributeName)
-    self.assertEqual(firstCharIdx, -1)
-    self.assertEqual(lastCharIdx, -1)
-
-  def helper_getNextHtmlAttributeName_checkIfNoName(self, corrupt, attributeName, firstCharIdx, lastCharIdx):
-    self.assertFalse(corrupt)
-    self.assertIsNone(attributeName, -1)
-    self.assertEqual(firstCharIdx, -1)
-    self.assertEqual(lastCharIdx, -1)
-
-  def helper_getNextHtmlAttributeName_checkIfCorrupt(self, corrupt, attributeName, firstCharIdx, lastCharIdx):
-    self.assertTrue(corrupt)
-    self.assertIsNone(attributeName, -1)
-    self.assertEqual(firstCharIdx, -1)
-    self.assertEqual(lastCharIdx, -1)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound("='value' ", 8)
 
   def test_getNextHtmlAttributeName_spaces(self):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \t\t\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \t\t \n ", 3)
-    self.helper_getNextHtmlAttributeName_checkIfNoName(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound("\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 1)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 2)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\r\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t \n ", 3)
 
   def test_getNextHtmlAttributeName_corrupt(self):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("=", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("= ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" =", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" = ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t=\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("''''''''", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" '", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" ' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t'\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\"", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \"", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" \" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\t\"\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("='value'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(" = ' value ' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("=value'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("class'myClass'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(corrupt, attributeName, firstCharIdx, lastCharIdx)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("=", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("= ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" =", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" = ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t=\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("''''''''", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" '", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" ' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t'\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\"", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" \"", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" \" ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t\"\n\n", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("='value'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("=value'", 0)
+    self.helper_getNextHtmlAttributeName_checkIfCorrupt("class'myClass'", 0)
 
   def test_getNextHtmlAttributeName_attrNameFound(self):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("X", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "X")
-    self.assertEqual(firstCharIdx, 0)
-    self.assertEqual(lastCharIdx, 0)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\tX\t\t", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "X")
-    self.assertEqual(firstCharIdx, 2)
-    self.assertEqual(lastCharIdx, 2)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("\t\tX\t\tY Z", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "X")
-    self.assertEqual(firstCharIdx, 2)
-    self.assertEqual(lastCharIdx, 2)
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(firstCharIdx, 0)
-    self.assertEqual(lastCharIdx, len("selected") - 1)
-    string = "\t\tselected\n\n"
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(string[firstCharIdx], "s")
-    self.assertEqual(string[lastCharIdx], "d")
-    string = " class='my-Class' \t selected"
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "class")
-    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
-    string = "\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected"
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "class")
-    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
-    string = "multiple words in this string"
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "multiple")
-    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
-    string = "title=\"class='myClass'==\""
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "title")
-    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+    self.helper_getNextHtmlAttributeName_checkIfFound("X", 0, startsAt=0, endsAt=0)
+    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
+    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tX\t\tY Z", 0, startsAt=2, endsAt=2)
+    self.helper_getNextHtmlAttributeName_checkIfFound("selected", 0, startsAt=0, endsAt=7)
+    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tselected\n\n", 0, startsAt=2, endsAt=9)
+    self.helper_getNextHtmlAttributeName_checkIfFound(" class='my-Class' \t selected", 0, startsAt=1, endsAt=5)
+    self.helper_getNextHtmlAttributeName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
+                                                      startsAt=2, endsAt=6)
+    self.helper_getNextHtmlAttributeName_checkIfFound("multiple words in this string", 0, startsAt=0, endsAt=7)
+    self.helper_getNextHtmlAttributeName_checkIfFound("title=\"class='myClass'==\"", 0, startsAt=0, endsAt=4)
 
-  # TODO do I want this behavior?
   def test_getNextHtmlAttributeName_nonZeroStartIdx(self):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName("selected", 3)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "ected")
-    self.assertEqual(firstCharIdx, 3)
-    self.assertEqual(lastCharIdx, len("selected") - 1)
-    string = "multiple words in this string"
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, 22)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "string")
-    self.assertEqual(string[firstCharIdx:lastCharIdx + 1], attributeName)
+    # TODO do I want this behavior?
+    self.helper_getNextHtmlAttributeName_checkIfFound("selected", 3, startsAt=3, endsAt=7)
+    self.helper_getNextHtmlAttributeName_checkIfFound("multiple words in this string", 3, startsAt=3, endsAt=7)
 
   def test_getHtmlAttributes_nonSense(self):
     with self.assertRaises(Exception):
@@ -1188,7 +1128,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(attributes, {})
 
-  def test_getHtmlAttributes_emptyString(self):
+  def test_getHtmlAttributes_space(self):
     corrupt, attributes = attr.getHtmlAttributes(" ", 0)
     self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
     corrupt, attributes = attr.getHtmlAttributes("   ", 0)
@@ -1968,7 +1908,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertTrue(corrupt)
     self.assertIsNone(isAttributeValue)
 
-  def helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName(self, string, index):
+  def helper_indexIsWithinHtmlAttributeValue_checkIfNotValue(self, string, index):
     corrupt, isAttributeValue = attr.indexIsWithinHtmlAttributeValue(string, index)
     self.assertFalse(corrupt)
     self.assertFalse(isAttributeValue)
@@ -2080,20 +2020,20 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_indexIsWithinHtmlAttributeValue_checkIfCorrupt("number =\t'two'\t= '2'", 11)
 
   def test_indexIsWithinHtmlAttributeValue_attributeName(self):
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName(" ", 0)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("a", 0)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("ab", 0)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("ab", 1)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 0)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 1)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 3)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 5)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 7)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 10)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("one two three", 12)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 0)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 2)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 4)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue(" ", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("a", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("ab", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("ab", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 1)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 3)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 10)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("one two three", 12)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 0)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 2)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 4)
 
   def test_indexIsWithinHtmlAttributeValue_attributeValue(self):
     self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("empty = ' '", 9)
@@ -2172,11 +2112,11 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeValue("title=\"class='myClass'\"class='myClass'", 16)
 
   def test_indexIsWithinHtmlAttributeValue_equalMainCharAndBetween(self):
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 5)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 6)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class='myClass'", 14)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class = 'myClass'", 5)
-    self.helper_indexIsWithinHtmlAttributeValue_checkIfAttributeName("class = 'myClass'", 7)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 6)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class='myClass'", 14)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class = 'myClass'", 5)
+    self.helper_indexIsWithinHtmlAttributeValue_checkIfNotValue("class = 'myClass'", 7)
 
   def test_stringContainsHtmlDelimiter_nonSense(self):
     with self.assertRaises(Exception):
@@ -2371,3 +2311,144 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t = value", 1, 14, foundAt=7)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t 'value'", 1, 14, foundAt=7)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t \"value\"", 1, 14, foundAt=7)
+
+  def helper_getClosestValueBeforeOrWithin_exceptionRaised(self, string, idx):
+    with self.assertRaises(Exception):
+      attr.getClosestValueBeforeOrWithin(string, idx)
+
+  def helper_getClosestValueBeforeOrWithin_checkIfCorrupt(self, string, idx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+    self.assertTrue(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(equalIdx, -1)
+    self.assertEqual(openingQuoteIdx, -1)
+    self.assertEqual(ClosingQuoteIdx, -1)
+
+  def helper_getClosestValueBeforeOrWithin_checkIfNotFound(self, string, idx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+    self.assertFalse(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(equalIdx, -1)
+    self.assertEqual(openingQuoteIdx, -1)
+    self.assertEqual(ClosingQuoteIdx, -1)
+
+  def helper_getClosestValueBeforeOrWithin_checkIfFound(self, string, idx, equalIdxAt,
+                                                          openingQuoteIdxAt, closingQuoteIdxAt):
+    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+    self.assertFalse(corrupt)
+    self.assertTrue(found)
+    self.assertEqual(equalIdx, equalIdxAt)
+    self.assertEqual(openingQuoteIdx, openingQuoteIdxAt)
+    self.assertEqual(closingQuoteIdx, closingQuoteIdxAt)
+
+  def test_getClosestValueBeforeOrWithin_nonSense(self):
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", -1)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", 6)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", 36)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", None)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", "")
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", True)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(3, 2)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(1, 2)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(True, True)
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(None, None)
+
+  def test_getClosestValueBeforeOrWithin_emptyString(self):
+    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("", 0)
+
+  def test_getClosestValueBeforeOrWithin_corrupt(self):
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\"", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt('""', 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt('""', 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''''", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=2", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= 2", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=\t\t2", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2", 2)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t '2", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t \"2", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2'", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2\"", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t '2\"", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t \"2'", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 14)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 10)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 7)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number 'one' two", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two'", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two\"", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\"number one two\"", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number one two'", 8)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number one two\"", 8)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("a = 4", 4)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt(" = '' selected", 10)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= '' selected", 9)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("='' selected", 8)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=''selected", 7)
+
+  def test_getClosestValueBeforeOrWithin_cornerCases(self):
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\t=\t\t 2", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("number = two", 2)
+    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= ''", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("ingredient = '\"olive oil", 0)
+
+  def test_getClosestValueBeforeOrWithin_valueNotFound(self):
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" ", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\t", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\r", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\n", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\r\n", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("Q", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("ab", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 2)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" a ", 2)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t \"0'", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t \"0'", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t '0'", 2)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 1)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 6)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 15)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("selected number='two'", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("selected number='two'", 4)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" ='2'", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a ='2'", 0)
+    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" = ''", 0)
+
+  def test_getClosestValueBeforeOrWithin_valueFound(self):
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 11, equalIdxAt=2,
+                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 7, equalIdxAt=2,
+                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 14, equalIdxAt=2,
+                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = \"\" selected", 14, equalIdxAt=2,
+                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 42,
+                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 33,
+                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 30,
+                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 29,
+                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected",
+                                                          29, equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title = \"class='myClass'\"", 18,
+                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=24)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title = \"=class='myClass'=\"", 19,
+                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=26)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title\t=\n\"===class='myClass'===\"", 21,
+                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=30)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 30,
+                                                           equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
+    self.helper_getClosestValueBeforeOrWithin_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 31,
+                                                           equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)

@@ -141,9 +141,11 @@ Return values:\n
     return corruptResult
   return False, True, openingQuoteIdx, closingQuoteIdx
 
+# TODO rename getCurrentName + resolve false positive
 # TODO see if you can make it look prettier
 def getNextHtmlAttributeName(attributesString, startIdx):
-  """Raises error at empty string because <startIdx> cannot be set properly\n
+  """False positive might occur if startIdx is inside of attribute value.
+Raises error at empty string because <startIdx> cannot be set properly\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
 * attributeName: **None** if corrupt or there is no attribute
@@ -151,11 +153,11 @@ Return values:\n
   checks.checkIfString(attributesString, 0, 1000)
   checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
   corruptResult = (True, None, -1, -1)
+  notFoundResult = (False, None, -1, -1)
   firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
   if firstNonSpaceCharIdx == -1:
-    return False, None, -1, -1
-  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
-  if firstNonSpaceChar == "=" or firstNonSpaceChar == "'" or firstNonSpaceChar == "\"":
+    return notFoundResult
+  if charIsHtmlDelimiter(attributesString[firstNonSpaceCharIdx]):
     return corruptResult
   currentIdx = firstNonSpaceCharIdx
   attributeName = ""
@@ -201,7 +203,6 @@ def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
   idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
   return idx != -1 and charIsHtmlDelimiter(htmlString[idx])
 
-# TODO try to better clean code it
 def indexIsWithinHtmlAttributeValue(attributeString, index):
   """Main quotes and the equal character are considered not to be within attribute value.
 Raises exception for empty string because the index cannot be set properly.
@@ -209,26 +210,12 @@ Raises exception for empty string because the index cannot be set properly.
 * corrupt: True | False (validates only a portion of text to ensure the correctness of the result)
 * isAttributeValue: True | False, None if corrupt"""
   corruptResult = (True, None)
-  equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, index)
-  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", index, len(attributeString) - 1,
-                                                           notFoundValue=len(attributeString) - 1)
-  if not equalIdxsBefore:
-    if isThereAnyQuoteChar(attributeString, 0, referenceIdxFromRight):
-      return corruptResult
-    return False, False
-
-  maxEqualIdxQuoteIdxsPair = (-1, -1, -1)
-  for equalIdx in equalIdxsBefore:
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                            = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
-    if not corrupt:
-      if closingQuoteIdx > maxEqualIdxQuoteIdxsPair[2]:
-        maxEqualIdxQuoteIdxsPair = (equalIdx, openingQuoteCharIdx, closingQuoteIdx)
-  closingQuoteIdx = maxEqualIdxQuoteIdxsPair[2]
-  if closingQuoteIdx == -1:
+  notFoundResult = (False, False)
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getClosestValueBeforeOrWithin(attributeString, index)
+  if corrupt:
     return corruptResult
-  if index <= maxEqualIdxQuoteIdxsPair[1] or index == closingQuoteIdx:
-    return False, False
+  if not found or index <= openingQuoteIdx or index == closingQuoteIdx:
+    return notFoundResult
   isWithinAttributeValue = closingQuoteIdx > index
   if closingQuoteIdx == len(attributeString) - 1:
     return False, isWithinAttributeValue
@@ -253,7 +240,6 @@ def getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiv
     return notFoundResult
   return True, firstNonSpaceCharIdx
 
-
 def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
   """Raises exception for empty string because the indexes cannot be set properly.
 \nReturn values:\n
@@ -268,6 +254,38 @@ def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
   if idx == exclusiveEndIdx:
     return notFoundResult
   return True, idx
+
+# TODO try to clean code it
+def getClosestValueBeforeOrWithin(attributeString, index):
+  """Raises exception for empty string because the index cannot be set properly
+\n Return values:
+* corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
+* found: True | False (False if corrupt)
+* equalIdx, openingQuoteCharIdx, closingQuoteIdx: -1 if corrupt or not found"""
+  corruptResult = (True, False, -1, -1, -1)
+  notFoundResult = (False, False, -1, -1, -1)
+  equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, index)
+  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", index, len(attributeString) - 1,
+                                                           notFoundValue = len(attributeString) - 1)
+  if not equalIdxsBefore:
+    if isThereAnyQuoteChar(attributeString, 0, referenceIdxFromRight):
+      return corruptResult
+    return notFoundResult
+  maxEqualIdxQuoteIdxsPair = (-1, -1, -1)
+  for equalIdx in equalIdxsBefore:
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
+      = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
+    if not corrupt:
+      if closingQuoteIdx > maxEqualIdxQuoteIdxsPair[2]:
+        maxEqualIdxQuoteIdxsPair = (equalIdx, openingQuoteCharIdx, closingQuoteIdx)
+  equalIdx = maxEqualIdxQuoteIdxsPair[0]
+  openingQuoteCharIdx = maxEqualIdxQuoteIdxsPair[1]
+  closingQuoteIdx = maxEqualIdxQuoteIdxsPair[2]
+  if closingQuoteIdx == -1:
+    return corruptResult
+  if openingQuoteCharIdx > index:
+    return notFoundResult
+  return False, True, equalIdx, openingQuoteCharIdx, closingQuoteIdx
 
 def htmlDelimitedFind(stringToScan, stringToMatch, inclusiveStartIndex, exclusiveEndIdx):
   """Validates outside the [start, end] indexes. Raises exception for empty strings.
@@ -296,7 +314,7 @@ def stringContainsHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
       return True
   return False
 
-# TODO corrupt if equal is within an attribute value
+# TODO corrupt if equal is within an attribute value + resolve false positive
 def getQuoteIndexesAfterEqualChar(htmlString, equalCharIdx):
   """Validates adjacent chars near equal and main quotes. \n
 Can be a false positive: attribute value looking string inside an attribute value. Use indexIsWithinHtmlAttributeValue
