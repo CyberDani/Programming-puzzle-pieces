@@ -722,19 +722,24 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(startIdx, 0)
     self.assertEqual(endIdx, 20)
 
-# TODO do I want this to work like this? It should take the current full word
-  def test_getNextHtmlAttribute_startIdxGreaterThan1(self):
+  def test_getNextHtmlAttribute_indexPointsWithinAttributeName(self):
     corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("selected", 2)
     self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "lected")
+    self.assertEqual(attributeName, "selected")
     self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 2)
+    self.assertEqual(startIdx, 0)
     self.assertEqual(endIdx, 7)
     corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("selected='False'", 3)
     self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "ected")
+    self.assertEqual(attributeName, "selected")
     self.assertEqual(attributeValue, "False")
-    self.assertEqual(startIdx, 3)
+    self.assertEqual(startIdx, 0)
+    self.assertEqual(endIdx, 15)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute("selected='False'", 7)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, "selected")
+    self.assertEqual(attributeValue, "False")
+    self.assertEqual(startIdx, 0)
     self.assertEqual(endIdx, 15)
     string = "\nselected\nclass\t=\t\"\tcl1\tcl2\tcl3 \" class id=\"my-id\"\n"
     corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getNextHtmlAttribute(string, string.find("class"))
@@ -1018,91 +1023,91 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValueIfExists_checkIfFound("class=\"class='myClass'\"", 5, startsAt=6, endsAt=22)
     self.helper_getCurrentValueIfExists_checkIfFound("id=\"class='myClass'\"selected", 2, startsAt=3, endsAt=19)
 
-  def helper_getNextHtmlAttributeName_checkIfNotFound(self, string, startIdx):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+  def helper_getCurrentOrNextName_checkIfNotFound(self, string, startIdx):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertFalse(corrupt)
     self.assertIsNone(attributeName, -1)
     self.assertEqual(firstCharIdx, -1)
     self.assertEqual(lastCharIdx, -1)
 
-  def helper_getNextHtmlAttributeName_checkIfFound(self, string, startIdx, startsAt, endsAt):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+  def helper_getCurrentOrNextName_checkIfFound(self, string, startIdx, startsAt, endsAt):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertFalse(corrupt)
     self.assertEqual(firstCharIdx, startsAt)
     self.assertEqual(lastCharIdx, endsAt)
     self.assertEqual(attributeName, string[startsAt:endsAt + 1])
 
-  def helper_getNextHtmlAttributeName_checkIfCorrupt(self, string, startIdx):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getNextHtmlAttributeName(string, startIdx)
+  def helper_getCurrentOrNextName_checkIfCorrupt(self, string, startIdx):
+    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertTrue(corrupt)
     self.assertIsNone(attributeName, -1)
     self.assertEqual(firstCharIdx, -1)
     self.assertEqual(lastCharIdx, -1)
 
-  def test_getNextHtmlAttributeName_nonSense(self):
+  def test_getCurrentOrNextName_nonSense(self):
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName(None, None)
+      attr.getCurrentOrNextName(None, None)
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName(False, 0)
+      attr.getCurrentOrNextName(False, 0)
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName("= 'value'", True)
+      attr.getCurrentOrNextName("= 'value'", True)
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName("= 'value'", 56)
+      attr.getCurrentOrNextName("= 'value'", 56)
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName("= 'value'", -1)
+      attr.getCurrentOrNextName("= 'value'", -1)
 
-  def test_getNextHtmlAttributeName_emptyString(self):
+  def test_getCurrentOrNextName_emptyString(self):
     with self.assertRaises(Exception):
-      attr.getNextHtmlAttributeName("", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound("='value' ", 8)
+      attr.getCurrentOrNextName("", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound("='value' ", 8)
 
-  def test_getNextHtmlAttributeName_spaces(self):
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound("\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 1)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t\n", 2)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\r\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfNotFound(" \t\t \n ", 3)
+  def test_getCurrentOrNextName_spaces(self):
+    self.helper_getCurrentOrNextName_checkIfNotFound(" ", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound("\n", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t\n", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t\n", 1)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t\n", 2)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" \t\r\n", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t \n ", 3)
 
-  def test_getNextHtmlAttributeName_corrupt(self):
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("=", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("= ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" =", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" = ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t=\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("''''''''", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" '", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" ' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t'\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\"", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" \"", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" \" ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("\t\t\"\n\n", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("='value'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt(" = ' value ' ", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("=value'", 0)
-    self.helper_getNextHtmlAttributeName_checkIfCorrupt("class'myClass'", 0)
+  def test_getCurrentOrNextName_corrupt(self):
+    self.helper_getCurrentOrNextName_checkIfCorrupt("=", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("= ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" =", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("\t\t=\n\n", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("'", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("''''''''", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("' ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" '", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" ' ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("\t\t'\n\n", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("\"", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("\" ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" \"", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" \" ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("\t\t\"\n\n", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("='value'", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
 
-  def test_getNextHtmlAttributeName_attrNameFound(self):
-    self.helper_getNextHtmlAttributeName_checkIfFound("X", 0, startsAt=0, endsAt=0)
-    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
-    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tX\t\tY Z", 0, startsAt=2, endsAt=2)
-    self.helper_getNextHtmlAttributeName_checkIfFound("selected", 0, startsAt=0, endsAt=7)
-    self.helper_getNextHtmlAttributeName_checkIfFound("\t\tselected\n\n", 0, startsAt=2, endsAt=9)
-    self.helper_getNextHtmlAttributeName_checkIfFound(" class='my-Class' \t selected", 0, startsAt=1, endsAt=5)
-    self.helper_getNextHtmlAttributeName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
-                                                      startsAt=2, endsAt=6)
-    self.helper_getNextHtmlAttributeName_checkIfFound("multiple words in this string", 0, startsAt=0, endsAt=7)
-    self.helper_getNextHtmlAttributeName_checkIfFound("title=\"class='myClass'==\"", 0, startsAt=0, endsAt=4)
+  def test_getCurrentOrNextName_attrNameFound(self):
+    self.helper_getCurrentOrNextName_checkIfFound("X", 0, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextName_checkIfFound("\t\tX\t\tY Z", 0, startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextName_checkIfFound("selected", 0, startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextName_checkIfFound("\t\tselected\n\n", 0, startsAt=2, endsAt=9)
+    self.helper_getCurrentOrNextName_checkIfFound(" class='my-Class' \t selected", 0, startsAt=1, endsAt=5)
+    self.helper_getCurrentOrNextName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
+                                                  startsAt=2, endsAt=6)
+    self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 0, startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, startsAt=0, endsAt=4)
 
-  def test_getNextHtmlAttributeName_nonZeroStartIdx(self):
-    # TODO do I want this behavior?
-    self.helper_getNextHtmlAttributeName_checkIfFound("selected", 3, startsAt=3, endsAt=7)
-    self.helper_getNextHtmlAttributeName_checkIfFound("multiple words in this string", 3, startsAt=3, endsAt=7)
+  def test_getCurrentOrNextName_indexPointsWithinValue(self):
+    self.helper_getCurrentOrNextName_checkIfFound("selected", 3, startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 3, startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 13, startsAt=9, endsAt=13)
 
   def test_getHtmlAttributes_nonSense(self):
     with self.assertRaises(Exception):
@@ -2194,7 +2199,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertTrue(found)
     self.assertEqual(idx, foundAt)
 
-  def test_getFirstNonWhiteSpaceHtmlDelimiter_nonSense(self):
+  def test_getFirstHtmlDelimiter_nonSense(self):
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, 345)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, 7)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, None)
@@ -2215,18 +2220,18 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiter_exceptionRaised(None, None, None)
     self.helper_getFirstHtmlDelimiter_exceptionRaised(0, 0, 0)
 
-  def test_getFirstNonWhiteSpaceHtmlDelimiter_emptyString(self):
+  def test_getFirstHtmlDelimiter_emptyString(self):
     self.helper_getFirstHtmlDelimiter_exceptionRaised("", 0, 0)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("", 0, 1)
 
-  def test_getFirstNonWhiteSpaceHtmlDelimiter_notFound(self):
+  def test_getFirstHtmlDelimiter_notFound(self):
     self.helper_getFirstHtmlDelimiter_notFound("Q", 0, 1)
     self.helper_getFirstHtmlDelimiter_notFound("one-two-three", 0, 13)
     self.helper_getFirstHtmlDelimiter_notFound("=Hello=", 1, 6)
     self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 10)
     self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 20)
 
-  def test_getFirstNonWhiteSpaceHtmlDelimiter_found(self):
+  def test_getFirstHtmlDelimiter_found(self):
     self.helper_getFirstHtmlDelimiter_found(" ", 0, 1, foundAt = 0)
     self.helper_getFirstHtmlDelimiter_found("\t", 0, 1, foundAt = 0)
     self.helper_getFirstHtmlDelimiter_found("\n", 0, 1, foundAt = 0)
@@ -2452,3 +2457,67 @@ class HtmlAttributesTests(unittest.TestCase):
                                                            equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
     self.helper_getClosestValueBeforeOrWithin_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 31,
                                                            equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)
+
+  def helper_getLastHtmlDelimiter_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    with self.assertRaises(Exception):
+      attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+
+  def helper_getLastHtmlDelimiter_notFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    found, idx = attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertFalse(found)
+    self.assertEqual(idx, -1)
+
+  def helper_getLastHtmlDelimiter_found(self, string, inclusiveStartIdx, exclusiveEndIdx, foundAt):
+    found, idx = attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertTrue(found)
+    self.assertEqual(idx, foundAt)
+
+  def test_getLastHtmlDelimiter_nonSense(self):
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, 345)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, 7)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, None)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, True)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, [])
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 0, "")
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", -1, 2)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", -1, 45)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 5, 3)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", None, 3)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", True, 3)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", True, False)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", None, None)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", "", "")
+    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 2, 2)
+    self.helper_getLastHtmlDelimiter_exceptionRaised(None, 0, 3)
+    self.helper_getLastHtmlDelimiter_exceptionRaised([], 0, 3)
+    self.helper_getLastHtmlDelimiter_exceptionRaised(None, None, None)
+    self.helper_getLastHtmlDelimiter_exceptionRaised(0, 0, 0)
+
+  def test_getLastHtmlDelimiter_emptyString(self):
+    self.helper_getLastHtmlDelimiter_exceptionRaised("", 0, 0)
+    self.helper_getLastHtmlDelimiter_exceptionRaised("", 0, 1)
+
+  def test_getLastHtmlDelimiter_notFound(self):
+    self.helper_getLastHtmlDelimiter_notFound("Q", 0, 1)
+    self.helper_getLastHtmlDelimiter_notFound("one-two-three", 0, 13)
+    self.helper_getLastHtmlDelimiter_notFound("=Hello=", 1, 6)
+    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 10)
+    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 20)
+
+  def test_getLastHtmlDelimiter_found(self):
+    self.helper_getLastHtmlDelimiter_found(" ", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\t", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\n", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("'", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\"", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("=", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("'=='", 0, 1, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("key = 'value'", 0, 11, foundAt = 6)
+    self.helper_getLastHtmlDelimiter_found("key='value'", 0, 11, foundAt = 10)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 17, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 4, foundAt = 1)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 16, foundAt = 10)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 3, foundAt = 1)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 17, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 17, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 9, foundAt = 8)

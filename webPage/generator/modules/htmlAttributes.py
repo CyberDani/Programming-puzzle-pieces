@@ -93,8 +93,10 @@ Raises exception if <attributesString> is empty because startIdx cannot be set p
     return corruptReturn
   return notFoundReturn
 
-def getNextHtmlAttribute(attributesString, startIdx):
+# TODO rename to getCurrentHtmlAttribute
+def getNextHtmlAttribute(attributesString, index):
   """ Raises exception for empty string because the index cannot be set. \n
+Index must point to the actual attribute value. \n
 Only the first attribute is taken and validated \n
 \n Return values:
 * <corrupt>: True | False
@@ -102,7 +104,7 @@ Only the first attribute is taken and validated \n
 * <attrStartIdx>, <attrEndIdx> : inclusive, **-1** if no attribute was found or attributesString is corrupt"""
   noAttributeResult = (False, None, None, -1, -1)
   corruptResult = (True, None, None, -1, -1)
-  corrupt, attributeName, firstCharIdx, lastCharIdx = getNextHtmlAttributeName(attributesString, startIdx)
+  corrupt, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
   if corrupt:
     return corruptResult
   if firstCharIdx == -1:
@@ -141,20 +143,29 @@ Return values:\n
     return corruptResult
   return False, True, openingQuoteIdx, closingQuoteIdx
 
-# TODO rename getCurrentName + resolve false positive
+# TODO resolve false positive
 # TODO see if you can make it look prettier
-def getNextHtmlAttributeName(attributesString, startIdx):
+def getCurrentOrNextName(attributesString, index):
   """False positive might occur if startIdx is inside of attribute value.
+Index must point to the current attribute name.
 Raises error at empty string because <startIdx> cannot be set properly\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
 * attributeName: **None** if corrupt or there is no attribute
 * firstCharIdx, lastCharIdx: **-1** if corrupt or there is no attribute """
-  checks.checkIfString(attributesString, 0, 1000)
-  checks.checkIntIsBetween(startIdx, 0, len(attributesString) - 1)
+  checks.checkIfString(attributesString, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
   corruptResult = (True, None, -1, -1)
   notFoundResult = (False, None, -1, -1)
-  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, startIdx, len(attributesString))
+  if not attributesString[index].isspace() and charIsHtmlDelimiter(attributesString[index]):
+    return corruptResult
+  # TODO getFirstCharAfterLastHtmlDelimiter
+  found, idx = getLastHtmlDelimiter(attributesString, 0, index + 1)
+  if not found:
+    index = 0
+  elif index < len(attributesString) - 1:
+    index = idx + 1
+  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
   if firstNonSpaceCharIdx == -1:
     return notFoundResult
   if charIsHtmlDelimiter(attributesString[firstNonSpaceCharIdx]):
@@ -255,6 +266,21 @@ def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
     return notFoundResult
   return True, idx
 
+def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
+  """Raises exception for empty string because the indexes cannot be set properly.
+\nReturn values:\n
+* found: True | False
+* idx: -1 if not found"""
+  checks.checkIfString(string, inclusiveStartIdx, 5000)
+  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
+  notFoundResult = (False, -1)
+  idx = exclusiveEndIdx - 1
+  while idx >= inclusiveStartIdx and not charIsHtmlDelimiter(string[idx]):
+    idx -= 1
+  if idx == inclusiveStartIdx - 1:
+    return notFoundResult
+  return True, idx
+
 # TODO try to clean code it
 def getClosestValueBeforeOrWithin(attributeString, index):
   """Raises exception for empty string because the index cannot be set properly
@@ -271,21 +297,20 @@ def getClosestValueBeforeOrWithin(attributeString, index):
     if isThereAnyQuoteChar(attributeString, 0, referenceIdxFromRight):
       return corruptResult
     return notFoundResult
-  maxEqualIdxQuoteIdxsPair = (-1, -1, -1)
+  maxEqualIdxQuotesIdxsTriplet = (-1, -1, -1)
   for equalIdx in equalIdxsBefore:
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-      = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
+    corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
     if not corrupt:
-      if closingQuoteIdx > maxEqualIdxQuoteIdxsPair[2]:
-        maxEqualIdxQuoteIdxsPair = (equalIdx, openingQuoteCharIdx, closingQuoteIdx)
-  equalIdx = maxEqualIdxQuoteIdxsPair[0]
-  openingQuoteCharIdx = maxEqualIdxQuoteIdxsPair[1]
-  closingQuoteIdx = maxEqualIdxQuoteIdxsPair[2]
+      if closingQuoteIdx > maxEqualIdxQuotesIdxsTriplet[2]:
+        maxEqualIdxQuotesIdxsTriplet = (equalIdx, openingQuoteIdx, closingQuoteIdx)
+  equalIdx = maxEqualIdxQuotesIdxsTriplet[0]
+  openingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[1]
+  closingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[2]
   if closingQuoteIdx == -1:
     return corruptResult
-  if openingQuoteCharIdx > index:
+  if openingQuoteIdx > index:
     return notFoundResult
-  return False, True, equalIdx, openingQuoteCharIdx, closingQuoteIdx
+  return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
 
 def htmlDelimitedFind(stringToScan, stringToMatch, inclusiveStartIndex, exclusiveEndIdx):
   """Validates outside the [start, end] indexes. Raises exception for empty strings.
