@@ -72,7 +72,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     if attributeName is None:
       nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx, len(attributesString))
       if nextNonSpaceCharIdx != -1:
-        return False, []
+        return False, result
       break
     if attributeName not in result:
       result.append(attributeName)
@@ -104,10 +104,10 @@ Only the first attribute is taken and validated \n
 * <attrStartIdx>, <attrEndIdx> : inclusive, **-1** if no attribute was found or attributesString is corrupt"""
   noAttributeResult = (False, None, None, -1, -1)
   corruptResult = (True, None, None, -1, -1)
-  corrupt, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
+  corrupt, found, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
   if corrupt:
     return corruptResult
-  if firstCharIdx == -1:
+  if not found:
     return noAttributeResult
   if lastCharIdx == len(attributesString) - 1:
     return False, attributeName, None, firstCharIdx, lastCharIdx
@@ -143,44 +143,69 @@ Return values:\n
     return corruptResult
   return False, True, openingQuoteIdx, closingQuoteIdx
 
-# TODO resolve false positive
-# TODO see if you can make it look prettier
+# TODO clean code it
 def getCurrentOrNextName(attributesString, index):
-  """False positive might occur if startIdx is inside of attribute value.
-Index must point to the current attribute name.
+  """Index can point anywhere withing the context of the current attribute. If it is outside of context, will search
+for the next attribute name.\n
 Raises error at empty string because <startIdx> cannot be set properly\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
-* attributeName: **None** if corrupt or there is no attribute
-* firstCharIdx, lastCharIdx: **-1** if corrupt or there is no attribute """
+* found: True | False *(false if corrupt)*
+* attributeName: **None** if corrupt or not found
+* firstCharIdx, lastCharIdx: **-1** if corrupt or not found """
   checks.checkIfString(attributesString, 0, 5000)
   checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
-  corruptResult = (True, None, -1, -1)
-  notFoundResult = (False, None, -1, -1)
+  corruptResult = (True, False, None, -1, -1)
+  notFoundResult = (False, False, None, -1, -1)
+  # TODO getLastIdxFromCurrentNameBeforeEqual(string, equalIdx) -> corrupt, idx
+  if attributesString[index] == "=":
+    if index == 0:
+      return corruptResult
+    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, index)
+    if not found:
+      return corruptResult
+  # TODO getLastIdxFromCurrentNameBeforeWhiteSpace ?
+  elif attributesString[index].isspace():
+    found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
+    if found and attributesString[index] == "=":
+      equalIdx = index
+      if index == len(attributesString) - 1:
+        return corruptResult
+      found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index + 1, len(attributesString))
+      if not found or (attributesString[index] != "'" and attributesString[index] != "'"):
+        return corruptResult
+      found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
+      if not found:
+        return corruptResult
+    if not found:
+      return notFoundResult
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getClosestValueBeforeOrWithin(attributesString, index)
+  if corrupt:
+    return corruptResult
+  if found and equalIdx <= index <= closingQuoteIdx:
+    if equalIdx == 0:
+      return corruptResult
+    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
+    if not found:
+      return corruptResult
+
+
   if not attributesString[index].isspace() and charIsHtmlDelimiter(attributesString[index]):
     return corruptResult
-  # TODO getFirstCharAfterLastHtmlDelimiter
   found, idx = getLastHtmlDelimiter(attributesString, 0, index + 1)
   if not found:
     index = 0
   elif index < len(attributesString) - 1:
     index = idx + 1
-  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
-  if firstNonSpaceCharIdx == -1:
-    return notFoundResult
-  if charIsHtmlDelimiter(attributesString[firstNonSpaceCharIdx]):
+
+  firstIdx = index
+  found, delimiterAfterLastIdx = getFirstHtmlDelimiter(attributesString, firstIdx, len(attributesString))
+  if not found:
+    return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
+  delimiter = attributesString[delimiterAfterLastIdx]
+  if delimiter == "'" or delimiter == '"':
     return corruptResult
-  currentIdx = firstNonSpaceCharIdx
-  attributeName = ""
-  while currentIdx < len(attributesString):
-    currentChar = attributesString[currentIdx]
-    if currentChar.isspace() or currentChar == "=":
-      return False, attributeName, firstNonSpaceCharIdx, currentIdx-1
-    if currentChar == "'" or currentChar == '"':
-      return corruptResult
-    attributeName += currentChar
-    currentIdx += 1
-  return False, attributeName, firstNonSpaceCharIdx, len(attributesString) - 1
+  return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
 
 def isThereNonDelimiterCharBeforeIdx(htmString, idx):
   """Skips whitespaces."""
@@ -211,8 +236,8 @@ def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
   checks.checkIntIsBetween(index, 0, len(htmlString) - 1)
   if index == len(htmlString) - 1:
     return False
-  idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
-  return idx != -1 and charIsHtmlDelimiter(htmlString[idx])
+  found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
+  return found and charIsHtmlDelimiter(htmlString[idx])
 
 def indexIsWithinHtmlAttributeValue(attributeString, index):
   """Main quotes and the equal character are considered not to be within attribute value.
@@ -246,8 +271,8 @@ def getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiv
   found, firstDelimiterIdx = getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
   if not found:
     return notFoundResult
-  firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, exclusiveEndIdx)
-  if firstNonSpaceCharIdx == -1:
+  found, firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, exclusiveEndIdx)
+  if not found:
     return notFoundResult
   return True, firstNonSpaceCharIdx
 
@@ -287,7 +312,7 @@ def getClosestValueBeforeOrWithin(attributeString, index):
 \n Return values:
 * corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
 * found: True | False (False if corrupt)
-* equalIdx, openingQuoteCharIdx, closingQuoteIdx: -1 if corrupt or not found"""
+* equalIdx, openingQuoteIdx, closingQuoteIdx: -1 if corrupt or not found"""
   corruptResult = (True, False, -1, -1, -1)
   notFoundResult = (False, False, -1, -1, -1)
   equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, index)
@@ -374,8 +399,8 @@ def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
     return corruptResult
   if not isThereNonDelimiterCharBeforeIdx(htmlString, equalIndex):
     return corruptResult
-  quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString))
-  if htmlString[quoteIdx] != "'" and htmlString[quoteIdx] != '"':
+  found, quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString))
+  if not found or (htmlString[quoteIdx] != "'" and htmlString[quoteIdx] != '"'):
     return corruptResult
   return False, quoteIdx
 

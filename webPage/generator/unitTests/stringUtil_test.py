@@ -240,97 +240,134 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(parts1, ["key", "value_db_something", "default_numeric"])
     self.assertEqual(parts2, [])
 
+  def helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    with self.assertRaises(Exception):
+      stringUtil.getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+
+  def helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertFalse(found)
+    self.assertEqual(idx, -1)
+
+  def helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(self, string, inclusiveStartIdx, exclusiveEndIdx, foundAt):
+    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertTrue(found)
+    self.assertEqual(idx, foundAt)
+
   def test_getFirstNonWhiteSpaceCharIdx_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("example test string", None, None)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("another test string", 2, True)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("again a string", "0", 3)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", -1, 3)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 3, 61)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 8, 5)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx("let me use this example", 11, 11)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx(123, 3, 61)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx(["let me use this example"], 3, 61)
-    with self.assertRaises(Exception):
-      stringUtil.getFirstNonWhiteSpaceCharIdx(None, 3, 61)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("example test string", None, None)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("another test string", 2, True)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("again a string", "0", 3)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", -1, 3)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 3, 61)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 8, 5)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 11, 11)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(123, 3, 61)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(["let me use this example"], 3, 61)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(None, 3, 61)
 
   def test_getFirstNonWhiteSpaceCharIdx_specialCaseEmptyString(self):
-    with self.assertRaises(Exception):
-      idx = stringUtil.getFirstNonWhiteSpaceCharIdx("", 0, 1)
-    with self.assertRaises(Exception):
-      idx = stringUtil.getFirstNonWhiteSpaceCharIdx("", 0, 0)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("", 0, 1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised("", 0, 0)
 
   def test_getFirstNonWhiteSpaceCharIdx_notFound(self):
-    string = " \t \r\n \t"
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
-    self.assertEqual(idx, -1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(" \t \r\n \t", 0, 7)
     string = "here comes some whitespaces: \t\t\t \r\r\n\n    \t      "
     self.assertEqual(string[27], ':')
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 28, len(string))
-    self.assertEqual(idx, -1)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 28, len(string) - 4)
-    self.assertEqual(idx, -1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 28, len(string))
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 28, len(string) - 4)
     string = " \t\t\t \r\r\n\n    \t      : these are my whitespaces"
     colonIdx = string.find(':')
     self.assertEqual(string[colonIdx], ':')
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, colonIdx)
-    self.assertEqual(idx, -1)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, 1)
-    self.assertEqual(idx, -1)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, colonIdx - 1, colonIdx)
-    self.assertEqual(idx, -1)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 6, colonIdx - 4)
-    self.assertEqual(idx, -1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 0, colonIdx)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 0, 1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, colonIdx - 1, colonIdx)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 6, colonIdx - 4)
     string = "look at these whitespaces: \t\t\t \r\r\n\n    \t      => beautiful"
     self.assertEqual(string[25], ':')
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 26, string.find("=>"), )
-    self.assertEqual(idx, -1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfNotFound(string, 26, string.find("=>"), )
 
   def test_getFirstNonWhiteSpaceCharIdx_found(self):
     string = "\ta\r\nb \r\n \t \n cwer\nd\nd"
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
-    self.assertEqual(idx, 1)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 2, len(string))
-    self.assertEqual(idx, 4)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 5, len(string))
-    self.assertTrue(idx > 0)
-    self.assertEqual(string[idx], 'c')
-    string = "a\tb\tc\nd\nd"
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
-    self.assertEqual(idx, 0)
-    string = "a\tb\tc\nd\nd"
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 4, len(string))
-    self.assertEqual(idx, 4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 0, len(string), foundAt=1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 2, len(string), foundAt=4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 5, len(string), foundAt=string.find("c"))
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound("a\tb\tc\nd\nd", 0, 9, foundAt=0)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound("a\tb\tc\nd\nd", 4, 9, foundAt=4)
     string = " \t  asad\tbrev\tcSasd\ndbrt\ndqwY      \r\n\r\n X"
-    self.assertEqual(string[4], 'a')
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
-    self.assertEqual(idx, 4)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, 13)
-    self.assertEqual(idx, 4)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 2, 8)
-    self.assertEqual(idx, 4)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 4, 5)
-    self.assertEqual(idx, 4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 0, len(string), foundAt=4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 0, 13, foundAt=4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 2, 8, foundAt=4)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 4, 5, foundAt=4)
     startIdx = string.find('Y')
-    self.assertTrue(startIdx > 0)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, startIdx + 1, len(string))
-    self.assertEqual(idx, len(string) - 1)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, startIdx + 1, len(string), foundAt=len(string) - 1)
     string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string))
-    self.assertEqual(idx, 0)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string) - 12)
-    self.assertEqual(idx, 0)
-    idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, string.find("$"), len(string) - 12)
-    self.assertTrue(idx > -1)
-    self.assertEqual(idx, string.find("$"))
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 0, len(string), foundAt=0)
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, 0, len(string) - 12, foundAt=0)
+    randomIndex = string.find("$")
+    self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, randomIndex, len(string) - 12, foundAt=randomIndex)
+
+  def helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    with self.assertRaises(Exception):
+      stringUtil.getLastNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+
+  def helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
+    found, idx = stringUtil.getLastNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertFalse(found)
+    self.assertEqual(idx, -1)
+
+  def helper_getLastNonWhiteSpaceCharIdx_checkIfFound(self, string, inclusiveStartIdx, exclusiveEndIdx, foundAt):
+    found, idx = stringUtil.getLastNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx)
+    self.assertTrue(found)
+    self.assertEqual(idx, foundAt)
+
+  def test_getLastNonWhiteSpaceCharIdx_nonSense(self):
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("example test string", None, None)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("another test string", 2, True)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("again a string", "0", 3)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", -1, 3)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 3, 61)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 8, 5)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("let me use this example", 11, 11)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(123, 3, 61)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(["let me use this example"], 3, 61)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(None, 3, 61)
+
+  def test_getLastNonWhiteSpaceCharIdx_emptyString(self):
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("", 0, 1)
+    self.helper_getLastNonWhiteSpaceCharIdx_exceptionRaised("", 0, 0)
+
+  def test_getLastNonWhiteSpaceCharIdx_notFound(self):
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(" \t \r\n \t", 0, 7)
+    string = "here comes some whitespaces: \t\t\t \r\r\n\n    \t      "
+    self.assertEqual(string[27], ':')
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 28, len(string))
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 28, len(string) - 4)
+    string = " \t\t\t \r\r\n\n    \t      : these are my whitespaces"
+    colonIdx = string.find(':')
+    self.assertEqual(string[colonIdx], ':')
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 0, colonIdx)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 0, 1)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, colonIdx - 1, colonIdx)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 6, colonIdx - 4)
+    string = "look at these whitespaces: \t\t\t \r\r\n\n    \t      => beautiful"
+    self.assertEqual(string[25], ':')
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(string, 26, string.find("=>"), )
+
+  def test_getLastNonWhiteSpaceCharIdx_found(self):
+    string = "\ta\r\nb \r\n \t \n cwer\nd\nd"
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 0, len(string), foundAt=len(string) - 1)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 5, len(string), foundAt=len(string) - 1)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 1, 14, foundAt=13)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 2, 13, foundAt=4)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 4, 13, foundAt=4)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound("a\tb\tc\nd\nd", 0, 9, foundAt=8)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound("a\tb\tc\nd\nd", 4, 8, foundAt=6)
+    string = " \t  asad\tbrev\tcSasd\ndbrt\ndqwY      \r\n\r\n X"
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 2, 8, foundAt=7)
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 4, 5, foundAt=4)
+    string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
+    self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 7, len(string) - 12, foundAt=len(string)-13)
 
   def test_beforeWhitespaceDelimitedFind_nonSense(self):
     with self.assertRaises(Exception):

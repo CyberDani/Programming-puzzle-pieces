@@ -1024,22 +1024,25 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValueIfExists_checkIfFound("id=\"class='myClass'\"selected", 2, startsAt=3, endsAt=19)
 
   def helper_getCurrentOrNextName_checkIfNotFound(self, string, startIdx):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertFalse(corrupt)
+    self.assertFalse(found)
     self.assertIsNone(attributeName, -1)
     self.assertEqual(firstCharIdx, -1)
     self.assertEqual(lastCharIdx, -1)
 
   def helper_getCurrentOrNextName_checkIfFound(self, string, startIdx, startsAt, endsAt):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertFalse(corrupt)
+    self.assertTrue(found)
     self.assertEqual(firstCharIdx, startsAt)
     self.assertEqual(lastCharIdx, endsAt)
     self.assertEqual(attributeName, string[startsAt:endsAt + 1])
 
   def helper_getCurrentOrNextName_checkIfCorrupt(self, string, startIdx):
-    corrupt, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
     self.assertTrue(corrupt)
+    self.assertFalse(found)
     self.assertIsNone(attributeName, -1)
     self.assertEqual(firstCharIdx, -1)
     self.assertEqual(lastCharIdx, -1)
@@ -1059,7 +1062,7 @@ class HtmlAttributesTests(unittest.TestCase):
   def test_getCurrentOrNextName_emptyString(self):
     with self.assertRaises(Exception):
       attr.getCurrentOrNextName("", 0)
-    self.helper_getCurrentOrNextName_checkIfNotFound("='value' ", 8)
+    self.helper_getCurrentOrNextName_checkIfNotFound("a='value' ", 9)
 
   def test_getCurrentOrNextName_spaces(self):
     self.helper_getCurrentOrNextName_checkIfNotFound(" ", 0)
@@ -1092,8 +1095,17 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
 
-  def test_getCurrentOrNextName_attrNameFound(self):
+  def test_getCurrentOrNextName_notFound(self):
+    self.helper_getCurrentOrNextName_checkIfNotFound("class ", 5)
+    self.helper_getCurrentOrNextName_checkIfNotFound("class \r\n", 5)
+    self.helper_getCurrentOrNextName_checkIfNotFound("class \r\n", 6)
+    self.helper_getCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' ", 21)
+    self.helper_getCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 21)
+    self.helper_getCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 22)
+
+  def test_getCurrentOrNextName_indexPointsAtTheFirstNameChar(self):
     self.helper_getCurrentOrNextName_checkIfFound("X", 0, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("X=''", 0, startsAt=0, endsAt=0)
     self.helper_getCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
     self.helper_getCurrentOrNextName_checkIfFound("\t\tX\t\tY Z", 0, startsAt=2, endsAt=2)
     self.helper_getCurrentOrNextName_checkIfFound("selected", 0, startsAt=0, endsAt=7)
@@ -1104,10 +1116,32 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 0, startsAt=0, endsAt=7)
     self.helper_getCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, startsAt=0, endsAt=4)
 
-  def test_getCurrentOrNextName_indexPointsWithinValue(self):
+  def test_getCurrentOrNextName_indexPointsWithinName(self):
     self.helper_getCurrentOrNextName_checkIfFound("selected", 3, startsAt=0, endsAt=7)
     self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 3, startsAt=0, endsAt=7)
     self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 13, startsAt=9, endsAt=13)
+
+  def test_getCurrentOrNextName_indexPointsAroundValue(self):
+    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 9, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 14, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("a=''", 1, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 1, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 2, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 3, startsAt=0, endsAt=0)
 
   def test_getHtmlAttributes_nonSense(self):
     with self.assertRaises(Exception):

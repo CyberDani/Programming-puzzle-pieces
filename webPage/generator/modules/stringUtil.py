@@ -68,10 +68,11 @@ def doubleSplit(string, primaryDelimiter, secondaryDelimiter):
       secondaryParts += secondaryPartials[1:]
   return primaryParts, secondaryParts
 
-# TODO add found return value
 def getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx):
-  """Returns **-1** if not found \n
-  Raises error at empty string because indexes cannot be set properly"""
+  """Raises error at empty string because indexes cannot be set properly.\n
+Return values:\n
+* found: True | False \n
+* index: -1 if not found"""
   checks.checkIfString(string, 0, 5000)
   checks.checkIntIsBetween(inclusiveStartIdx, 0, exclusiveEndIdx - 1)
   checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
@@ -79,8 +80,23 @@ def getFirstNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx):
   while idx < exclusiveEndIdx and string[idx].isspace():
     idx += 1
   if idx == exclusiveEndIdx:
-    return -1
-  return idx
+    return False, -1
+  return True, idx
+
+def getLastNonWhiteSpaceCharIdx(string, inclusiveStartIdx, exclusiveEndIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Return values:\n
+* found: True | False \n
+* index: -1 if not found"""
+  checks.checkIfString(string, 0, 5000)
+  checks.checkIntIsBetween(inclusiveStartIdx, 0, exclusiveEndIdx - 1)
+  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
+  idx = exclusiveEndIdx - 1
+  while idx >= inclusiveStartIdx and string[idx].isspace():
+    idx -= 1
+  if idx == inclusiveStartIdx - 1:
+    return False, -1
+  return True, idx
 
 def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, inclusiveStartIdx, exclusiveEndIdx):
   """Returns **-1** if not found \n
