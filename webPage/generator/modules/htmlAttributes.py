@@ -157,14 +157,19 @@ Return values:\n
   checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
   corruptResult = (True, False, None, -1, -1)
   notFoundResult = (False, False, None, -1, -1)
-  # TODO getLastIdxFromCurrentNameBeforeEqual(string, equalIdx) -> corrupt, idx
-  if attributesString[index] == "=":
-    if index == 0:
+  # getCurrentNameLastIdxIf
+  corrupt, valueFound, equalIdx, openingQuoteIdx, closingQuoteIdx \
+                                                                = getActualOrPreviousValue(attributesString, index)
+  if corrupt:
+    return corruptResult
+  if valueFound and equalIdx <= index <= closingQuoteIdx:
+    if equalIdx == 0:
       return corruptResult
-    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, index)
+    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
     if not found:
       return corruptResult
-  # TODO getLastIdxFromCurrentNameBeforeWhiteSpace ?
+
+  # TODO getLastIdxFromCurrentOrNextNameByWhiteSpace ?
   elif attributesString[index].isspace():
     found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
     if found and attributesString[index] == "=":
@@ -179,15 +184,6 @@ Return values:\n
         return corruptResult
     if not found:
       return notFoundResult
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getClosestValueBeforeOrWithin(attributesString, index)
-  if corrupt:
-    return corruptResult
-  if found and equalIdx <= index <= closingQuoteIdx:
-    if equalIdx == 0:
-      return corruptResult
-    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
-    if not found:
-      return corruptResult
 
 
   if not attributesString[index].isspace() and charIsHtmlDelimiter(attributesString[index]):
@@ -247,7 +243,7 @@ Raises exception for empty string because the index cannot be set properly.
 * isAttributeValue: True | False, None if corrupt"""
   corruptResult = (True, None)
   notFoundResult = (False, False)
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getClosestValueBeforeOrWithin(attributeString, index)
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getActualOrPreviousValue(attributeString, index)
   if corrupt:
     return corruptResult
   if not found or index <= openingQuoteIdx or index == closingQuoteIdx:
@@ -307,14 +303,22 @@ def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
   return True, idx
 
 # TODO try to clean code it
-def getClosestValueBeforeOrWithin(attributeString, index):
-  """Raises exception for empty string because the index cannot be set properly
+def getActualOrPreviousValue(attributeString, index):
+  """Index must point anywhere after the attribute name to get the current value. \n
+Raises exception for empty string because the index cannot be set properly
 \n Return values:
 * corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
 * found: True | False (False if corrupt)
 * equalIdx, openingQuoteIdx, closingQuoteIdx: -1 if corrupt or not found"""
+  checks.checkIfString(attributeString, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(attributeString) - 1)
   corruptResult = (True, False, -1, -1, -1)
   notFoundResult = (False, False, -1, -1, -1)
+  if attributeString[index].isspace():
+    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributeString, index, len(attributeString))
+    if found and attributeString[idx] == "=":
+      index = idx
+
   equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, index)
   equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", index, len(attributeString) - 1,
                                                            notFoundValue = len(attributeString) - 1)
@@ -333,9 +337,24 @@ def getClosestValueBeforeOrWithin(attributeString, index):
   closingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[2]
   if closingQuoteIdx == -1:
     return corruptResult
-  if openingQuoteIdx > index:
+  if equalIdx > index:
     return notFoundResult
   return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
+
+def getLastIdxFromCurrentNameBeforeEqual(string, equalIdx):
+  """Raises exception for empty strings.\n
+\nReturn values:\n
+* corrupt: True | False *(does not check what is after the equal or if it is within a value)*
+* lastIdx: -1 if corrupt"""
+  checks.checkIfString(string, 0, 5000)
+  checks.checkIntIsBetween(equalIdx, 0, len(string) - 1)
+  corruptResult = (True, -1)
+  if equalIdx == 0 or string[equalIdx] != "=":
+    return corruptResult
+  found, index = stringUtil.getLastNonWhiteSpaceCharIdx(string, 0, equalIdx)
+  if not found or charIsHtmlDelimiter(string[index]):
+    return corruptResult
+  return False, index
 
 def htmlDelimitedFind(stringToScan, stringToMatch, inclusiveStartIndex, exclusiveEndIdx):
   """Validates outside the [start, end] indexes. Raises exception for empty strings.

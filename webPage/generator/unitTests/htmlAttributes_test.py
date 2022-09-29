@@ -1103,7 +1103,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 21)
     self.helper_getCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 22)
 
-  def test_getCurrentOrNextName_indexPointsAtTheFirstNameChar(self):
+  def test_getCurrentOrNextName_indexPointsAtTheFirstNameCharIdx(self):
     self.helper_getCurrentOrNextName_checkIfFound("X", 0, startsAt=0, endsAt=0)
     self.helper_getCurrentOrNextName_checkIfFound("X=''", 0, startsAt=0, endsAt=0)
     self.helper_getCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
@@ -1142,6 +1142,9 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfFound("a = ''", 1, startsAt=0, endsAt=0)
     self.helper_getCurrentOrNextName_checkIfFound("a = ''", 2, startsAt=0, endsAt=0)
     self.helper_getCurrentOrNextName_checkIfFound("a = ''", 3, startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, startsAt=0, endsAt=4)
 
   def test_getHtmlAttributes_nonSense(self):
     with self.assertRaises(Exception):
@@ -2351,146 +2354,152 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t 'value'", 1, 14, foundAt=7)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t \"value\"", 1, 14, foundAt=7)
 
-  def helper_getClosestValueBeforeOrWithin_exceptionRaised(self, string, idx):
+  def helper_getActualOrPreviousValue_exceptionRaised(self, string, idx):
     with self.assertRaises(Exception):
-      attr.getClosestValueBeforeOrWithin(string, idx)
+      attr.getActualOrPreviousValue(string, idx)
 
-  def helper_getClosestValueBeforeOrWithin_checkIfCorrupt(self, string, idx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+  def helper_getActualOrPreviousValue_checkIfCorrupt(self, string, idx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
     self.assertTrue(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
     self.assertEqual(openingQuoteIdx, -1)
     self.assertEqual(ClosingQuoteIdx, -1)
 
-  def helper_getClosestValueBeforeOrWithin_checkIfNotFound(self, string, idx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+  def helper_getActualOrPreviousValue_checkIfNotFound(self, string, idx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
     self.assertFalse(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
     self.assertEqual(openingQuoteIdx, -1)
     self.assertEqual(ClosingQuoteIdx, -1)
 
-  def helper_getClosestValueBeforeOrWithin_checkIfFound(self, string, idx, equalIdxAt,
-                                                          openingQuoteIdxAt, closingQuoteIdxAt):
-    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = attr.getClosestValueBeforeOrWithin(string, idx)
+  def helper_getActualOrPreviousValue_checkIfFound(self, string, idx, equalIdxAt,
+                                                   openingQuoteIdxAt, closingQuoteIdxAt):
+    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
     self.assertFalse(corrupt)
     self.assertTrue(found)
     self.assertEqual(equalIdx, equalIdxAt)
     self.assertEqual(openingQuoteIdx, openingQuoteIdxAt)
     self.assertEqual(closingQuoteIdx, closingQuoteIdxAt)
 
-  def test_getClosestValueBeforeOrWithin_nonSense(self):
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", -1)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", 6)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", 36)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", None)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", "")
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("string", True)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(3, 2)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(1, 2)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(True, True)
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised(None, None)
+  def test_getActualOrPreviousValue_nonSense(self):
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", -1)
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", 6)
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", 36)
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", None)
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", "")
+    self.helper_getActualOrPreviousValue_exceptionRaised("string", True)
+    self.helper_getActualOrPreviousValue_exceptionRaised(3, 2)
+    self.helper_getActualOrPreviousValue_exceptionRaised(1, 2)
+    self.helper_getActualOrPreviousValue_exceptionRaised(True, True)
+    self.helper_getActualOrPreviousValue_exceptionRaised(None, None)
 
-  def test_getClosestValueBeforeOrWithin_emptyString(self):
-    self.helper_getClosestValueBeforeOrWithin_exceptionRaised("", 0)
+  def test_getActualOrPreviousValue_emptyString(self):
+    self.helper_getActualOrPreviousValue_exceptionRaised("", 0)
 
-  def test_getClosestValueBeforeOrWithin_corrupt(self):
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\"", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt('""', 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt('""', 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("''''", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=2", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= 2", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=\t\t2", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2", 2)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t '2", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t \"2", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2'", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t 2\"", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t '2\"", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\t=\t\t \"2'", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 14)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 10)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number = one two", 7)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number 'one' two", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two'", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("'number one two\"", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("\"number one two\"", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number one two'", 8)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("number one two\"", 8)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("a = 4", 4)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt(" = '' selected", 10)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= '' selected", 9)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("='' selected", 8)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("=''selected", 7)
+  def test_getActualOrPreviousValue_corrupt(self):
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("=", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("'", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\"", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("''", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt('""', 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("''", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt('""', 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("''''", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("=2", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt(" = ''", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("= 2", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt(" ='2'", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("=\t\t2", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 2)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2", 0)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t \"2", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2'", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2\"", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2\"", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t \"2'", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 1)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 2)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 3)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = \"0'", 4)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = \"0'", 6)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 14)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 10)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 7)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number 'one' two", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two'", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two\"", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("\"number one two\"", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number one two'", 8)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("number one two\"", 8)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = 4", 4)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt(" = '' selected", 10)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("= '' selected", 9)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("='' selected", 8)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("=''selected", 7)
 
-  def test_getClosestValueBeforeOrWithin_cornerCases(self):
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\t=\t\t 2", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("number = two", 2)
-    self.helper_getClosestValueBeforeOrWithin_checkIfCorrupt("= ''", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("ingredient = '\"olive oil", 0)
+  def test_getActualOrPreviousValue_cornerCases(self):
+    self.helper_getActualOrPreviousValue_checkIfNotFound("number = two", 2)
+    self.helper_getActualOrPreviousValue_checkIfCorrupt("= ''", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("ingredient = '\"olive oil", 0)
 
-  def test_getClosestValueBeforeOrWithin_valueNotFound(self):
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" ", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\t", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\r", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\n", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\r\n", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("Q", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("ab", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("abc", 2)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" a ", 2)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t \"0'", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t \"0'", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a\t=\t\t '0'", 2)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 1)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 6)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("\none\ttwo three\r\n", 15)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("selected number='two'", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("selected number='two'", 4)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" ='2'", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound("a ='2'", 0)
-    self.helper_getClosestValueBeforeOrWithin_checkIfNotFound(" = ''", 0)
+  def test_getActualOrPreviousValue_valueNotFound(self):
+    self.helper_getActualOrPreviousValue_checkIfNotFound(" ", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\t", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\r", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\n", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\r\n", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("Q", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("ab", 1)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 1)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 2)
+    self.helper_getActualOrPreviousValue_checkIfNotFound(" a ", 2)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("a\t=\t\t \"0'", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 1)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 6)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 15)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("selected number='two'", 0)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("selected number='two'", 4)
+    self.helper_getActualOrPreviousValue_checkIfNotFound("a ='2'", 0)
 
-  def test_getClosestValueBeforeOrWithin_valueFound(self):
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 11, equalIdxAt=2,
-                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 7, equalIdxAt=2,
-                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = '' selected", 14, equalIdxAt=2,
-                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("a = \"\" selected", 14, equalIdxAt=2,
-                                                           openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 42,
-                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 33,
-                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 30,
-                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 29,
-                                                           equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected",
-                                                          29, equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title = \"class='myClass'\"", 18,
-                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=24)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title = \"=class='myClass'=\"", 19,
-                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=26)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("title\t=\n\"===class='myClass'===\"", 21,
-                                                           equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=30)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 30,
-                                                           equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
-    self.helper_getClosestValueBeforeOrWithin_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 31,
-                                                           equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)
+  def test_getActualOrPreviousValue_valueFound(self):
+    self.helper_getActualOrPreviousValue_checkIfFound("a\t=\t\t '0'", 2, equalIdxAt=2,
+                                                      openingQuoteIdxAt=6, closingQuoteIdxAt=8)
+    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 11, equalIdxAt=2,
+                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 7, equalIdxAt=2,
+                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 14, equalIdxAt=2,
+                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getActualOrPreviousValue_checkIfFound("a = \"\" selected", 14, equalIdxAt=2,
+                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 42,
+                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 33,
+                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 30,
+                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 29,
+                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected",
+                                                      29, equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("title = \"class='myClass'\"", 18,
+                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=24)
+    self.helper_getActualOrPreviousValue_checkIfFound("title = \"=class='myClass'=\"", 19,
+                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=26)
+    self.helper_getActualOrPreviousValue_checkIfFound("title\t=\n\"===class='myClass'===\"", 21,
+                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=30)
+    self.helper_getActualOrPreviousValue_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 30,
+                                                      equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
+    self.helper_getActualOrPreviousValue_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 31,
+                                                      equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)
 
   def helper_getLastHtmlDelimiter_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
     with self.assertRaises(Exception):
@@ -2555,3 +2564,63 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 17, foundAt = 16)
     self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 17, foundAt = 16)
     self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 9, foundAt = 8)
+
+  def helper_getLastIdxFromCurrentNameBeforeEqual_checkException(self, string, equalIdx):
+    with self.assertRaises(Exception):
+      attr.getLastIdxFromCurrentNameBeforeEqual(string, equalIdx)
+
+  def helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt(self, string, equalIdx):
+    corrupt, idx = attr.getLastIdxFromCurrentNameBeforeEqual(string, equalIdx)
+    self.assertTrue(corrupt)
+    self.assertEqual(idx, -1)
+
+  def helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound(self, string, equalIdx, foundAt):
+    corrupt, idx = attr.getLastIdxFromCurrentNameBeforeEqual(string, equalIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(idx, foundAt)
+
+  def test_getLastIdxFromCurrentNameBeforeEqual_nonSense(self):
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("string", -1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("string", 51)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("string", 6)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("string", False)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("string", None)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException(0, 0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException([], 0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException(None, None)
+
+  def test_getLastIdxFromCurrentNameBeforeEqual_emptyString(self):
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkException("", 0)
+
+  def test_getLastIdxFromCurrentNameBeforeEqual_corrupt(self):
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("X", 0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("abc", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("=", 0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("==", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("'=", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt(" =", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("\t=", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("\n=", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("\r=", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("\"=", 1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("= =", 2)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("' =", 2)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("'key' =", 6)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("   =", 3)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfCorrupt("\r\n\t =", 4)
+
+  def test_getLastIdxFromCurrentNameBeforeEqual_found(self):
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a=", 1, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a =", 2, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a\t=", 2, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a\r=", 2, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a\n=", 2, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("a\t\r\n   =", 7, foundAt=0)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("ab=", 2, foundAt=1)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("abdsfsdasfgg=", 12, foundAt=11)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("class='myClass' id = 'myId' href='link.com'", 19,
+                                                                  foundAt=17)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("class='myClass' id = 'myId' href='link.com'", 5,
+                                                                  foundAt=4)
+    self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("class='myClass' id = 'myId'href\t\t\t=\n'link.com'",
+                                                                  34, foundAt=30)
