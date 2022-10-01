@@ -121,6 +121,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeNameIdx_checkIfCorrupt("'class title=\"heyo\"", "class")
     self.helper_getAttributeNameIdx_checkIfCorrupt("class' title=\"heyo\"", "class")
     self.helper_getAttributeNameIdx_checkIfCorrupt("'class' title=\"heyo\"", "class")
+    self.helper_getAttributeNameIdx_checkIfCorrupt("b = 'a=\"2\"", "a")
 
   def test_getAttributeNameIdx_attrNotFound(self):
     self.helper_getAttributeNameIdx_checkIfNotFound("ax xa", "a")
@@ -156,6 +157,11 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeNameIdx_checkIfNotFound("selected no-href class='idk'", "href")
     self.helper_getAttributeNameIdx_checkIfNotFound("selected hrefx class='idk'", "href")
     self.helper_getAttributeNameIdx_checkIfNotFound("selected hrefhref class='idk'", "href")
+    self.helper_getAttributeNameIdx_checkIfNotFound("b = 'a=\"2\"'", "a")
+
+  def test_getAttributeNameIdx_attrNotFound_cornerCase(self):
+    self.helper_getAttributeNameIdx_checkIfNotFound("b = 'a=\"2\"", "class")
+    self.helper_getAttributeNameIdx_checkIfFoundAtIdx("b = 'a=\"2\"", "b", foundAt=0)
 
   def test_getAttributeNameIdx_attrNotFound_equalWithinAttributeValue(self):
     self.helper_getAttributeNameIdx_checkIfNotFound("title=\"class='myClass'\"", "class")
@@ -285,14 +291,12 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(attributes, (False, None))
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrDoesNotHaveValue(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected",
-                                                                                         "selected")
+    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected", "selected")
     self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected "
-                                                                                       "class=\"myClass\"", "selected")
+    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected class=\"myClass\"",
+                                                                     "selected")
     self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("selected value=\"audi\"",
-                                                                                         "selected")
+    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("selected value=\"audi\"", "selected")
     self.assertEqual(attributes, (False, None))
     attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("selected", "selected")
     self.assertEqual(attributes, (False, None))
@@ -2354,152 +2358,218 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t 'value'", 1, 14, foundAt=7)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t \"value\"", 1, 14, foundAt=7)
 
-  def helper_getActualOrPreviousValue_exceptionRaised(self, string, idx):
+  def helper_getLastValueByFoundEquals_exceptionRaised(self, string, inclStartIdx, inclEndIdx):
     with self.assertRaises(Exception):
-      attr.getActualOrPreviousValue(string, idx)
+      attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
 
-  def helper_getActualOrPreviousValue_checkIfCorrupt(self, string, idx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
+  def helper_getLastValueByFoundEquals_checkIfCorrupt(self, string, inclStartIdx, inclEndIdx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx \
+                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
     self.assertTrue(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
     self.assertEqual(openingQuoteIdx, -1)
     self.assertEqual(ClosingQuoteIdx, -1)
 
-  def helper_getActualOrPreviousValue_checkIfNotFound(self, string, idx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
+  def helper_getLastValueByFoundEquals_checkIfNotFound(self, string, inclStartIdx, inclEndIdx):
+    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx \
+                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
     self.assertFalse(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
     self.assertEqual(openingQuoteIdx, -1)
     self.assertEqual(ClosingQuoteIdx, -1)
 
-  def helper_getActualOrPreviousValue_checkIfFound(self, string, idx, equalIdxAt,
-                                                   openingQuoteIdxAt, closingQuoteIdxAt):
-    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = attr.getActualOrPreviousValue(string, idx)
+  def helper_getLastValueByFoundEquals_checkIfFound(self, string, inclStartIdx, inclEndIdx, equalIdxAt,
+                                                    openingQuoteIdxAt, closingQuoteIdxAt):
+    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx \
+                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
     self.assertFalse(corrupt)
     self.assertTrue(found)
     self.assertEqual(equalIdx, equalIdxAt)
     self.assertEqual(openingQuoteIdx, openingQuoteIdxAt)
     self.assertEqual(closingQuoteIdx, closingQuoteIdxAt)
 
-  def test_getActualOrPreviousValue_nonSense(self):
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", -1)
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", 6)
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", 36)
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", None)
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", "")
-    self.helper_getActualOrPreviousValue_exceptionRaised("string", True)
-    self.helper_getActualOrPreviousValue_exceptionRaised(3, 2)
-    self.helper_getActualOrPreviousValue_exceptionRaised(1, 2)
-    self.helper_getActualOrPreviousValue_exceptionRaised(True, True)
-    self.helper_getActualOrPreviousValue_exceptionRaised(None, None)
+  def test_getLastValueByFoundEquals_nonSense(self):
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", -1, 2)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 6, 8)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 36, 75)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 5, 2)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 1, None)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 1, "")
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", 1, True)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", None, 4)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", "", 4)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", True, 4)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", True, True)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", None, None)
+    self.helper_getLastValueByFoundEquals_exceptionRaised("string", "string", "string")
+    self.helper_getLastValueByFoundEquals_exceptionRaised([], 0, 0)
+    self.helper_getLastValueByFoundEquals_exceptionRaised(True, True, True)
+    self.helper_getLastValueByFoundEquals_exceptionRaised(None, None, None)
 
-  def test_getActualOrPreviousValue_emptyString(self):
-    self.helper_getActualOrPreviousValue_exceptionRaised("", 0)
+  def test_getLastValueByFoundEquals_emptyString(self):
+    self.helper_getLastValueByFoundEquals_exceptionRaised("", 0, 0)
 
-  def test_getActualOrPreviousValue_corrupt(self):
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("=", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("'", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\"", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("''", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt('""', 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("''", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt('""', 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("''''", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("=2", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt(" = ''", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("= 2", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt(" ='2'", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("=\t\t2", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2", 2)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2", 0)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t \"2", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2'", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t 2\"", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t '2\"", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\t=\t\t \"2'", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 1)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 2)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a\t=\t\t \"0'", 3)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = \"0'", 4)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = \"0'", 6)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 14)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 10)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number = one two", 7)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number 'one' two", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two'", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("'number one two\"", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("\"number one two\"", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number one two'", 8)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("number one two\"", 8)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("a = 4", 4)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt(" = '' selected", 10)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("= '' selected", 9)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("='' selected", 8)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("=''selected", 7)
+  def test_getLastValueByFoundEquals_corrupt_onlyEqual(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("=", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= ", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = ", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = ", 0, 2)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = ", 1, 2)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = ", 1, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = ", 1, 2)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = = ", 1, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" == ", 1, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 0, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 0, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 1, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 1, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 2, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n=\t\t", 2, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\r\n = \t \t", 0, 7)
 
-  def test_getActualOrPreviousValue_cornerCases(self):
-    self.helper_getActualOrPreviousValue_checkIfNotFound("number = two", 2)
-    self.helper_getActualOrPreviousValue_checkIfCorrupt("= ''", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("ingredient = '\"olive oil", 0)
+  def test_getLastValueByFoundEquals_corrupt_onlyQuotes(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\"", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("''", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("''", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("''", 1, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt('""', 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt('""', 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" ' ", 0, 2)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\n\t'\t\n", 0, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("''''", 0, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'\"'\"", 0, 3)
 
-  def test_getActualOrPreviousValue_valueNotFound(self):
-    self.helper_getActualOrPreviousValue_checkIfNotFound(" ", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\t", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\r", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\n", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\r\n", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("Q", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("ab", 1)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 1)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("abc", 2)
-    self.helper_getActualOrPreviousValue_checkIfNotFound(" a ", 2)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("a\t=\t\t \"0'", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 1)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 6)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("\none\ttwo three\r\n", 15)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("selected number='two'", 0)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("selected number='two'", 4)
-    self.helper_getActualOrPreviousValue_checkIfNotFound("a ='2'", 0)
+  def test_getLastValueByFoundEquals_corrupt_noQuotes(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("=2", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("=2", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= 2", 0, 2)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("=\t\t2", 0, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2", 0, 5)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2", 1, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2", 1, 5)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a = 4", 0, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number = one two", 0, 14)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number = one two", 0, 10)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number = one two", 0, 7)
 
-  def test_getActualOrPreviousValue_valueFound(self):
-    self.helper_getActualOrPreviousValue_checkIfFound("a\t=\t\t '0'", 2, equalIdxAt=2,
-                                                      openingQuoteIdxAt=6, closingQuoteIdxAt=8)
-    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 11, equalIdxAt=2,
-                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 7, equalIdxAt=2,
-                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getActualOrPreviousValue_checkIfFound("a = '' selected", 14, equalIdxAt=2,
-                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getActualOrPreviousValue_checkIfFound("a = \"\" selected", 14, equalIdxAt=2,
-                                                      openingQuoteIdxAt=4, closingQuoteIdxAt=5)
-    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 42,
-                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 33,
-                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 30,
-                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 29,
-                                                      equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected",
-                                                      29, equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("title = \"class='myClass'\"", 18,
-                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=24)
-    self.helper_getActualOrPreviousValue_checkIfFound("title = \"=class='myClass'=\"", 19,
-                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=26)
-    self.helper_getActualOrPreviousValue_checkIfFound("title\t=\n\"===class='myClass'===\"", 21,
-                                                      equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=30)
-    self.helper_getActualOrPreviousValue_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 30,
-                                                      equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
-    self.helper_getActualOrPreviousValue_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 31,
-                                                      equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)
+  def test_getLastValueByFoundEquals_corrupt_noEqual(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'myClass'", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'myClass' id = 'myId'", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number 'one' two", 0, 9)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'number one two'", 0, 9)
+
+  def test_getLastValueByFoundEquals_corrupt_mixedQuotes(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t '2", 0, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t \"2", 1, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2'", 0, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2'", 1, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2\"", 0, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t 2\"", 1, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t '2\"", 0, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t=\t\t \"2'", 0, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a\t=\t\t \"0'", 0, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a = \"0'", 0, 6)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a = \"0''", 0, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a = \"0'''", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("a = \"0' selected", 0, 15)
+
+  def test_getLastValueByFoundEquals_corrupt_noAttributeName(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= ''", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= ''", 0, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = 'myClass'", 0, 11)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t\r\n = 'myClass'", 0, 14)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\t\r\n = 'myClass'", 3, 14)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt(" = '' selected", 0, 10)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= '' selected", 0, 9)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("='' selected", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("=''selected", 0, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= 'a=\"2\"'", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= 'a=\"2\"'", 3, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("= ' back a=\"2\" href'", 9, 17)
+
+  def test_getLastValueByFoundEquals_corrupt_other(self):
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'number one two", 0, 9)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'number one two\"", 0, 9)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("'number one two\"", 1, 4)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("\"number one two\"", 0, 9)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number one two'", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number one two\"", 0, 8)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number 'one two", 0, 14)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("number \"one two", 0, 14)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("b = 'a=\"2\"", 3, 7)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("b = 'a=\"2\"", 1, 3)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("b = ' checked a=\"2\" selected", 14, 25)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("b = ' checked a=\"2\" selected", 24, 25)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("class='myClass' b = ' checked a=\"2\" selected", 16, 42)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("class='myClass' b = ' checked a=\"2\" selected", 24, 42)
+    self.helper_getLastValueByFoundEquals_checkIfCorrupt("class='myClass' b = ' checked a=\"2\" selected", 36, 43)
+
+# TODO review tests below
+  def test_getLastValueByFoundEquals_valueNotFound(self):
+    self.helper_getLastValueByFoundEquals_checkIfNotFound(" ", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\t", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\r", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\n", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\r\n", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("Q", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("ab", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("abc", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("abc", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("abc", 0, 2)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound(" a ", 0, 2)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("a\t=\t\t \"0'", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\none\ttwo three\r\n", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\none\ttwo three\r\n", 0, 1)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\none\ttwo three\r\n", 0, 6)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("\none\ttwo three\r\n", 0, 15)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("selected number='two'", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("selected number='two'", 0, 4)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("a ='2'", 0, 0)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("b = 'a=\"2\"'", 3, 7)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'checked a=\"2\"' selected'", 21, 42)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'checked a=\"2\"' selected'", 32, 42)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'checked a=\"2\"' selected'", 36, 42)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 36, 38)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 28, 38)
+    self.helper_getLastValueByFoundEquals_checkIfNotFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 32, 38)
+
+  def test_getLastValueByFoundEquals_valueFound(self):
+    self.helper_getLastValueByFoundEquals_checkIfFound("a\t=\t\t '0'", 0, 2, equalIdxAt=2,
+                                                       openingQuoteIdxAt=6, closingQuoteIdxAt=8)
+    self.helper_getLastValueByFoundEquals_checkIfFound("a = '' selected", 0, 11, equalIdxAt=2,
+                                                       openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getLastValueByFoundEquals_checkIfFound("a = '' selected", 0, 7, equalIdxAt=2,
+                                                       openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getLastValueByFoundEquals_checkIfFound("a = '' selected", 0, 14, equalIdxAt=2,
+                                                       openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getLastValueByFoundEquals_checkIfFound("a = \"\" selected", 0, 14, equalIdxAt=2,
+                                                       openingQuoteIdxAt=4, closingQuoteIdxAt=5)
+    self.helper_getLastValueByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 0, 42,
+                                                       equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 0, 33,
+                                                       equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 0, 30,
+                                                       equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 0, 29,
+                                                       equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected", 0, 29,
+                                                       equalIdxAt=24, openingQuoteIdxAt=29, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("title = \"class='myClass'\"", 0, 18,
+                                                       equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=24)
+    self.helper_getLastValueByFoundEquals_checkIfFound("title = \"=class='myClass'=\"", 0, 19,
+                                                       equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=26)
+    self.helper_getLastValueByFoundEquals_checkIfFound("title\t=\n\"===class='myClass'===\"", 0, 21,
+                                                       equalIdxAt=6, openingQuoteIdxAt=8, closingQuoteIdxAt=30)
+    self.helper_getLastValueByFoundEquals_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 0, 30,
+                                                       equalIdxAt=15, openingQuoteIdxAt=17, closingQuoteIdxAt=39)
+    self.helper_getLastValueByFoundEquals_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 0, 31,
+                                                       equalIdxAt=16, openingQuoteIdxAt=18, closingQuoteIdxAt=40)
+
+    self.helper_getLastValueByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel' checked", 8, 38,
+                                                       equalIdxAt=18, openingQuoteIdxAt=20, closingQuoteIdxAt=38)
 
   def helper_getLastHtmlDelimiter_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
     with self.assertRaises(Exception):

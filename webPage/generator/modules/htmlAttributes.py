@@ -159,7 +159,7 @@ Return values:\n
   notFoundResult = (False, False, None, -1, -1)
   # getCurrentNameLastIdxIf
   corrupt, valueFound, equalIdx, openingQuoteIdx, closingQuoteIdx \
-                                                                = getActualOrPreviousValue(attributesString, index)
+                                                                 = getLastValueByFoundEquals(attributesString, 0, index)
   if corrupt:
     return corruptResult
   if valueFound and equalIdx <= index <= closingQuoteIdx:
@@ -243,7 +243,7 @@ Raises exception for empty string because the index cannot be set properly.
 * isAttributeValue: True | False, None if corrupt"""
   corruptResult = (True, None)
   notFoundResult = (False, False)
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getActualOrPreviousValue(attributeString, index)
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributeString, 0, index)
   if corrupt:
     return corruptResult
   if not found or index <= openingQuoteIdx or index == closingQuoteIdx:
@@ -303,41 +303,78 @@ def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
   return True, idx
 
 # TODO try to clean code it
-def getActualOrPreviousValue(attributeString, index):
-  """Index must point anywhere after the attribute name to get the current value. \n
-Raises exception for empty string because the index cannot be set properly
+def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
+  """Raises exception for empty string because the index cannot be set properly
 \n Return values:
 * corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
 * found: True | False (False if corrupt)
 * equalIdx, openingQuoteIdx, closingQuoteIdx: -1 if corrupt or not found"""
   checks.checkIfString(attributeString, 0, 5000)
-  checks.checkIntIsBetween(index, 0, len(attributeString) - 1)
+  checks.checkIntIsBetween(inclusiveStartIdx, 0, len(attributeString) - 1)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(attributeString) - 1)
   corruptResult = (True, False, -1, -1, -1)
   notFoundResult = (False, False, -1, -1, -1)
-  if attributeString[index].isspace():
-    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributeString, index, len(attributeString))
-    if found and attributeString[idx] == "=":
-      index = idx
-
-  equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, index)
-  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", index, len(attributeString) - 1,
-                                                           notFoundValue = len(attributeString) - 1)
+  # find all equals in order to resolve this situation: b = 'a="2" , 3, len(string) - 1
+  equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, inclusiveEndIdx)
+  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", inclusiveStartIdx,
+                                                     len(attributeString) - 1, notFoundValue = len(attributeString) - 1)
   if not equalIdxsBefore:
     if isThereAnyQuoteChar(attributeString, 0, referenceIdxFromRight):
       return corruptResult
     return notFoundResult
-  maxEqualIdxQuotesIdxsTriplet = (-1, -1, -1)
+  possibleValues = []
   for equalIdx in equalIdxsBefore:
     corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
-    if not corrupt:
-      if closingQuoteIdx > maxEqualIdxQuotesIdxsTriplet[2]:
-        maxEqualIdxQuotesIdxsTriplet = (equalIdx, openingQuoteIdx, closingQuoteIdx)
+    possibleValues.append((equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx))
+  n = len(possibleValues)
+  notValueIdxs = []
+  idx = 0
+  firstCorruptEqualIdx = -1
+  while idx < n:
+    currentValue = possibleValues[idx]
+    if currentValue[1]:
+      firstCorruptEqualIdx = currentValue[0]
+      equalIdxs = range(idx, n)
+      notValueIdxs += equalIdxs
+      break
+    closingQuoteIdx = currentValue[3]
+    j = idx
+    while j < n - 1:
+      j += 1
+      equalIdx = possibleValues[j][0]
+      if equalIdx < closingQuoteIdx:
+        notValueIdxs.append(j)
+        continue
+      else:
+        j -= 1
+        break
+    idx = j + 1
+  notValueIdxs.reverse()
+  for notValueIdx in notValueIdxs:
+    del possibleValues[notValueIdx]
+
+  if not possibleValues:
+    return corruptResult
+
+  if -1 < firstCorruptEqualIdx <= inclusiveEndIdx:
+    return corruptResult
+
+  # (equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx)
+  maxEqualIdxQuotesIdxsTriplet = (-1, -1, -1)
+  for value in possibleValues:
+    equalIdx = value[0]
+    closingQuoteIdx = value[2]
+    if equalIdx < inclusiveStartIdx:
+      continue
+    if equalIdx > inclusiveEndIdx:
+      break
+    if equalIdx > maxEqualIdxQuotesIdxsTriplet[0]:
+      maxEqualIdxQuotesIdxsTriplet = (equalIdx, value[2], value[3])
+
   equalIdx = maxEqualIdxQuotesIdxsTriplet[0]
   openingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[1]
   closingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[2]
   if closingQuoteIdx == -1:
-    return corruptResult
-  if equalIdx > index:
     return notFoundResult
   return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
 
