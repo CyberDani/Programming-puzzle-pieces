@@ -302,26 +302,45 @@ def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
     return notFoundResult
   return True, idx
 
-# TODO try to clean code it
 def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
   """Raises exception for empty string because the index cannot be set properly
 \n Return values:
 * corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
 * found: True | False (False if corrupt)
 * equalIdx, openingQuoteIdx, closingQuoteIdx: -1 if corrupt or not found"""
+  corruptResult = (True, False, -1, -1, -1)
+  notFoundResult = (False, False, -1, -1, -1)
+  corrupt, values = getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  if corrupt:
+    return corruptResult
+  if not values:
+    return notFoundResult
+  lastValue = values[-1]
+  equalIdx = lastValue[0]
+  openingQuoteIdx = lastValue[1]
+  closingQuoteIdx = lastValue[2]
+  return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
+
+# TODO clean code it
+def getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
+  """Raises exception for empty string because the index cannot be set properly
+\n Return values:
+* corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
+* values: list of (equalIdx, openingQuoteIdx, closingQuoteIdx) triplets"""
   checks.checkIfString(attributeString, 0, 5000)
   checks.checkIntIsBetween(inclusiveStartIdx, 0, len(attributeString) - 1)
   checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(attributeString) - 1)
-  corruptResult = (True, False, -1, -1, -1)
-  notFoundResult = (False, False, -1, -1, -1)
-  # find all equals in order to resolve this situation: b = 'a="2" , 3, len(string) - 1
+  corruptResult = (True, [])
+  notFoundResult = (False, [])
   equalIdxsBefore = stringUtil.findAll(attributeString, "=", 0, inclusiveEndIdx)
-  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", inclusiveStartIdx,
-                                                     len(attributeString) - 1, notFoundValue = len(attributeString) - 1)
   if not equalIdxsBefore:
+    equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", inclusiveStartIdx,
+                                                             len(attributeString) - 1,
+                                                             notFoundValue=len(attributeString) - 1)
     if isThereAnyQuoteChar(attributeString, 0, referenceIdxFromRight):
       return corruptResult
     return notFoundResult
+
   possibleValues = []
   for equalIdx in equalIdxsBefore:
     corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesAfterEqualChar(attributeString, equalIdx)
@@ -359,24 +378,14 @@ def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndId
   if -1 < firstCorruptEqualIdx <= inclusiveEndIdx:
     return corruptResult
 
-  # (equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx)
-  maxEqualIdxQuotesIdxsTriplet = (-1, -1, -1)
-  for value in possibleValues:
-    equalIdx = value[0]
-    closingQuoteIdx = value[2]
-    if equalIdx < inclusiveStartIdx:
-      continue
-    if equalIdx > inclusiveEndIdx:
-      break
-    if equalIdx > maxEqualIdxQuotesIdxsTriplet[0]:
-      maxEqualIdxQuotesIdxsTriplet = (equalIdx, value[2], value[3])
+  result = []
 
-  equalIdx = maxEqualIdxQuotesIdxsTriplet[0]
-  openingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[1]
-  closingQuoteIdx = maxEqualIdxQuotesIdxsTriplet[2]
-  if closingQuoteIdx == -1:
-    return notFoundResult
-  return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
+  # (equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx)
+  for value in possibleValues:
+    if inclusiveStartIdx <= value[0] <= inclusiveEndIdx:
+      result.append((value[0], value[2], value[3]))
+
+  return False, result
 
 def getLastIdxFromCurrentNameBeforeEqual(string, equalIdx):
   """Raises exception for empty strings.\n

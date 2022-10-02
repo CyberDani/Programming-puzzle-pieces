@@ -2694,3 +2694,203 @@ class HtmlAttributesTests(unittest.TestCase):
                                                                   foundAt=4)
     self.helper_getLastIdxFromCurrentNameBeforeEqual_checkIfFound("class='myClass' id = 'myId'href\t\t\t=\n'link.com'",
                                                                   34, foundAt=30)
+
+  def helper_getAllValuesByFoundEquals_exceptionRaised(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
+    with self.assertRaises(Exception):
+      attr.getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+
+  def helper_getAllValuesByFoundEquals_corrupt(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
+    corrupt, values = attr.getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+    self.assertTrue(corrupt)
+    self.assertEqual(values, [])
+
+  def helper_getAllValuesByFoundEquals_notFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
+    corrupt, values = attr.getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(values, [])
+
+  def helper_getAllValuesByFoundEquals_checkIfFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx,
+                                                    foundValues):
+    corrupt, values = attr.getAllValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(values, foundValues)
+
+  def test_getAllValuesByFoundEquals_nonSense(self):
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", -1, 2)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 6, 8)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 36, 75)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 5, 2)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 1, None)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 1, "")
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", 1, True)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", None, 4)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", "", 4)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", True, 4)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", True, True)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", None, None)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("string", "string", "string")
+    self.helper_getAllValuesByFoundEquals_exceptionRaised([], 0, 0)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised(True, True, True)
+    self.helper_getAllValuesByFoundEquals_exceptionRaised(None, None, None)
+
+  def test_getAllValuesByFoundEquals_emptyString(self):
+    self.helper_getAllValuesByFoundEquals_exceptionRaised("", 0, 0)
+
+  def test_getAllValuesByFoundEquals_corrupt_onlyEqual(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("=", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("= ", 0, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = ", 0, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = ", 0, 2)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = ", 1, 2)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = ", 1, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = ", 1, 2)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = = ", 1, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt(" == ", 1, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 0, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 0, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 1, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 1, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 2, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n=\t\t", 2, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("\r\n = \t \t", 0, 7)
+
+  def test_getAllValuesByFoundEquals_corrupt_onlyQuotes(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("'", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("\"", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("''", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("''", 0, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt("''", 1, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt('""', 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt('""', 0, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt(" ' ", 0, 2)
+    self.helper_getAllValuesByFoundEquals_corrupt("\n\t'\t\n", 0, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("''''", 0, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("'\"'\"", 0, 3)
+
+  def test_getAllValuesByFoundEquals_corrupt_noQuotes(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("=2", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("=2", 0, 1)
+    self.helper_getAllValuesByFoundEquals_corrupt("= 2", 0, 2)
+    self.helper_getAllValuesByFoundEquals_corrupt("=\t\t2", 0, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2", 0, 5)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2", 1, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2", 1, 5)
+    self.helper_getAllValuesByFoundEquals_corrupt("a = 4", 0, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("number = one two", 0, 14)
+    self.helper_getAllValuesByFoundEquals_corrupt("number = one two", 0, 10)
+    self.helper_getAllValuesByFoundEquals_corrupt("number = one two", 0, 7)
+
+  def test_getAllValuesByFoundEquals_corrupt_noEqual(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("'myClass'", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("'myClass' id = 'myId'", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("number 'one' two", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("'number one two'", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("'number one two", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("'number one two\"", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("'number one two\"", 1, 4)
+    self.helper_getAllValuesByFoundEquals_corrupt("\"number one two\"", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("number one two'", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("number one two\"", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("number 'one two", 0, 14)
+    self.helper_getAllValuesByFoundEquals_corrupt("number ' one two", 0, 14)
+    self.helper_getAllValuesByFoundEquals_corrupt("number \"one two", 0, 14)
+
+  def test_getAllValuesByFoundEquals_corrupt_mixedQuotes(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t '2", 0, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t \"2", 1, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2'", 0, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2'", 1, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2\"", 0, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t 2\"", 1, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t '2\"", 0, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t=\t\t \"2'", 0, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("a\t=\t\t \"0'", 0, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("a = \"0'", 0, 6)
+    self.helper_getAllValuesByFoundEquals_corrupt("a = \"0''", 0, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("a = \"0'''", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("a = \"0' selected", 0, 15)
+
+  def test_getAllValuesByFoundEquals_corrupt_noAttributeName(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("= ''", 0, 0)
+    self.helper_getAllValuesByFoundEquals_corrupt("= ''", 0, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = 'myClass'", 0, 11)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t\r\n = 'myClass'", 0, 14)
+    self.helper_getAllValuesByFoundEquals_corrupt("\t\r\n = 'myClass'", 3, 14)
+    self.helper_getAllValuesByFoundEquals_corrupt(" = '' selected", 0, 10)
+    self.helper_getAllValuesByFoundEquals_corrupt("= '' selected", 0, 9)
+    self.helper_getAllValuesByFoundEquals_corrupt("='' selected", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("=''selected", 0, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("= 'a=\"2\"'", 0, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("= 'a=\"2\"'", 3, 8)
+    self.helper_getAllValuesByFoundEquals_corrupt("= ' back a=\"2\" href'", 9, 17)
+
+  def test_getAllValuesByFoundEquals_corrupt_other(self):
+    self.helper_getAllValuesByFoundEquals_corrupt("b = 'a=\"2\"", 3, 7)
+    self.helper_getAllValuesByFoundEquals_corrupt("b = 'a=\"2\"", 1, 3)
+    self.helper_getAllValuesByFoundEquals_corrupt("b = ' checked a=\"2\" selected", 14, 25)
+    self.helper_getAllValuesByFoundEquals_corrupt("b = ' checked a=\"2\" selected", 24, 25)
+    self.helper_getAllValuesByFoundEquals_corrupt("class='myClass' b = ' checked a=\"2\" selected", 16, 42)
+    self.helper_getAllValuesByFoundEquals_corrupt("class='myClass' b = ' checked a=\"2\" selected", 24, 42)
+    self.helper_getAllValuesByFoundEquals_corrupt("class='myClass' b = ' checked a=\"2\" selected", 36, 43)
+
+  def test_getAllValuesByFoundEquals_valueNotFound(self):
+    self.helper_getAllValuesByFoundEquals_notFound(" ", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\t", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\r", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\n", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\r\n", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("Q", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("ab", 0, 1)
+    self.helper_getAllValuesByFoundEquals_notFound("abc", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("abc", 0, 1)
+    self.helper_getAllValuesByFoundEquals_notFound("abc", 0, 2)
+    self.helper_getAllValuesByFoundEquals_notFound(" a ", 0, 2)
+    self.helper_getAllValuesByFoundEquals_notFound("a\t=\t\t \"0'", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\none\ttwo three\r\n", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("\none\ttwo three\r\n", 0, 1)
+    self.helper_getAllValuesByFoundEquals_notFound("\none\ttwo three\r\n", 0, 6)
+    self.helper_getAllValuesByFoundEquals_notFound("\none\ttwo three\r\n", 0, 15)
+    self.helper_getAllValuesByFoundEquals_notFound("selected number='two'", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("selected number='two'", 0, 4)
+    self.helper_getAllValuesByFoundEquals_notFound("a ='2'", 0, 0)
+    self.helper_getAllValuesByFoundEquals_notFound("b = 'a=\"2\"'", 3, 7)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'checked a=\"2\"' selected'", 21, 42)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'checked a=\"2\"' selected'", 32, 42)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'checked a=\"2\"' selected'", 36, 42)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 36, 38)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 28, 38)
+    self.helper_getAllValuesByFoundEquals_notFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 32, 38)
+
+  # review these tests
+  def test_getAllValuesByFoundEquals_valueFound(self):
+    self.helper_getAllValuesByFoundEquals_checkIfFound("a\t=\t\t '0'", 0, 2, foundValues = [(2, 6, 8)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("a = '' selected", 0, 11, foundValues = [(2, 4, 5)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("a = '' selected", 0, 7, foundValues = [(2, 4, 5)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("a = '' selected", 0, 14, foundValues = [(2, 4, 5)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("a = \"\" selected", 0, 14, foundValues = [(2, 4, 5)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 0, 42,
+                                                       foundValues=[(6, 8, 16), (24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 2, 33,
+                                                       foundValues=[(6, 8, 16), (24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 4, 26,
+                                                       foundValues=[(6, 8, 16), (24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 6, 24,
+                                                       foundValues=[(6, 8, 16), (24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 7, 24,
+                                                       foundValues=[(24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n ' myClass ' selected", 2, 23,
+                                                       foundValues=[(6, 8, 16)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("\nhref = 'img.png' class =\t\r\n \" myClass \" selected", 0, 29,
+                                                       foundValues=[(6, 8, 16), (24, 29, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("title = \"class='myClass'\"", 0, 18, foundValues=[(6, 8, 24)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("title = \"=class='myClass'=\"", 0, 19, foundValues=[(6, 8, 26)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("title\t=\n\"===class='myClass'===\"", 0, 21,
+                                                       foundValues=[(6, 8, 30)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("id='myId'title\t=\n\"===class='myClass'===\"", 0, 30,
+                                                       foundValues=[(2, 3, 8), (15, 17, 39)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("id='myId' title\t=\n\"===class='myClass'===\"", 0, 31,
+                                                       foundValues=[(2, 3, 8), (16, 18, 40)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel' checked", 18, 38,
+                                                       foundValues=[(18, 20, 38)])
+    self.helper_getAllValuesByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel' checked", 5, 18,
+                                                       foundValues=[(5, 6, 14), (18, 20, 38)])
