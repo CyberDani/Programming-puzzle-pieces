@@ -55,6 +55,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
       result.append(value)
   return False, result
 
+# TODO rename getAllAttributeNames
 def getListOfHtmlAttributeNames(attributesString):
   """ Only the first declaration is taken per each attribute name (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
@@ -80,6 +81,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
+# TODO getAllAttributes
 def getHtmlAttributes(attributesString, startIdx):
   """Each attribute is taken and validated once at its first occurrence. \n
 Raises exception if <attributesString> is empty because startIdx cannot be set properly \n
@@ -93,7 +95,7 @@ Raises exception if <attributesString> is empty because startIdx cannot be set p
     return corruptReturn
   return notFoundReturn
 
-# TODO rename to getCurrentHtmlAttribute
+# TODO rename to getCurrentHtmlAttribute + review comment
 def getNextHtmlAttribute(attributesString, index):
   """ Raises exception for empty string because the index cannot be set. \n
 Index must point to the actual attribute value. \n
@@ -111,26 +113,28 @@ Only the first attribute is taken and validated \n
     return noAttributeResult
   if lastCharIdx == len(attributesString) - 1:
     return False, attributeName, None, firstCharIdx, lastCharIdx
-  corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValueIfExists(attributesString, lastCharIdx + 1)
+  corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValue(attributesString, lastCharIdx + 1)
   if corrupt:
     return corruptResult
   if not found:
     return False, attributeName, None, firstCharIdx, lastCharIdx
   return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
-# TODO extend when idx is between equal and opening quote or within the attribute value
-def getCurrentValueIfExists(attributesString, startIdx):
-  """There can be false positives when the idx points inside to an attribute value.\n
-<startIdx> must point to the attribute value or at most to the equal char.\n
-Raises error at empty string because <startIdx> cannot be set properly\n
+def getCurrentValue(attributesString, index):
+  """Index can point anywhere within the current attribute.\n
+Raises error at empty string because index cannot be set properly\n
 Return values:\n
 * corrupt : True | False
 * found: True | False (False if corrupt)
 * firstQuoteIdx, secondQuoteIdx: **-1** if corrupt or not found """
   notFoundResult = (False, False, -1, -1)
   corruptResult = (True, False, -1, -1)
-  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, startIdx,
-                                                                         len(attributesString))
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
+  if corrupt:
+    return corruptResult
+  if found and index <= closingQuoteIdx:
+    index = equalIdx
+  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString))
   if not found:
     return notFoundResult
   firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
@@ -145,8 +149,8 @@ Return values:\n
 
 # TODO clean code it
 def getCurrentOrNextName(attributesString, index):
-  """Index can point anywhere withing the context of the current attribute. If it is outside of context, will search
-for the next attribute name.\n
+  """Index can point anywhere withing the current attribute. If it is outside of context, will search for the next
+attribute name.\n
 Raises error at empty string because <startIdx> cannot be set properly\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*

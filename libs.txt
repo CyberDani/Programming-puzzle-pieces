@@ -1,1 +1,6 @@
 pip install requests
+pip install --user git+https://github.com/kuuurt/pyan.git
+  - install dependency: http://www.graphviz.org/download/
+
+example:
+pyan3 '/d/Programming puzzle pieces/webPage/generator/modules/htmlAttributes.py' --uses --no-defines --colored --grouped --annotated --svg > attr.svg
