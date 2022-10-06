@@ -1,5 +1,6 @@
 from modules import checks
 
+# TODO add found return value
 def getNextChar(string, index):
   """Returns **None** if there is no next char. \n
   Raises exception for empty string because the index cannot be set properly."""
