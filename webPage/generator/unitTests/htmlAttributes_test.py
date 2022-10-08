@@ -1089,6 +1089,9 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_getCurrentOrNextName_spaces(self):
     self.helper_getCurrentOrNextName_checkIfNotFound(" ", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound("   ", 0)
+    self.helper_getCurrentOrNextName_checkIfNotFound("   ", 1)
+    self.helper_getCurrentOrNextName_checkIfNotFound("     ", 2)
     self.helper_getCurrentOrNextName_checkIfNotFound("\n", 0)
     self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t\n", 0)
     self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t\n", 1)
@@ -1101,6 +1104,11 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfCorrupt("= ", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" =", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 1)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 2)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 1)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 2)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 3)
     self.helper_getCurrentOrNextName_checkIfCorrupt("\t\t=\n\n", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("'", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("''''''''", 0)
@@ -1115,8 +1123,21 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfCorrupt("\t\t\"\n\n", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("='value'", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
+    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
     self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 1)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 2)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 6)
     self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("one ' two", 0)
+    self.helper_getCurrentOrNextName_checkIfCorrupt("one ' two", 4)
 
   def test_getCurrentOrNextName_notFound(self):
     self.helper_getCurrentOrNextName_checkIfNotFound("class ", 5)
@@ -3159,3 +3180,152 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(possibleValues, [(4, False, 6, 29), (12, False, 13, 19)])
     possibleValues = attr.getPossibleValuesByFoundEquals("key = \"=title='hello' selected=\"", 1, 31)
     self.assertEqual(possibleValues, [(4, False, 6, 31), (7, True, -1, -1), (13, False, 14, 20), (30, True, -1, -1)])
+
+  def helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(self, string, idx):
+    corrupt, found, firstCharIdx = attr.jumpToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertTrue(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstCharIdx, -1)
+
+  def helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(self, string, idx):
+    corrupt, found, firstCharIdx = attr.jumpToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertFalse(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstCharIdx, -1)
+
+  def helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound(self, string, idx, foundAt):
+    corrupt, found, firstCharIdx = attr.jumpToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertFalse(corrupt)
+    self.assertTrue(found)
+    self.assertEqual(firstCharIdx, foundAt)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", -1)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", 345)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", 6)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", True)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", [])
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", "")
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("string", "string")
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName(0, 0)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName([], 0)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName(["1", "2"], 0)
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName(None, None)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.jumpToFirstIdxOfCurrentOrNextName("", 0)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_spaces(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("   ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("   ", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("     ", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\r\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t \n ", 3)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_corrupt(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("= ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" =", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 3)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t=\n\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("'", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("''''''''", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("' ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" '", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" ' ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t'\n\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\"", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\" ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" \"", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" \" ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t\"\n\n", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("='value'", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 6)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 4)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_notFound(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class ", 5)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class \r\n", 5)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class \r\n", 6)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' ", 21)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 21)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 22)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_indexPointsAtTheFirstNameCharIdx(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("X", 0, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("X=''", 0, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, foundAt=2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tX\t\tY Z", 0, foundAt=2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("selected", 0, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tselected\n\n", 0, foundAt=2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound(" class='my-Class' \t selected", 0, foundAt=1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
+                                                                foundAt=2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 0, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, foundAt=0)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_indexPointsWithinName(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("selected", 3, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 3, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 13, foundAt=9)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_indexPointsAroundValue(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 5, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 6, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 7, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 9, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 14, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a=''", 1, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 1, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 2, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 3, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, foundAt=0)

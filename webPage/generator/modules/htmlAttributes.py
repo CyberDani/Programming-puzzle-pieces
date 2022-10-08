@@ -146,9 +146,8 @@ Return values:\n
     return corruptResult
   return False, True, openingQuoteIdx, closingQuoteIdx
 
-# TODO clean code it
 def getCurrentOrNextName(attributesString, index):
-  """Index can point anywhere withing the current attribute. If it is outside of context, will search for the next
+  """Index can point anywhere within the current attribute. If it is outside of attribute, will search for the next
 attribute name.\n
 Raises error at empty string because <startIdx> cannot be set properly\n
 Return values:\n
@@ -156,55 +155,54 @@ Return values:\n
 * found: True | False *(false if corrupt)*
 * attributeName: **None** if corrupt or not found
 * firstCharIdx, lastCharIdx: **-1** if corrupt or not found """
-  checks.checkIfString(attributesString, 0, 5000)
-  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
   corruptResult = (True, False, None, -1, -1)
   notFoundResult = (False, False, None, -1, -1)
-  # getCurrentNameLastIdxIf
-  corrupt, valueFound, equalIdx, openingQuoteIdx, closingQuoteIdx \
-                                                                 = getLastValueByFoundEquals(attributesString, 0, index)
+  corrupt, found, firstIdx = jumpToFirstIdxOfCurrentOrNextName(attributesString, index)
   if corrupt:
     return corruptResult
-  if valueFound and equalIdx <= index <= closingQuoteIdx:
-    if equalIdx == 0:
-      return corruptResult
+  if not found:
+    return notFoundResult
+  found, delimiterAfterLastIdx = getFirstHtmlDelimiter(attributesString, firstIdx, len(attributesString))
+  if not found:
+    return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
+  return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
+
+# TODO clean code it
+def jumpToFirstIdxOfCurrentOrNextName(attributesString, index):
+  """Index can point anywhere. If it is outside of attribute, will search for the next attribute name.\n
+Raises error at empty string because <startIdx> cannot be set properly\n
+Return values:\n
+* corrupt : True | False *(does not validate the attribute value)*
+* found: True | False *(false if corrupt)*
+* firstCharIdx: **-1** if corrupt or not found """
+  checks.checkIfString(attributesString, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
+  corruptResult = (True, False, -1)
+  notFoundResult = (False, False, -1)
+  corrupt, valueFound, equalIdx, openingQuoteIdx, closingQuoteIdx \
+    = getLastValueByFoundEquals(attributesString, 0, index)
+  if corrupt:
+    return corruptResult
+  if valueFound and index <= closingQuoteIdx:
     found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
     if not found:
       return corruptResult
-
-  # TODO getLastIdxFromCurrentOrNextNameByWhiteSpace ?
+  # space is between name and equal char or before a new name
   elif attributesString[index].isspace():
     found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
-    if found and attributesString[index] == "=":
-      equalIdx = index
-      if index == len(attributesString) - 1:
-        return corruptResult
-      found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index + 1, len(attributesString))
-      if not found or (attributesString[index] != "'" and attributesString[index] != "'"):
-        return corruptResult
-      found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
-      if not found:
-        return corruptResult
     if not found:
       return notFoundResult
-
-
-  if not attributesString[index].isspace() and charIsHtmlDelimiter(attributesString[index]):
-    return corruptResult
+    if attributesString[index] == "=":
+      found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, index)
+      if not found:
+        return corruptResult
+  # get the first index of the name
   found, idx = getLastHtmlDelimiter(attributesString, 0, index + 1)
   if not found:
     index = 0
   elif index < len(attributesString) - 1:
     index = idx + 1
-
-  firstIdx = index
-  found, delimiterAfterLastIdx = getFirstHtmlDelimiter(attributesString, firstIdx, len(attributesString))
-  if not found:
-    return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
-  delimiter = attributesString[delimiterAfterLastIdx]
-  if delimiter == "'" or delimiter == '"':
-    return corruptResult
-  return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
+  return False, True, index
 
 def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
   """Raises exception for empty string because the index cannot be set properly."""
@@ -267,6 +265,7 @@ def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
     return notFoundResult
   return True, idx
 
+# TODO inclusiveEndIdx
 def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
   """Raises exception for empty string because the indexes cannot be set properly.
 \nReturn values:\n
@@ -302,7 +301,8 @@ def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndId
   return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
 
 def getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
-  """Safe version of "getValuesByFoundEquals" with a bit of performance overhead. Index can point anywhere. \n
+  """Safe version of "getValuesByFoundEquals" with a bit of performance overhead and extra check for corrupt data.
+Index can point anywhere. \n
 Raises exception for empty string.
 \n Return values:
 * corrupt: True | False (does not validate what comes after the value, if not found checks only quotes)
