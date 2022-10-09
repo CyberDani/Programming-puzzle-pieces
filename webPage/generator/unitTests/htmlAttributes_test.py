@@ -206,170 +206,196 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeNameIdx_checkIfFoundAtIdx("title=\"class='myClass'\"\t\t\tclass\n\t=\t\t'myClass'", "class",
                                                       foundAt = 26)
 
-  def helper_extractDifferentValuesByName_checkIfException(self, string, name):
+  def helper_getUniqueValuesByName_checkIfException(self, string, name):
     with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+      attr.getUniqueValuesByName(string, name)
 
-  def helper_extractDifferentValuesByName_checkIfCorrupt(self, string, name):
-    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+  def helper_getUniqueValuesByName_checkIfCorrupt(self, string, name):
+    corrupt, nameFound, valueFound, values = attr.getUniqueValuesByName(string, name)
     self.assertTrue(corrupt)
-    self.assertEqual(values, None)
+    self.assertFalse(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(values, [])
 
-  def helper_extractDifferentValuesByName_checkIfNotFound(self, string, name):
-    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+  def helper_getUniqueValuesByName_checkIfNameNotFound(self, string, name):
+    corrupt, nameFound, valueFound, values = attr.getUniqueValuesByName(string, name)
     self.assertFalse(corrupt)
-    self.assertEqual(values, None)
+    self.assertFalse(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(values, [])
 
-  def helper_extractDifferentValuesByName_checkIfFound(self, string, name, foundValues):
-    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+  def helper_getUniqueValuesByName_checkIfValueNotFound(self, string, name):
+    corrupt, nameFound, valueFound, values = attr.getUniqueValuesByName(string, name)
     self.assertFalse(corrupt)
+    self.assertTrue(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(values, [])
+
+  def helper_getUniqueValuesByName_checkIfFound(self, string, name, foundValues):
+    corrupt, nameFound, valueFound, values = attr.getUniqueValuesByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertTrue(nameFound)
+    self.assertTrue(valueFound)
     self.assertEqual(values, foundValues)
 
-  def test_extractDifferentWhiteSpaceSeparatedValuesByName_nonSense(self):
-    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", 123)
-    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", False)
-    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", None)
-    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", ["option"])
-    self.helper_extractDifferentValuesByName_checkIfException(None, "option")
-    self.helper_extractDifferentValuesByName_checkIfException(234, "src")
-    self.helper_extractDifferentValuesByName_checkIfException(123, None)
-    self.helper_extractDifferentValuesByName_checkIfException(None, None)
-    self.helper_extractDifferentValuesByName_checkIfException(0, 0)
+  def test_getUniqueValuesByName_nonSense(self):
+    self.helper_getUniqueValuesByName_checkIfException("option='audi' value='A'", 123)
+    self.helper_getUniqueValuesByName_checkIfException("option='audi' value='A'", False)
+    self.helper_getUniqueValuesByName_checkIfException("option='audi' value='A'", None)
+    self.helper_getUniqueValuesByName_checkIfException("option='audi' value='A'", ["option"])
+    self.helper_getUniqueValuesByName_checkIfException(None, "option")
+    self.helper_getUniqueValuesByName_checkIfException(234, "src")
+    self.helper_getUniqueValuesByName_checkIfException(123, None)
+    self.helper_getUniqueValuesByName_checkIfException(None, None)
+    self.helper_getUniqueValuesByName_checkIfException(0, 0)
 
-  def test_extractDifferentWhiteSpaceSeparatedValuesByName_emptyName(self):
-    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", "")
+  def test_getUniqueValuesByName_emptyName(self):
+    self.helper_getUniqueValuesByName_checkIfException("option='audi' value='A'", "")
 
-  def test_extractDifferentValuesByKey_emptyAttributesString(self):
-    self.helper_extractDifferentValuesByName_checkIfNotFound("", "title")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("", "src")
+  def test_getUniqueValuesByName_emptyAttributesString(self):
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("", "title")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("", "src")
 
-  def test_extractDifferentValuesByKey_attributeNameNotFound(self):
-    self.helper_extractDifferentValuesByName_checkIfNotFound("htmlAttribute no-href", "href")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("rel=\"shortcut icon\" "
-                                                             "href=\"img/favicon.ico\" type=\"image/x-icon\"", "title")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"masthead_custom_styles\" is=\"custom-style\" "
-                                                          "id=\"ext-styles\" nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("src=\"jsbin/spf.vflset/spf.js\"", "alt")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"anim\"", "id")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"animated bold\"", "id")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"animated bold\" selected class=\"act-tab\"", "id")
+  def test_getUniqueValuesByName_attributeNameNotFound(self):
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("htmlAttribute no-href", "href")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
+                                                      "type=\"image/x-icon\"", "title")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("class=\"masthead_custom_styles\" is=\"custom-style\" "
+                                                      "id=\"ext-styles\" nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("src=\"jsbin/spf.vflset/spf.js\"", "alt")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("class=\"anim\"", "id")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("class=\"animated bold\"", "id")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("class=\"animated bold\" selected class=\"act-tab\"", "id")
     string = "id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" " \
              "disable-upgrade=\"true\""
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "upgrade")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "masthead")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "dark")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "shell")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "chunked")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "e")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "disable")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "clas")
-    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "lot")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("_value=\"audi\"", "value")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "upgrade")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "masthead")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "dark")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "shell")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "chunked")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "e")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "disable")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "clas")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound(string, "lot")
+    self.helper_getUniqueValuesByName_checkIfNameNotFound("_value=\"audi\"", "value")
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_attrDoesNotHaveValue(self):
-    self.helper_extractDifferentValuesByName_checkIfNotFound("value=\"audi\" selected", "selected")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("value=\"audi\" selected class=\"myClass\"", "selected")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("selected value=\"audi\"", "selected")
-    self.helper_extractDifferentValuesByName_checkIfNotFound("selected", "selected")
+  def test_getUniqueValuesByName_attrDoesNotHaveValue(self):
+    self.helper_getUniqueValuesByName_checkIfValueNotFound("value=\"audi\" selected", "selected")
+    self.helper_getUniqueValuesByName_checkIfValueNotFound("value=\"audi\" selected class=\"myClass\"", "selected")
+    self.helper_getUniqueValuesByName_checkIfValueNotFound("selected value=\"audi\"", "selected")
+    self.helper_getUniqueValuesByName_checkIfValueNotFound("selected", "selected")
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_emptyValue(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"\"", "value", foundValues=[])
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"  \"", "value", foundValues=[])
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"\t\"", "value", foundValues=[])
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\" \r\n \t \"", "value", foundValues=[])
+  def test_getUniqueValuesByName_emptyValue(self):
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"\"", "value", foundValues=[])
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"  \"", "value", foundValues=[])
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"\t\"", "value", foundValues=[])
+    self.helper_getUniqueValuesByName_checkIfFound("value=\" \r\n \t \"", "value", foundValues=[])
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_corrupt(self):
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("class='custom style red", "style")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"   ", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value= ", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value= \n \t ", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"audi", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"audi'", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value='audi\"", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value \"audi\"", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value\"audi\"", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value 'audi'", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("value'audi'", "value")
-    self.helper_extractDifferentValuesByName_checkIfCorrupt("\"class'myclass' class='myclass'", "class")
+  def test_getUniqueValuesByName_corrupt_nameContainsHtmlDelimiter(self):
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "selected class")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "class=")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", " class")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", " class ")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "selected ")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "red '")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "'custom")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "=")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "'")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "\"")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", " ")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("selected class='custom style red'", "\t")
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_quotes(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi\"", "value", foundValues=["audi"])
-    self.helper_extractDifferentValuesByName_checkIfFound("value='audi'", "value", foundValues=["audi"])
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi'A3\"", "value", foundValues=["audi'A3"])
-    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi'A3'\"", "value", foundValues=["audi'A3'"])
-    self.helper_extractDifferentValuesByName_checkIfFound("value='audi\"A3'", "value", foundValues=["audi\"A3"])
-    self.helper_extractDifferentValuesByName_checkIfFound("value='\"audi\"A3\"'", "value", foundValues=["\"audi\"A3\""])
-    self.helper_extractDifferentValuesByName_checkIfFound("class='myClass'title='titled title=\"title\"'", "title",
-                                                          foundValues=["titled", "title=\"title\""])
+  def test_getUniqueValuesByName_corrupt(self):
+    self.helper_getUniqueValuesByName_checkIfCorrupt("class='custom style red", "style")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value=\"", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value=\"   ", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value=", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value= ", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value= \n \t ", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value=\"audi", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value=\"audi'", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value='audi\"", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value \"audi\"", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value\"audi\"", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value 'audi'", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("value'audi'", "value")
+    self.helper_getUniqueValuesByName_checkIfCorrupt("\"class'myclass' class='myclass'", "class")
 
-  def test_extractDifferentValuesFromHtmlAttributesByKey_oneValueFound(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
-                                                      "type=\"image/x-icon\"", "href", foundValues=["img/favicon.ico"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" id='X' "
-                                                          "type=\"image/x-icon\"", "id", foundValues=["X"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" xhref=\"a34cd3b\" "
-                                                          "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
-                                                          foundValues=["img/favicon.ico"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" no-href=\"false\" xhref=\"a34cd3b\" "
-                                                          "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
-                                                          foundValues=["img/favicon.ico"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" hrefhref=\"image\" no-href=\"false\" "
+  def test_getUniqueValuesByName_quotes(self):
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"audi\"", "value", foundValues=["audi"])
+    self.helper_getUniqueValuesByName_checkIfFound("value='audi'", "value", foundValues=["audi"])
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"audi'A3\"", "value", foundValues=["audi'A3"])
+    self.helper_getUniqueValuesByName_checkIfFound("value=\"audi'A3'\"", "value", foundValues=["audi'A3'"])
+    self.helper_getUniqueValuesByName_checkIfFound("value='audi\"A3'", "value", foundValues=["audi\"A3"])
+    self.helper_getUniqueValuesByName_checkIfFound("value='\"audi\"A3\"'", "value", foundValues=["\"audi\"A3\""])
+    self.helper_getUniqueValuesByName_checkIfFound("class='myClass'title='titled title=\"title\"'", "title",
+                                                   foundValues=["titled", "title=\"title\""])
+
+  def test_getUniqueValuesByName_oneValueFound(self):
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
+                                                    "type=\"image/x-icon\"", "href", foundValues=["img/favicon.ico"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" id='X' "
+                                                    "type=\"image/x-icon\"", "id", foundValues=["X"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"shortcut icon\" xhref=\"a34cd3b\" href=\"img/favicon.ico\" "
+                                                   "type=\"image/x-icon\"", "href", foundValues=["img/favicon.ico"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"shortcut icon\" no-href=\"false\" xhref=\"a34cd3b\" "
+                                                    "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                                   foundValues=["img/favicon.ico"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"shortcut icon\" hrefhref=\"image\" no-href=\"false\" "
                                             "xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
-                                                          foundValues=["img/favicon.ico"])
-    self.helper_extractDifferentValuesByName_checkIfFound("nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce",
-                                                          foundValues=["lix9PsSUHJxW7ghXrU5s0A"])
-    self.helper_extractDifferentValuesByName_checkIfFound("id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\""
+                                                   foundValues=["img/favicon.ico"])
+    self.helper_getUniqueValuesByName_checkIfFound("nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce",
+                                                   foundValues=["lix9PsSUHJxW7ghXrU5s0A"])
+    self.helper_getUniqueValuesByName_checkIfFound("id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\""
                                             " class=\"shell dark chunked\" disable-upgrade=\"true\"", "disable-upgrade",
-                                                          foundValues=["true"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"preload\" href="
+                                                   foundValues=["true"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel=\"preload\" href="
                                 "\"https://r3---sn-8vq54voxgv-vu26.googlevideo.com/generate_204\" as=\"fetch\"", "rel",
-                                                          foundValues=["preload"])
+                                                   foundValues=["preload"])
 
-  def test_extractDifferentValuesFromHtmlAttributesByKey_whitespaces(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("rel =\"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
-                                                          foundValues=["preload"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel = \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
-                                                          foundValues=["preload"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel= \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
-                                                          foundValues=["preload"])
-    self.helper_extractDifferentValuesByName_checkIfFound("rel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
+  def test_getUniqueValuesByName_whitespaces(self):
+    self.helper_getUniqueValuesByName_checkIfFound("rel =\"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                   foundValues=["preload"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel = \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                   foundValues=["preload"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel= \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                   foundValues=["preload"])
+    self.helper_getUniqueValuesByName_checkIfFound("rel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
                                                   "href=\"generate_204\" as=\"fetch\"", "rel", foundValues=["preload"])
-    self.helper_extractDifferentValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
+    self.helper_getUniqueValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
                                                   "href=\"generate_204\" as=\"fetch\"", "rel", foundValues=["preload"])
-    self.helper_extractDifferentValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload "
-                                                          "\t\t\t\n\t  \" href=\"generate_204\" as=\"fetch\"", "rel",
-                                                          foundValues=["preload"])
+    self.helper_getUniqueValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload "
+                                                    "\t\t\t\n\t  \" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                   foundValues=["preload"])
 
-  def test_extractDifferentValuesFromHtmlAttributesByKey_multipleValuesFound(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
-                                                          "pure-form\" style=\"display:inline-block\"", "class",
-                                                          foundValues=["add_search_params", "pure-form"])
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
+  def test_getUniqueValuesByName_multipleValuesFound(self):
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
+                                                    "pure-form\" style=\"display:inline-block\"", "class",
+                                                   foundValues=["add_search_params", "pure-form"])
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
                                         "pure-form hide-xs hide-sm hide-md\" style=\"display:inline-block\"", "class",
-                                        foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class\n=\n\"add_search_params\t"
+                                       foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class\n=\n\"add_search_params\t"
                                         "pure-form\r\nhide-xs     hide-sm\t\t\t\n\r   \n\r    hide-md\n\" "
                                         "style=\"display:inline-block\"", "class",
-                                        foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
+                                       foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
 
-  def test_extractDifferentValuesFromHtmlAttributesByKey_multipleDeclarations(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params cl2 "
-                                                    "cl3\" class=\"pure-form\" style=\"display:inline-block\"", "class",
-                                                          foundValues=["add_search_params", "cl2", "cl3"])
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params\" "
+  def test_getUniqueValuesByName_multipleDeclarations(self):
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params cl2 cl3\" "
+                                                   "class=\"pure-form\" style=\"display:inline-block\"", "class",
+                                                   foundValues=["add_search_params", "cl2", "cl3"])
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params\" "
                                                   "class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class",
-                                                          foundValues=["add_search_params"])
-    self.helper_extractDifferentValuesByName_checkIfNotFound("action=\".\" class method=\"get\" class=\"pure-form cl2 "
-                                                             "cl3\" style=\"display:inline-block\"", "class")
+                                                   foundValues=["add_search_params"])
+    self.helper_getUniqueValuesByName_checkIfValueNotFound("action=\".\" class method=\"get\" class=\"pure-form cl2 "
+                                                           "cl3\" style=\"display:inline-block\"", "class")
 
-  def test_extractDifferentValuesFromHtmlAttributesByKey_valueRepeats(self):
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1\" "
-                                                        "style=\"display:inline-block\"", "class", foundValues=["cl1"])
-    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 "
-                                                          "cl2\" style=\"display:inline-block\"", "class",
-                                                          foundValues=["cl1", "cl2", "cl3"])
+  def test_getUniqueValuesByName_valueRepeats(self):
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1\" "
+                                                    "style=\"display:inline-block\"", "class", foundValues=["cl1"])
+    self.helper_getUniqueValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" "
+                                                   "style=\"display:inline-block\"", "class",
+                                                   foundValues=["cl1", "cl2", "cl3"])
 
   def test_getCurrentOrNextAttribute_nonSense(self):
     with self.assertRaises(Exception):
@@ -3257,3 +3283,195 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, foundAt=0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, foundAt=0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, foundAt=0)
+
+  def helper_getValueByName_checkIfException(self, string, name):
+    with self.assertRaises(Exception):
+      attr.getValueByName(string, name)
+
+  def helper_getValueByName_checkIfCorrupt(self, string, name):
+    corrupt, nameFound, valueFound, value = attr.getValueByName(string, name)
+    self.assertTrue(corrupt)
+    self.assertFalse(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(value, "")
+
+  def helper_getValueByName_checkIfNameNotFound(self, string, name):
+    corrupt, nameFound, valueFound, value = attr.getValueByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertFalse(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(value, "")
+
+  def helper_getValueByName_checkIfValueNotFound(self, string, name):
+    corrupt, nameFound, valueFound, value = attr.getValueByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertTrue(nameFound)
+    self.assertFalse(valueFound)
+    self.assertEqual(value, "")
+
+  def helper_getValueByName_checkIfValueFound(self, string, name, foundValue):
+    corrupt, nameFound, valueFound, value = attr.getValueByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertTrue(nameFound)
+    self.assertTrue(valueFound)
+    self.assertEqual(value, foundValue)
+
+  def test_getValueByName_nonSense(self):
+    self.helper_getValueByName_checkIfException("option='audi' value='A'", 123)
+    self.helper_getValueByName_checkIfException("option='audi' value='A'", False)
+    self.helper_getValueByName_checkIfException("option='audi' value='A'", None)
+    self.helper_getValueByName_checkIfException("option='audi' value='A'", ["option"])
+    self.helper_getValueByName_checkIfException(None, "option")
+    self.helper_getValueByName_checkIfException(234, "src")
+    self.helper_getValueByName_checkIfException(123, None)
+    self.helper_getValueByName_checkIfException(None, None)
+    self.helper_getValueByName_checkIfException(0, 0)
+
+  def test_getValueByName_emptyName(self):
+    self.helper_getValueByName_checkIfException("option='audi' value='A'", "")
+
+  def test_getValueByName_emptyAttributesString(self):
+    self.helper_getValueByName_checkIfNameNotFound("", "title")
+    self.helper_getValueByName_checkIfNameNotFound("", "src")
+
+  def test_getValueByName_attributeNameNotFound(self):
+    self.helper_getValueByName_checkIfNameNotFound("htmlAttribute no-href", "href")
+    self.helper_getValueByName_checkIfNameNotFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
+                                                   "type=\"image/x-icon\"", "title")
+    self.helper_getValueByName_checkIfNameNotFound("class=\"masthead_custom_styles\" is=\"custom-style\" "
+                                                   "id=\"ext-styles\" nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
+    self.helper_getValueByName_checkIfNameNotFound("src=\"jsbin/spf.vflset/spf.js\"", "alt")
+    self.helper_getValueByName_checkIfNameNotFound("class=\"anim\"", "id")
+    self.helper_getValueByName_checkIfNameNotFound("class=\"animated bold\"", "id")
+    self.helper_getValueByName_checkIfNameNotFound("class=\"animated bold\" selected class=\"act-tab\"", "id")
+    string = "id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" " \
+             "disable-upgrade=\"true\""
+    self.helper_getValueByName_checkIfNameNotFound(string, "upgrade")
+    self.helper_getValueByName_checkIfNameNotFound(string, "masthead")
+    self.helper_getValueByName_checkIfNameNotFound(string, "dark")
+    self.helper_getValueByName_checkIfNameNotFound(string, "shell")
+    self.helper_getValueByName_checkIfNameNotFound(string, "chunked")
+    self.helper_getValueByName_checkIfNameNotFound(string, "e")
+    self.helper_getValueByName_checkIfNameNotFound(string, "disable")
+    self.helper_getValueByName_checkIfNameNotFound(string, "clas")
+    self.helper_getValueByName_checkIfNameNotFound(string, "lot")
+    self.helper_getValueByName_checkIfNameNotFound("_value=\"audi\"", "value")
+
+  def test_getValueByName_attrDoesNotHaveValue(self):
+    self.helper_getValueByName_checkIfValueNotFound("selected value=\"audi\" selected='True'", "selected")
+    self.helper_getValueByName_checkIfValueNotFound("value=\"audi\" selected", "selected")
+    self.helper_getValueByName_checkIfValueNotFound("value=\"audi\" selected class=\"myClass\"", "selected")
+    self.helper_getValueByName_checkIfValueNotFound("selected value=\"audi\"", "selected")
+    self.helper_getValueByName_checkIfValueNotFound("selected", "selected")
+
+  def test_getValueByName_emptyValue(self):
+    self.helper_getValueByName_checkIfValueFound("value=\"\"", "value", foundValue="")
+    self.helper_getValueByName_checkIfValueFound("value=\"  \"", "value", foundValue="  ")
+    self.helper_getValueByName_checkIfValueFound("value=\"\t\"", "value", foundValue="\t")
+    self.helper_getValueByName_checkIfValueFound("value=\" \r\n \t \"", "value", foundValue=" \r\n \t ")
+
+  def test_getValueByName_corrupt_nameContainsHtmlDelimiter(self):
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "selected class")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "class=")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", " class")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "selected ")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "red '")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "'custom")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "=")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "'")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "\"")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", " ")
+    self.helper_getValueByName_checkIfCorrupt("selected class='custom style red'", "\t")
+
+  def test_getValueByName_corrupt(self):
+    self.helper_getValueByName_checkIfCorrupt("class='custom style red", "style")
+    self.helper_getValueByName_checkIfCorrupt("value=\"", "value")
+    self.helper_getValueByName_checkIfCorrupt("value=\"   ", "value")
+    self.helper_getValueByName_checkIfCorrupt("value=", "value")
+    self.helper_getValueByName_checkIfCorrupt("value= ", "value")
+    self.helper_getValueByName_checkIfCorrupt("value= \n \t ", "value")
+    self.helper_getValueByName_checkIfCorrupt("value=\"audi", "value")
+    self.helper_getValueByName_checkIfCorrupt("value=\"audi'", "value")
+    self.helper_getValueByName_checkIfCorrupt("value='audi\"", "value")
+    self.helper_getValueByName_checkIfCorrupt("value \"audi\"", "value")
+    self.helper_getValueByName_checkIfCorrupt("value\"audi\"", "value")
+    self.helper_getValueByName_checkIfCorrupt("value 'audi'", "value")
+    self.helper_getValueByName_checkIfCorrupt("value'audi'", "value")
+    self.helper_getValueByName_checkIfCorrupt("\"class'myclass' class='myclass'", "class")
+
+  def test_getValueByName_quotes(self):
+    self.helper_getValueByName_checkIfValueFound("value=\"audi\"", "value", foundValue="audi")
+    self.helper_getValueByName_checkIfValueFound("value='audi'", "value", foundValue="audi")
+    self.helper_getValueByName_checkIfValueFound("value=\"audi'A3\"", "value", foundValue="audi'A3")
+    self.helper_getValueByName_checkIfValueFound("value=\"audi'A3'\"", "value", foundValue="audi'A3'")
+    self.helper_getValueByName_checkIfValueFound("value='audi\"A3'", "value", foundValue="audi\"A3")
+    self.helper_getValueByName_checkIfValueFound("value='\"audi\"A3\"'", "value", foundValue="\"audi\"A3\"")
+    self.helper_getValueByName_checkIfValueFound("class='myClass'title='titled title=\"title\"'", "title",
+                                                  foundValue="titled title=\"title\"")
+
+  def test_getValueByName_oneValueFound(self):
+    self.helper_getValueByName_checkIfValueFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
+                                                  "type=\"image/x-icon\"", "href", foundValue="img/favicon.ico")
+    self.helper_getValueByName_checkIfValueFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" id='X' "
+                                                  "type=\"image/x-icon\"", "id", foundValue="X")
+    self.helper_getValueByName_checkIfValueFound("rel=\"shortcut icon\" xhref=\"a34cd3b\" href=\"img/favicon.ico\" "
+                                                 "type=\"image/x-icon\"", "href", foundValue="img/favicon.ico")
+    self.helper_getValueByName_checkIfValueFound("rel=\"shortcut icon\" no-href=\"false\" xhref=\"a34cd3b\" "
+                                                  "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                                  foundValue="img/favicon.ico")
+    self.helper_getValueByName_checkIfValueFound("rel=\"shortcut icon\" hrefhref=\"image\" no-href=\"false\" "
+                                            "xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                              foundValue="img/favicon.ico")
+    self.helper_getValueByName_checkIfValueFound("nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce",
+                                                 foundValue="lix9PsSUHJxW7ghXrU5s0A")
+    self.helper_getValueByName_checkIfValueFound("id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\""
+                                            " class=\"shell dark chunked\" disable-upgrade=\"true\"", "disable-upgrade",
+                                                  foundValue="true")
+    self.helper_getValueByName_checkIfValueFound("rel=\"preload\" href="
+                                "\"https://r3---sn-8vq54voxgv-vu26.googlevideo.com/generate_204\" as=\"fetch\"", "rel",
+                                                  foundValue="preload")
+
+  def test_getValueByName_whitespaces(self):
+    self.helper_getValueByName_checkIfValueFound("rel =\"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                  foundValue="preload")
+    self.helper_getValueByName_checkIfValueFound("rel = \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                  foundValue="preload")
+    self.helper_getValueByName_checkIfValueFound("rel= \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                  foundValue="preload")
+    self.helper_getValueByName_checkIfValueFound("rel \n\r\t\t\t = \n\r\t\t\t \"preload\" href=\"generate_204\" "
+                                                 "as=\"fetch\"", "rel", foundValue="preload")
+    self.helper_getValueByName_checkIfValueFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" href=\"generate_204\" "
+                                                 "as=\"fetch\"", "rel", foundValue="preload")
+    self.helper_getValueByName_checkIfValueFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload \t\t\t\n\t  \" "
+                                                 "href=\"generate_204\" as=\"fetch\"", "rel",
+                                                  foundValue="\r\n\t\t preload \t\t\t\n\t  ")
+
+  def test_getValueByName_multipleValuesFound(self):
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"add_search_params pure-form\" "
+                                                 "style=\"display:inline-block\"", "class",
+                                                  foundValue="add_search_params pure-form")
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"add_search_params pure-form "
+                                                 "hide-xs hide-sm hide-md\" style=\"display:inline-block\"", "class",
+                                                  foundValue="add_search_params pure-form hide-xs hide-sm hide-md")
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class\n=\n\"add_search_params\t"
+                                        "pure-form\r\nhide-xs     hide-sm\t\t\t\n\r   \n\r    hide-md\n\" "
+                                        "style=\"display:inline-block\"", "class",
+                        foundValue="add_search_params\tpure-form\r\nhide-xs     hide-sm\t\t\t\n\r   \n\r    hide-md\n")
+
+  def test_getValueByName_multipleDeclarations(self):
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"add_search_params cl2 cl3\" "
+                                                 "class=\"pure-form\" style=\"display:inline-block\"", "class",
+                                                  foundValue="add_search_params cl2 cl3")
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"add_search_params\" "
+                                                  "class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class",
+                                                  foundValue="add_search_params")
+    self.helper_getValueByName_checkIfValueNotFound("action=\".\" class method=\"get\" class=\"pure-form cl2 cl3\" "
+                                                    "style=\"display:inline-block\"", "class")
+
+  def test_getValueByName_valueRepeats(self):
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"cl1 cl1\" "
+                                                  "style=\"display:inline-block\"", "class",
+                                                  foundValue="cl1 cl1")
+    self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" "
+                                                  "style=\"display:inline-block\"", "class",
+                                                  foundValue="cl1 cl1 cl2 cl1 cl3 cl2")

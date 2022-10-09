@@ -1,7 +1,7 @@
 from modules import checks
 from modules import stringUtil
 
-def getAttributeNameIdx(htmlAttributes, key):
+def getAttributeNameIdx(htmlAttributes, name):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
@@ -9,56 +9,51 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 * attributeNameFound: True | False, None if corrupt
 * firstKeyIdx: **-1** if attribute not found or corrupt """
   checks.checkIfString(htmlAttributes, 0, 3000)
-  checks.checkIfString(key, 0, 60)
+  checks.checkIfString(name, 0, 60)
   notFoundResult = (False, False, -1)
   corruptResult = (True, None, -1)
-  if not htmlAttributes or not key:
+  if not htmlAttributes or not name:
     return notFoundResult
-  if stringContainsHtmlDelimiter(key, 0, len(key)):
+  if stringContainsHtmlDelimiter(name, 0, len(name)):
     return corruptResult
-  keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, key, 0, len(htmlAttributes))
+  keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, 0, len(htmlAttributes))
   while keyFound:
     corrupt, isWithinAttributeValue = indexIsWithinHtmlAttributeValue(htmlAttributes, firstKeyIdx)
     if corrupt:
       return corruptResult
     if isWithinAttributeValue:
-      # firstKeyIdx + len(key) exists, it is at least the closing quote
-      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, key, firstKeyIdx + len(key), len(htmlAttributes))
+      # firstKeyIdx + len(name) exists, it is at least the closing quote
+      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, firstKeyIdx + len(name), len(htmlAttributes))
       continue
     return False, True, firstKeyIdx
   return notFoundResult
 
-def extractDifferentWhiteSpaceSeparatedValuesByName(htmlAttributes, key):
-  """Only the first declaration is taken (if there are multiple) as stated by the standard:
+def getUniqueValuesByName(htmlAttributes, name):
+  """Separated by whitespaces. Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
-* <corrupt>: True | False
-* <values>: **None** if corrupt or attribute name not found, empty list if the value is empty or whitespace"""
-# TODO getValueByKey
-  checks.checkIfString(key, 1, 30)
+* corrupt: True | False
+* nameFound: True | False (False if corrupt)
+* valueFound: True | False (False if corrupt)
+* values: empty list if corrupt **OR** not found **OR** the value is empty **OR** contains only whitespace(s)"""
+  nameNotFoundResult = (False, False, False, [])
+  valueNotFoundResult = (False, True, False, [])
+  corruptResult = (True, False, False, [])
+  corrupt, nameFound, valueFound, value = getValueByName(htmlAttributes, name)
+  if corrupt:
+    return corruptResult
+  if not nameFound:
+    return nameNotFoundResult
+  if not valueFound:
+    return valueNotFoundResult
   result = []
-  notFoundResult = (False, None)
-  corruptResult = (True, None)
-  corrupt, keyFound, firstIdx = getAttributeNameIdx(htmlAttributes, key)
-  if corrupt:
-    return corruptResult
-  if not keyFound:
-    return notFoundResult
-  corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(htmlAttributes, firstIdx)
-  if corrupt:
-    return corruptResult
-  if attributeValue is None:
-    return notFoundResult
-  # TODO getSplitUniqueElements(Char::WHITESPACE)
-  values = attributeValue.split()
+  values = value.split()
   for value in values:
     if value not in result:
       result.append(value)
-  return False, result
+  return False, True, True, result
 
-# TODO invalid name if contains delimiter
-# TODO unit test it + rename ...ByName
-def getValueByKey(htmlAttributes, key):
+def getValueByName(htmlAttributes, name):
   """Only the first declaration is taken as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
@@ -66,11 +61,11 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 * nameFound: True | False (False if corrupt)
 * valueFound: True | False (False if corrupt)
 * value: empty string if corrupt or not found"""
-  checks.checkIfString(key, 1, 30)
+  checks.checkIfString(name, 1, 30)
   corruptResult = (True, False, False, "")
   keyNotFoundResult = (False, False, False, "")
   valueNotFoundResult = (False, True, False, "")
-  corrupt, keyFound, firstIdx = getAttributeNameIdx(htmlAttributes, key)
+  corrupt, keyFound, firstIdx = getAttributeNameIdx(htmlAttributes, name)
   if corrupt:
     return corruptResult
   if not keyFound:
