@@ -206,241 +206,170 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getAttributeNameIdx_checkIfFoundAtIdx("title=\"class='myClass'\"\t\t\tclass\n\t=\t\t'myClass'", "class",
                                                       foundAt = 26)
 
-  def test_extractDifferentValuesByKey_nonSense(self):
+  def helper_extractDifferentValuesByName_checkIfException(self, string, name):
     with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey("option='audi' value='A'", "")
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey("option='audi' value='A'", 123)
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey("option='audi' value='A'", False)
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey("option='audi' value='A'", None)
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey("option='audi' value='A'", ["option"])
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey(None, "option")
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey(234, "src")
-    with self.assertRaises(Exception):
-      attr.extractDifferentWhiteSpaceSeparatedValuesByKey(123, None)
+      attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
 
-  def test_extractDifferentValuesByKey_emptyAttributes(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("", "title")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("", "src")
-    self.assertEqual(attributes, (False, None))
+  def helper_extractDifferentValuesByName_checkIfCorrupt(self, string, name):
+    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+    self.assertTrue(corrupt)
+    self.assertEqual(values, None)
 
-  def test_extractDifferentValuesByKey_attrNotFound(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("htmlAttribute no-href", "href")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
+  def helper_extractDifferentValuesByName_checkIfNotFound(self, string, name):
+    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertEqual(values, None)
+
+  def helper_extractDifferentValuesByName_checkIfFound(self, string, name, foundValues):
+    corrupt, values = attr.extractDifferentWhiteSpaceSeparatedValuesByName(string, name)
+    self.assertFalse(corrupt)
+    self.assertEqual(values, foundValues)
+
+  def test_extractDifferentWhiteSpaceSeparatedValuesByName_nonSense(self):
+    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", 123)
+    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", False)
+    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", None)
+    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", ["option"])
+    self.helper_extractDifferentValuesByName_checkIfException(None, "option")
+    self.helper_extractDifferentValuesByName_checkIfException(234, "src")
+    self.helper_extractDifferentValuesByName_checkIfException(123, None)
+    self.helper_extractDifferentValuesByName_checkIfException(None, None)
+    self.helper_extractDifferentValuesByName_checkIfException(0, 0)
+
+  def test_extractDifferentWhiteSpaceSeparatedValuesByName_emptyName(self):
+    self.helper_extractDifferentValuesByName_checkIfException("option='audi' value='A'", "")
+
+  def test_extractDifferentValuesByKey_emptyAttributesString(self):
+    self.helper_extractDifferentValuesByName_checkIfNotFound("", "title")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("", "src")
+
+  def test_extractDifferentValuesByKey_attributeNameNotFound(self):
+    self.helper_extractDifferentValuesByName_checkIfNotFound("htmlAttribute no-href", "href")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("rel=\"shortcut icon\" "
                                                              "href=\"img/favicon.ico\" type=\"image/x-icon\"", "title")
-    self.assertEqual(attributes, (False, None))
-    # TODO error - if attributeValue, it is not corrupt
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class=\""
-                                                       "masthead_custom_styles\" is=\"custom-style\" id=\"ext-styles\" "
-                                                       "nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                                                              "src=\"jsbin/spf.vflset/spf.js\"", "alt")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class=\"anim\"", "id")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class=\"animated bold\"", "id")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class=\"animated bold\" "
-                                                                                "selected class=\"active-tab\"", "id")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "upgrade")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "masthead")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "dark")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "shell")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "chunked")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "e")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "disable")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "clas")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "lot")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("_value=\"audi\"", "value")
-    self.assertEqual(attributes, (False, None))
+    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"masthead_custom_styles\" is=\"custom-style\" "
+                                                          "id=\"ext-styles\" nonce=\"tG2l8WDVY7XYzWdAOVtRzA\"", "style")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("src=\"jsbin/spf.vflset/spf.js\"", "alt")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"anim\"", "id")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"animated bold\"", "id")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("class=\"animated bold\" selected class=\"act-tab\"", "id")
+    string = "id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" " \
+             "disable-upgrade=\"true\""
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "upgrade")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "masthead")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "dark")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "shell")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "chunked")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "e")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "disable")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "clas")
+    self.helper_extractDifferentValuesByName_checkIfNotFound(string, "lot")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("_value=\"audi\"", "value")
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_attrDoesNotHaveValue(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected", "selected")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\" selected class=\"myClass\"",
-                                                                     "selected")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("selected value=\"audi\"", "selected")
-    self.assertEqual(attributes, (False, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("selected", "selected")
-    self.assertEqual(attributes, (False, None))
+  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_attrDoesNotHaveValue(self):
+    self.helper_extractDifferentValuesByName_checkIfNotFound("value=\"audi\" selected", "selected")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("value=\"audi\" selected class=\"myClass\"", "selected")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("selected value=\"audi\"", "selected")
+    self.helper_extractDifferentValuesByName_checkIfNotFound("selected", "selected")
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_emptyValue(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"\"", "value")
-    self.assertEqual(attributes, (False, []))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"  \"", "value")
-    self.assertEqual(attributes, (False, []))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"\t\"", "value")
-    self.assertEqual(attributes, (False, []))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\" \r\n \t \"", "value")
-    self.assertEqual(attributes, (False, []))
+  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_emptyValue(self):
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"\"", "value", foundValues=[])
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"  \"", "value", foundValues=[])
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"\t\"", "value", foundValues=[])
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\" \r\n \t \"", "value", foundValues=[])
 
-  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_corrupt(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class='custom style red",
-                                                                                       "style")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"   ", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value= ", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value= \n \t ", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi'", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value='audi\"", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value \"audi\"", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value\"audi\"", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value 'audi'", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value'audi'", "value")
-    self.assertEqual(attributes, (True, None))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("\"class'myclass' "
-                                                                                       "class='myclass'", "class")
-    self.assertEqual(attributes, (True, None))
+  def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByName_corrupt(self):
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("class='custom style red", "style")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"   ", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value= ", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value= \n \t ", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"audi", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value=\"audi'", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value='audi\"", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value \"audi\"", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value\"audi\"", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value 'audi'", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("value'audi'", "value")
+    self.helper_extractDifferentValuesByName_checkIfCorrupt("\"class'myclass' class='myclass'", "class")
 
   def test_extractDifferentSpaceSeparatedValuesFromHtmlAttributesByKey_quotes(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi\"", "value")
-    self.assertEqual(attributes, (False, ["audi"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value='audi'", "value")
-    self.assertEqual(attributes, (False, ["audi"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi'A3\"", "value")
-    self.assertEqual(attributes, (False, ["audi'A3"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value=\"audi'A3'\"", "value")
-    self.assertEqual(attributes, (False, ["audi'A3'"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value='audi\"A3'", "value")
-    self.assertEqual(attributes, (False, ["audi\"A3"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("value='\"audi\"A3\"'", "value")
-    self.assertEqual(attributes, (False, ["\"audi\"A3\""]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("class='myClass'title='titled title=\"title\"'",
-                                                                     "title")
-    self.assertEqual(attributes, (False, ["titled", "title=\"title\""]))
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi\"", "value", foundValues=["audi"])
+    self.helper_extractDifferentValuesByName_checkIfFound("value='audi'", "value", foundValues=["audi"])
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi'A3\"", "value", foundValues=["audi'A3"])
+    self.helper_extractDifferentValuesByName_checkIfFound("value=\"audi'A3'\"", "value", foundValues=["audi'A3'"])
+    self.helper_extractDifferentValuesByName_checkIfFound("value='audi\"A3'", "value", foundValues=["audi\"A3"])
+    self.helper_extractDifferentValuesByName_checkIfFound("value='\"audi\"A3\"'", "value", foundValues=["\"audi\"A3\""])
+    self.helper_extractDifferentValuesByName_checkIfFound("class='myClass'title='titled title=\"title\"'", "title",
+                                                          foundValues=["titled", "title=\"title\""])
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_oneValueFound(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
-                                                             "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href")
-    self.assertEqual(attributes, (False, ["img/favicon.ico"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
-                                                   "href=\"img/favicon.ico\" id='X' type=\"image/x-icon\"", "id")
-    self.assertEqual(attributes, (False, ["X"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
-                                            "xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href")
-    self.assertEqual(attributes, (False, ["img/favicon.ico"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
-                          "no-href=\"false\" xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href")
-    self.assertEqual(attributes, (False, ["img/favicon.ico"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"shortcut icon\" "
-        "hrefhref=\"image\" no-href=\"false\" xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href")
-    self.assertEqual(attributes, (False, ["img/favicon.ico"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                                                            "nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce")
-    self.assertEqual(attributes, (False, ["lix9PsSUHJxW7ghXrU5s0A"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("id=\"masthead\" "
-                                            "logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\" class=\"shell dark chunked\" "
-                                            "disable-upgrade=\"true\"", "disable-upgrade")
-    self.assertEqual(attributes, (False, ["true"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("rel=\"preload\" href="
-                                "\"https://r3---sn-8vq54voxgv-vu26.googlevideo.com/generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" "
+                                                      "type=\"image/x-icon\"", "href", foundValues=["img/favicon.ico"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" href=\"img/favicon.ico\" id='X' "
+                                                          "type=\"image/x-icon\"", "id", foundValues=["X"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" xhref=\"a34cd3b\" "
+                                                          "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                                          foundValues=["img/favicon.ico"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" no-href=\"false\" xhref=\"a34cd3b\" "
+                                                          "href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                                          foundValues=["img/favicon.ico"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"shortcut icon\" hrefhref=\"image\" no-href=\"false\" "
+                                            "xhref=\"a34cd3b\" href=\"img/favicon.ico\" type=\"image/x-icon\"", "href",
+                                                          foundValues=["img/favicon.ico"])
+    self.helper_extractDifferentValuesByName_checkIfFound("nonce=\"lix9PsSUHJxW7ghXrU5s0A\"", "nonce",
+                                                          foundValues=["lix9PsSUHJxW7ghXrU5s0A"])
+    self.helper_extractDifferentValuesByName_checkIfFound("id=\"masthead\" logo-type=\"YOUTUBE_LOGO\" slot=\"masthead\""
+                                            " class=\"shell dark chunked\" disable-upgrade=\"true\"", "disable-upgrade",
+                                                          foundValues=["true"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel=\"preload\" href="
+                                "\"https://r3---sn-8vq54voxgv-vu26.googlevideo.com/generate_204\" as=\"fetch\"", "rel",
+                                                          foundValues=["preload"])
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_whitespaces(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                                         "rel =\"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                                          "rel = \"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                                          "rel= \"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                    "rel \n\r\t\t\t = \n\r\t\t\t \"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-                                "\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey(
-          "\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload \t\t\t\n\t  \" href=\"generate_204\" as=\"fetch\"", "rel")
-    self.assertEqual(attributes, (False, ["preload"]))
+    self.helper_extractDifferentValuesByName_checkIfFound("rel =\"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                          foundValues=["preload"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel = \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                          foundValues=["preload"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel= \"preload\" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                          foundValues=["preload"])
+    self.helper_extractDifferentValuesByName_checkIfFound("rel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
+                                                  "href=\"generate_204\" as=\"fetch\"", "rel", foundValues=["preload"])
+    self.helper_extractDifferentValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"preload\" "
+                                                  "href=\"generate_204\" as=\"fetch\"", "rel", foundValues=["preload"])
+    self.helper_extractDifferentValuesByName_checkIfFound("\n\trel \n\r\t\t\t = \n\r\t\t\t \"\r\n\t\t preload "
+                                                          "\t\t\t\n\t  \" href=\"generate_204\" as=\"fetch\"", "rel",
+                                                          foundValues=["preload"])
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_multipleValuesFound(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-                                "method=\"get\" class=\"add_search_params pure-form\" style=\"display:inline-block\"",
-                                "class")
-    self.assertEqual(attributes, (False, ["add_search_params", "pure-form"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-                                "method=\"get\" class=\"add_search_params pure-form hide-xs hide-sm hide-md\" "
-                                "style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, (False, ["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-                                "method=\"get\" class\n=\n\"add_search_params\tpure-form\r\nhide-xs     hide-sm"
-                                "\t\t\t\n\r   \n\r    hide-md\n\" style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, (False, ["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"]))
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
+                                                          "pure-form\" style=\"display:inline-block\"", "class",
+                                                          foundValues=["add_search_params", "pure-form"])
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params "
+                                        "pure-form hide-xs hide-sm hide-md\" style=\"display:inline-block\"", "class",
+                                        foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class\n=\n\"add_search_params\t"
+                                        "pure-form\r\nhide-xs     hide-sm\t\t\t\n\r   \n\r    hide-md\n\" "
+                                        "style=\"display:inline-block\"", "class",
+                                        foundValues=["add_search_params", "pure-form", "hide-xs", "hide-sm", "hide-md"])
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_multipleDeclarations(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-              "method=\"get\" class=\"add_search_params cl2 cl3\" class=\"pure-form\" style=\"display:inline-block\"",
-              "class")
-    self.assertEqual(attributes, (False, ["add_search_params", "cl2", "cl3"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-              "method=\"get\" class=\"add_search_params\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"",
-              "class")
-    self.assertEqual(attributes, (False, ["add_search_params"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" class "
-                              "method=\"get\" class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, (False, None))
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params cl2 "
+                                                    "cl3\" class=\"pure-form\" style=\"display:inline-block\"", "class",
+                                                          foundValues=["add_search_params", "cl2", "cl3"])
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"add_search_params\" "
+                                                  "class=\"pure-form cl2 cl3\" style=\"display:inline-block\"", "class",
+                                                          foundValues=["add_search_params"])
+    self.helper_extractDifferentValuesByName_checkIfNotFound("action=\".\" class method=\"get\" class=\"pure-form cl2 "
+                                                             "cl3\" style=\"display:inline-block\"", "class")
 
   def test_extractDifferentValuesFromHtmlAttributesByKey_valueRepeats(self):
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-                                            "method=\"get\" class=\"cl1 cl1\" style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, (False, ["cl1"]))
-    attributes = attr.extractDifferentWhiteSpaceSeparatedValuesByKey("action=\".\" "
-                            "method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" style=\"display:inline-block\"", "class")
-    self.assertEqual(attributes, (False, ["cl1", "cl2", "cl3"]))
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1\" "
+                                                        "style=\"display:inline-block\"", "class", foundValues=["cl1"])
+    self.helper_extractDifferentValuesByName_checkIfFound("action=\".\" method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 "
+                                                          "cl2\" style=\"display:inline-block\"", "class",
+                                                          foundValues=["cl1", "cl2", "cl3"])
 
   def test_getCurrentOrNextAttribute_nonSense(self):
     with self.assertRaises(Exception):
@@ -755,137 +684,137 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(startIdx, string.find("class"))
     self.assertEqual(endIdx, string.find("\" class id=\"my-id\""))
 
-  def test_getListOfHtmlAttributeNames_nonSense(self):
+  def test_getAllAttributeNames_nonSense(self):
     with self.assertRaises(Exception):
-      attr.getListOfHtmlAttributeNames(12)
+      attr.getAllAttributeNames(12)
     with self.assertRaises(Exception):
-      attr.getListOfHtmlAttributeNames(None)
+      attr.getAllAttributeNames(None)
     with self.assertRaises(Exception):
-      attr.getListOfHtmlAttributeNames(False)
+      attr.getAllAttributeNames(False)
     with self.assertRaises(Exception):
-      attr.getListOfHtmlAttributeNames([])
+      attr.getAllAttributeNames([])
 
-  def test_getListOfHtmlAttributeNames_onlyEmptyAndWhiteSpace(self):
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("")
+  def test_getAllAttributeNames_onlyEmptyAndWhiteSpace(self):
+    corrupt, attributes = attr.getAllAttributeNames("")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames(" ")
+    corrupt, attributes = attr.getAllAttributeNames(" ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\t")
+    corrupt, attributes = attr.getAllAttributeNames("\t")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\n")
+    corrupt, attributes = attr.getAllAttributeNames("\n")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("  \t\t\t\t \r\r  ")
+    corrupt, attributes = attr.getAllAttributeNames("  \t\t\t\t \r\r  ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\n      \t   \t        \n")
+    corrupt, attributes = attr.getAllAttributeNames("\n      \t   \t        \n")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, [])
 
-  def helper_getListOfHtmlAttributeNames_checkIfCorrupt(self, attributesString):
-    corrupt, attributeNames = attr.getListOfHtmlAttributeNames(attributesString)
+  def helper_getAllAttributeNames_checkIfCorrupt(self, attributesString):
+    corrupt, attributeNames = attr.getAllAttributeNames(attributesString)
     self.assertTrue(corrupt)
     self.assertEqual(attributeNames, [])
 
-  def test_getListOfHtmlAttributeNames_corruptAttributes(self):
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("=")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("=12")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("='value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("'value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt(" = 'value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("\t\t=\t\t\" value \"")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected=")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt(" \t\t selected\n = \t")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = \"")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = '")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = \"value")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = 'value")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected 'value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected'value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected=='value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected= ='value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected == 'value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected 'value")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected'value")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = \"value'")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("selected = 'value\"")
-    self.helper_getListOfHtmlAttributeNames_checkIfCorrupt("class=\"example\" selected = 'value\" animated")
+  def test_getAllAttributeNames_corruptAttributes(self):
+    self.helper_getAllAttributeNames_checkIfCorrupt("=")
+    self.helper_getAllAttributeNames_checkIfCorrupt("=12")
+    self.helper_getAllAttributeNames_checkIfCorrupt("='value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("'value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt(" = 'value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("\t\t=\t\t\" value \"")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected=")
+    self.helper_getAllAttributeNames_checkIfCorrupt(" \t\t selected\n = \t")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = \"")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = '")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = \"value")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = 'value")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected 'value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected'value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected=='value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected= ='value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected == 'value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected 'value")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected'value")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = \"value'")
+    self.helper_getAllAttributeNames_checkIfCorrupt("selected = 'value\"")
+    self.helper_getAllAttributeNames_checkIfCorrupt("class=\"example\" selected = 'value\" animated")
 
-  def test_getListOfHtmlAttributeNames_oneAttribute(self):
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("a")
+  def test_getAllAttributeNames_oneAttribute(self):
+    corrupt, attributes = attr.getAllAttributeNames("a")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["a"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("selected")
+    corrupt, attributes = attr.getAllAttributeNames("selected")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames(" \n  \t selected \n\r \t ")
+    corrupt, attributes = attr.getAllAttributeNames(" \n  \t selected \n\r \t ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("selected \n\r \t ")
+    corrupt, attributes = attr.getAllAttributeNames("selected \n\r \t ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames(" \n  \t selected")
+    corrupt, attributes = attr.getAllAttributeNames(" \n  \t selected")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("style=\"float:right;margin:11px 14px 0 0;"
+    corrupt, attributes = attr.getAllAttributeNames("style=\"float:right;margin:11px 14px 0 0;"
                                                      "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["style"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("style='float:right;margin:11px 14px 0 0;"
+    corrupt, attributes = attr.getAllAttributeNames("style='float:right;margin:11px 14px 0 0;"
                                                      "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98'")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["style"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames(" \n\r style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
+    corrupt, attributes = attr.getAllAttributeNames(" \n\r style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
                                                "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98' \n\r ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["style"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
+    corrupt, attributes = attr.getAllAttributeNames("style\t\t\t=\n'float:right;margin:11px 14px 0 0;"
                                                "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98' \n\r ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["style"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames(" \n\r style\t\t\t=\n'\t\tfloat:right;margin:11px 14px 0 0;"
+    corrupt, attributes = attr.getAllAttributeNames(" \n\r style\t\t\t=\n'\t\tfloat:right;margin:11px 14px 0 0;"
                                          "border-radius:2px!important;padding:9px 12px 9px;color:#7a7e98\t\t' \n\r ")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["style"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\nproperty\n=\n\"\narticle:published_time\n\"\n")
+    corrupt, attributes = attr.getAllAttributeNames("\nproperty\n=\n\"\narticle:published_time\n\"\n")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["property"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\nproperty\n=\n\"\narticle:published_time\"")
+    corrupt, attributes = attr.getAllAttributeNames("\nproperty\n=\n\"\narticle:published_time\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["property"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("property\n=\n\"\narticle:published_time\n\"\n")
+    corrupt, attributes = attr.getAllAttributeNames("property\n=\n\"\narticle:published_time\n\"\n")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["property"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"class='myClass'\"")
+    corrupt, attributes = attr.getAllAttributeNames("title=\"class='myClass'\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["title"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"<=== A'B'C ===>\"")
+    corrupt, attributes = attr.getAllAttributeNames("title=\"<=== A'B'C ===>\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["title"])
 
-  def test_getListOfHtmlAttributeNames_moreAttributes(self):
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("title=\"class='myClass'\"id='myId'\t\nselected")
+  def test_getAllAttributeNames_moreAttributes(self):
+    corrupt, attributes = attr.getAllAttributeNames("title=\"class='myClass'\"id='myId'\t\nselected")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["title", "id", "selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("selected id=\"logo\"")
+    corrupt, attributes = attr.getAllAttributeNames("selected id=\"logo\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["selected", "id"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("id=\"logo\" selected")
+    corrupt, attributes = attr.getAllAttributeNames("id=\"logo\" selected")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["id", "selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("id=\"logo\" selected id=\"otherId\" selected='true'")
+    corrupt, attributes = attr.getAllAttributeNames("id=\"logo\" selected id=\"otherId\" selected='true'")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["id", "selected"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("\tonclick\t=\t\"\tlocation.reload();\t\" "
+    corrupt, attributes = attr.getAllAttributeNames("\tonclick\t=\t\"\tlocation.reload();\t\" "
           "style\n=\"float:right;"
           "display:inline-block;position:relative;top:15px;right:3px;margin-left:10px;font-size:13px;cursor:pointer\" "
           "title='Exclude inappropriate or explicit images'")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["onclick", "style", "title"])
-    corrupt, attributes = attr.getListOfHtmlAttributeNames("rel=\"alternate\" type=\"application/rss+xml\" "
+    corrupt, attributes = attr.getAllAttributeNames("rel=\"alternate\" type=\"application/rss+xml\" "
                      "title=\"Matematika és Informatika Kar RSS Feed\" href=\"https://www.cs.ubbcluj.ro/hu/feed/\"")
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["rel", "type", "title", "href"])
@@ -1190,51 +1119,51 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, startsAt=0, endsAt=4)
     self.helper_getCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, startsAt=0, endsAt=4)
 
-  def test_getHtmlAttributes_nonSense(self):
+  def test_getAllAttributes_nonSense(self):
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes(None, 0)
+      attr.getAllAttributes(None, 0)
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes(123, 0)
+      attr.getAllAttributes(123, 0)
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("selected", False)
+      attr.getAllAttributes("selected", False)
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("selected", [])
+      attr.getAllAttributes("selected", [])
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("selected", -1)
+      attr.getAllAttributes("selected", -1)
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("selected", 58)
+      attr.getAllAttributes("selected", 58)
 
-  def test_getHtmlAttributes_emptyString(self):
+  def test_getAllAttributes_emptyString(self):
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("", 0)
+      attr.getAllAttributes("", 0)
     with self.assertRaises(Exception):
-      attr.getHtmlAttributes("", 1)
+      attr.getAllAttributes("", 1)
 
-  def helper_getHtmlAttributes_checkIfAttrNotFound(self, corrupt, attributes):
+  def helper_getAllAttributes_checkIfAttrNotFound(self, corrupt, attributes):
     self.assertFalse(corrupt)
     self.assertEqual(attributes, {})
 
-  def test_getHtmlAttributes_space(self):
-    corrupt, attributes = attr.getHtmlAttributes(" ", 0)
-    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getHtmlAttributes("   ", 0)
-    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getHtmlAttributes("\t", 0)
-    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getHtmlAttributes("\r\n", 0)
-    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getHtmlAttributes("\t  \n  \t\r\n", 0)
-    self.helper_getHtmlAttributes_checkIfAttrNotFound(corrupt, attributes)
+  def test_getAllAttributes_space(self):
+    corrupt, attributes = attr.getAllAttributes(" ", 0)
+    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getAllAttributes("   ", 0)
+    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getAllAttributes("\t", 0)
+    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getAllAttributes("\r\n", 0)
+    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
+    corrupt, attributes = attr.getAllAttributes("\t  \n  \t\r\n", 0)
+    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
 
-  def helper_getHtmlAttributes_checkIfCorrupt(self, corrupt, attributes):
+  def helper_getAllAttributes_checkIfCorrupt(self, corrupt, attributes):
     self.assertTrue(corrupt)
     self.assertEqual(attributes, {})
 
-  def test_getHtmlAttributes_corrupt(self):
-    corrupt, attributes = attr.getHtmlAttributes("'", 0)
-    self.helper_getHtmlAttributes_checkIfCorrupt(corrupt, attributes)
-    corrupt, attributes = attr.getHtmlAttributes("'''", 0)
-    self.helper_getHtmlAttributes_checkIfCorrupt(corrupt, attributes)
+  def test_getAllAttributes_corrupt(self):
+    corrupt, attributes = attr.getAllAttributes("'", 0)
+    self.helper_getAllAttributes_checkIfCorrupt(corrupt, attributes)
+    corrupt, attributes = attr.getAllAttributes("'''", 0)
+    self.helper_getAllAttributes_checkIfCorrupt(corrupt, attributes)
 
   def test_htmlDelimitedFromLeft_nonSense(self):
     with self.assertRaises(Exception):
@@ -1703,156 +1632,156 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(closingQuoteIdx, 29)
     self.assertEqual(quoteChar, '"')
 
-  def test_getQuoteIndexesAfterEqualChar_nonSense(self):
+  def test_getQuoteIndexesByEqualChar_nonSense(self):
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", -1)
+      attr.getQuoteIndexesByEqualChar("string", -1)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", 42)
+      attr.getQuoteIndexesByEqualChar("string", 42)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", 6)
+      attr.getQuoteIndexesByEqualChar("string", 6)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", "")
+      attr.getQuoteIndexesByEqualChar("string", "")
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", True)
+      attr.getQuoteIndexesByEqualChar("string", True)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("string", None)
+      attr.getQuoteIndexesByEqualChar("string", None)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar(True, 0)
+      attr.getQuoteIndexesByEqualChar(True, 0)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar(2, 0)
+      attr.getQuoteIndexesByEqualChar(2, 0)
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar(None, None)
+      attr.getQuoteIndexesByEqualChar(None, None)
 
-  def test_getQuoteIndexesAfterEqualChar_emptyString(self):
+  def test_getQuoteIndexesByEqualChar_emptyString(self):
     with self.assertRaises(Exception):
-      attr.getQuoteIndexesAfterEqualChar("", 0)
+      attr.getQuoteIndexesByEqualChar("", 0)
 
-  def helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt(self, string, equalCharIdx):
+  def helper_getQuoteIndexesByEqualChar_checkIfCorrupt(self, string, equalCharIdx):
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                            = attr.getQuoteIndexesAfterEqualChar(string, equalCharIdx)
+                                                            = attr.getQuoteIndexesByEqualChar(string, equalCharIdx)
     self.assertTrue(corrupt)
     self.assertEqual(openingQuoteCharIdx, -1)
     self.assertEqual(closingQuoteIdx, -1)
     self.assertEqual(mainQuoteChar, "")
 
-  def test_getQuoteIndexesAfterEqualChar_notEqualChar(self):
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("Q", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("'Q'", 1)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("apple", 4)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 5)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 5)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 7)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 7)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 8)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 8)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = 'myClass'", 11)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("class = \"myClass\"", 11)
+  def test_getQuoteIndexesByEqualChar_notEqualChar(self):
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("Q", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("'Q'", 1)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("apple", 4)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = 'myClass'", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = \"myClass\"", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = 'myClass'", 5)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = \"myClass\"", 5)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = 'myClass'", 7)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = \"myClass\"", 7)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = 'myClass'", 8)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = \"myClass\"", 8)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = 'myClass'", 11)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("class = \"myClass\"", 11)
 
-  def test_getQuoteIndexesAfterEqualChar_noQuotes(self):
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("=", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2", 6)
+  def test_getQuoteIndexesByEqualChar_noQuotes(self):
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("=", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= 2", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = 2", 6)
 
-  def test_getQuoteIndexesAfterEqualChar_onlyOneMainQuote(self):
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= '2", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= \"2", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2'", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= 2\"", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value ='", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value =\"", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2'", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = 2\"", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2'", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2\"", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = '2\"\"\"", 6)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("value = \"2'''", 6)
+  def test_getQuoteIndexesByEqualChar_onlyOneMainQuote(self):
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= '2", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= \"2", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= 2'", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= 2\"", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = '", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value ='", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = \"", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value =\"", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = 2'", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = 2\"", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = '2", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = \"2", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = \"2'", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = '2\"", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = '2\"\"\"", 6)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("value = \"2'''", 6)
 
-  def test_getQuoteIndexesAfterEqualChar_otherInvalid(self):
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("= '2'", 0)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\" = '2'", 2)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '2'", 4)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '2''", 4)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '''", 4)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = ''''", 4)
-    self.helper_getQuoteIndexesAfterEqualChar_checkIfCorrupt("\t\t\t = '''''", 4)
+  def test_getQuoteIndexesByEqualChar_otherInvalid(self):
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("= '2'", 0)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\" = '2'", 2)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\t\t\t = '2'", 4)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\t\t\t = '2''", 4)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\t\t\t = '''", 4)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\t\t\t = ''''", 4)
+    self.helper_getQuoteIndexesByEqualChar_checkIfCorrupt("\t\t\t = '''''", 4)
 
-  def test_getQuoteIndexesAfterEqualChar_validEmptyValue(self):
+  def test_getQuoteIndexesByEqualChar_validEmptyValue(self):
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                  = attr.getQuoteIndexesAfterEqualChar("value=''\tdisabled='False'", 5)
+                                                  = attr.getQuoteIndexesByEqualChar("value=''\tdisabled='False'", 5)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value=''", 5)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value=''", 5)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value =''", 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value =''", 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 8, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value = ''", 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value = ''", 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 9, "'"))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                        = attr.getQuoteIndexesAfterEqualChar("value\n\t=\t\r\n\t''", 7)
+                                                        = attr.getQuoteIndexesByEqualChar("value\n\t=\t\r\n\t''", 7)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (12, 13, "'"))
 
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value=""', 5)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value=""', 5)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 7, "\""))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value =""', 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value =""', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 8, "\""))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value = ""', 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value = ""', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 9, "\""))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                        = attr.getQuoteIndexesAfterEqualChar('value\n\t=\t\r\n\t""', 7)
+                                                        = attr.getQuoteIndexesByEqualChar('value\n\t=\t\r\n\t""', 7)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (12, 13, "\""))
 
-  def test_getQuoteIndexesAfterEqualChar_validNonEmptyValue(self):
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value=' '", 5)
+  def test_getQuoteIndexesByEqualChar_validNonEmptyValue(self):
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value=' '", 5)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 8, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value=" "', 5)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value=" "', 5)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (6, 8, '"'))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value =' '", 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value =' '", 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 9, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value =" "', 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value =" "', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (7, 9, '"'))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar("value = ' '", 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar("value = ' '", 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 10, "'"))
-    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesAfterEqualChar('value = " "', 6)
+    corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar = attr.getQuoteIndexesByEqualChar('value = " "', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 10, '"'))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                    = attr.getQuoteIndexesAfterEqualChar('value = " \t "', 6)
+                                                    = attr.getQuoteIndexesByEqualChar('value = " \t "', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 12, '"'))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                    = attr.getQuoteIndexesAfterEqualChar('value = "test"', 6)
+                                                    = attr.getQuoteIndexesByEqualChar('value = "test"', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 13, '"'))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                    = attr.getQuoteIndexesAfterEqualChar('value = "\ttest1 test2 "', 6)
+                                                    = attr.getQuoteIndexesByEqualChar('value = "\ttest1 test2 "', 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 22, '"'))
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                                    = attr.getQuoteIndexesAfterEqualChar("value = '\ttest1 test2 '", 6)
+                                                    = attr.getQuoteIndexesByEqualChar("value = '\ttest1 test2 '", 6)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (8, 22, "'"))
 
     corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar \
-                                              = attr.getQuoteIndexesAfterEqualChar("integrity='sha512-6PM0qxuIQ=='", 9)
+                                              = attr.getQuoteIndexesByEqualChar("integrity='sha512-6PM0qxuIQ=='", 9)
     self.assertFalse(corrupt)
     self.assertEqual((openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar), (10, 29, "'"))
 
@@ -2640,7 +2569,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastHtmlDelimiter_exceptionRaised("string", True, False)
     self.helper_getLastHtmlDelimiter_exceptionRaised("string", None, None)
     self.helper_getLastHtmlDelimiter_exceptionRaised("string", "", "")
-    self.helper_getLastHtmlDelimiter_exceptionRaised("string", 2, 2)
     self.helper_getLastHtmlDelimiter_exceptionRaised(None, 0, 3)
     self.helper_getLastHtmlDelimiter_exceptionRaised([], 0, 3)
     self.helper_getLastHtmlDelimiter_exceptionRaised(None, None, None)
@@ -2651,29 +2579,29 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastHtmlDelimiter_exceptionRaised("", 0, 1)
 
   def test_getLastHtmlDelimiter_notFound(self):
-    self.helper_getLastHtmlDelimiter_notFound("Q", 0, 1)
-    self.helper_getLastHtmlDelimiter_notFound("one-two-three", 0, 13)
-    self.helper_getLastHtmlDelimiter_notFound("=Hello=", 1, 6)
-    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 10)
-    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 20)
+    self.helper_getLastHtmlDelimiter_notFound("Q", 0, 0)
+    self.helper_getLastHtmlDelimiter_notFound("one-two-three", 0, 12)
+    self.helper_getLastHtmlDelimiter_notFound("=Hello=", 1, 5)
+    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 9)
+    self.helper_getLastHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 19)
 
   def test_getLastHtmlDelimiter_found(self):
-    self.helper_getLastHtmlDelimiter_found(" ", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("\t", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("\n", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("'", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("\"", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("=", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("'=='", 0, 1, foundAt = 0)
-    self.helper_getLastHtmlDelimiter_found("key = 'value'", 0, 11, foundAt = 6)
-    self.helper_getLastHtmlDelimiter_found("key='value'", 0, 11, foundAt = 10)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 17, foundAt = 16)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 4, foundAt = 1)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 16, foundAt = 10)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 3, foundAt = 1)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 17, foundAt = 16)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 17, foundAt = 16)
-    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 9, foundAt = 8)
+    self.helper_getLastHtmlDelimiter_found(" ", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\t", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\n", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("'", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("\"", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("=", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("'=='", 0, 0, foundAt = 0)
+    self.helper_getLastHtmlDelimiter_found("key = 'value'", 0, 10, foundAt = 6)
+    self.helper_getLastHtmlDelimiter_found("key='value'", 0, 10, foundAt = 10)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 16, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 3, foundAt = 1)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 15, foundAt = 10)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 2, foundAt = 1)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 16, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 16, foundAt = 16)
+    self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 8, foundAt = 8)
 
   def helper_getValuesSafelyByFoundEquals_exceptionRaised(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
     with self.assertRaises(Exception):

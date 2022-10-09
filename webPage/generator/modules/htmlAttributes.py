@@ -28,12 +28,13 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, True, firstKeyIdx
   return notFoundResult
 
-def extractDifferentWhiteSpaceSeparatedValuesByKey(htmlAttributes, key):
+def extractDifferentWhiteSpaceSeparatedValuesByName(htmlAttributes, key):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 \n Return values:
 * <corrupt>: True | False
 * <values>: **None** if corrupt or attribute name not found, empty list if the value is empty or whitespace"""
+# TODO getValueByKey
   checks.checkIfString(key, 1, 30)
   result = []
   notFoundResult = (False, None)
@@ -55,8 +56,34 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
       result.append(value)
   return False, result
 
-# TODO rename getAllAttributeNames
-def getListOfHtmlAttributeNames(attributesString):
+# TODO invalid name if contains delimiter
+# TODO unit test it + rename ...ByName
+def getValueByKey(htmlAttributes, key):
+  """Only the first declaration is taken as stated by the standard:
+https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
+\n Return values:
+* corrupt: True | False
+* nameFound: True | False (False if corrupt)
+* valueFound: True | False (False if corrupt)
+* value: empty string if corrupt or not found"""
+  checks.checkIfString(key, 1, 30)
+  corruptResult = (True, False, False, "")
+  keyNotFoundResult = (False, False, False, "")
+  valueNotFoundResult = (False, True, False, "")
+  corrupt, keyFound, firstIdx = getAttributeNameIdx(htmlAttributes, key)
+  if corrupt:
+    return corruptResult
+  if not keyFound:
+    return keyNotFoundResult
+  corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(htmlAttributes, firstIdx)
+  if corrupt:
+    return corruptResult
+  if attributeValue is None:
+    return valueNotFoundResult
+  return False, True, True, attributeValue
+
+# TODO there is a more performant way to do this
+def getAllAttributeNames(attributesString):
   """ Only the first declaration is taken per each attribute name (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
 \n Return values:
@@ -81,8 +108,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
-# TODO getAllAttributes
-def getHtmlAttributes(attributesString, startIdx):
+def getAllAttributes(attributesString, startIdx):
   """Each attribute is taken and validated once at its first occurrence. \n
 Raises exception if <attributesString> is empty because startIdx cannot be set properly \n
 \n Return values: \n
@@ -102,8 +128,8 @@ Index can point anywhere. \n
 Only the first attribute is taken and validated \n
 \n Return values:
 * <corrupt>: True | False
-* <attributeName>, <attributeValue> : **None** if no attribute was found or <attributesString> is corrupt
-* <attrStartIdx>, <attrEndIdx> : inclusive, **-1** if no attribute was found or attributesString is corrupt"""
+* <attributeName>, <attributeValue> : **None** if corrupt or not found
+* <attrStartIdx>, <attrEndIdx> : **-1** if corrupt or not found"""
   noAttributeResult = (False, None, None, -1, -1)
   corruptResult = (True, None, None, -1, -1)
   corrupt, found, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
@@ -140,8 +166,8 @@ Return values:\n
   firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
   if firstNonSpaceChar != "=":
     return charIsQuote(firstNonSpaceChar), False, -1, -1
-  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesAfterEqualChar(attributesString,
-                                                                                        firstNonSpaceCharIdx)
+  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesByEqualChar(attributesString,
+                                                                                    firstNonSpaceCharIdx)
   if corrupt:
     return corruptResult
   return False, True, openingQuoteIdx, closingQuoteIdx
@@ -167,7 +193,6 @@ Return values:\n
     return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
   return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
 
-# TODO clean code it
 def jumpToFirstIdxOfCurrentOrNextName(attributesString, index):
   """Index can point anywhere. If it is outside of attribute, will search for the next attribute name.\n
 Raises error at empty string because <startIdx> cannot be set properly\n
@@ -175,18 +200,13 @@ Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
 * found: True | False *(false if corrupt)*
 * firstCharIdx: **-1** if corrupt or not found """
-  checks.checkIfString(attributesString, 0, 5000)
-  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
   corruptResult = (True, False, -1)
   notFoundResult = (False, False, -1)
-  corrupt, valueFound, equalIdx, openingQuoteIdx, closingQuoteIdx \
-    = getLastValueByFoundEquals(attributesString, 0, index)
+  corrupt, valFound, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
   if corrupt:
     return corruptResult
-  if valueFound and index <= closingQuoteIdx:
+  if valFound and index <= closingQuoteIdx:
     found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
-    if not found:
-      return corruptResult
   # space is between name and equal char or before a new name
   elif attributesString[index].isspace():
     found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
@@ -196,13 +216,9 @@ Return values:\n
       found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, index)
       if not found:
         return corruptResult
-  # get the first index of the name
-  found, idx = getLastHtmlDelimiter(attributesString, 0, index + 1)
-  if not found:
-    index = 0
-  elif index < len(attributesString) - 1:
-    index = idx + 1
-  return False, True, index
+  # get the first index of the name (if not found, return 0)
+  found, idx = getLastHtmlDelimiter(attributesString, 0, index)
+  return False, True, idx + 1
 
 def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
   """Raises exception for empty string because the index cannot be set properly."""
@@ -265,16 +281,15 @@ def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
     return notFoundResult
   return True, idx
 
-# TODO inclusiveEndIdx
-def getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
+def getLastHtmlDelimiter(string, inclusiveStartIdx, inclusiveEndIdx):
   """Raises exception for empty string because the indexes cannot be set properly.
 \nReturn values:\n
 * found: True | False
 * idx: -1 if not found"""
   checks.checkIfString(string, inclusiveStartIdx, 5000)
-  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(string) - 1)
   notFoundResult = (False, -1)
-  idx = exclusiveEndIdx - 1
+  idx = inclusiveEndIdx
   while idx >= inclusiveStartIdx and not charIsHtmlDelimiter(string[idx]):
     idx -= 1
   if idx == inclusiveStartIdx - 1:
@@ -356,7 +371,7 @@ Raises exception for empty string.\n
   possibleValues = []
   equalIdxsBefore = stringUtil.findAll(string, "=", startIdx, endIdx)
   for equalIdx in equalIdxsBefore:
-    corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesAfterEqualChar(string, equalIdx)
+    corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesByEqualChar(string, equalIdx)
     possibleValues.append((equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx))
   return possibleValues
 
@@ -387,8 +402,7 @@ def stringContainsHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
       return True
   return False
 
-# TODO rename ...ByEqualChar
-def getQuoteIndexesAfterEqualChar(htmlString, equalCharIdx):
+def getQuoteIndexesByEqualChar(htmlString, equalCharIdx):
   """Validates adjacent chars near equal and main quotes. \n
 There are known false results when the equal char is within a value. Higher level functions will filter them.\n
 Raises exception for empty string because the index cannot be set properly.\n
