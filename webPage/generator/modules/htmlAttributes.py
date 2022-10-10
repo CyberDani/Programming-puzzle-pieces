@@ -1,33 +1,6 @@
 from modules import checks
 from modules import stringUtil
 
-def getAttributeNameIdx(htmlAttributes, name):
-  """Only the first declaration is taken (if there are multiple) as stated by the standard:
-https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
-\n Return values:
-* corrupt: True | False *(invalidates empty strings, validates string only near the key)*
-* attributeNameFound: True | False, None if corrupt
-* firstKeyIdx: **-1** if attribute not found or corrupt """
-  checks.checkIfString(htmlAttributes, 0, 3000)
-  checks.checkIfString(name, 0, 60)
-  notFoundResult = (False, False, -1)
-  corruptResult = (True, None, -1)
-  if not htmlAttributes or not name:
-    return notFoundResult
-  if stringContainsHtmlDelimiter(name, 0, len(name)):
-    return corruptResult
-  keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, 0, len(htmlAttributes))
-  while keyFound:
-    corrupt, isWithinAttributeValue = indexIsWithinHtmlAttributeValue(htmlAttributes, firstKeyIdx)
-    if corrupt:
-      return corruptResult
-    if isWithinAttributeValue:
-      # firstKeyIdx + len(name) exists, it is at least the closing quote
-      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, firstKeyIdx + len(name), len(htmlAttributes))
-      continue
-    return False, True, firstKeyIdx
-  return notFoundResult
-
 def getUniqueValuesByName(htmlAttributes, name):
   """Separated by whitespaces. Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
@@ -77,6 +50,28 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return valueNotFoundResult
   return False, True, True, attributeValue
 
+# TODO performance fix
+def getAllAttributes(attributesString):
+  """Each attribute is taken and validated once at its first occurrence. \n
+Raises exception for empty string\n
+\n Return values: \n
+* corrupt: True | False
+* attributes: dictionary of {attributeName -> None | attributeString}"""
+  checks.checkIfString(attributesString, 1, 5000)
+  corruptReturn = (True, {})
+  result = {}
+  index = 0
+  while index < len(attributesString):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(attributesString, index)
+    if corrupt:
+      return corruptReturn
+    if attributeName is None:
+      return False, result
+    if attributeName not in result:
+      result[attributeName] = attributeValue
+    index = endIdx + 1
+  return False, result
+
 # TODO there is a more performant way to do this
 def getAllAttributeNames(attributesString):
   """ Only the first declaration is taken per each attribute name (if there are multiple) as stated by the standard:
@@ -103,18 +98,32 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
-def getAllAttributes(attributesString, startIdx):
-  """Each attribute is taken and validated once at its first occurrence. \n
-Raises exception if <attributesString> is empty because startIdx cannot be set properly \n
-\n Return values: \n
-* corrupt: True | False
-* attributes: dictionary of {attributeName -> None | attributeString}"""
-  corruptReturn = (True, {})
-  notFoundReturn = (False, {})
-  corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(attributesString, startIdx)
-  if corrupt:
-    return corruptReturn
-  return notFoundReturn
+def getAttributeNameIdx(htmlAttributes, name):
+  """Only the first declaration is taken (if there are multiple) as stated by the standard:
+https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
+\n Return values:
+* corrupt: True | False *(invalidates empty strings, validates string only near the key)*
+* attributeNameFound: True | False, None if corrupt
+* firstKeyIdx: **-1** if attribute not found or corrupt """
+  checks.checkIfString(htmlAttributes, 0, 3000)
+  checks.checkIfString(name, 0, 60)
+  notFoundResult = (False, False, -1)
+  corruptResult = (True, None, -1)
+  if not htmlAttributes or not name:
+    return notFoundResult
+  if stringContainsHtmlDelimiter(name, 0, len(name)):
+    return corruptResult
+  keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, 0, len(htmlAttributes))
+  while keyFound:
+    corrupt, isWithinAttributeValue = indexIsWithinHtmlAttributeValue(htmlAttributes, firstKeyIdx)
+    if corrupt:
+      return corruptResult
+    if isWithinAttributeValue:
+      # firstKeyIdx + len(name) exists, it is at least the closing quote
+      keyFound, firstKeyIdx = htmlDelimitedFind(htmlAttributes, name, firstKeyIdx + len(name), len(htmlAttributes))
+      continue
+    return False, True, firstKeyIdx
+  return notFoundResult
 
 # TODO there is more performant way to do it
 def getCurrentOrNextAttribute(attributesString, index):

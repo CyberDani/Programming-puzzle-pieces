@@ -1145,51 +1145,113 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, startsAt=0, endsAt=4)
     self.helper_getCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, startsAt=0, endsAt=4)
 
-  def test_getAllAttributes_nonSense(self):
-    with self.assertRaises(Exception):
-      attr.getAllAttributes(None, 0)
-    with self.assertRaises(Exception):
-      attr.getAllAttributes(123, 0)
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("selected", False)
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("selected", [])
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("selected", -1)
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("selected", 58)
-
-  def test_getAllAttributes_emptyString(self):
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("", 0)
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("", 1)
-
-  def helper_getAllAttributes_checkIfAttrNotFound(self, corrupt, attributes):
-    self.assertFalse(corrupt)
-    self.assertEqual(attributes, {})
-
-  def test_getAllAttributes_space(self):
-    corrupt, attributes = attr.getAllAttributes(" ", 0)
-    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getAllAttributes("   ", 0)
-    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getAllAttributes("\t", 0)
-    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getAllAttributes("\r\n", 0)
-    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
-    corrupt, attributes = attr.getAllAttributes("\t  \n  \t\r\n", 0)
-    self.helper_getAllAttributes_checkIfAttrNotFound(corrupt, attributes)
-
-  def helper_getAllAttributes_checkIfCorrupt(self, corrupt, attributes):
+  def helper_getAllAttributes_checkIfCorrupt(self, string):
+    corrupt, attributes = attr.getAllAttributes(string)
     self.assertTrue(corrupt)
     self.assertEqual(attributes, {})
 
-  def test_getAllAttributes_corrupt(self):
-    corrupt, attributes = attr.getAllAttributes("'", 0)
-    self.helper_getAllAttributes_checkIfCorrupt(corrupt, attributes)
-    corrupt, attributes = attr.getAllAttributes("'''", 0)
-    self.helper_getAllAttributes_checkIfCorrupt(corrupt, attributes)
+  def helper_getAllAttributes_checkIfNotFound(self, string):
+    corrupt, attributes = attr.getAllAttributes(string)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, {})
+
+  def helper_getAllAttributes_checkIfFound(self, string, foundValues):
+    corrupt, attributes = attr.getAllAttributes(string)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, foundValues)
+
+  def test_getAllAttributes_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getAllAttributes(None)
+    with self.assertRaises(Exception):
+      attr.getAllAttributes(123)
+    with self.assertRaises(Exception):
+      attr.getAllAttributes(False)
+    with self.assertRaises(Exception):
+      attr.getAllAttributes([])
+    with self.assertRaises(Exception):
+      attr.getAllAttributes(["hello", "generator"])
+    with self.assertRaises(Exception):
+      attr.getAllAttributes(-1)
+
+  def test_getAllAttributes_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getAllAttributes("")
+
+  def test_getAllAttributes_space(self):
+    self.helper_getAllAttributes_checkIfNotFound(" ")
+    self.helper_getAllAttributes_checkIfNotFound("  ")
+    self.helper_getAllAttributes_checkIfNotFound("   ")
+    self.helper_getAllAttributes_checkIfNotFound("\t")
+    self.helper_getAllAttributes_checkIfNotFound("\t ")
+    self.helper_getAllAttributes_checkIfNotFound(" \t")
+    self.helper_getAllAttributes_checkIfNotFound("\t  \t")
+    self.helper_getAllAttributes_checkIfNotFound("\r\n")
+    self.helper_getAllAttributes_checkIfNotFound("\t  \n  \t\r\n")
+
+  def test_getAllAttributes_corrupt_onlyQuotes(self):
+    self.helper_getAllAttributes_checkIfCorrupt("'")
+    self.helper_getAllAttributes_checkIfCorrupt("\"")
+    self.helper_getAllAttributes_checkIfCorrupt("''")
+    self.helper_getAllAttributes_checkIfCorrupt("'\"")
+    self.helper_getAllAttributes_checkIfCorrupt("'''")
+    self.helper_getAllAttributes_checkIfCorrupt("\"\"\"\"")
+
+  def test_getAllAttributes_corrupt_other(self):
+    self.helper_getAllAttributes_checkIfCorrupt("=")
+    self.helper_getAllAttributes_checkIfCorrupt("= = =")
+    self.helper_getAllAttributes_checkIfCorrupt("= 2")
+    self.helper_getAllAttributes_checkIfCorrupt("= '")
+    self.helper_getAllAttributes_checkIfCorrupt(" = '")
+    self.helper_getAllAttributes_checkIfCorrupt("= \"")
+    self.helper_getAllAttributes_checkIfCorrupt(" = \"")
+    self.helper_getAllAttributes_checkIfCorrupt("'='")
+    self.helper_getAllAttributes_checkIfCorrupt('"="')
+    self.helper_getAllAttributes_checkIfCorrupt("value = 2")
+    self.helper_getAllAttributes_checkIfCorrupt('value = \t')
+    self.helper_getAllAttributes_checkIfCorrupt('value =')
+    self.helper_getAllAttributes_checkIfCorrupt("'field' = 'value'")
+    self.helper_getAllAttributes_checkIfCorrupt("'field' = \"value\"")
+
+  def test_getAllAttributes_found_singleNameWithNoValue(self):
+    self.helper_getAllAttributes_checkIfFound("b", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound(" b", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound("b ", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound("\t\tb", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound("b\n \n\n", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound("\t \t b \r\n ", foundValues={"b": None})
+    self.helper_getAllAttributes_checkIfFound("\t  Qq    ", foundValues={"Qq": None})
+    self.helper_getAllAttributes_checkIfFound("\t\tabc\t", foundValues={"abc": None})
+    self.helper_getAllAttributes_checkIfFound("selected", foundValues={"selected": None})
+
+  def test_getAllAttributes_found_singleNameWithValue(self):
+    self.helper_getAllAttributes_checkIfFound("b='2'", foundValues={"b": "2"})
+    self.helper_getAllAttributes_checkIfFound("b=\"2\"", foundValues={"b": "2"})
+    self.helper_getAllAttributes_checkIfFound("b=\"2='3'\"", foundValues={"b": "2='3'"})
+    self.helper_getAllAttributes_checkIfFound("b=\"2='3's'a\"", foundValues={"b": "2='3's'a"})
+    self.helper_getAllAttributes_checkIfFound("class\r\n\t\t  = \t\t' class1\tclass2 '",
+                                              foundValues={"class": " class1\tclass2 "})
+
+  def test_getAllAttributes_found_oneNameMultipleTimes(self):
+    self.helper_getAllAttributes_checkIfFound("selected selected", foundValues={"selected": None})
+    self.helper_getAllAttributes_checkIfFound("selected selected = 'True'", foundValues={"selected": None})
+    self.helper_getAllAttributes_checkIfFound("selected = 'true' selected", foundValues={"selected": "true"})
+    self.helper_getAllAttributes_checkIfFound("selected = 'false' selected = 'true'", foundValues={"selected": "false"})
+    self.helper_getAllAttributes_checkIfFound("selected selected='none' selected= 'false' selected ='true'",
+                                              foundValues={"selected": None})
+
+  def test_getAllAttributes_found_multipleAttributes(self):
+    self.helper_getAllAttributes_checkIfFound("b a", foundValues={"a": None, "b": None})
+    self.helper_getAllAttributes_checkIfFound("b c a", foundValues={"a": None, "b": None, "c": None})
+    self.helper_getAllAttributes_checkIfFound("b b c a a b c", foundValues={"a": None, "b": None, "c": None})
+    self.helper_getAllAttributes_checkIfFound("\t\tclass\t\t\t\t='myClass'id\t\t\t\t= 'myId'\r\n",
+                                              foundValues={"id": "myId", "class": "myClass"})
+    self.helper_getAllAttributes_checkIfFound("\t\tclass\t\t\t\t='myClass cl2'id\t\t\t\t= 'myId id2'default",
+                                              foundValues={"id": "myId id2", "class": "myClass cl2", "default": None})
+    self.helper_getAllAttributes_checkIfFound("\t\tclass\t\t\t\t='myClass cl2'id\t\t\t\t= 'myId id2'default "
+                                              "title = '2==\"2\" and option = \"check\"'",
+                                              foundValues={"id": "myId id2", "class": "myClass cl2", "default": None,
+                                                           "title": "2==\"2\" and option = \"check\""})
 
   def test_htmlDelimitedFromLeft_nonSense(self):
     with self.assertRaises(Exception):
