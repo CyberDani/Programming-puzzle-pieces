@@ -98,6 +98,31 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
+# TODO there is more performant way to do it
+def getCurrentOrNextAttribute(attributesString, index):
+  """ Raises exception for empty string because the index cannot be set. \n
+Index can point anywhere. \n
+Only the first attribute is taken and validated \n
+\n Return values:
+* <corrupt>: True | False
+* <attributeName>, <attributeValue> : **None** if corrupt or not found
+* <attrStartIdx>, <attrEndIdx> : **-1** if corrupt or not found"""
+  noAttributeResult = (False, None, None, -1, -1)
+  corruptResult = (True, None, None, -1, -1)
+  corrupt, found, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
+  if corrupt:
+    return corruptResult
+  if not found:
+    return noAttributeResult
+  if lastCharIdx == len(attributesString) - 1:
+    return False, attributeName, None, firstCharIdx, lastCharIdx
+  corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValue(attributesString, lastCharIdx + 1)
+  if corrupt:
+    return corruptResult
+  if not found:
+    return False, attributeName, None, firstCharIdx, lastCharIdx
+  return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
+
 def getAttributeNameIdx(htmlAttributes, name):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
@@ -125,57 +150,6 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, True, firstKeyIdx
   return notFoundResult
 
-# TODO there is more performant way to do it
-def getCurrentOrNextAttribute(attributesString, index):
-  """ Raises exception for empty string because the index cannot be set. \n
-Index can point anywhere. \n
-Only the first attribute is taken and validated \n
-\n Return values:
-* <corrupt>: True | False
-* <attributeName>, <attributeValue> : **None** if corrupt or not found
-* <attrStartIdx>, <attrEndIdx> : **-1** if corrupt or not found"""
-  noAttributeResult = (False, None, None, -1, -1)
-  corruptResult = (True, None, None, -1, -1)
-  corrupt, found, attributeName, firstCharIdx, lastCharIdx = getCurrentOrNextName(attributesString, index)
-  if corrupt:
-    return corruptResult
-  if not found:
-    return noAttributeResult
-  if lastCharIdx == len(attributesString) - 1:
-    return False, attributeName, None, firstCharIdx, lastCharIdx
-  corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValue(attributesString, lastCharIdx + 1)
-  if corrupt:
-    return corruptResult
-  if not found:
-    return False, attributeName, None, firstCharIdx, lastCharIdx
-  return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
-
-def getCurrentValue(attributesString, index):
-  """Index can point anywhere within the current attribute.\n
-Raises error at empty string because index cannot be set properly\n
-Return values:\n
-* corrupt : True | False
-* found: True | False (False if corrupt)
-* openingQuoteIdx, closingQuoteIdx: **-1** if corrupt or not found """
-  notFoundResult = (False, False, -1, -1)
-  corruptResult = (True, False, -1, -1)
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
-  if corrupt:
-    return corruptResult
-  if found and index <= closingQuoteIdx:
-    index = equalIdx
-  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString))
-  if not found:
-    return notFoundResult
-  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
-  if firstNonSpaceChar != "=":
-    return charIsQuote(firstNonSpaceChar), False, -1, -1
-  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesByEqualChar(attributesString,
-                                                                                    firstNonSpaceCharIdx)
-  if corrupt:
-    return corruptResult
-  return False, True, openingQuoteIdx, closingQuoteIdx
-
 def getCurrentOrNextName(attributesString, index):
   """Index can point anywhere within the current attribute. If it is outside of attribute, will search for the next
 attribute name.\n
@@ -196,6 +170,29 @@ Return values:\n
   if not found:
     return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
   return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
+
+def indexIsWithinHtmlAttributeValue(attributeString, index):
+  """Main quotes and the equal character are considered not to be within attribute value.
+Raises exception for empty string because the index cannot be set properly.
+\n Return values:
+* corrupt: True | False (validates only a portion of text to ensure the correctness of the result)
+* isAttributeValue: True | False, None if corrupt"""
+  corruptResult = (True, None)
+  notFoundResult = (False, False)
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributeString, 0, index)
+  if corrupt:
+    return corruptResult
+  if not found or index <= openingQuoteIdx or index == closingQuoteIdx:
+    return notFoundResult
+  isWithinAttributeValue = closingQuoteIdx > index
+  if closingQuoteIdx == len(attributeString) - 1:
+    return False, isWithinAttributeValue
+  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", closingQuoteIdx + 1,
+                                                      len(attributeString) - 1, notFoundValue=len(attributeString) - 1)
+  isThereAnyQuoteCharAfter = isThereAnyQuoteChar(attributeString, closingQuoteIdx + 1, referenceIdxFromRight)
+  if isThereAnyQuoteCharAfter:
+    return corruptResult
+  return False, isWithinAttributeValue
 
 def jumpToFirstIdxOfCurrentOrNextName(attributesString, index):
   """Index can point anywhere. If it is outside of attribute, will search for the next attribute name.\n
@@ -224,81 +221,49 @@ Return values:\n
   found, idx = getLastHtmlDelimiter(attributesString, 0, index)
   return False, True, idx + 1
 
-def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
-  """Raises exception for empty string because the index cannot be set properly."""
-  checks.checkIfString(htmlString, 0, 4000)
-  checks.checkIntIsBetween(inclusiveStartIdx, 0, len(htmlString) - 1)
-  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(htmlString) - 1)
-  if htmlString.find("'", inclusiveStartIdx, inclusiveEndIdx + 1) != -1:
-    return True
-  return htmlString.find('"', inclusiveStartIdx, inclusiveEndIdx + 1) != -1
-
-def indexIsWithinHtmlAttributeValue(attributeString, index):
-  """Main quotes and the equal character are considered not to be within attribute value.
-Raises exception for empty string because the index cannot be set properly.
-\n Return values:
-* corrupt: True | False (validates only a portion of text to ensure the correctness of the result)
-* isAttributeValue: True | False, None if corrupt"""
-  corruptResult = (True, None)
-  notFoundResult = (False, False)
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributeString, 0, index)
+def getCurrentValue(attributesString, index):
+  """Index can point anywhere within the current attribute.\n
+Raises error at empty string because index cannot be set properly\n
+Return values:\n
+* corrupt : True | False
+* found: True | False (False if corrupt)
+* openingQuoteIdx, closingQuoteIdx: **-1** if corrupt or not found """
+  notFoundResult = (False, False, -1, -1)
+  corruptResult = (True, False, -1, -1)
+  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
   if corrupt:
     return corruptResult
-  if not found or index <= openingQuoteIdx or index == closingQuoteIdx:
+  if found and index <= closingQuoteIdx:
+    index = equalIdx
+  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString))
+  if not found:
     return notFoundResult
-  isWithinAttributeValue = closingQuoteIdx > index
-  if closingQuoteIdx == len(attributeString) - 1:
-    return False, isWithinAttributeValue
-  equalFoundAfter, referenceIdxFromRight = stringUtil.find(attributeString, "=", closingQuoteIdx + 1,
-                                                      len(attributeString) - 1, notFoundValue=len(attributeString) - 1)
-  isThereAnyQuoteCharAfter = isThereAnyQuoteChar(attributeString, closingQuoteIdx + 1, referenceIdxFromRight)
-  if isThereAnyQuoteCharAfter:
+  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
+  if firstNonSpaceChar != "=":
+    return charIsQuote(firstNonSpaceChar), False, -1, -1
+  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesByEqualChar(attributesString,
+                                                                                    firstNonSpaceCharIdx)
+  if corrupt:
     return corruptResult
-  return False, isWithinAttributeValue
+  return False, True, openingQuoteIdx, closingQuoteIdx
 
-def getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiveEndIdx):
-  """Raises exception for empty string because the indexes cannot be set properly.
-\nReturn values:\n
-* found: True | False (not found if <exclusiveEndIdx> is whitespace)
-* idx: -1 if not found"""
-  notFoundResult = (False, -1)
-  found, firstDelimiterIdx = getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
-  if not found:
-    return notFoundResult
-  found, firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, exclusiveEndIdx)
-  if not found:
-    return notFoundResult
-  return True, firstNonSpaceCharIdx
-
-def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
-  """Raises exception for empty string because the indexes cannot be set properly.
-\nReturn values:\n
+def htmlDelimitedFind(stringToScan, stringToMatch, inclusiveStartIndex, exclusiveEndIdx):
+  """Validates outside the [start, end] indexes. Raises exception for empty strings.
+\n Return values:
 * found: True | False
-* idx: -1 if not found"""
-  checks.checkIfString(string, inclusiveStartIdx, 5000)
-  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
-  notFoundResult = (False, -1)
-  idx = inclusiveStartIdx
-  while idx < exclusiveEndIdx and not charIsHtmlDelimiter(string[idx]):
-    idx += 1
-  if idx == exclusiveEndIdx:
-    return notFoundResult
-  return True, idx
-
-def getLastHtmlDelimiter(string, inclusiveStartIdx, inclusiveEndIdx):
-  """Raises exception for empty string because the indexes cannot be set properly.
-\nReturn values:\n
-* found: True | False
-* idx: -1 if not found"""
-  checks.checkIfString(string, inclusiveStartIdx, 5000)
-  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(string) - 1)
-  notFoundResult = (False, -1)
-  idx = inclusiveEndIdx
-  while idx >= inclusiveStartIdx and not charIsHtmlDelimiter(string[idx]):
-    idx -= 1
-  if idx == inclusiveStartIdx - 1:
-    return notFoundResult
-  return True, idx
+* firstIndex: position within <stringToScan> from where <stringToMatch> begins, -1 if not found"""
+  checks.checkIfString(stringToScan, 0, 5000)
+  checks.checkIfString(stringToMatch, 1, 5000)
+  checks.checkIntIsBetween(inclusiveStartIndex, 0, len(stringToScan) - 1)
+  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIndex + 1, len(stringToScan))
+  firstIdx = stringToScan.find(stringToMatch, inclusiveStartIndex, exclusiveEndIdx)
+  while firstIdx != -1:
+    if stringIsHtmlDelimited(stringToScan, firstIdx, len(stringToMatch)):
+      return True, firstIdx
+    lastKeyIdx = firstIdx + len(stringToMatch) - 1
+    firstIdx = stringToScan.find(stringToMatch, lastKeyIdx + 1, len(stringToScan))
+    continue
+  return firstIdx != -1, firstIdx
 
 def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
   """Raises exception for empty string because the index cannot be set properly
@@ -318,6 +283,35 @@ def getLastValueByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndId
   openingQuoteIdx = lastValue[1]
   closingQuoteIdx = lastValue[2]
   return False, True, equalIdx, openingQuoteIdx, closingQuoteIdx
+
+def getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiveEndIdx):
+  """Raises exception for empty string because the indexes cannot be set properly.
+\nReturn values:\n
+* found: True | False (not found if <exclusiveEndIdx> is whitespace)
+* idx: -1 if not found"""
+  notFoundResult = (False, -1)
+  found, firstDelimiterIdx = getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+  if not found:
+    return notFoundResult
+  found, firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, exclusiveEndIdx)
+  if not found:
+    return notFoundResult
+  return True, firstNonSpaceCharIdx
+
+def getLastHtmlDelimiter(string, inclusiveStartIdx, inclusiveEndIdx):
+  """Raises exception for empty string because the indexes cannot be set properly.
+\nReturn values:\n
+* found: True | False
+* idx: -1 if not found"""
+  checks.checkIfString(string, inclusiveStartIdx, 5000)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(string) - 1)
+  notFoundResult = (False, -1)
+  idx = inclusiveEndIdx
+  while idx >= inclusiveStartIdx and not charIsHtmlDelimiter(string[idx]):
+    idx -= 1
+  if idx == inclusiveStartIdx - 1:
+    return notFoundResult
+  return True, idx
 
 def getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx):
   """Safe version of "getValuesByFoundEquals" with a bit of performance overhead and extra check for corrupt data.
@@ -344,6 +338,30 @@ Raises exception for empty string.
       result.append(value)
   return False, result
 
+def getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
+  """Raises exception for empty string because the indexes cannot be set properly.
+\nReturn values:\n
+* found: True | False
+* idx: -1 if not found"""
+  checks.checkIfString(string, inclusiveStartIdx, 5000)
+  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx + 1, len(string))
+  notFoundResult = (False, -1)
+  idx = inclusiveStartIdx
+  while idx < exclusiveEndIdx and not charIsHtmlDelimiter(string[idx]):
+    idx += 1
+  if idx == exclusiveEndIdx:
+    return notFoundResult
+  return True, idx
+
+def isThereAnyQuoteChar(htmlString, inclusiveStartIdx, inclusiveEndIdx):
+  """Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(htmlString, 0, 4000)
+  checks.checkIntIsBetween(inclusiveStartIdx, 0, len(htmlString) - 1)
+  checks.checkIntIsBetween(inclusiveEndIdx, inclusiveStartIdx, len(htmlString) - 1)
+  if htmlString.find("'", inclusiveStartIdx, inclusiveEndIdx + 1) != -1:
+    return True
+  return htmlString.find('"', inclusiveStartIdx, inclusiveEndIdx + 1) != -1
+
 def getValuesByFoundEquals(string, startIdx, endIdx):
   """Returns false result if startIdx points within a value which contains equal char. It is the job of higher level
 functions to handle this correctly.
@@ -366,6 +384,15 @@ functions to handle this correctly.
       idx += 1
   return False, result
 
+def stringContainsHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
+  """Raises exception for empty string because the index cannot be set properly"""
+  checks.checkIfString(string, inclusiveStartIdx, 5000)
+  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx, len(string))
+  for idx in range(inclusiveStartIdx, exclusiveEndIdx):
+    if charIsHtmlDelimiter(string[idx]):
+      return True
+  return False
+
 def getPossibleValuesByFoundEquals(string, startIdx, endIdx):
   """Collects also corrupt and false values (value looking strings within value). It is the job of a higher level
 function "getValuesByFoundEquals" to filter them correctly. \n
@@ -378,33 +405,6 @@ Raises exception for empty string.\n
     corrupt, openingQuoteIdx, closingQuoteIdx, mainQuoteChar = getQuoteIndexesByEqualChar(string, equalIdx)
     possibleValues.append((equalIdx, corrupt, openingQuoteIdx, closingQuoteIdx))
   return possibleValues
-
-def htmlDelimitedFind(stringToScan, stringToMatch, inclusiveStartIndex, exclusiveEndIdx):
-  """Validates outside the [start, end] indexes. Raises exception for empty strings.
-\n Return values:
-* found: True | False
-* firstIndex: position within <stringToScan> from where <stringToMatch> begins, -1 if not found"""
-  checks.checkIfString(stringToScan, 0, 5000)
-  checks.checkIfString(stringToMatch, 1, 5000)
-  checks.checkIntIsBetween(inclusiveStartIndex, 0, len(stringToScan) - 1)
-  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIndex + 1, len(stringToScan))
-  firstIdx = stringToScan.find(stringToMatch, inclusiveStartIndex, exclusiveEndIdx)
-  while firstIdx != -1:
-    if stringIsHtmlDelimited(stringToScan, firstIdx, len(stringToMatch)):
-      return True, firstIdx
-    lastKeyIdx = firstIdx + len(stringToMatch) - 1
-    firstIdx = stringToScan.find(stringToMatch, lastKeyIdx + 1, len(stringToScan))
-    continue
-  return firstIdx != -1, firstIdx
-
-def stringContainsHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx):
-  """Raises exception for empty string because the index cannot be set properly"""
-  checks.checkIfString(string, inclusiveStartIdx, 5000)
-  checks.checkIntIsBetween(exclusiveEndIdx, inclusiveStartIdx, len(string))
-  for idx in range(inclusiveStartIdx, exclusiveEndIdx):
-    if charIsHtmlDelimiter(string[idx]):
-      return True
-  return False
 
 def getQuoteIndexesByEqualChar(htmlString, equalCharIdx):
   """Validates adjacent chars near equal and main quotes. \n
@@ -422,6 +422,12 @@ Raises exception for empty string because the index cannot be set properly.\n
   if corrupt:
     return corruptResult
   return corrupt, openingQuoteCharIdx, closingQuoteIdx, mainQuoteChar
+
+def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
+  """Intended for full word check in case of HTML attribute names and values. \n
+Raises exception for empty string because the index cannot be set properly."""
+  return htmlDelimitedFromLeft(htmlString, firstCharIdx) and \
+         htmlDelimitedFromRight(htmlString, firstCharIdx + lengthOfString - 1)
 
 def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
   """Raises exception for empty string because the index cannot be set properly.
@@ -463,20 +469,17 @@ Raises exception for empty string because the index cannot be set properly.
     return corruptResult
   return False, closingQuoteIdx, mainQuoteChar
 
-def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
+def htmlDelimitedFromLeft(htmlString, index):
   """Intended for full word check in case of HTML attribute names and values. \n
 Raises exception for empty string because the index cannot be set properly."""
-  return htmlDelimitedFromLeft(htmlString, firstCharIdx) and \
-         htmlDelimitedFromRight(htmlString, firstCharIdx + lengthOfString - 1)
+  previousChar = stringUtil.getPreviousChar(htmlString, index)
+  return previousChar is None or charIsHtmlDelimiter(previousChar)
 
-def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
-  """Raises exception for empty string because the index cannot be set properly."""
-  checks.checkIfString(htmlString, 0, 4000)
-  checks.checkIntIsBetween(index, 0, len(htmlString) - 1)
-  if index == len(htmlString) - 1:
-    return False
-  found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
-  return found and charIsHtmlDelimiter(htmlString[idx])
+def htmlDelimitedFromRight(htmlString, index):
+  """Intended for full word check in case of HTML attribute names and values. \n
+Raises exception for empty string because the index cannot be set properly."""
+  nextChar = stringUtil.getNextChar(htmlString, index)
+  return nextChar is None or charIsHtmlDelimiter(nextChar)
 
 def isThereNonDelimiterCharBeforeIdx(htmString, idx):
   """Skips whitespaces."""
@@ -492,17 +495,14 @@ def isThereNonDelimiterCharBeforeIdx(htmString, idx):
     return True
   return False
 
-def htmlDelimitedFromLeft(htmlString, index):
-  """Intended for full word check in case of HTML attribute names and values. \n
-Raises exception for empty string because the index cannot be set properly."""
-  previousChar = stringUtil.getPreviousChar(htmlString, index)
-  return previousChar is None or charIsHtmlDelimiter(previousChar)
-
-def htmlDelimitedFromRight(htmlString, index):
-  """Intended for full word check in case of HTML attribute names and values. \n
-Raises exception for empty string because the index cannot be set properly."""
-  nextChar = stringUtil.getNextChar(htmlString, index)
-  return nextChar is None or charIsHtmlDelimiter(nextChar)
+def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
+  """Raises exception for empty string because the index cannot be set properly."""
+  checks.checkIfString(htmlString, 0, 4000)
+  checks.checkIntIsBetween(index, 0, len(htmlString) - 1)
+  if index == len(htmlString) - 1:
+    return False
+  found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
+  return found and charIsHtmlDelimiter(htmlString[idx])
 
 def charIsHtmlDelimiter(ch):
   """HTML attribute delimiters: Whitespace, equal, single-quote, double-quote"""
