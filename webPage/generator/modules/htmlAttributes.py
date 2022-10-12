@@ -43,14 +43,13 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return corruptResult
   if not keyFound:
     return keyNotFoundResult
-  corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(htmlAttributes, firstIdx)
+  corrupt, attributeName, attributeValue, startIdx, endIdx = getSafelyCurrentOrNextAttribute(htmlAttributes, firstIdx)
   if corrupt:
     return corruptResult
   if attributeValue is None:
     return valueNotFoundResult
   return False, True, True, attributeValue
 
-# TODO performance fix
 def getAllAttributes(attributesString):
   """Each attribute is taken and validated once at its first occurrence. \n
 Raises exception for empty string\n
@@ -62,7 +61,7 @@ Raises exception for empty string\n
   result = {}
   index = 0
   while index < len(attributesString):
-    corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(attributesString, index)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = getSafelyCurrentOrNextAttribute(attributesString, index)
     if corrupt:
       return corruptReturn
     if attributeName is None:
@@ -84,7 +83,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
   corruptResult = (True, [])
   idx = 0
   while idx < len(attributesString):
-    corrupt, attributeName, attributeValue, startIdx, endIdx = getCurrentOrNextAttribute(attributesString, idx)
+    corrupt, attributeName, attributeValue, startIdx, endIdx = getSafelyCurrentOrNextAttribute(attributesString, idx)
     if corrupt:
       return corruptResult
     if attributeName is None:
@@ -98,10 +97,13 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
-# TODO there is more performant way to do it
-def getCurrentOrNextAttribute(attributesString, index):
-  """ Raises exception for empty string because the index cannot be set. \n
-Index can point anywhere. \n
+
+# TODO getSafelyCurrentOrNextAttribute
+
+
+def getSafelyCurrentOrNextAttribute(attributesString, index):
+  """ Raises exception for empty string. \n
+Safe version of getSafelyCurrentOrNextAttribute because index can point anywhere with some performance overhead. \n
 Only the first attribute is taken and validated \n
 \n Return values:
 * <corrupt>: True | False
@@ -150,6 +152,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, True, firstKeyIdx
   return notFoundResult
 
+# TODO safely
 def getCurrentOrNextName(attributesString, index):
   """Index can point anywhere within the current attribute. If it is outside of attribute, will search for the next
 attribute name.\n
