@@ -97,14 +97,11 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     continue
   return False, result
 
-
-# TODO getSafelyCurrentOrNextAttribute
-
-
-def getSafelyCurrentOrNextAttribute(attributesString, index):
-  """ Raises exception for empty string. \n
-Safe version of getSafelyCurrentOrNextAttribute because index can point anywhere with some performance overhead. \n
-Only the first attribute is taken and validated \n
+# TODO unit test me
+def getCurrentOrNextAttribute(attributesString, index):
+  """Index must point to attribute name or before / after attribute. Otherwise, the result is undefined behavior. \n
+Does not validate text before and after the attribute.
+Only the first attribute is taken and validated. Raises exception for empty string.
 \n Return values:
 * <corrupt>: True | False
 * <attributeName>, <attributeValue> : **None** if corrupt or not found
@@ -119,6 +116,30 @@ Only the first attribute is taken and validated \n
   if lastCharIdx == len(attributesString) - 1:
     return False, attributeName, None, firstCharIdx, lastCharIdx
   corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValue(attributesString, lastCharIdx + 1)
+  if corrupt:
+    return corruptResult
+  if not found:
+    return False, attributeName, None, firstCharIdx, lastCharIdx
+  return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
+
+def getSafelyCurrentOrNextAttribute(attributesString, index):
+  """Safe version of getSafelyCurrentOrNextAttribute because index can point anywhere with some performance overhead. \n
+Only the first attribute is taken and validated. Raises exception for empty string.
+\n Return values:
+* <corrupt>: True | False
+* <attributeName>, <attributeValue> : **None** if corrupt or not found
+* <attrStartIdx>, <attrEndIdx> : **-1** if corrupt or not found"""
+  noAttributeResult = (False, None, None, -1, -1)
+  corruptResult = (True, None, None, -1, -1)
+  corrupt, found, attributeName, firstCharIdx, lastCharIdx = getSafelyCurrentOrNextName(attributesString, index)
+  if corrupt:
+    return corruptResult
+  if not found:
+    return noAttributeResult
+  if lastCharIdx == len(attributesString) - 1:
+    return False, attributeName, None, firstCharIdx, lastCharIdx
+# TODO I dont think I need the safe version here
+  corrupt, found, firstQuoteIdx, secondQuoteIdx = getSafelyCurrentValue(attributesString, lastCharIdx + 1)
   if corrupt:
     return corruptResult
   if not found:
@@ -152,11 +173,9 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
     return False, True, firstKeyIdx
   return notFoundResult
 
-# TODO safely
 def getCurrentOrNextName(attributesString, index):
-  """Index can point anywhere within the current attribute. If it is outside of attribute, will search for the next
-attribute name.\n
-Raises error at empty string because <startIdx> cannot be set properly\n
+  """Index must point to attribute name or before / after attribute. Otherwise, the result is undefined behavior.\n
+Does not validate string before and after the attribute name. Raises error for empty string.\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
 * found: True | False *(false if corrupt)*
@@ -165,6 +184,26 @@ Return values:\n
   corruptResult = (True, False, None, -1, -1)
   notFoundResult = (False, False, None, -1, -1)
   corrupt, found, firstIdx = jumpToFirstIdxOfCurrentOrNextName(attributesString, index)
+  if corrupt:
+    return corruptResult
+  if not found:
+    return notFoundResult
+  found, delimiterAfterLastIdx = getFirstHtmlDelimiter(attributesString, firstIdx, len(attributesString))
+  if not found:
+    return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
+  return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
+
+def getSafelyCurrentOrNextName(attributesString, index):
+  """Safe version of getCurrentOrNextName. Index can point anywhere for some performance overhead.\n
+Raises error for empty string because <startIdx> cannot be set properly\n
+Return values:\n
+* corrupt : True | False *(does not validate the attribute value)*
+* found: True | False *(false if corrupt)*
+* attributeName: **None** if corrupt or not found
+* firstCharIdx, lastCharIdx: **-1** if corrupt or not found """
+  corruptResult = (True, False, None, -1, -1)
+  notFoundResult = (False, False, None, -1, -1)
+  corrupt, found, firstIdx = jumpSafelyToFirstIdxOfCurrentOrNextName(attributesString, index)
   if corrupt:
     return corruptResult
   if not found:
@@ -198,8 +237,30 @@ Raises exception for empty string because the index cannot be set properly.
   return False, isWithinAttributeValue
 
 def jumpToFirstIdxOfCurrentOrNextName(attributesString, index):
-  """Index can point anywhere. If it is outside of attribute, will search for the next attribute name.\n
-Raises error at empty string because <startIdx> cannot be set properly\n
+  """Index must point to an attribute name or before or after attributes. Otherwise, the result is undefined behavior.\n
+Does not validate string before the index and after the attribute name. Raises error for empty string.\n
+Return values:\n
+* corrupt : True | False *(does not validate the attribute value)*
+* found: True | False *(false if corrupt)*
+* firstCharIdx: **-1** if corrupt or not found """
+  checks.checkIfString(attributesString, 1, 5000)
+  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
+  corruptResult = (True, False, -1)
+  notFoundResult = (False, False, -1)
+  if attributesString[index].isspace():
+    found, index = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString))
+    if not found:
+      return notFoundResult
+  if charIsHtmlDelimiter(attributesString[index]):
+    return corruptResult
+  found, index = getLastHtmlDelimiter(attributesString, 0, index)
+  if not found:
+    index = -1
+  return False, True, index + 1
+
+def jumpSafelyToFirstIdxOfCurrentOrNextName(attributesString, index):
+  """Safe version of jumpToFirstIdxOfCurrentOrNextName where index can point anywhere for some performance overhead.\n
+Raises error for empty string.\n
 Return values:\n
 * corrupt : True | False *(does not validate the attribute value)*
 * found: True | False *(false if corrupt)*
@@ -225,8 +286,33 @@ Return values:\n
   return False, True, idx + 1
 
 def getCurrentValue(attributesString, index):
-  """Index can point anywhere within the current attribute.\n
-Raises error at empty string because index cannot be set properly\n
+  """Index must point at most to the equal character before the value. Otherwise, the result is undefined behavior.\n
+Raises exception for empty string.\n
+Return values:\n
+* corrupt : True | False
+* found: True | False (False if corrupt)
+* openingQuoteIdx, closingQuoteIdx: **-1** if corrupt or not found """
+  checks.checkIfString(attributesString, 0, 5000)
+  checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
+  notFoundResult = (False, False, -1, -1)
+  corruptResult = (True, False, -1, -1)
+  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString))
+  if not found:
+    return notFoundResult
+  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
+  if firstNonSpaceChar != "=":
+    return charIsQuote(firstNonSpaceChar), False, -1, -1
+  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesByEqualChar(attributesString,
+                                                                                    firstNonSpaceCharIdx)
+  if corrupt:
+    return corruptResult
+  return False, True, openingQuoteIdx, closingQuoteIdx
+
+#TODO there can be done performance improvements here
+def getSafelyCurrentValue(attributesString, index):
+  """ Safe version of getCurrentValue because index can point anywhere within the current attribute for some
+performance overhead.\n
+Raises exception for empty string because index cannot be set properly\n
 Return values:\n
 * corrupt : True | False
 * found: True | False (False if corrupt)
@@ -430,7 +516,7 @@ def stringIsHtmlDelimited(htmlString, firstCharIdx, lengthOfString):
   """Intended for full word check in case of HTML attribute names and values. \n
 Raises exception for empty string because the index cannot be set properly."""
   return htmlDelimitedFromLeft(htmlString, firstCharIdx) and \
-         htmlDelimitedFromRight(htmlString, firstCharIdx + lengthOfString - 1)
+              htmlDelimitedFromRight(htmlString, firstCharIdx + lengthOfString - 1)
 
 def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
   """Raises exception for empty string because the index cannot be set properly.

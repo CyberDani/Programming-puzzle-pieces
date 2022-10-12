@@ -421,175 +421,165 @@ class HtmlAttributesTests(unittest.TestCase):
     with self.assertRaises(Exception):
       attr.getSafelyCurrentOrNextAttribute(None, None)
 
-  def helper_getSafelyCurrentOrNextAttribute_testCorrupt(self, corrupt, attributeName, attributeValue,
-                                                         startIdx, endIdx):
+  def helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt(self, string, startIdx):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, startIdx)
     self.assertTrue(corrupt)
     self.assertEqual(attributeName, None)
     self.assertEqual(attributeValue, None)
     self.assertEqual(startIdx, -1)
     self.assertEqual(endIdx, -1)
 
-  def helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt(self, htmlAttributes):
-    *returnValues, = attr.getSafelyCurrentOrNextAttribute(htmlAttributes, 0)
-    self.helper_getSafelyCurrentOrNextAttribute_testCorrupt(*returnValues)
-
-  def helper_getSafelyCurrentOrNextAttribute_testAttributeNotFound(self, corrupt, attributeName, attributeValue,
-                                                                   startIdx, endIdx):
+  def helper_getSafelyCurrentOrNextAttribute_checkIfNotFound(self, string, startIdx):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, startIdx)
     self.assertFalse(corrupt)
     self.assertEqual(attributeName, None)
     self.assertEqual(attributeValue, None)
     self.assertEqual(startIdx, -1)
     self.assertEqual(endIdx, -1)
 
-  def helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound(self, htmlAttributes, startIdx):
-    *returnValues, = attr.getSafelyCurrentOrNextAttribute(htmlAttributes, startIdx)
-    self.helper_getSafelyCurrentOrNextAttribute_testAttributeNotFound(*returnValues)
+  def helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(self, string, startIdx, foundName, startsAt, endsAt):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, foundName)
+    self.assertEqual(attributeValue, None)
+    self.assertEqual(startIdx, startsAt)
+    self.assertEqual(endIdx, endsAt)
 
   def test_getSafelyCurrentOrNextAttribute_attributeNotFound(self):
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound(" ", 0)
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound("\t\t", 0)
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound("id='content' ", 12)
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound("\n  \t\t\t    \r\n", 0)
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound("selected id='x'\n  \t\t\t    \r\n", 16)
-    self.helper_getSafelyCurrentOrNextAttribute_checkAttributeNotFound("selected id='x'\n  \t\t\t    \r\n", 18)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound(" ", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("\t\t", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("id='content' ", 12)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("\n  \t\t\t    \r\n", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("selected id='x'\n  \t\t\t    \r\n", 16)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("selected id='x'\n  \t\t\t    \r\n", 18)
 
   def test_getSafelyCurrentOrNextAttribute_corrupt(self):
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("=")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("'\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\"'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\"\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("''")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\"value\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("'value'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\"\"\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("'''")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("=value")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("='value'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("= 'value'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("\t= 'value'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class= ='myClass'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class=='myClass'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class==='myClass'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class == 'myClass'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class =  = 'myClass'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class=")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class=\t")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class =")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class\t=")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class \t \t =")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class\t=\t")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("class \t\t\t = \t\t \n")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"   ")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\t \"   ")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\t   class='bordered'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\t \"   class='bordered'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi\r\n")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi\r\n selected")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi' class='black-bg'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value=\"audi' selected")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value='audi\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value='audi\" selected")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value='audi\" id=\"my-id\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value \"audi\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value  \"audi\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value \t\t\t \"audi\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value\"audi\"")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value 'audi'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value\t\t'audi'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value\t\t'audi' selected")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value 'audi'\n")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value 'audi'\n selected")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value'audi'")
-    self.helper_getSafelyCurrentOrNextAttribute_checkHtmlAttributesIsCorrupt("value'audi' selected")
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("=", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("'\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\"'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\"\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("''", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\"value\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("'value'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\"\"\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("'''", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("=value", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("='value'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("= 'value'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("\t= 'value'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class= ='myClass'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class=='myClass'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class==='myClass'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class == 'myClass'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class =  = 'myClass'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class=", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class=\t", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class =", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class\t=", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class \t \t =", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class\t=\t", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("class \t\t\t = \t\t \n", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"   ", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\t \"   ", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\t   class='bordered'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\t \"   class='bordered'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi\r\n", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi\r\n selected", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi' class='black-bg'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value=\"audi' selected", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value='audi\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value='audi\" selected", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value='audi\" id=\"my-id\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value \"audi\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value  \"audi\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value \t\t\t \"audi\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value\"audi\"", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value 'audi'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value\t\t'audi'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value\t\t'audi' selected", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value 'audi'\n", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value 'audi'\n selected", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value'audi'", 0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value'audi' selected", 0)
 
   def test_getSafelyCurrentOrNextAttribute_noAttributeValue(self):
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("x", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "x")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 0)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected class=\"my-class\" "
-                                                                                "no-href id='my-id'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected  \t \n  class=\"my-class\" "
-                                                                                "no-href id='my-id'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected ", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected\t\n\t", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected\t animated\nid=\"my-id\"", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(" selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 1)
-    self.assertEqual(endIdx, 8)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(" selected minimized", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 1)
-    self.assertEqual(endIdx, 8)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(" \t  \r\n  selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 8)
-    self.assertEqual(endIdx, 15)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(" \t  \r\n  selected class='abc'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 8)
-    self.assertEqual(endIdx, 15)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(" selected ", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 1)
-    self.assertEqual(endIdx, 8)
-    string = " \t  \r\n  selected\t\t\t\r\n"
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 8)
-    self.assertEqual(endIdx, string.find("d\t\t"))
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("x", 0, foundName="x", startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("aB", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("aB ", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("aB\t\r\n ", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("\t\r\naB\t\r\n", 0,
+                                                                 foundName="aB", startsAt=3, endsAt=4)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("a b", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("a b", 2, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("a b c", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("a b c", 2, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("a\tb\tc", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 2,
+                                                                 foundName="b", startsAt=4, endsAt=4)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 3,
+                                                                 foundName="b", startsAt=4, endsAt=4)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 4,
+                                                                 foundName="b", startsAt=4, endsAt=4)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected", 0,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected", 1,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected ", 0,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected ", 1,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected minimized", 0,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" selected minimized", 1,
+                                                                 foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected ", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected\t\n\t", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 0,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 1,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 2,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 4,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 6,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 7,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 8,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected class='abc'", 2,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 25,
+                                                                 foundName="no-href", startsAt=26, endsAt=32)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 26,
+                                                                 foundName="no-href", startsAt=26, endsAt=32)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected  \t \n  class=\"my-class\" "
+                                                                 "no-href id='my-id'", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected\t animated\nid=\"my-id\"", 0,
+                                                                 foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 0,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 1,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 6,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 8,
+                                                                 foundName="selected", startsAt=8, endsAt=15)
 
+    # TODO finish me
   def test_getSafelyCurrentOrNextAttribute_attributeValue(self):
     corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id='my-id'", 0)
     self.assertFalse(corrupt)
@@ -847,6 +837,162 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertFalse(corrupt)
     self.assertEqual(attributes, ["rel", "type", "title", "href"])
 
+  def helper_getSafelyCurrentValue_checkIfCorrupt(self, attributesString, startIdx):
+    corrupt, found, firstQuoteIdx, secondQuoteIdx = attr.getSafelyCurrentValue(attributesString, startIdx)
+    self.assertTrue(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstQuoteIdx, -1)
+    self.assertEqual(secondQuoteIdx, -1)
+
+  def helper_getSafelyCurrentValue_checkIfNotFound(self, attributesString, startIdx):
+    corrupt, found, firstQuoteIdx, secondQuoteIdx = attr.getSafelyCurrentValue(attributesString, startIdx)
+    self.assertFalse(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstQuoteIdx, -1)
+    self.assertEqual(secondQuoteIdx, -1)
+
+  def helper_getSafelyCurrentValue_checkIfFound(self, attributesString, startIdx, startsAt, endsAt):
+    corrupt, found, firstQuoteIdx, secondQuoteIdx = attr.getSafelyCurrentValue(attributesString, startIdx)
+    self.assertFalse(corrupt)
+    self.assertTrue(found)
+    self.assertEqual(firstQuoteIdx, startsAt)
+    self.assertEqual(secondQuoteIdx, endsAt)
+
+  def test_getSafelyCurrentValue_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue(None, None)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue(False, 0)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue("= 'value'", True)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue("= 'value'", 56)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue("= 'value'", -1)
+
+  def test_getSafelyCurrentValue_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentValue("", 0)
+
+  def test_getSafelyCurrentValue_spaces(self):
+    self.helper_getSafelyCurrentValue_checkIfNotFound(" ", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("\n", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound(" \t\t\n", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound(" \t\t \n ", 0)
+
+  def test_getSafelyCurrentValue_corrupt(self):
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("==", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=========", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= ", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("='\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=\"'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= \t \n", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("''", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\"\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("'value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\"value\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=value", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= value", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= \n\t value", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= value ", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\t\t\n = \n\tvalue\n\n\n", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=2", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= 2", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=value\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=\"value", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("='value", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=\"value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("='value\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= \"value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= 'value\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=   \"  value  '  ", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=  '  value  \"  ", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\t\t=   \"  value  '  ", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\n\n\n=  '  value  \"  ", 0)
+
+  def test_getSafelyCurrentValue_corrupt_noAttributeNameBeforeEqual(self):
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=\"\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("='value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= 'value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt(" = 'value'", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("='value' ", 8)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("= \"\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt(" = \"\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("\t=\t\"\"", 0)
+    self.helper_getSafelyCurrentValue_checkIfCorrupt("=\t\t\t\"\"", 0)
+
+  def test_getSafelyCurrentValue_notFound(self):
+    self.helper_getSafelyCurrentValue_checkIfNotFound("X", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("attrName", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("multiple attribute names", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("attrName\t", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("\tattrName", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("attrName\t\n", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("\n\tattrName", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("   \t attrName  \t\t  \t", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("selected class='myClass'", 0)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("selected class='myClass'", 3)
+    self.helper_getSafelyCurrentValue_checkIfNotFound("\t\tselected\n\nclass='myClass'", 0)
+
+  def test_getSafelyCurrentValue_emptyValue(self):
+    self.helper_getSafelyCurrentValue_checkIfFound("a=\"\"", 0, startsAt=2, endsAt=3)
+    self.helper_getSafelyCurrentValue_checkIfFound("a=\"\"", 1, startsAt=2, endsAt=3)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 0, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 1, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 2, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 3, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 4, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\" ", 5, startsAt=6, endsAt=7)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \t\"\" ", 6, startsAt=7, endsAt=8)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \t\r\n\"\" ", 7, startsAt=9, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \t\r\n\"\" ", 8, startsAt=9, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("aabd\n\n\n=\t\t\t\"\" ", 4, startsAt=11, endsAt=12)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t'' ", 0, startsAt=8, endsAt=9)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t'' ", 1, startsAt=8, endsAt=9)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t''\n\t", 1, startsAt=8, endsAt=9)
+
+  def test_getSafelyCurrentValue_whiteSpaceValue(self):
+    self.helper_getSafelyCurrentValue_checkIfFound("a=\" \"", 0, startsAt=2, endsAt=4)
+    self.helper_getSafelyCurrentValue_checkIfFound("a=\" \"", 1, startsAt=2, endsAt=4)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc=\" \"", 0, startsAt=4, endsAt=6)
+    self.helper_getSafelyCurrentValue_checkIfFound("a = \"\n\" ", 1, startsAt=4, endsAt=6)
+    self.helper_getSafelyCurrentValue_checkIfFound("a = \"\n\" ", 2, startsAt=4, endsAt=6)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\n\" ", 0, startsAt=6, endsAt=8)
+    self.helper_getSafelyCurrentValue_checkIfFound("abc = \"\n\" ", 1, startsAt=6, endsAt=8)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t\"\t\n\t\" ", 0, startsAt=8, endsAt=12)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t\"\t\n\t\" ", 1, startsAt=8, endsAt=12)
+    self.helper_getSafelyCurrentValue_checkIfFound("Q\n\n\n=\t\t\t'\t\n\t' ", 0, startsAt=8, endsAt=12)
+    self.helper_getSafelyCurrentValue_checkIfFound("Q\n\n\n=\t\t\t'\t\n\t' ", 1, startsAt=8, endsAt=12)
+
+  def test_getSafelyCurrentValue_nonEmptyValue(self):
+    self.helper_getSafelyCurrentValue_checkIfFound("x=\"value\"", 1, startsAt=2, endsAt=8)
+    self.helper_getSafelyCurrentValue_checkIfFound("a = \"value\" ", 0, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("a = \"value\" ", 1, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("a = \"value\" ", 2, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t\"value\" ", 1, startsAt=8, endsAt=14)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t'value' ", 1, startsAt=8, endsAt=14)
+    self.helper_getSafelyCurrentValue_checkIfFound("a\n\n\n=\t\t\t'\t value\n\n' ", 1, startsAt=8, endsAt=18)
+    self.helper_getSafelyCurrentValue_checkIfFound("class=\"class='myClass'\"", 5, startsAt=6, endsAt=22)
+    self.helper_getSafelyCurrentValue_checkIfFound("id=\"class='myClass'\"selected", 2, startsAt=3, endsAt=19)
+
+  def test_getSafelyCurrentValue_indexPointsToValue(self):
+    self.helper_getSafelyCurrentValue_checkIfFound("x = 'value'", 4, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = 'value'", 7, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = 'value'", 9, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = 'value'", 10, startsAt=4, endsAt=10)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 4, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 5, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 6, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 7, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 8, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 9, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 10, startsAt=4, endsAt=25)
+    self.helper_getSafelyCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 11, startsAt=4, endsAt=25)
+
   def helper_getCurrentValue_checkIfCorrupt(self, attributesString, startIdx):
     corrupt, found, firstQuoteIdx, secondQuoteIdx = attr.getCurrentValue(attributesString, startIdx)
     self.assertTrue(corrupt)
@@ -924,12 +1070,14 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValue_checkIfCorrupt("\t\t=   \"  value  '  ", 0)
     self.helper_getCurrentValue_checkIfCorrupt("\n\n\n=  '  value  \"  ", 0)
 
+  def test_getCurrentValue_notCorruptBecauseOfIndexPosition(self):
+    self.helper_getCurrentValue_checkIfNotFound("='value' ", 8)
+
   def test_getCurrentValue_corrupt_noAttributeNameBeforeEqual(self):
     self.helper_getCurrentValue_checkIfCorrupt("=\"\"", 0)
     self.helper_getCurrentValue_checkIfCorrupt("='value'", 0)
     self.helper_getCurrentValue_checkIfCorrupt("= 'value'", 0)
     self.helper_getCurrentValue_checkIfCorrupt(" = 'value'", 0)
-    self.helper_getCurrentValue_checkIfCorrupt("='value' ", 8)
     self.helper_getCurrentValue_checkIfCorrupt("= \"\"", 0)
     self.helper_getCurrentValue_checkIfCorrupt(" = \"\"", 0)
     self.helper_getCurrentValue_checkIfCorrupt("\t=\t\"\"", 0)
@@ -956,10 +1104,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValue_checkIfFound("abc = \"\" ", 2, startsAt=6, endsAt=7)
     self.helper_getCurrentValue_checkIfFound("abc = \"\" ", 3, startsAt=6, endsAt=7)
     self.helper_getCurrentValue_checkIfFound("abc = \"\" ", 4, startsAt=6, endsAt=7)
-    self.helper_getCurrentValue_checkIfFound("abc = \"\" ", 5, startsAt=6, endsAt=7)
-    self.helper_getCurrentValue_checkIfFound("abc = \t\"\" ", 6, startsAt=7, endsAt=8)
-    self.helper_getCurrentValue_checkIfFound("abc = \t\r\n\"\" ", 7, startsAt=9, endsAt=10)
-    self.helper_getCurrentValue_checkIfFound("abc = \t\r\n\"\" ", 8, startsAt=9, endsAt=10)
     self.helper_getCurrentValue_checkIfFound("aabd\n\n\n=\t\t\t\"\" ", 4, startsAt=11, endsAt=12)
     self.helper_getCurrentValue_checkIfFound("a\n\n\n=\t\t\t'' ", 0, startsAt=8, endsAt=9)
     self.helper_getCurrentValue_checkIfFound("a\n\n\n=\t\t\t'' ", 1, startsAt=8, endsAt=9)
@@ -989,19 +1133,149 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentValue_checkIfFound("class=\"class='myClass'\"", 5, startsAt=6, endsAt=22)
     self.helper_getCurrentValue_checkIfFound("id=\"class='myClass'\"selected", 2, startsAt=3, endsAt=19)
 
-  def test_getCurrentValue_indexPointsToValue(self):
-    self.helper_getCurrentValue_checkIfFound("x = 'value'", 4, startsAt=4, endsAt=10)
-    self.helper_getCurrentValue_checkIfFound("x = 'value'", 7, startsAt=4, endsAt=10)
-    self.helper_getCurrentValue_checkIfFound("x = 'value'", 9, startsAt=4, endsAt=10)
-    self.helper_getCurrentValue_checkIfFound("x = 'value'", 10, startsAt=4, endsAt=10)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 4, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 5, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 6, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 7, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 8, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 9, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 10, startsAt=4, endsAt=25)
-    self.helper_getCurrentValue_checkIfFound("x = \" a id='myID' b value\"", 11, startsAt=4, endsAt=25)
+  def helper_getSafelyCurrentOrNextName_checkIfNotFound(self, string, startIdx):
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getSafelyCurrentOrNextName(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertFalse(found)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def helper_getSafelyCurrentOrNextName_checkIfFound(self, string, startIdx, startsAt, endsAt):
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getSafelyCurrentOrNextName(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertTrue(found)
+    self.assertEqual(firstCharIdx, startsAt)
+    self.assertEqual(lastCharIdx, endsAt)
+    self.assertEqual(attributeName, string[startsAt:endsAt + 1])
+
+  def helper_getSafelyCurrentOrNextName_checkIfCorrupt(self, string, startIdx):
+    corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getSafelyCurrentOrNextName(string, startIdx)
+    self.assertTrue(corrupt)
+    self.assertFalse(found)
+    self.assertIsNone(attributeName, -1)
+    self.assertEqual(firstCharIdx, -1)
+    self.assertEqual(lastCharIdx, -1)
+
+  def test_getSafelyCurrentOrNextName_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName(None, None)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName(False, 0)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName("= 'value'", True)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName("= 'value'", 56)
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName("= 'value'", -1)
+
+  def test_getSafelyCurrentOrNextName_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.getSafelyCurrentOrNextName("", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("a='value' ", 9)
+
+  def test_getSafelyCurrentOrNextName_spaces(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("   ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("   ", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("     ", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" \t\t\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" \t\t\n", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" \t\t\n", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" \t\r\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound(" \t\t \n ", 3)
+
+  def test_getSafelyCurrentOrNextName_corrupt(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("=", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("= ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" =", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = = ", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = = ", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = = ", 3)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("\t\t=\n\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("'", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("''''''''", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("' ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" '", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" ' ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("\t\t'\n\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("\"", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("\" ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" \"", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" \" ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("\t\t\"\n\n", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("='value'", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("=value'", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("=value'", 1)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("=value'", 2)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("=value'", 6)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("one ' two", 0)
+    self.helper_getSafelyCurrentOrNextName_checkIfCorrupt("one ' two", 4)
+
+  def test_getSafelyCurrentOrNextName_notFound(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class ", 5)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class \r\n", 5)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class \r\n", 6)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' ", 21)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 21)
+    self.helper_getSafelyCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 22)
+
+  def test_getSafelyCurrentOrNextName_indexPointsAtTheFirstNameCharIdx(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("X", 0, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("X=''", 0, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("\t\tX\t\tY Z", 0, startsAt=2, endsAt=2)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("selected", 0, startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("\t\tselected\n\n", 0, startsAt=2, endsAt=9)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound(" class='my-Class' \t selected", 0, startsAt=1, endsAt=5)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
+                                                        startsAt=2, endsAt=6)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("multiple words in this string", 0, startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, startsAt=0, endsAt=4)
+
+  def test_getSafelyCurrentOrNextName_indexPointsWithinName(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("selected", 3, startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("multiple words in this string", 3, startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("multiple words in this string", 13, startsAt=9, endsAt=13)
+
+  def test_getSafelyCurrentOrNextName_indexPointsAroundValue(self):
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class='myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class='myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class='myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class='myClass'", 9, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class='myClass'", 14, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("a=''", 1, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("a = ''", 1, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("a = ''", 2, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("a = ''", 3, startsAt=0, endsAt=0)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, startsAt=0, endsAt=4)
+    self.helper_getSafelyCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, startsAt=0, endsAt=4)
 
   def helper_getCurrentOrNextName_checkIfNotFound(self, string, startIdx):
     corrupt, found, attributeName, firstCharIdx, lastCharIdx = attr.getCurrentOrNextName(string, startIdx)
@@ -1056,13 +1330,22 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfNotFound(" \t\r\n", 0)
     self.helper_getCurrentOrNextName_checkIfNotFound(" \t\t \n ", 3)
 
+  def test_getCurrentOrNextName_notCorruptBecauseOfIndexPosition(self):
+    self.helper_getCurrentOrNextName_checkIfNotFound(" = ", 2)
+    self.helper_getCurrentOrNextName_checkIfFound(" = ' value ' ", 4, startsAt=5, endsAt=9)
+    self.helper_getCurrentOrNextName_checkIfNotFound(" = ' value ' ", 12)
+    self.helper_getCurrentOrNextName_checkIfFound("=value'", 1, startsAt=1, endsAt=5)
+    self.helper_getCurrentOrNextName_checkIfFound("=value'", 2, startsAt=1, endsAt=5)
+    self.helper_getCurrentOrNextName_checkIfFound("class'myClass'", 0, startsAt=0, endsAt=4)
+    self.helper_getCurrentOrNextName_checkIfFound("class'myClass'", 6, startsAt=6, endsAt=12)
+    self.helper_getCurrentOrNextName_checkIfFound("one ' two", 0, startsAt=0, endsAt=2)
+
   def test_getCurrentOrNextName_corrupt(self):
     self.helper_getCurrentOrNextName_checkIfCorrupt("=", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("= ", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" =", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 1)
-    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ", 2)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 1)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 2)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = = ", 3)
@@ -1083,17 +1366,10 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
-    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
     self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
-    self.helper_getCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
     self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 0)
-    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 1)
-    self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 2)
     self.helper_getCurrentOrNextName_checkIfCorrupt("=value'", 6)
-    self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
-    self.helper_getCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
-    self.helper_getCurrentOrNextName_checkIfCorrupt("one ' two", 0)
     self.helper_getCurrentOrNextName_checkIfCorrupt("one ' two", 4)
 
   def test_getCurrentOrNextName_notFound(self):
@@ -1121,31 +1397,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getCurrentOrNextName_checkIfFound("selected", 3, startsAt=0, endsAt=7)
     self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 3, startsAt=0, endsAt=7)
     self.helper_getCurrentOrNextName_checkIfFound("multiple words in this string", 13, startsAt=9, endsAt=13)
-
-  def test_getCurrentOrNextName_indexPointsAroundValue(self):
-    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 5, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 6, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 7, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 9, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class='myClass'", 14, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("a=''", 1, startsAt=0, endsAt=0)
-    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 1, startsAt=0, endsAt=0)
-    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 2, startsAt=0, endsAt=0)
-    self.helper_getCurrentOrNextName_checkIfFound("a = ''", 3, startsAt=0, endsAt=0)
-    self.helper_getCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, startsAt=0, endsAt=4)
-    self.helper_getCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, startsAt=0, endsAt=4)
 
   def helper_getAllAttributes_checkIfCorrupt(self, string):
     corrupt, attributes = attr.getAllAttributes(string)
@@ -3199,6 +3450,155 @@ class HtmlAttributesTests(unittest.TestCase):
     possibleValues = attr.getPossibleValuesByFoundEquals("key = \"=title='hello' selected=\"", 1, 31)
     self.assertEqual(possibleValues, [(4, False, 6, 31), (7, True, -1, -1), (13, False, 14, 20), (30, True, -1, -1)])
 
+  def helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(self, string, idx):
+    corrupt, found, firstCharIdx = attr.jumpSafelyToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertTrue(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstCharIdx, -1)
+
+  def helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(self, string, idx):
+    corrupt, found, firstCharIdx = attr.jumpSafelyToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertFalse(corrupt)
+    self.assertFalse(found)
+    self.assertEqual(firstCharIdx, -1)
+
+  def helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound(self, string, idx, foundAt):
+    corrupt, found, firstCharIdx = attr.jumpSafelyToFirstIdxOfCurrentOrNextName(string, idx)
+    self.assertFalse(corrupt)
+    self.assertTrue(found)
+    self.assertEqual(firstCharIdx, foundAt)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", -1)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", 345)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", 6)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", True)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", [])
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", "")
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("string", "string")
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName(0, 0)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName([], 0)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName(["1", "2"], 0)
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName(None, None)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_emptyString(self):
+    with self.assertRaises(Exception):
+      attr.jumpSafelyToFirstIdxOfCurrentOrNextName("", 0)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_spaces(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("   ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("   ", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("     ", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t\n", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\r\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound(" \t\t \n ", 3)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_corrupt(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("= ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" =", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 3)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t=\n\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("'", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("''''''''", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("' ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" '", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" ' ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t'\n\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\"", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\" ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" \"", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" \" ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("\t\t\"\n\n", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("='value'", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 6)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 4)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_notFound(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class ", 5)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class \r\n", 5)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class \r\n", 6)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' ", 21)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 21)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfNotFound("class  =  ' myClass ' \t\t", 22)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_indexPointsAtTheFirstNameCharIdx(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("X", 0, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("X=''", 0, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tX\t\t", 0, foundAt=2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tX\t\tY Z", 0, foundAt=2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("selected", 0, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tselected\n\n", 0, foundAt=2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound(" class='my-Class' \t selected", 0, foundAt=1)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected",
+                                                                     0, foundAt=2)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 0, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, foundAt=0)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_indexPointsWithinName(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("selected", 3, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 3, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 13, foundAt=9)
+
+  def test_jumpSafelyToFirstIdxOfCurrentOrNextName_indexPointsAroundValue(self):
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 5, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 6, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 7, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 9, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 14, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("a=''", 1, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 1, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 2, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 3, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, foundAt=0)
+    self.helper_jumpSafelyToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, foundAt=0)
+
   def helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(self, string, idx):
     corrupt, found, firstCharIdx = attr.jumpToFirstIdxOfCurrentOrNextName(string, idx)
     self.assertTrue(corrupt)
@@ -3263,7 +3663,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" =", 0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 1)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ", 2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 1)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = = ", 3)
@@ -3284,18 +3683,21 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 1)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 3)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 4)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 11)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt(" = ' value ' ", 12)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 1)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("=value'", 6)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 5)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("class'myClass'", 6)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfCorrupt("one ' two", 4)
+
+  def test_jumpToFirstIdxOfCurrentOrNextName_notCorruptBecauseOfIndexPosition(self):
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" = ", 2)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound(" = ' value ' ", 12)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound(" = ' value ' ", 4, foundAt=5)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("=value'", 1, foundAt=1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("=value'", 2, foundAt=1)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class'myClass'", 0, foundAt=0)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class'myClass'", 6, foundAt=6)
+    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("one ' two", 0, foundAt=0)
 
   def test_jumpToFirstIdxOfCurrentOrNextName_notFound(self):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfNotFound("class ", 5)
@@ -3314,7 +3716,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\t\tselected\n\n", 0, foundAt=2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound(" class='my-Class' \t selected", 0, foundAt=1)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("\n\nclass\t\t=\t\n'   my-Class' \r\n\t selected", 0,
-                                                                foundAt=2)
+                                                               foundAt=2)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 0, foundAt=0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'==\"", 0, foundAt=0)
 
@@ -3322,31 +3724,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("selected", 3, foundAt=0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 3, foundAt=0)
     self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("multiple words in this string", 13, foundAt=9)
-
-  def test_jumpToFirstIdxOfCurrentOrNextName_indexPointsAroundValue(self):
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 5, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 6, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 7, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 9, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class='myClass'", 14, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 5, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 6, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 7, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\t=\n'myClass'", 8, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 5, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 6, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 7, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 8, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 9, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 10, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("class\n\t =\n\r\n'myClass'", 11, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a=''", 1, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 1, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 2, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("a = ''", 3, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"class='myClass'\"", 12, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class'='myClass'\"", 14, foundAt=0)
-    self.helper_jumpToFirstIdxOfCurrentOrNextName_checkIfFound("title=\"'class' = 'myClass'\"", 15, foundAt=0)
 
   def helper_getValueByName_checkIfException(self, string, name):
     with self.assertRaises(Exception):
