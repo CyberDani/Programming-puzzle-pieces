@@ -445,6 +445,15 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(startIdx, startsAt)
     self.assertEqual(endIdx, endsAt)
 
+  def helper_getSafelyCurrentOrNextAttribute_checkIfValueFound(self, string, startIdx, foundName, foundValue,
+                                                               startsAt, endsAt):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, startIdx)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributeName, foundName)
+    self.assertEqual(attributeValue, foundValue)
+    self.assertEqual(startIdx, startsAt)
+    self.assertEqual(endIdx, endsAt)
+
   def test_getSafelyCurrentOrNextAttribute_attributeNotFound(self):
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound(" ", 0)
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNotFound("\t\t", 0)
@@ -507,7 +516,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value'audi'", 0)
     self.helper_getSafelyCurrentOrNextAttribute_checkIfCorrupt("value'audi' selected", 0)
 
-  def test_getSafelyCurrentOrNextAttribute_noAttributeValue(self):
+  def test_getSafelyCurrentOrNextAttribute_noAttributeValue_indexPointsBeforeAttribute(self):
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("x", 0, foundName="x", startsAt=0, endsAt=0)
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("aB", 0, foundName="aB", startsAt=0, endsAt=1)
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("aB ", 0, foundName="aB", startsAt=0, endsAt=1)
@@ -579,128 +588,346 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 8,
                                                                  foundName="selected", startsAt=8, endsAt=15)
 
-    # TODO finish me
-  def test_getSafelyCurrentOrNextAttribute_attributeValue(self):
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id='my-id'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "my-id")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 9)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id=\"my-id\"", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "my-id")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 9)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id = 'my-id'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "my-id")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 11)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id = ' my-id ' ", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, " my-id ")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 13)
-    string = "id \t\n= \n\t' \tmy-id '\n "
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, " \tmy-id ")
-    self.assertEqual(startIdx, 0)
-    self.assertTrue(endIdx > startIdx)
-    self.assertEqual(endIdx, string.find("'\n "))
-    string = "\t\r\n id \t\n= \n\t' \tmy-id '\r\n "
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, " \tmy-id ")
-    self.assertEqual(startIdx, 4)
-    self.assertEqual(endIdx, string.find("'\r\n "))
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id = 'id1 id2'", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "id1 id2")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 13)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id = ' id1 id2 id3 '", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, " id1 id2 id3 ")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 19)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("\tid = '\r\n id1 id2 id3 \n\t'\t\t", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "\r\n id1 id2 id3 \n\t")
-    self.assertEqual(startIdx, 1)
-    self.assertEqual(endIdx, 24)
-    string = "\tid = '\r\n id1 \t id2 \t id3 \n\t'\t\t"
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "\r\n id1 \t id2 \t id3 \n\t")
-    self.assertEqual(startIdx, 1)
-    self.assertEqual(endIdx, string.find("'\t\t"))
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("id = 'id1 id2' id=\"my-other-id\"", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "id")
-    self.assertEqual(attributeValue, "id1 id2")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 13)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("title=\"class='myClass'\"", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "title")
-    self.assertEqual(attributeValue, "class='myClass'")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 22)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("title=\"class='myClass'\""
-                                                                                         "selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "title")
-    self.assertEqual(attributeValue, "class='myClass'")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 22)
-
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("title=\"===>A'B'C<===\""
-                                                                                         "selected", 0)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "title")
-    self.assertEqual(attributeValue, "===>A'B'C<===")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 20)
+  def test_getSafelyCurrentOrNextAttribute_attributeValue_indexPointsBeforeAttribute(self):
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 0, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id=\"my-id\"", 0, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = 'my-id'", 0, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=11)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 0, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class='myClass' id = 'my-id' ", 15, foundName="id",
+                                                                  foundValue="my-id", startsAt=16, endsAt=27)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class='myClass'\tid = 'my-id' ", 15, foundName="id",
+                                                                  foundValue="my-id", startsAt=16, endsAt=27)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id \t\n= \n\t' \tmy-id '\n ", 0, foundName="id",
+                                                                  foundValue=" \tmy-id ", startsAt=0, endsAt=18)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 0,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 3,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 4,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = 'id1 id2'", 0, foundName="id",
+                                                                  foundValue="id1 id2", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' id1 id2 id3 '", 0, foundName="id",
+                                                                  foundValue=" id1 id2 id3 ", startsAt=0, endsAt=19)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 id2 id3 \n\t'\t\t", 0,
+                                                                  foundName="id", foundValue="\r\n id1 id2 id3 \n\t",
+                                                                  startsAt=1, endsAt=24)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 id2 id3 \n\t'\t\t", 1,
+                                                                  foundName="id", foundValue="\r\n id1 id2 id3 \n\t",
+                                                                  startsAt=1, endsAt=24)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 \t id2 \t id3 \n\t'\t\t", 0,
+                                                              foundName="id", foundValue="\r\n id1 \t id2 \t id3 \n\t",
+                                                              startsAt=1, endsAt=28)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 \t id2 \t id3 \n\t'\t\t", 1,
+                                                              foundName="id", foundValue="\r\n id1 \t id2 \t id3 \n\t",
+                                                              startsAt=1, endsAt=28)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = 'id1 id2' id=\"my-other-id\"", 0,
+                                                                  foundName="id", foundValue="id1 id2",
+                                                                  startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("title=\"class='myClass'\"selected", 0,
+                                                                  foundName="title", foundValue="class='myClass'",
+                                                                  startsAt=0, endsAt=22)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("title=\"===>A'B'C<===\"selected", 0,
+                                                                  foundName="title", foundValue="===>A'B'C<===",
+                                                                  startsAt=0, endsAt=20)
 
   def test_getSafelyCurrentOrNextAttribute_indexPointsWithinAttributeName(self):
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected", 2)
-    self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfNameFound("selected", 2, foundName="selected",
+                                                                 startsAt=0, endsAt=7)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected='False'", 3, foundName="selected",
+                                                                  foundValue="False", startsAt=0, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected='False'", 7, foundName="selected",
+                                                                  foundValue="False", startsAt=0, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("\nselected\nclass\t=\t\"\tcl1\tcl2\tcl3 \" class id=\"my-id\"\n",
+                                                                  12, foundName="class",
+                                                                  foundValue="\tcl1\tcl2\tcl3 ", startsAt=10, endsAt=32)
+
+  def test_getSafelyCurrentOrNextAttribute_indexPointsAroundAttributeValue(self):
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 2, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 3, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 6, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 9, foundName="id", foundValue="my-id",
+                                                                  startsAt=0, endsAt=9)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class id='my-id'", 8, foundName="id",
+                                                                  foundValue="my-id", startsAt=6, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class id='my-id'", 8, foundName="id",
+                                                                  foundValue="my-id", startsAt=6, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class id='my-id'", 9, foundName="id",
+                                                                  foundValue="my-id", startsAt=6, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class id='my-id'", 12, foundName="id",
+                                                                  foundValue="my-id", startsAt=6, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("class id='my-id'", 15, foundName="id",
+                                                                  foundValue="my-id", startsAt=6, endsAt=15)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected class='myClass' id='my-id'", 27,
+                                                                  foundName="id", foundValue="my-id",
+                                                                  startsAt=25, endsAt=34)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected class='myClass' id='my-id'", 28,
+                                                                  foundName="id", foundValue="my-id",
+                                                                  startsAt=25, endsAt=34)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected class='myClass' id='my-id'", 31,
+                                                                  foundName="id", foundValue="my-id",
+                                                                  startsAt=25, endsAt=34)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("selected class='myClass' id='my-id'", 34,
+                                                                  foundName="id", foundValue="my-id",
+                                                                  startsAt=25, endsAt=34)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 2, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 3, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 4, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 5, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 6, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 12, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getSafelyCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 13, foundName="id",
+                                                                  foundValue=" my-id ", startsAt=0, endsAt=13)
+
+  def test_getCurrentOrNextAttribute_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("class = 'myClass'", None)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("class = 'myClass'", False)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("class = 'myClass'", "12")
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("class = 'myClass'", -1)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("class = 'myClass'", 488)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute("", 0)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute(123, 0)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute(True, 0)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute(None, 0)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute(True, False)
+    with self.assertRaises(Exception):
+      attr.getCurrentOrNextAttribute(None, None)
+
+  def helper_getCurrentOrNextAttribute_checkIfCorrupt(self, string, startIdx):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getCurrentOrNextAttribute(string, startIdx)
+    self.assertTrue(corrupt)
+    self.assertEqual(attributeName, None)
     self.assertEqual(attributeValue, None)
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 7)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected='False'", 3)
+    self.assertEqual(startIdx, -1)
+    self.assertEqual(endIdx, -1)
+
+  def helper_getCurrentOrNextAttribute_checkIfNotFound(self, string, startIdx):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getCurrentOrNextAttribute(string, startIdx)
     self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, "False")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 15)
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute("selected='False'", 7)
+    self.assertEqual(attributeName, None)
+    self.assertEqual(attributeValue, None)
+    self.assertEqual(startIdx, -1)
+    self.assertEqual(endIdx, -1)
+
+  def helper_getCurrentOrNextAttribute_checkIfNameFound(self, string, startIdx, foundName, startsAt, endsAt):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getCurrentOrNextAttribute(string, startIdx)
     self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "selected")
-    self.assertEqual(attributeValue, "False")
-    self.assertEqual(startIdx, 0)
-    self.assertEqual(endIdx, 15)
-    string = "\nselected\nclass\t=\t\"\tcl1\tcl2\tcl3 \" class id=\"my-id\"\n"
-    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getSafelyCurrentOrNextAttribute(string, string.find("class"))
+    self.assertEqual(attributeName, foundName)
+    self.assertEqual(attributeValue, None)
+    self.assertEqual(startIdx, startsAt)
+    self.assertEqual(endIdx, endsAt)
+
+  def helper_getCurrentOrNextAttribute_checkIfValueFound(self, string, startIdx, foundName, foundValue,
+                                                         startsAt, endsAt):
+    corrupt, attributeName, attributeValue, startIdx, endIdx = attr.getCurrentOrNextAttribute(string, startIdx)
     self.assertFalse(corrupt)
-    self.assertEqual(attributeName, "class")
-    self.assertEqual(attributeValue, "\tcl1\tcl2\tcl3 ")
-    self.assertTrue(startIdx > -1)
-    self.assertTrue(endIdx > startIdx)
-    self.assertEqual(startIdx, string.find("class"))
-    self.assertEqual(endIdx, string.find("\" class id=\"my-id\""))
+    self.assertEqual(attributeName, foundName)
+    self.assertEqual(attributeValue, foundValue)
+    self.assertEqual(startIdx, startsAt)
+    self.assertEqual(endIdx, endsAt)
+
+  def test_getCurrentOrNextAttribute_attributeNotFound(self):
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound(" ", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound("\t\t", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound("id='content' ", 12)
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound("\n  \t\t\t    \r\n", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound("selected id='x'\n  \t\t\t    \r\n", 16)
+    self.helper_getCurrentOrNextAttribute_checkIfNotFound("selected id='x'\n  \t\t\t    \r\n", 18)
+
+  def test_getCurrentOrNextAttribute_corrupt(self):
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("=", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("'\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\"'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\"\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("''", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\"value\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("'value'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\"\"\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("'''", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("=value", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("='value'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("= 'value'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("\t= 'value'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class= ='myClass'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class=='myClass'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class==='myClass'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class == 'myClass'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class =  = 'myClass'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class=", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class=\t", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class =", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class\t=", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class \t \t =", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class\t=\t", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("class \t\t\t = \t\t \n", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"   ", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\t \"   ", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\t   class='bordered'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\t \"   class='bordered'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi\r\n", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi\r\n selected", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi' class='black-bg'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value=\"audi' selected", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value='audi\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value='audi\" selected", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value='audi\" id=\"my-id\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value \"audi\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value  \"audi\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value \t\t\t \"audi\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value\"audi\"", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value 'audi'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value\t\t'audi'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value\t\t'audi' selected", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value 'audi'\n", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value 'audi'\n selected", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value'audi'", 0)
+    self.helper_getCurrentOrNextAttribute_checkIfCorrupt("value'audi' selected", 0)
+
+  def test_getCurrentOrNextAttribute_noAttributeValue_indexPointsBeforeAttribute(self):
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("x", 0, foundName="x", startsAt=0, endsAt=0)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("aB", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("aB ", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("aB\t\r\n ", 0, foundName="aB", startsAt=0, endsAt=1)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("\t\r\naB\t\r\n", 0, foundName="aB", startsAt=3, endsAt=4)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("a b", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("a b", 2, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("a b c", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("a b c", 2, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("a\tb\tc", 1, foundName="b", startsAt=2, endsAt=2)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 2, foundName="b", startsAt=4, endsAt=4)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 3, foundName="b", startsAt=4, endsAt=4)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" a\r\nb\r\nc ", 4, foundName="b", startsAt=4, endsAt=4)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected", 0, foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected", 0, foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected", 1, foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected ", 0, foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected ", 1, foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected minimized", 0,
+                                                           foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" selected minimized", 1,
+                                                           foundName="selected", startsAt=1, endsAt=8)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected ", 0, foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected\t\n\t", 0,
+                                                           foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 0,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 1,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 2,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 4,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 6,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 7,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected", 8,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected class='abc'", 2,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 0,
+                                                           foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 25,
+                                                           foundName="no-href", startsAt=26, endsAt=32)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected class=\"my-class\" no-href id='my-id'", 26,
+                                                           foundName="no-href", startsAt=26, endsAt=32)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected  \t \n  class=\"my-class\" no-href id='my-id'", 0,
+                                                           foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected\t animated\nid=\"my-id\"", 0,
+                                                           foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 0,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 1,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 6,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound(" \t  \r\n  selected\t\t\t\r\n", 8,
+                                                           foundName="selected", startsAt=8, endsAt=15)
+
+  def test_getCurrentOrNextAttribute_attributeValue_indexPointsBeforeAttribute(self):
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id='my-id'", 0, foundName="id", foundValue="my-id",
+                                                            startsAt=0, endsAt=9)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id=\"my-id\"", 0, foundName="id", foundValue="my-id",
+                                                            startsAt=0, endsAt=9)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id = 'my-id'", 0, foundName="id", foundValue="my-id",
+                                                            startsAt=0, endsAt=11)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id = ' my-id ' ", 0, foundName="id",
+                                                            foundValue=" my-id ", startsAt=0, endsAt=13)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("class='myClass' id = 'my-id' ", 15, foundName="id",
+                                                            foundValue="my-id", startsAt=16, endsAt=27)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("class='myClass'\tid = 'my-id' ", 15, foundName="id",
+                                                            foundValue="my-id", startsAt=16, endsAt=27)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id \t\n= \n\t' \tmy-id '\n ", 0, foundName="id",
+                                                            foundValue=" \tmy-id ", startsAt=0, endsAt=18)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 0,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 3,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\t\r\n id \t\n= \n\t' \tmy-id '\r\n ", 4,
+                                                          foundName="id", foundValue=" \tmy-id ", startsAt=4, endsAt=22)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id = 'id1 id2'", 0, foundName="id",
+                                                            foundValue="id1 id2", startsAt=0, endsAt=13)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id = ' id1 id2 id3 '", 0, foundName="id",
+                                                            foundValue=" id1 id2 id3 ", startsAt=0, endsAt=19)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 id2 id3 \n\t'\t\t", 0,
+                                                            foundName="id", foundValue="\r\n id1 id2 id3 \n\t",
+                                                            startsAt=1, endsAt=24)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 id2 id3 \n\t'\t\t", 1,
+                                                            foundName="id", foundValue="\r\n id1 id2 id3 \n\t",
+                                                            startsAt=1, endsAt=24)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 \t id2 \t id3 \n\t'\t\t", 0,
+                                                            foundName="id", foundValue="\r\n id1 \t id2 \t id3 \n\t",
+                                                            startsAt=1, endsAt=28)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\tid = '\r\n id1 \t id2 \t id3 \n\t'\t\t", 1,
+                                                            foundName="id", foundValue="\r\n id1 \t id2 \t id3 \n\t",
+                                                            startsAt=1, endsAt=28)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("id = 'id1 id2' id=\"my-other-id\"", 0,
+                                                            foundName="id", foundValue="id1 id2",
+                                                            startsAt=0, endsAt=13)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("title=\"class='myClass'\"selected", 0,
+                                                            foundName="title", foundValue="class='myClass'",
+                                                            startsAt=0, endsAt=22)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("title=\"===>A'B'C<===\"selected", 0,
+                                                            foundName="title", foundValue="===>A'B'C<===",
+                                                            startsAt=0, endsAt=20)
+
+  def test_getCurrentOrNextAttribute_indexPointsWithinAttributeName(self):
+    self.helper_getCurrentOrNextAttribute_checkIfNameFound("selected", 2, foundName="selected", startsAt=0, endsAt=7)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("selected='False'", 3, foundName="selected",
+                                                            foundValue="False", startsAt=0, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("selected='False'", 7, foundName="selected",
+                                                            foundValue="False", startsAt=0, endsAt=15)
+    self.helper_getCurrentOrNextAttribute_checkIfValueFound("\nselected\nclass\t=\t\"\tcl1\tcl2\tcl3 \" class id=\"my-id\"\n",
+                                                            12, foundName="class",
+                                                            foundValue="\tcl1\tcl2\tcl3 ", startsAt=10, endsAt=32)
 
   def test_getAllAttributeNames_nonSense(self):
     with self.assertRaises(Exception):
@@ -2142,19 +2369,21 @@ class HtmlAttributesTests(unittest.TestCase):
     with self.assertRaises(Exception):
       attr.htmlDelimitedFind("Scan my text", "text", "", "")
     with self.assertRaises(Exception):
-      attr.htmlDelimitedFind("Scan my text", "text", 3, 3)
+      attr.htmlDelimitedFind("Scan my text", "text", 3, 2)
     with self.assertRaises(Exception):
       attr.htmlDelimitedFind("Scan my text", "text", -2, 3)
     with self.assertRaises(Exception):
       attr.htmlDelimitedFind("Scan my text", "text", 1, 56)
     with self.assertRaises(Exception):
+      attr.htmlDelimitedFind("Scan my text", "text", 1, 12)
+    with self.assertRaises(Exception):
       attr.htmlDelimitedFind("Scan my text", "text", 10, 4)
 
   def test_htmlDelimitedFind_emptyStrings(self):
     with self.assertRaises(Exception):
-      attr.htmlDelimitedFind("", "findThis", 0, 1)
+      attr.htmlDelimitedFind("", "findThis", 0, 0)
     with self.assertRaises(Exception):
-      attr.htmlDelimitedFind("find something in this string", "", 0, 1)
+      attr.htmlDelimitedFind("find something in this string", "", 0, 0)
 
   def helper_htmlDelimitedFind_checkNotFound(self, stringToScan, stringToMatch, startIdx, endIdx):
     found, firstIdx = attr.htmlDelimitedFind(stringToScan, stringToMatch, startIdx, endIdx)
@@ -2162,80 +2391,80 @@ class HtmlAttributesTests(unittest.TestCase):
     self.assertEqual(firstIdx, -1)
 
   def test_htmlDelimitedFind_stringNotFoundAtAll(self):
-    self.helper_htmlDelimitedFind_checkNotFound("a", "b", 0, 1)
-    self.helper_htmlDelimitedFind_checkNotFound("this is my string", "findMe", 0, 17)
-    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "this", 1, 31)
-    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 0, 27)
-    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "my", 11, 24)
-    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 11, 24)
+    self.helper_htmlDelimitedFind_checkNotFound("a", "b", 0, 0)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my string", "findMe", 0, 16)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "this", 1, 30)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 0, 26)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "my", 11, 23)
+    self.helper_htmlDelimitedFind_checkNotFound("this is my lovely little string", "string", 11, 23)
 
   def test_htmlDelimitedFind_foundStringIsNotHtmlDelimited(self):
-    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "pine", 0, 9)
-    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "apple", 0, 9)
-    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "neapple", 0, 9)
-    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "one", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "two", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "three", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "one", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "two", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "three", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "one", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "two", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "three", 0, 13)
-    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "one", 0, 16)
-    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "two", 0, 16)
-    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "three", 0, 16)
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "pine", 0, 8)
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "apple", 0, 8)
+    self.helper_htmlDelimitedFind_checkNotFound("pineapple", "neapple", 0, 8)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "one", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "two", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one-two-three", "three", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "one", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "two", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one;two;three", "three", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "one", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "two", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one,two,three", "three", 0, 12)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "one", 0, 15)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "two", 0, 15)
+    self.helper_htmlDelimitedFind_checkNotFound("one, two, three.", "three", 0, 15)
 
   def test_htmlDelimitedFind_stringFound(self):
-    found, firstIdx = attr.htmlDelimitedFind("one two three", "one", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "one", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 0)
-    found, firstIdx = attr.htmlDelimitedFind("one two three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one two three", "three", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one two three", "three", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 8)
-    found, firstIdx = attr.htmlDelimitedFind("one=two=three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one=two=three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one'two'three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one'two'three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one\"two\"three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one\"two\"three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one'two\"three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one'two\"three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one\"two'three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one\"two'three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("one=two'three", "two", 0, 13)
+    found, firstIdx = attr.htmlDelimitedFind("one=two'three", "two", 0, 12)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 4)
-    found, firstIdx = attr.htmlDelimitedFind("'one'two=three", "two", 0, 14)
+    found, firstIdx = attr.htmlDelimitedFind("'one'two=three", "two", 0, 13)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 5)
-    found, firstIdx = attr.htmlDelimitedFind("a", "a", 0, 1)
+    found, firstIdx = attr.htmlDelimitedFind("a", "a", 0, 0)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 0)
-    found, firstIdx = attr.htmlDelimitedFind("abc", "abc", 0, 3)
+    found, firstIdx = attr.htmlDelimitedFind("abc", "abc", 0, 2)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 0)
-    found, firstIdx = attr.htmlDelimitedFind("value=2", "2", 2, 7)
+    found, firstIdx = attr.htmlDelimitedFind("value=2", "2", 2, 6)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 6)
-    found, firstIdx = attr.htmlDelimitedFind("value=2", "value", 0, 7)
+    found, firstIdx = attr.htmlDelimitedFind("value=2", "value", 0, 6)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 0)
-    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' href", "href", 0, 14)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' href", "href", 0, 13)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 10)
-    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' href", "href", 0, 26)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' href", "href", 0, 25)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 22)
-    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' hrefhrefhref href", "href", 0, 39)
+    found, firstIdx = attr.htmlDelimitedFind("hrefx='2' rel='xhref' hrefhrefhref href", "href", 0, 38)
     self.assertTrue(found)
     self.assertEqual(firstIdx, 35)
 
@@ -2480,6 +2709,8 @@ class HtmlAttributesTests(unittest.TestCase):
     with self.assertRaises(Exception):
       attr.stringContainsHtmlDelimiter("string", 0, 7)
     with self.assertRaises(Exception):
+      attr.stringContainsHtmlDelimiter("string", 0, 6)
+    with self.assertRaises(Exception):
       attr.stringContainsHtmlDelimiter("string", 0, None)
     with self.assertRaises(Exception):
       attr.stringContainsHtmlDelimiter("string", 0, True)
@@ -2499,60 +2730,61 @@ class HtmlAttributesTests(unittest.TestCase):
       attr.stringContainsHtmlDelimiter(None, None, None)
 
   def test_stringContainsHtmlDelimiter_true(self):
-    result = attr.stringContainsHtmlDelimiter(" ", 0, 1)
+    result = attr.stringContainsHtmlDelimiter(" ", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("=", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("=", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("'", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("'", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("\"", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("\"", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("\t", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("\t", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("\n", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("\n", 0, 0)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter(" '='= \"\" ", 0, 9)
+    result = attr.stringContainsHtmlDelimiter(" '='= \"\" ", 0, 8)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 12)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 11)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("hello world!", 5, 12)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 5, 11)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 6)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 0, 5)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("hello world!", 2, 8)
+    result = attr.stringContainsHtmlDelimiter("hello world!", 2, 7)
     self.assertTrue(result)
-    result = attr.stringContainsHtmlDelimiter("class='myClass'", 0, 15)
+    result = attr.stringContainsHtmlDelimiter("class='myClass'", 0, 14)
     self.assertTrue(result)
 
   def test_stringContainsHtmlDelimiter_false(self):
-    result = attr.stringContainsHtmlDelimiter("Q", 0, 1)
+    result = attr.stringContainsHtmlDelimiter("Q", 0, 0)
     self.assertFalse(result)
-    result = attr.stringContainsHtmlDelimiter("apple", 0, 5)
+    result = attr.stringContainsHtmlDelimiter("apple", 0, 4)
     self.assertFalse(result)
-    result = attr.stringContainsHtmlDelimiter("'apple'", 1, 6)
+    result = attr.stringContainsHtmlDelimiter("'apple'", 1, 5)
     self.assertFalse(result)
-    result = attr.stringContainsHtmlDelimiter("true != false", 0, 4)
+    result = attr.stringContainsHtmlDelimiter("true != false", 0, 3)
     self.assertFalse(result)
-    result = attr.stringContainsHtmlDelimiter("true != false", 8, 13)
+    result = attr.stringContainsHtmlDelimiter("true != false", 8, 12)
     self.assertFalse(result)
 
-  def helper_getFirstHtmlDelimiter_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+  def helper_getFirstHtmlDelimiter_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+      attr.getFirstHtmlDelimiter(string, startIdx, endIdx)
 
-  def helper_getFirstHtmlDelimiter_notFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
-    found, idx = attr.getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getFirstHtmlDelimiter_notFound(self, string, startIdx, endIdx):
+    found, idx = attr.getFirstHtmlDelimiter(string, startIdx, endIdx)
     self.assertFalse(found)
     self.assertEqual(idx, -1)
 
-  def helper_getFirstHtmlDelimiter_found(self, string, inclusiveStartIdx, exclusiveEndIdx, foundAt):
-    found, idx = attr.getFirstHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getFirstHtmlDelimiter_found(self, string, startIdx, endIdx, foundAt):
+    found, idx = attr.getFirstHtmlDelimiter(string, startIdx, endIdx)
     self.assertTrue(found)
     self.assertEqual(idx, foundAt)
 
   def test_getFirstHtmlDelimiter_nonSense(self):
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, 345)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, 7)
+    self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, 6)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, None)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, True)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 0, [])
@@ -2565,7 +2797,7 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", True, False)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", None, None)
     self.helper_getFirstHtmlDelimiter_exceptionRaised("string", "", "")
-    self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 2, 2)
+    self.helper_getFirstHtmlDelimiter_exceptionRaised("string", 2, 1)
     self.helper_getFirstHtmlDelimiter_exceptionRaised(None, 0, 3)
     self.helper_getFirstHtmlDelimiter_exceptionRaised([], 0, 3)
     self.helper_getFirstHtmlDelimiter_exceptionRaised(None, None, None)
@@ -2573,54 +2805,53 @@ class HtmlAttributesTests(unittest.TestCase):
 
   def test_getFirstHtmlDelimiter_emptyString(self):
     self.helper_getFirstHtmlDelimiter_exceptionRaised("", 0, 0)
-    self.helper_getFirstHtmlDelimiter_exceptionRaised("", 0, 1)
 
   def test_getFirstHtmlDelimiter_notFound(self):
-    self.helper_getFirstHtmlDelimiter_notFound("Q", 0, 1)
-    self.helper_getFirstHtmlDelimiter_notFound("one-two-three", 0, 13)
-    self.helper_getFirstHtmlDelimiter_notFound("=Hello=", 1, 6)
-    self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 10)
-    self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 20)
+    self.helper_getFirstHtmlDelimiter_notFound("Q", 0, 0)
+    self.helper_getFirstHtmlDelimiter_notFound("one-two-three", 0, 12)
+    self.helper_getFirstHtmlDelimiter_notFound("=Hello=", 1, 5)
+    self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 2, 9)
+    self.helper_getFirstHtmlDelimiter_notFound("\n'greeting'\t= \"Hello\" ", 15, 19)
 
   def test_getFirstHtmlDelimiter_found(self):
-    self.helper_getFirstHtmlDelimiter_found(" ", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("\t", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("\n", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("'", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("\"", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("=", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("'=='", 0, 1, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("key = 'value'", 0, 11, foundAt = 3)
-    self.helper_getFirstHtmlDelimiter_found("key='value'", 0, 11, foundAt = 3)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 17, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 4, foundAt = 0)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 17, foundAt = 1)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 3, foundAt = 1)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 2, 17, foundAt = 5)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 5, 17, foundAt = 5)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 17, foundAt = 6)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 8, 17, foundAt = 8)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 17, foundAt = 16)
-    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 11, foundAt = 5)
+    self.helper_getFirstHtmlDelimiter_found(" ", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("\t", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("\n", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("'", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("\"", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("=", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("'=='", 0, 0, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("key = 'value'", 0, 10, foundAt = 3)
+    self.helper_getFirstHtmlDelimiter_found("key='value'", 0, 10, foundAt = 3)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 16, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 0, 3, foundAt = 0)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 16, foundAt = 1)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 1, 2, foundAt = 1)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 2, 16, foundAt = 5)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 5, 16, foundAt = 5)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 6, 16, foundAt = 6)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 8, 16, foundAt = 8)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 16, foundAt = 16)
+    self.helper_getFirstHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 10, foundAt = 5)
 
-  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiveEndIdx)
+      attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, startIdx, endIdx)
 
-  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
-    found, idx = attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound(self, string, startIdx, endIdx):
+    found, idx = attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, startIdx, endIdx)
     self.assertFalse(found)
     self.assertEqual(idx, -1)
 
-  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound(self, string, inclusiveStartIdx,
-                                                                   exclusiveEndIdx, foundAt):
-    found, idx = attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound(self, string, startIdx, endIdx, foundAt):
+    found, idx = attr.getFirstHtmlDelimiterThenSkipWhiteSpaces(string, startIdx, endIdx)
     self.assertTrue(found)
     self.assertEqual(idx, foundAt)
 
   def test_getFirstHtmlDelimiterThenSkipWhiteSpaces_nonSense(self):
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, 345)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, 7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, 6)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, None)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, True)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 0, [])
@@ -2633,72 +2864,69 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", True, False)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", None, None)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", "", "")
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 2, 2)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("string", 2, 1)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised(None, 0, 3)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised([], 0, 3)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised(None, None, None)
     self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised(0, 0, 0)
 
   def test_getFirstHtmlDelimiterThenSkipWhiteSpaces_emptyString(self):
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("", 0, 1)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_exceptionRaised("", 0, 0)
 
   def test_getFirstHtmlDelimiterThenSkipWhiteSpaces_notFound(self):
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("Q", 0, 1)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound(" ", 0, 1)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("string", 0, 6)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 0, 3)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 4, 7)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 8, 13)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("<one-two-three>", 0, 15)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("Q", 0, 0)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound(" ", 0, 0)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("string", 0, 5)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 0, 2)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 4, 6)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 8, 12)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("<one-two-three>", 0, 14)
 
   def test_getFirstHtmlDelimiterThenSkipWhiteSpaces_LastIdxIsWhiteSpace(self):
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 0, 3)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one\ttwo three", 0, 3)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 4, 8)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two\nthree", 4, 8)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 0, 2)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one\ttwo three", 0, 2)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two three", 4, 7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfNotFound("one two\nthree", 4, 7)
 
   def test_getFirstHtmlDelimiterThenSkipWhiteSpaces_found(self):
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("=", 0, 1, foundAt=0)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("'", 0, 1, foundAt=0)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("\"", 0, 1, foundAt=0)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two three", 0, 13, foundAt=4)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two three", 4, 13, foundAt=8)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two=three", 4, 13, foundAt=7)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t = value", 1, 14, foundAt=7)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t 'value'", 1, 14, foundAt=7)
-    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t \"value\"", 1, 14, foundAt=7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("=", 0, 0, foundAt=0)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("'", 0, 0, foundAt=0)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("\"", 0, 0, foundAt=0)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two three", 0, 12, foundAt=4)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two three", 4, 12, foundAt=8)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("one two=three", 4, 12, foundAt=7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t = value", 1, 13, foundAt=7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t 'value'", 1, 13, foundAt=7)
+    self.helper_getFirstHtmlDelimiterThenSkipWhiteSpaces_checkIfFound("key\r\n\t \"value\"", 1, 13, foundAt=7)
 
-  def helper_getLastValueByFoundEquals_exceptionRaised(self, string, inclStartIdx, inclEndIdx):
+  def helper_getLastValueByFoundEquals_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
+      attr.getLastValueByFoundEquals(string, startIdx, endIdx)
 
-  def helper_getLastValueByFoundEquals_checkIfCorrupt(self, string, inclStartIdx, inclEndIdx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx \
-                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
+  def helper_getLastValueByFoundEquals_checkIfCorrupt(self, string, startIdx, endIdx):
+    corrupt, found, equalIdx, openQuoteIdx, closeQuoteIdx = attr.getLastValueByFoundEquals(string, startIdx, endIdx)
     self.assertTrue(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
-    self.assertEqual(openingQuoteIdx, -1)
-    self.assertEqual(ClosingQuoteIdx, -1)
+    self.assertEqual(openQuoteIdx, -1)
+    self.assertEqual(closeQuoteIdx, -1)
 
-  def helper_getLastValueByFoundEquals_checkIfNotFound(self, string, inclStartIdx, inclEndIdx):
-    corrupt, found, equalIdx, openingQuoteIdx, ClosingQuoteIdx \
-                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
+  def helper_getLastValueByFoundEquals_checkIfNotFound(self, string, startIdx, endIdx):
+    corrupt, found, equalIdx, openQuoteIdx, closeQuoteIdx = attr.getLastValueByFoundEquals(string, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertFalse(found)
     self.assertEqual(equalIdx, -1)
-    self.assertEqual(openingQuoteIdx, -1)
-    self.assertEqual(ClosingQuoteIdx, -1)
+    self.assertEqual(openQuoteIdx, -1)
+    self.assertEqual(closeQuoteIdx, -1)
 
-  def helper_getLastValueByFoundEquals_checkIfFound(self, string, inclStartIdx, inclEndIdx, equalIdxAt,
+  def helper_getLastValueByFoundEquals_checkIfFound(self, string, startIdx, endIdx, equalIdxAt,
                                                     openingQuoteIdxAt, closingQuoteIdxAt):
-    corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx \
-                                                      = attr.getLastValueByFoundEquals(string, inclStartIdx, inclEndIdx)
+    corrupt, found, equalIdx, openQuoteIdx, closeQuoteIdx = attr.getLastValueByFoundEquals(string, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertTrue(found)
     self.assertEqual(equalIdx, equalIdxAt)
-    self.assertEqual(openingQuoteIdx, openingQuoteIdxAt)
-    self.assertEqual(closingQuoteIdx, closingQuoteIdxAt)
+    self.assertEqual(openQuoteIdx, openingQuoteIdxAt)
+    self.assertEqual(closeQuoteIdx, closingQuoteIdxAt)
 
   def test_getLastValueByFoundEquals_nonSense(self):
     self.helper_getLastValueByFoundEquals_exceptionRaised("string", -1, 2)
@@ -2881,17 +3109,17 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastValueByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel' checked", 8, 38,
                                                        equalIdxAt=18, openingQuoteIdxAt=20, closingQuoteIdxAt=38)
 
-  def helper_getLastHtmlDelimiter_exceptionRaised(self, string, inclusiveStartIdx, exclusiveEndIdx):
+  def helper_getLastHtmlDelimiter_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+      attr.getLastHtmlDelimiter(string, startIdx, endIdx)
 
-  def helper_getLastHtmlDelimiter_notFound(self, string, inclusiveStartIdx, exclusiveEndIdx):
-    found, idx = attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getLastHtmlDelimiter_notFound(self, string, startIdx, endIdx):
+    found, idx = attr.getLastHtmlDelimiter(string, startIdx, endIdx)
     self.assertFalse(found)
     self.assertEqual(idx, -1)
 
-  def helper_getLastHtmlDelimiter_found(self, string, inclusiveStartIdx, exclusiveEndIdx, foundAt):
-    found, idx = attr.getLastHtmlDelimiter(string, inclusiveStartIdx, exclusiveEndIdx)
+  def helper_getLastHtmlDelimiter_found(self, string, startIdx, endIdx, foundAt):
+    found, idx = attr.getLastHtmlDelimiter(string, startIdx, endIdx)
     self.assertTrue(found)
     self.assertEqual(idx, foundAt)
 
@@ -2944,23 +3172,23 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 11, 16, foundAt = 16)
     self.helper_getLastHtmlDelimiter_found("\n'key'\t\t= \"value\"", 3, 8, foundAt = 8)
 
-  def helper_getValuesSafelyByFoundEquals_exceptionRaised(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
+  def helper_getValuesSafelyByFoundEquals_exceptionRaised(self, attributeString, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+      attr.getValuesSafelyByFoundEquals(attributeString, startIdx, endIdx)
 
-  def helper_getValuesSafelyByFoundEquals_corrupt(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
-    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  def helper_getValuesSafelyByFoundEquals_corrupt(self, attributeString, startIdx, endIdx):
+    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, startIdx, endIdx)
     self.assertTrue(corrupt)
     self.assertEqual(values, [])
 
-  def helper_getValuesSafelyByFoundEquals_notFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
-    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  def helper_getValuesSafelyByFoundEquals_notFound(self, attributeString, startIdx, endIdx):
+    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertEqual(values, [])
 
-  def helper_getValuesSafelyByFoundEquals_checkIfFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx,
+  def helper_getValuesSafelyByFoundEquals_checkIfFound(self, attributeString, startIdx, endIdx,
                                                        foundValues):
-    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+    corrupt, values = attr.getValuesSafelyByFoundEquals(attributeString, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertEqual(values, foundValues)
 
@@ -3144,23 +3372,23 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getValuesSafelyByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel' checked", 5, 18,
                                                           foundValues=[(5, 6, 14), (18, 20, 38)])
 
-  def helper_getValuesByFoundEquals_exceptionRaised(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
+  def helper_getValuesByFoundEquals_exceptionRaised(self, attributeString, startIdx, endIdx):
     with self.assertRaises(Exception):
-      attr.getValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+      attr.getValuesByFoundEquals(attributeString, startIdx, endIdx)
 
-  def helper_getValuesByFoundEquals_corrupt(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
-    corrupt, values = attr.getValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  def helper_getValuesByFoundEquals_corrupt(self, attributeString, startIdx, endIdx):
+    corrupt, values = attr.getValuesByFoundEquals(attributeString, startIdx, endIdx)
     self.assertTrue(corrupt)
     self.assertEqual(values, [])
 
-  def helper_getValuesByFoundEquals_notFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx):
-    corrupt, values = attr.getValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  def helper_getValuesByFoundEquals_notFound(self, attributeString, startIdx, endIdx):
+    corrupt, values = attr.getValuesByFoundEquals(attributeString, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertEqual(values, [])
 
-  def helper_getValuesByFoundEquals_checkIfFound(self, attributeString, inclusiveStartIdx, inclusiveEndIdx,
-                                                    foundValues):
-    corrupt, values = attr.getValuesByFoundEquals(attributeString, inclusiveStartIdx, inclusiveEndIdx)
+  def helper_getValuesByFoundEquals_checkIfFound(self, attributeString, startIdx, endIdx,
+                                                 foundValues):
+    corrupt, values = attr.getValuesByFoundEquals(attributeString, startIdx, endIdx)
     self.assertFalse(corrupt)
     self.assertEqual(values, foundValues)
 
