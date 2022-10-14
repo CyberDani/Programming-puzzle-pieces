@@ -120,29 +120,6 @@ Only the first attribute is taken and validated. Raises exception for empty stri
     return False, attributeName, None, firstCharIdx, lastCharIdx
   return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
 
-def getSafelyCurrentOrNextAttribute(attributesString, index):
-  """Safe version of getSafelyCurrentOrNextAttribute because index can point anywhere with some performance overhead. \n
-Only the first attribute is taken and validated. Raises exception for empty string.
-\n Return values:
-* <corrupt>: True | False
-* <attributeName>, <attributeValue> : **None** if corrupt or not found
-* <attrStartIdx>, <attrEndIdx> : **-1** if corrupt or not found"""
-  noAttributeResult = (False, None, None, -1, -1)
-  corruptResult = (True, None, None, -1, -1)
-  corrupt, found, attributeName, firstCharIdx, lastCharIdx = getSafelyCurrentOrNextName(attributesString, index)
-  if corrupt:
-    return corruptResult
-  if not found:
-    return noAttributeResult
-  if lastCharIdx == len(attributesString) - 1:
-    return False, attributeName, None, firstCharIdx, lastCharIdx
-  corrupt, found, firstQuoteIdx, secondQuoteIdx = getCurrentValue(attributesString, lastCharIdx + 1)
-  if corrupt:
-    return corruptResult
-  if not found:
-    return False, attributeName, None, firstCharIdx, lastCharIdx
-  return False, attributeName, attributesString[firstQuoteIdx + 1:secondQuoteIdx], firstCharIdx, secondQuoteIdx
-
 def getAttributeNameIdx(htmlAttributes, name):
   """Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
@@ -181,26 +158,6 @@ Return values:\n
   corruptResult = (True, False, None, -1, -1)
   notFoundResult = (False, False, None, -1, -1)
   corrupt, found, firstIdx = jumpToFirstIdxOfCurrentOrNextName(attributesString, index)
-  if corrupt:
-    return corruptResult
-  if not found:
-    return notFoundResult
-  found, delimiterAfterLastIdx = getFirstHtmlDelimiter(attributesString, firstIdx, len(attributesString) - 1)
-  if not found:
-    return False, True, attributesString[firstIdx:len(attributesString)], firstIdx, len(attributesString) - 1
-  return False, True, attributesString[firstIdx:delimiterAfterLastIdx], firstIdx, delimiterAfterLastIdx - 1
-
-def getSafelyCurrentOrNextName(attributesString, index):
-  """Safe version of getCurrentOrNextName. Index can point anywhere for some performance overhead.\n
-Raises error for empty string because <startIdx> cannot be set properly\n
-Return values:\n
-* corrupt : True | False *(does not validate the attribute value)*
-* found: True | False *(false if corrupt)*
-* attributeName: **None** if corrupt or not found
-* firstCharIdx, lastCharIdx: **-1** if corrupt or not found """
-  corruptResult = (True, False, None, -1, -1)
-  notFoundResult = (False, False, None, -1, -1)
-  corrupt, found, firstIdx = jumpSafelyToFirstIdxOfCurrentOrNextName(attributesString, index)
   if corrupt:
     return corruptResult
   if not found:
@@ -255,33 +212,6 @@ Return values:\n
     index = -1
   return False, True, index + 1
 
-def jumpSafelyToFirstIdxOfCurrentOrNextName(attributesString, index):
-  """Safe version of jumpToFirstIdxOfCurrentOrNextName where index can point anywhere for some performance overhead.\n
-Raises error for empty string.\n
-Return values:\n
-* corrupt : True | False *(does not validate the attribute value)*
-* found: True | False *(false if corrupt)*
-* firstCharIdx: **-1** if corrupt or not found """
-  corruptResult = (True, False, -1)
-  notFoundResult = (False, False, -1)
-  corrupt, valFound, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
-  if corrupt:
-    return corruptResult
-  if valFound and index <= closingQuoteIdx:
-    found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, equalIdx)
-  # space is between name and equal char or before a new name
-  elif attributesString[index].isspace():
-    found, index = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, index, len(attributesString))
-    if not found:
-      return notFoundResult
-    if attributesString[index] == "=":
-      found, index = stringUtil.getLastNonWhiteSpaceCharIdx(attributesString, 0, index)
-      if not found:
-        return corruptResult
-  # get the first index of the name (if not found, return 0)
-  found, idx = getLastHtmlDelimiter(attributesString, 0, index)
-  return False, True, idx + 1
-
 def getCurrentValue(attributesString, index):
   """Index must point at most to the equal character before the value. Otherwise, the result is undefined behavior.\n
 Raises exception for empty string.\n
@@ -293,33 +223,6 @@ Return values:\n
   checks.checkIntIsBetween(index, 0, len(attributesString) - 1)
   notFoundResult = (False, False, -1, -1)
   corruptResult = (True, False, -1, -1)
-  found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString) - 1)
-  if not found:
-    return notFoundResult
-  firstNonSpaceChar = attributesString[firstNonSpaceCharIdx]
-  if firstNonSpaceChar != "=":
-    return charIsQuote(firstNonSpaceChar), False, -1, -1
-  corrupt, openingQuoteIdx, closingQuoteIdx, quoteChar = getQuoteIndexesByEqualChar(attributesString,
-                                                                                    firstNonSpaceCharIdx)
-  if corrupt:
-    return corruptResult
-  return False, True, openingQuoteIdx, closingQuoteIdx
-
-def getSafelyCurrentValue(attributesString, index):
-  """ Safe version of getCurrentValue because index can point anywhere within the current attribute for some
-performance overhead.\n
-Raises exception for empty string because index cannot be set properly\n
-Return values:\n
-* corrupt : True | False
-* found: True | False (False if corrupt)
-* openingQuoteIdx, closingQuoteIdx: **-1** if corrupt or not found """
-  notFoundResult = (False, False, -1, -1)
-  corruptResult = (True, False, -1, -1)
-  corrupt, found, equalIdx, openingQuoteIdx, closingQuoteIdx = getLastValueByFoundEquals(attributesString, 0, index)
-  if corrupt:
-    return corruptResult
-  if found and index <= closingQuoteIdx:
-    index = equalIdx
   found, firstNonSpaceCharIdx = getFirstHtmlDelimiterThenSkipWhiteSpaces(attributesString, index, len(attributesString) - 1)
   if not found:
     return notFoundResult
