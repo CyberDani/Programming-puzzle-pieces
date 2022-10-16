@@ -544,7 +544,7 @@ class HtmlBuilderTests(unittest.TestCase):
     dest.close()
     lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 2)
-    self.assertEqual(lines[0], "\t<a href='url.com'>")
+    self.assertEqual(lines[0], "\t<a href=\"url.com\">")
     self.assertEqual(lines[1], "\t</a>")
 
   def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_emptyFile_2(self):
@@ -563,7 +563,7 @@ class HtmlBuilderTests(unittest.TestCase):
     lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(1, ["be proud of yourself"],
                                                                        "span", "class='myClass'")
     self.assertEqual(len(lines), 3)
-    self.assertEqual(lines[0], "\t<span class='myClass'>")
+    self.assertEqual(lines[0], "\t<span class=\"myClass\">")
     self.assertEqual(lines[1], "\t\tbe proud of yourself")
     self.assertEqual(lines[2], "\t</span>")
     lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(2, ["<div>", "\thooray!", "</div>"],
@@ -582,7 +582,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[0], "line 1")
     self.assertEqual(lines[1], "\tline 2")
     self.assertEqual(lines[2], "\t\t\tline 3")
-    self.assertEqual(lines[3], "\t\t\t<span class='myClass'>")
+    self.assertEqual(lines[3], "\t\t\t<span class=\"myClass\">")
     self.assertEqual(lines[4], "\t\t\t\tbe proud of yourself")
     self.assertEqual(lines[5], "\t\t\t\tfind a meaning")
     self.assertEqual(lines[6], "\t\t\t</span>")
@@ -597,6 +597,14 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(lines[5], "\t\t\t\thooray!")
     self.assertEqual(lines[6], "\t\t\t</div>")
     self.assertEqual(lines[7], "\t\t</footer>")
+
+  def test_includeFileSurroundedByHtmlTagToHtmlOutputFile_jQueryExamples(self):
+    lines = self.helper_includeFileSurroundedByHtmlTagToHtmlOutputFile(1, ["be proud of yourself"],
+                                                   "span.cl1#id1.cl2", "selected class='myClass' id='myId' value=\"2\"")
+    self.assertEqual(len(lines), 3)
+    self.assertEqual(lines[0], "\t<span id=\"id1 myId\" class=\"cl1 cl2 myClass\" selected value=\"2\">")
+    self.assertEqual(lines[1], "\t\tbe proud of yourself")
+    self.assertEqual(lines[2], "\t</span>")
 
   @staticmethod
   def helper_includeFileSurroundedByHtmlTagToHtmlOutputFile_2(indent, lines, htmlTag, htmlTagOption):
@@ -802,7 +810,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlTag, "table")
     self.assertEqual(htmlOptions, "id=\"importantId\"")
 
-  def test_filterJqueryLikeHtmlSelector_twoSelector(self):
+  def test_filterJqueryLikeHtmlSelector_twoSelectors(self):
     htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.My-clasS.secondClass")
     self.assertEqual(htmlTag, "div")
     self.assertEqual(htmlOptions, "class=\"My-clasS secondClass\"")
@@ -816,7 +824,7 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlTag, "h1")
     self.assertEqual(htmlOptions, "id=\"myId\" class=\"myClass\"")
 
-  def test_filterJqueryLikeHtmlSelector_threeSelector(self):
+  def test_filterJqueryLikeHtmlSelector_threeSelectors(self):
     htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1.cl2.cl3")
     self.assertEqual(htmlTag, "div")
     self.assertEqual(htmlOptions, "class=\"cl1 cl2 cl3\"")
@@ -841,6 +849,14 @@ class HtmlBuilderTests(unittest.TestCase):
     htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div#id1#id2#id3")
     self.assertEqual(htmlTag, "div")
     self.assertEqual(htmlOptions, "id=\"id1 id2 id3\"")
+
+  def test_filterJqueryLikeHtmlSelector_fourSelectors(self):
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1#id1#id2.cl2")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1 id2\" class=\"cl1 cl2\"")
+    htmlTag, htmlOptions = htmlBuilder.filterJqueryLikeHtmlSelector("div.cl1#id1.cl2#id2")
+    self.assertEqual(htmlTag, "div")
+    self.assertEqual(htmlOptions, "id=\"id1 id2\" class=\"cl1 cl2\"")
 
   def test_getOpenedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):
@@ -877,9 +893,27 @@ class HtmlBuilderTests(unittest.TestCase):
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("div"), "<div>")
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("footer"), "<footer>")
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("ul", "selected"), "<ul selected>")
-    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com'"), "<a href='webpage.com'>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com'"), "<a href=\"webpage.com\">")
     self.assertEqual(htmlBuilder.getOpenedHtmlTag("a", "href='webpage.com' class='new-link'"),
-                    "<a href='webpage.com' class='new-link'>")
+                    "<a href=\"webpage.com\" class=\"new-link\">")
+
+  def test_getOpenedHtmlTag_examplesWithJQuery(self):
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("b.myClass"), "<b class=\"myClass\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("img#myId"), "<img id=\"myId\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a#myId", "\r\nid =\t\t'mainContent'"), "<a id=\"myId mainContent\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("table#myId#mainContent"), "<table id=\"myId mainContent\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("h1.cl1.cl2.cl3"), "<h1 class=\"cl1 cl2 cl3\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("option#id1.cl1.cl2#id2.cl3#id3"),
+                                                  "<option id=\"id1 id2 id3\" class=\"cl1 cl2 cl3\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("button#id1.cl1.cl2#id2.cl3#id3", "class = 'myClass'"),
+                                                  "<button id=\"id1 id2 id3\" class=\"cl1 cl2 cl3 myClass\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("div#id1.cl1.cl2#id2.cl3#id3", "class = 'myClass' id=\"myId\""),
+                                                  "<div id=\"id1 id2 id3 myId\" class=\"cl1 cl2 cl3 myClass\">")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("a#id1.cl1.cl2#id2.cl3#id3", "def class = 'myClass' id=\"myId\""),
+                                                  "<a id=\"id1 id2 id3 myId\" class=\"cl1 cl2 cl3 myClass\" def>")
+    self.assertEqual(htmlBuilder.getOpenedHtmlTag("span#id1.cl1.cl2#id2.cl3#id3",
+                                                  "def class = 'myClass' id=\"myId\" selected value='2'"),
+                                "<span id=\"id1 id2 id3 myId\" class=\"cl1 cl2 cl3 myClass\" def selected value=\"2\">")
 
   def test_getClosedHtmlTag_nonSense(self):
     with self.assertRaises(Exception):

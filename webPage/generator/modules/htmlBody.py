@@ -22,6 +22,7 @@ class HtmlBody:
     return self
 
   def openHtmlTagThenAppendNewLine(self, htmlTag, options = ""):
+    """Includes jQuery-like selectors."""
     tabs = htmlBuilder.getEscapedTabs(self.indentDepth)
     openedHtmlTag = htmlBuilder.getOpenedHtmlTag(htmlTag, options)
     self.htmlFile.write(tabs + openedHtmlTag + "\n")
@@ -31,7 +32,7 @@ class HtmlBody:
 
   def closeLastOpenedHtmlTag(self):
     if len(self.openedHtmlTags) == 0:
-      raise Exception("There is not any opened html tag remained to closed")
+      raise Exception("There is not any opened html tag remained to close")
     self.indentDepth -= 1
     tabs = htmlBuilder.getEscapedTabs(self.indentDepth)
     lastTag = self.openedHtmlTags[-1]

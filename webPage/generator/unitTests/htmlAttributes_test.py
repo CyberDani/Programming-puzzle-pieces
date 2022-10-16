@@ -1060,8 +1060,7 @@ class HtmlAttributesTests(unittest.TestCase):
       attr.getAllAttributes(-1)
 
   def test_getAllAttributes_emptyString(self):
-    with self.assertRaises(Exception):
-      attr.getAllAttributes("")
+    self.helper_getAllAttributes_checkIfNotFound("")
 
   def test_getAllAttributes_space(self):
     self.helper_getAllAttributes_checkIfNotFound(" ")
@@ -3400,3 +3399,176 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getValueByName_checkIfValueFound("action=\".\" method=\"get\" class=\"cl1 cl1 cl2 cl1 cl3 cl2\" "
                                                   "style=\"display:inline-block\"", "class",
                                                   foundValue="cl1 cl1 cl2 cl1 cl3 cl2")
+
+  def helper_combineTwoAttributeStrings_checkIfException(self, arg1, arg2):
+    with self.assertRaises(Exception):
+      attr.combineTwoAttributeStrings(arg1, arg2)
+
+  def helper_combineTwoAttributeStrings_checkIfCorrupt(self, attrString1, attrString2):
+    corrupt, attributes = attr.combineTwoAttributeStrings(attrString1, attrString2)
+    self.assertTrue(corrupt)
+    self.assertEqual(attributes, {})
+
+  def helper_combineTwoAttributeStrings_checkIfNotFound(self, attrString1, attrString2):
+    corrupt, attributes = attr.combineTwoAttributeStrings(attrString1, attrString2)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, {})
+
+  def helper_combineTwoAttributeStrings_checkIfFound(self, attrString1, attrString2, foundAttributes):
+    corrupt, attributes = attr.combineTwoAttributeStrings(attrString1, attrString2)
+    self.assertFalse(corrupt)
+    self.assertEqual(attributes, foundAttributes)
+
+  def test_combineTwoAttributeStrings_nonSense(self):
+    self.helper_combineTwoAttributeStrings_checkIfException("Q", 0)
+    self.helper_combineTwoAttributeStrings_checkIfException(0, "Q")
+    self.helper_combineTwoAttributeStrings_checkIfException(None, "Q")
+    self.helper_combineTwoAttributeStrings_checkIfException(2, 3)
+    self.helper_combineTwoAttributeStrings_checkIfException(True, False)
+    self.helper_combineTwoAttributeStrings_checkIfException(True, None)
+    self.helper_combineTwoAttributeStrings_checkIfException(None, None)
+    self.helper_combineTwoAttributeStrings_checkIfException([], [])
+    self.helper_combineTwoAttributeStrings_checkIfException({}, [])
+    self.helper_combineTwoAttributeStrings_checkIfException({}, {})
+
+  def test_combineTwoAttributeStrings_notFound_noAttributes(self):
+    self.helper_combineTwoAttributeStrings_checkIfNotFound("", "")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound(" ", "")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound("", " ")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound(" ", " ")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound(" \t \r\n  ", "")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound("", "\t \t\r\n\t  \t")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound("\t", "\t")
+    self.helper_combineTwoAttributeStrings_checkIfNotFound("\r\n", "\n")
+
+  def test_combineTwoAttributeStrings_corrupt_attributeIsCorrupt(self):
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected='true'", "'")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("'", "'")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("'", "default")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "\"")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "''")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "'\"")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "'''")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "\"\"\"\"")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("=", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("= = =", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("= 2", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("= '", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt(" = '", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("= \"", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt(" = \"", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("'='", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt('"="', "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("value = 2", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", 'value = \t')
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", 'value =')
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "'field' = 'value'")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "'field' = \"value\"")
+
+  def test_combineTwoAttributeStrings_corrupt_combineValueWitNonValue(self):
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected='true'", "selected")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected", "selected='true'")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("    \t selected  \r\n", "\t selected \n = \n 'true' \t ")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("selected='true' a", "selected a")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("class='myClass' selected='true' a='2'", "selected b s d")
+    self.helper_combineTwoAttributeStrings_checkIfCorrupt("class='myClass' a='2' selected='true'", "ref selected b s ")
+
+  def test_combineTwoAttributeStrings_found_onlyOneStringContainsAttributes(self):
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "selected", foundAttributes={"selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "\tselected\t", foundAttributes={"selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("selected", "", foundAttributes={"selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("\t  selected  \t", "", foundAttributes={"selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("b\t\tz\t\ta p", "", foundAttributes={"a": None, "b": None,
+                                                                                              "p": None, "z": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "b\t\tz\t\ta p", foundAttributes={"a": None, "b": None,
+                                                                                              "p": None, "z": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "title\r\n\t='val'\n\t\tdefault\t\t\n",
+                                                        foundAttributes={"default": None, "title": "val"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "title\r\n\t=\t\t'val'\n\t\tdefault\t=   \" true \"\t\t\n",
+                                                        foundAttributes={"default": " true ", "title": "val"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("", "title\r\n\t=\t\t\"my 'title'\"\n\t\tdefault\t=   "
+                                                        "\" true \"\t\t\n class = \"cl1 cl2 cl3\"",
+                                  foundAttributes={"class": "cl1 cl2 cl3", "default": " true ", "title": "my 'title'"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("\ttitle\r\n\t=\t\t\"my 'title'\"\n\t\tdefault\t=   \" true \""
+                                                        "\t\t\n class = \"cl1 cl2 cl3\"\t\r\n", "",
+                                  foundAttributes={"class": "cl1 cl2 cl3", "default": " true ", "title": "my 'title'"})
+
+  def test_combineTwoAttributeStrings_found_combineOnlyAttributeNames(self):
+    self.helper_combineTwoAttributeStrings_checkIfFound("\tdefault ", " default\r\n", foundAttributes={"default": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("default ", " selected", foundAttributes={"default": None,
+                                                                                                   "selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("\tselected\t", "\ndefault\n", foundAttributes={"default": None,
+                                                                                                      "selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("\te\t", "\nb\nd\nc\n", foundAttributes={"b": None, "c": None,
+                                                                                                 "d": None, "e": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("\ta\te\t", "\nd\nb\nc\n", foundAttributes={"a": None,
+                                                                            "b": None, "c": None, "d": None, "e": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("a b", "\ta\t\t\t", foundAttributes={"a": None, "b": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("b", "\tb\t\ta\t", foundAttributes={"a": None, "b": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("a\r\nb", "\tb\t\ta\t", foundAttributes={"a": None, "b": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("c a\r\nb", "\tb\t\ta\t", foundAttributes={"a": None, "b": None,
+                                                                                                   "c": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound(" a\r\nb", "\tb\tc\ta\t", foundAttributes={"a": None, "b": None,
+                                                                                                   "c": None})
+
+  def test_combineTwoAttributeStrings_found_combineAttributeValues(self):
+    self.helper_combineTwoAttributeStrings_checkIfFound("default = 'true'", " default = \"false\"",
+                                                        foundAttributes={"default": "true false"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("default = \"false '\"", " default = \"true\"",
+                                                        foundAttributes={"default": "false ' true"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("default = 'true'", " default = \"true\"",
+                                                        foundAttributes={"default": "true true"})
+    self.helper_combineTwoAttributeStrings_checkIfFound("ref default = 'false '", "selected='true' default = \"true\"",
+                                            foundAttributes={"default": "false  true", "ref": None, "selected": "true"})
+
+  def test_combineTwoAttributeStrings_found_other(self):
+    self.helper_combineTwoAttributeStrings_checkIfFound("selected", " default = \"false\"",
+                                                        foundAttributes={"default": "false", "selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("selected src='img.png'", " default = \"false\"",
+                                              foundAttributes={"default": "false", "src": "img.png", "selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("selected src='img.png'", " default = \"false\"draggable",
+                            foundAttributes={"default": "false", "draggable": None, "src": "img.png", "selected": None})
+    self.helper_combineTwoAttributeStrings_checkIfFound("selected src='img.png' class='cl1'",
+                                                        "class='cl2'default = \"false\"draggable",
+        foundAttributes={"class": "cl1 cl2", "default": "false", "draggable": None, "src": "img.png", "selected": None})
+
+  def helper_getStringFromDictionary_checkResult(self, dictionary, expectedResult):
+    result = attr.getStringFromDictionary(dictionary)
+    self.assertEqual(result, expectedResult)
+
+  def test_getStringFromDictionary_nonSense(self):
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary("class='myClass'")
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary(None)
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary(["selected", "default"])
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary({2: "myClass"})
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary({"class": True})
+    with self.assertRaises(Exception):
+      attr.getStringFromDictionary({None: None})
+
+  def test_getStringFromDictionary_emptyDict(self):
+    self.helper_getStringFromDictionary_checkResult({}, "")
+
+  def test_getStringFromDictionary_examples(self):
+    self.helper_getStringFromDictionary_checkResult({"default": None}, "default")
+    self.helper_getStringFromDictionary_checkResult({"class": "myClass colored"}, "class=\"myClass colored\"")
+    self.helper_getStringFromDictionary_checkResult({"class": "myClass colored", "id": "myId mainContent", "value":"2"},
+                                                    "class=\"myClass colored\" id=\"myId mainContent\" value=\"2\"")
+    self.helper_getStringFromDictionary_checkResult({"default": None, "selected": None, "animated": None},
+                                                    "default selected animated")
+    self.helper_getStringFromDictionary_checkResult({"class": "myClass", "default": None},
+                                                    "class=\"myClass\" default")
+    self.helper_getStringFromDictionary_checkResult({"default": None, "class": "myClass"},
+                                                    "default class=\"myClass\"")
+    self.helper_getStringFromDictionary_checkResult({"class": "myClass", "selected": None, "id": "myId"},
+                                                    "class=\"myClass\" selected id=\"myId\"")
+    self.helper_getStringFromDictionary_checkResult({"class": "cl1 cl2", "selected": None, "def": None},
+                                                    "class=\"cl1 cl2\" selected def")
+    self.helper_getStringFromDictionary_checkResult({"class": "cl1 cl2", "selected": None, "def": None, "id": "id id2"},
+                                                    "class=\"cl1 cl2\" selected def id=\"id id2\"")
+    self.helper_getStringFromDictionary_checkResult({"animated": None, "selected": None, "def": None, "id": "id id2"},
+                                                    "animated selected def id=\"id id2\"")

@@ -98,14 +98,14 @@ def writeHtmlBodyContent(settings):
       .includeFileByTypeThenAppendNewLine(File.HTML_INCLUDE_SIDENAV) \
       .includeFileByTypeThenAppendNewLine(File.HTML_INCLUDE_TOPQUOTE) \
       .addHtmlNewLineThenAppendNewLine(1)
-  body.openHtmlTagThenAppendNewLine("div", "id=\"webContent\"") \
+  body.openHtmlTagThenAppendNewLine("div#webContent", "") \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_SVG_CURVE1) \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_WHAT_PROJECT_OFFERS) \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_SVG_CURVE2) \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_PERSONAL_RECOMMENDATION) \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_SVG_CURVE3) \
       .includeFileByTypeThenAppendNewLine(File.MAIN_PAGE_BELOW_CURVE3) \
-      .closeLastOpenedHtmlTag()  # div#webContent TODO
+      .closeLastOpenedHtmlTag()
   body.includeFileByTypeThenAppendNewLine(File.HTML_INCLUDE_FOOTER) \
       .addJsScriptSrcByTypeThenAppendNewLine(File.SCRIPT_GITHUB_API) \
       .addJsScriptSrcByTypeThenAppendNewLine(File.SCRIPT_NAVIGATION) \

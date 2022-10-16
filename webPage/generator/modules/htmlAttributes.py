@@ -1,6 +1,49 @@
 from modules import checks
 from modules import stringUtil
 
+def getStringFromDictionary(attributesDict):
+  checks.checkIfType(attributesDict, dict)
+  result = ""
+  for key, value in attributesDict.items():
+    checks.checkIfString(key, 0, 50)
+    result += key
+    if value is not None:
+      checks.checkIfString(key, 0, 500)
+      result += "=\"" + value + "\""
+    result += " "
+  if result:
+    result = result[:-1]
+  return result
+
+def combineTwoAttributeStrings(string1, string2):
+  """Only the first declaration is taken per string, duplication is removed. \n
+Combining value and non-value for the same name is considered corrupt. Duplicates equal values.\n
+\n Return values: \n
+* corrupt: True | False
+* attributes: dictionary of {attributeName -> None | attributeString}"""
+  corruptReturn = (True, {})
+  corrupt1, attributes1 = getAllAttributes(string1)
+  corrupt2, attributes2 = getAllAttributes(string2)
+  if corrupt1 or corrupt2:
+    return corruptReturn
+  if not attributes1:
+    return False, attributes2
+  if not attributes2:
+    return False, attributes1
+  result = attributes1
+  for key, value in attributes2.items():
+    if key not in result:
+      result[key] = value
+      continue
+    lValue = result[key]
+    if value is None and lValue is None:
+      continue
+    if lValue is not None and value is not None:
+      result[key] = lValue + " " + value
+      continue
+    return corruptReturn
+  return False, result
+
 def getUniqueValuesByName(htmlAttributes, name):
   """Separated by whitespaces. Only the first declaration is taken (if there are multiple) as stated by the standard:
 https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
@@ -52,11 +95,10 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html
 
 def getAllAttributes(attributesString):
   """Each attribute is taken and validated once at its first occurrence. \n
-Raises exception for empty string\n
 \n Return values: \n
 * corrupt: True | False
 * attributes: dictionary of {attributeName -> None | attributeString}"""
-  checks.checkIfString(attributesString, 1, 5000)
+  checks.checkIfString(attributesString, 0, 5000)
   corruptReturn = (True, {})
   result = {}
   index = 0

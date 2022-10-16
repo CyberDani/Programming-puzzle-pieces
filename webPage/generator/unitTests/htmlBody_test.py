@@ -230,7 +230,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 3)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t\t\t<div class='magicalDiv'>")
+    self.assertEqual(lines[2], "\t\t\t<div class=\"magicalDiv\">")
 
   def test_openHtmlTagThenAppendNewLine_addTwoTag(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
@@ -243,7 +243,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 4)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t<div class='magicalDiv'>")
+    self.assertEqual(lines[2], "\t<div class=\"magicalDiv\">")
     self.assertEqual(lines[3], "\t\t<table>")
 
   def test_openHtmlTagThenAppendNewLine_addThreeTag(self):
@@ -258,7 +258,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 5)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t\t<div class='magicalDiv'>")
+    self.assertEqual(lines[2], "\t\t<div class=\"magicalDiv\">")
     self.assertEqual(lines[3], "\t\t\t<table>")
     self.assertEqual(lines[4], "\t\t\t\t<tr>")
 
@@ -277,7 +277,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 6)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t<div class='magicalDiv'>")
+    self.assertEqual(lines[2], "\t<div class=\"magicalDiv\">")
     self.assertEqual(lines[3], "\t\t1. include")
     self.assertEqual(lines[4], "\t\t2. include")
     self.assertEqual(lines[5], "")
@@ -303,13 +303,27 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 9)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t<div class='magicalDiv'>")
+    self.assertEqual(lines[2], "\t<div class=\"magicalDiv\">")
     self.assertEqual(lines[3], "\t\t1. include")
     self.assertEqual(lines[4], "\t\t2. include")
-    self.assertEqual(lines[5], "\t\t<div class='nestedDiv'>")
+    self.assertEqual(lines[5], "\t\t<div class=\"nestedDiv\">")
     self.assertEqual(lines[6], "\t\t\tnext")
     self.assertEqual(lines[7], "\t\t\tnext -> next")
     self.assertEqual(lines[8], "\t\t\tnext -> next -> next")
+
+  def test_openHtmlTagThenAppendNewLine_jQueryLikeSelectors(self):
+    file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+    filerw.writeLinesToExistingFileThenAppendNewLine(file, ["first line", "second line"])
+    body = htmlBody.HtmlBody(file, 3)
+    body.openHtmlTagThenAppendNewLine("div.cl1#id1#id2.cl2#id3", "class='magicDiv' id='myId' default")
+    body.closeLastOpenedHtmlTag()
+    file.close()
+    lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
+    self.assertEqual(len(lines), 4)
+    self.assertEqual(lines[0], "first line")
+    self.assertEqual(lines[1], "second line")
+    self.assertEqual(lines[2], "\t\t\t<div id=\"id1 id2 id3 myId\" class=\"cl1 cl2 magicDiv\" default>")
+    self.assertEqual(lines[3], "\t\t\t</div>")
 
   def test_closeLastOpenedHtmlTag_closeNothing(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
@@ -347,7 +361,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(len(lines), 4)
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
-    self.assertEqual(lines[2], "\t<a href='link.com'>")
+    self.assertEqual(lines[2], "\t<a href=\"link.com\">")
     self.assertEqual(lines[3], "\t</a>")
 
   def test_closeLastOpenedHtmlTag_twoTag(self):
@@ -362,7 +376,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
     self.assertEqual(lines[2], "\t<h2>")
-    self.assertEqual(lines[3], "\t\t<a href='link.com'>")
+    self.assertEqual(lines[3], "\t\t<a href=\"link.com\">")
     self.assertEqual(lines[4], "\t\t</a>")
     self.assertEqual(lines[5], "\t</h2>")
 
@@ -379,7 +393,7 @@ class HtmlBodyTests(unittest.TestCase):
     self.assertEqual(lines[0], "first line")
     self.assertEqual(lines[1], "second line")
     self.assertEqual(lines[2], "\t\t\t<div>")
-    self.assertEqual(lines[3], "\t\t\t\t<div class='myDiv'>")
+    self.assertEqual(lines[3], "\t\t\t\t<div class=\"myDiv\">")
     self.assertEqual(lines[4], "\t\t\t\t\t<span>")
     self.assertEqual(lines[5], "\t\t\t\t\t</span>")
     self.assertEqual(lines[6], "\t\t\t\t</div>")

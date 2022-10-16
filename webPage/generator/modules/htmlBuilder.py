@@ -1,10 +1,9 @@
 from modules import checks
 from modules import filerw
+from modules import htmlAttributes as attr
 from modules import stringUtil
 
-from modules import htmlAttributes as attr
-
-# TODO create a new file for HTML attributes
+# TODO rename option with attributes
 
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
@@ -27,10 +26,13 @@ def includeFileThenAppendNewLine(htmlFile, includeFilePath, indentDepth):
 
 # file1 += <htmlTag> file2 </htmlTag>
 def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
+  """Includes jQuery-like selectors"""
   tabs = getEscapedTabs(indentDepth)
   htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlTagOption) + "\n")
   fileLines = filerw.getLinesByPath(includeFilePath)
   filerw.writeLinesPrefixedToFile(htmlFile, tabs + "\t", fileLines)
+  # TODO implement getHtmlTagWithoutJQuery - more performant than this
+  htmlTag, attributesFromTag = filterJqueryLikeHtmlSelector(htmlTag)
   htmlFile.write(tabs + getClosedHtmlTag(htmlTag) + "\n")
 
 # <script src=".js" />   ->  file
@@ -131,7 +133,12 @@ def getHtmlNewLines(indentDepth, nrOfNewLines=1):
       result += " "
   return result
 
+# TODO add corrupt return value
 def filterJqueryLikeHtmlSelector(specialHtmlTag):
+  """Raises exception if corrupt.\n
+Return values:\n
+* htmlTag: string
+* htmlAttributes: string"""
   classes, ids = stringUtil.doubleSplit(specialHtmlTag, ".", "#")
   checks.checkIfNonEmptyList(classes)
   htmlTag = classes[0]
@@ -141,28 +148,40 @@ def filterJqueryLikeHtmlSelector(specialHtmlTag):
   checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(ids)
   idString = stringUtil.stringListToString(ids, prefix="", suffix="", delimiter=" ")
   classString = stringUtil.stringListToString(classes, prefix="", suffix="", delimiter=" ")
-  htmlOptions = ""
+  htmlAttributes = ""
   if idString:
-    htmlOptions += "id=\"" + idString + "\""
+    htmlAttributes += "id=\"" + idString + "\""
     if classString:
-      htmlOptions += " "
+      htmlAttributes += " "
   if classString:
-    htmlOptions += "class=\"" + classString + "\""
-  return htmlTag, htmlOptions
+    htmlAttributes += "class=\"" + classString + "\""
+  return htmlTag, htmlAttributes
 
-# <htmlTag options>
-def getOpenedHtmlTag(htmlTag, options=""):
+# TODO add corrupt return value
+# <htmlTag attributes>
+def getOpenedHtmlTag(htmlTag, attributes=""):
+  """Includes jQuery-like selectors.\n
+Raises exception for any corrupt data and empty html tag."""
   checks.checkIfString(htmlTag, 1, 100)
-  checks.checkIfString(options, 0, 500)
+  checks.checkIfString(attributes, 0, 500)
+  htmlTag, attributesFromTag = filterJqueryLikeHtmlSelector(htmlTag)
   checks.checkIfStringIsAlphaNumerical(htmlTag)
+  # TODO add corrupt return value
+  corrupt, attributesDict = attr.combineTwoAttributeStrings(attributesFromTag, attributes)
+  if corrupt:
+    raise Exception("corrupt data found")
+  if not corrupt:
+    attributes = attr.getStringFromDictionary(attributesDict)
   result = "<" + htmlTag
-  if options:
-    result += " " + options
+  if attributes:
+    result += " " + attributes
   result += ">"
   return result
 
 def getClosedHtmlTag(htmlTag):
   checks.checkIfString(htmlTag, 1, 100)
+  # TODO getHtmlTagWithoutJQuery
+  htmlTag, attributesFromTag = filterJqueryLikeHtmlSelector(htmlTag)
   checks.checkIfStringIsAlphaNumerical(htmlTag)
   return "</" + htmlTag + ">"
 
