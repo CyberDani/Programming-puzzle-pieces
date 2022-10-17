@@ -3,8 +3,6 @@ from modules import filerw
 from modules import htmlAttributes as attr
 from modules import stringUtil
 
-# TODO rename option with attributes
-
 # <html><head> [headWriter] </head><body> [bodyWriter] </body></html>
 def buildIndexHtmlFile(indexHtmlHeadWriterFunction, indexHtmlBodyWriterFunction, settings):
   htmlFile = settings.htmlOutputFile
@@ -25,10 +23,10 @@ def includeFileThenAppendNewLine(htmlFile, includeFilePath, indentDepth):
   filerw.writeStringsPrefixedToFileThenAppendNewLine(htmlFile, tabs, lines)
 
 # file1 += <htmlTag> file2 </htmlTag>
-def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, htmlTag, htmlTagOption, indentDepth):
+def includeFileSurroundedByHtmlTagThenAppendNewLine(htmlFile, includeFilePath, htmlTag, htmlAttributes, indentDepth):
   """Includes jQuery-like selectors"""
   tabs = getEscapedTabs(indentDepth)
-  htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlTagOption) + "\n")
+  htmlFile.write(tabs + getOpenedHtmlTag(htmlTag, htmlAttributes) + "\n")
   fileLines = filerw.getLinesByPath(includeFilePath)
   filerw.writeLinesPrefixedToFile(htmlFile, tabs + "\t", fileLines)
   # TODO implement getHtmlTagWithoutJQuery - more performant than this

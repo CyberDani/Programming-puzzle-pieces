@@ -21,10 +21,10 @@ class HtmlBody:
     htmlBuilder.includeFileThenAppendNewLine(self.htmlFile, filePath, self.indentDepth)
     return self
 
-  def openHtmlTagThenAppendNewLine(self, htmlTag, options = ""):
+  def openHtmlTagThenAppendNewLine(self, htmlTag, attributes =""):
     """Includes jQuery-like selectors."""
     tabs = htmlBuilder.getEscapedTabs(self.indentDepth)
-    openedHtmlTag = htmlBuilder.getOpenedHtmlTag(htmlTag, options)
+    openedHtmlTag = htmlBuilder.getOpenedHtmlTag(htmlTag, attributes)
     self.htmlFile.write(tabs + openedHtmlTag + "\n")
     self.openedHtmlTags.append(htmlTag)
     self.indentDepth += 1
