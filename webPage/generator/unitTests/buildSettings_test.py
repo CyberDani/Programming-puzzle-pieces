@@ -6,7 +6,7 @@ sys.path.append('..')
 from defTypes import buildSettings
 from defTypes import buildType
 from defTypes import dbBranchType
-from defTypes.filePathType import FilePathType as File
+from defTypes.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import counter
 from modules import filerw

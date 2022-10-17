@@ -4,8 +4,8 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType as File
+from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from defTypes.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import htmlBuilder
 from modules import filerw
@@ -127,8 +127,6 @@ class HtmlBodyTests(unittest.TestCase):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     if filerw.fileExistsByPath(filePath):
       os.remove(filePath)
-    with self.assertRaises(Exception):
-      body.includeFileByTypeThenAppendNewLine(Dir.FOR_TEST_TEXTFILE1)
 
   def test_includeFileByTypeThenAppendNewLine_includeEmptyFile(self):
     testFilePath1 = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)

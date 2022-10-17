@@ -43,6 +43,13 @@ def checkIfType(value, compareType):
   if type(value) != compareType:
     raise Exception("Type missmatch '{}' with '{}'!".format(str(type(value)), str(compareType)))
 
+def checkIfAnyType(value, compareTypeList):
+  checkIfList(compareTypeList)
+  for compareType in compareTypeList:
+    if type(value) == compareType:
+      return
+  raise Exception("Type missmatch using '{}'!".format(str(type(value))))
+
 def checkIfAllNoneOrString(listVar, minStringLength, maxStringLength):
   checkIfList(listVar)
   if len(listVar) == 0:

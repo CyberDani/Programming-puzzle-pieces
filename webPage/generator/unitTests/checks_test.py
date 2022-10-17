@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('..')
 
-from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType as File
+from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from defTypes.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import checks
 from modules import filerw
@@ -347,7 +347,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([0, 1, 2, 3, 4, 5, 6])
 
-  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid(self):
+  def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid2(self):
     with self.assertRaises(Exception):
       checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([""])
     with self.assertRaises(Exception):
@@ -493,8 +493,6 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfFilePathExists(file)
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists("")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists()
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists(None)
     with self.assertRaises(Exception):
@@ -882,3 +880,53 @@ class ChecksTests(unittest.TestCase):
     checks.checkIfType([], list)
     checks.checkIfType([12], list)
     checks.checkIfType([12, "array"], list)
+
+  def test_checkIfAnyType_nonSense(self):
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, 3)
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, int)
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, None)
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [1, 2, 3])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [True, 2, None])
+
+  def test_checkIfAnyType_notMatch(self):
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [bool])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [list])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [str])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(2, [list, bool])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType("string", [list, bool])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType("string", [list, bool, int])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType(23, [list, bool, str])
+    with self.assertRaises(Exception):
+      checks.checkIfAnyType({}, [list, bool, str, int])
+
+  def test_checkIfAnyType_match(self):
+    try:
+      checks.checkIfAnyType({}, [dict])
+      checks.checkIfAnyType({}, [int, dict])
+      checks.checkIfAnyType({}, [dict, int])
+      checks.checkIfAnyType(23, [dict, int])
+      checks.checkIfAnyType(23, [int])
+      checks.checkIfAnyType(["one", "two", "three"], [list])
+      checks.checkIfAnyType([1, 2, 3], [list])
+      checks.checkIfAnyType(True, [bool])
+      checks.checkIfAnyType(False, [bool])
+      checks.checkIfAnyType("string", [str])
+      checks.checkIfAnyType("string", [int, str, list, dict])
+      checks.checkIfAnyType("string", [int, list, dict, bool, str])
+      checks.checkIfAnyType("string", [int, list, dict, str, bool])
+    except Exception:
+      self.fail("checkIfAnyType() raised Exception unexpectedly!")

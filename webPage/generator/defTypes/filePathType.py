@@ -5,15 +5,6 @@ from defTypes.filePathCheckerActionType import FilePathCheckerActionType as file
 from defTypes.filePathChecker import FilePathChecker
 
 class FilePathType(Enum):
-  # FOR TESTS
-  FOR_TEST_TEXTFILE1 = FilePathChecker(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test1.txt",
-                                       fileAction.DONT_CHECK_FILE_EXISTENCE)
-  FOR_TEST_TEXTFILE2 = FilePathChecker(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test2.txt",
-                                       fileAction.DONT_CHECK_FILE_EXISTENCE)
-  FOR_TEST_TEXTFILE3 = FilePathChecker(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test3.txt",
-                                       fileAction.DONT_CHECK_FILE_EXISTENCE)
-  FOR_TEST_NON_EXISTING_TEXTFILE1 = FilePathChecker(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "fbweifb1.sda",
-                                                    fileAction.DONT_CHECK_FILE_EXISTENCE)
   # FOR PRODUCTION CODE
   HTML_FAVICON = FilePathChecker(Dir.HTML_IMAGES, "favicon.png", fileAction.ENSURE_FILE_EXISTS)
   HTML_INCLUDE_TOPNAV = FilePathChecker(Dir.HTML_GENERAL_INCLUDES, "topNav.txt", fileAction.ENSURE_FILE_EXISTS)

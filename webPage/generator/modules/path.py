@@ -1,7 +1,8 @@
 import os
 
 from defTypes import dirPathType
-from defTypes import filePathType
+from defTypes import possibleDirPathTypes
+from defTypes import possibleFilePathTypes
 
 from modules import checks
 
@@ -9,11 +10,11 @@ def getGitRepoAbsolutePathEndingWithSlash():
   return dirPathType.DirectoryPathType.GIT_REPOSITORY.value.getAbsoluteDirPathEndingWithSlash()
 
 def getFileName(fPathType):
-  checks.checkIfType(fPathType, filePathType.FilePathType)
+  checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
   return fPathType.value.getFileName()
 
 def getAbsoluteDirPathEndingWithSlash(directoryPathType):
-  checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
+  checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
   return directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
 
 def getAbsoluteDirParentPathEndingWithSlash(directoryPathType):
@@ -29,20 +30,20 @@ def getAbsoluteDirParentX2PathEndingWithSlash(directoryPathType):
   return absoluteParentPath[:idx + 1]
 
 def getAbsoluteFilePath(fPathType):
-  checks.checkIfType(fPathType, filePathType.FilePathType)
+  checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
   return fPathType.value.getAbsoluteFilePath()
 
 def getRelativeFilePathToDirectory(fPathType, directoryPathType):
-  checks.checkIfType(fPathType, filePathType.FilePathType)
-  checks.checkIfType(directoryPathType, dirPathType.DirectoryPathType)
+  checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
+  checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
   relPath = os.path.relpath(fPathType.value.getAbsoluteFilePath(),
                             directoryPathType.value.getAbsoluteDirPathEndingWithSlash())
   relPath = relPath.replace("\\", "/")
   return relPath
 
 def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTypeForComparison):
-  checks.checkIfType(dirPathTypeToResolve, dirPathType.DirectoryPathType)
-  checks.checkIfType(dirPathTypeForComparison, dirPathType.DirectoryPathType)
+  checks.checkIfAnyType(dirPathTypeToResolve, possibleDirPathTypes.dirPathTypes)
+  checks.checkIfAnyType(dirPathTypeForComparison, possibleDirPathTypes.dirPathTypes)
   relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPathEndingWithSlash(),
                             dirPathTypeForComparison.value.getAbsoluteDirPathEndingWithSlash())
   relPath = relPath.replace("\\", "/")

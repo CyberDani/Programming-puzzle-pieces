@@ -2,8 +2,8 @@ import os
 import pathlib
 import shutil
 
-from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType as File
+from defTypes import possibleFilePathTypes
+from defTypes import possibleDirPathTypes
 
 from modules import checks
 from modules import path
@@ -84,8 +84,8 @@ def deleteFileIfExistsByType(fileType):
 ###### Move & Copy ######
 
 def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dirPathType):
-  checks.checkIfType(filePathType, File)
-  checks.checkIfType(dirPathType, Dir)
+  checks.checkIfAnyType(filePathType, possibleFilePathTypes.filePathTypes)
+  checks.checkIfAnyType(dirPathType, possibleDirPathTypes.dirPathTypes)
   filePath = path.getAbsoluteFilePath(filePathType)
   if not fileExistsByPath(filePath):
     return

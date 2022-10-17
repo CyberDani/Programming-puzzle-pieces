@@ -4,8 +4,8 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType as File
+from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from defTypes.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import webReq
 from modules import filerw
@@ -16,8 +16,6 @@ class WebReqTests(unittest.TestCase):
   def test_getstatusCodeEncodingAndHtmlFromUrl_nonSense(self):
     with self.assertRaises(Exception):
       webReq.getstatusCodeEncodingAndHtmlFromUrl("")
-    with self.assertRaises(Exception):
-      webReq.getstatusCodeEncodingAndHtmlFromUrl()
     with self.assertRaises(Exception):
       webReq.getstatusCodeEncodingAndHtmlFromUrl(None)
     with self.assertRaises(Exception):

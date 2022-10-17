@@ -5,7 +5,7 @@ import unittest
 sys.path.append('..')
 
 from defTypes import appDecisionType
-from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 
 from modules import checks
 from modules import filerw
