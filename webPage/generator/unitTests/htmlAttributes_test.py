@@ -2449,7 +2449,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getLastValueByFoundEquals_checkIfCorrupt("class='myClass' b = ' checked a=\"2\" selected", 24, 42)
     self.helper_getLastValueByFoundEquals_checkIfCorrupt("class='myClass' b = ' checked a=\"2\" selected", 36, 43)
 
-# TODO review tests below
   def test_getLastValueByFoundEquals_valueNotFound(self):
     self.helper_getLastValueByFoundEquals_checkIfNotFound(" ", 0, 0)
     self.helper_getLastValueByFoundEquals_checkIfNotFound("\t", 0, 0)
@@ -2742,7 +2741,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getValuesSafelyByFoundEquals_notFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 28, 38)
     self.helper_getValuesSafelyByFoundEquals_notFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 32, 38)
 
-  # TODO review these tests
   def test_getValuesSafelyByFoundEquals_valueFound(self):
     self.helper_getValuesSafelyByFoundEquals_checkIfFound("a\t=\t\t '0'", 0, 2, foundValues = [(2, 6, 8)])
     self.helper_getValuesSafelyByFoundEquals_checkIfFound("a = '' selected", 0, 11, foundValues = [(2, 4, 5)])
@@ -2947,7 +2945,6 @@ class HtmlAttributesTests(unittest.TestCase):
     self.helper_getValuesByFoundEquals_checkIfFound("class='myClass' b = 'c a=\"2\" b=\"3\" sel'", 28, 38,
                                                     foundValues=[(30, 31, 33)])
 
-  # TODO review these tests
   def test_getValuesByFoundEquals_valueFound(self):
     self.helper_getValuesByFoundEquals_checkIfFound("a\t=\t\t '0'", 0, 2, foundValues = [(2, 6, 8)])
     self.helper_getValuesByFoundEquals_checkIfFound("a = '' selected", 0, 11, foundValues = [(2, 4, 5)])

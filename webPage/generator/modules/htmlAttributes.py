@@ -128,7 +128,7 @@ https://stackoverflow.com/questions/9512330/multiple-class-attributes-in-html\n
     if corrupt:
       return corruptResult
     if attributeName is None:
-      nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx, len(attributesString))
+      nextNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(attributesString, idx, len(attributesString) - 1)
       if nextNonSpaceCharIdx != -1:
         return False, result
       break
@@ -324,7 +324,7 @@ def getFirstHtmlDelimiterThenSkipWhiteSpaces(string, startIdx, endIdx):
   found, firstDelimiterIdx = getFirstHtmlDelimiter(string, startIdx, endIdx)
   if not found:
     return notFoundResult
-  found, firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, endIdx + 1)
+  found, firstNonSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, firstDelimiterIdx, endIdx)
   if not found:
     return notFoundResult
   return True, firstNonSpaceCharIdx
@@ -475,7 +475,7 @@ def validateAdjacentCharsNearEqualChar(htmlString, equalIndex):
     return corruptResult
   if not isThereNonDelimiterCharBeforeIdx(htmlString, equalIndex):
     return corruptResult
-  found, quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString))
+  found, quoteIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, equalIndex + 1, len(htmlString) - 1)
   if not found or (htmlString[quoteIdx] != "'" and htmlString[quoteIdx] != '"'):
     return corruptResult
   return False, quoteIdx
@@ -532,7 +532,7 @@ def nextNonWhiteSpaceCharIsHtmlDelimiter(htmlString, index):
   checks.checkIntIsBetween(index, 0, len(htmlString) - 1)
   if index == len(htmlString) - 1:
     return False
-  found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString))
+  found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(htmlString, index + 1, len(htmlString) - 1)
   return found and charIsHtmlDelimiter(htmlString[idx])
 
 def charIsHtmlDelimiter(ch):

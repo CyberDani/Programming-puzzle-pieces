@@ -4,8 +4,6 @@ from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAct
 from defTypes.dirPathChecker import DirectoryPathChecker
 from defTypes import pppConfig as config
 
-# TODO createDirectoryIfNotExists
-
 class DirectoryPathType(Enum):
   # FOR TESTS
   PYTHON_GENERATOR_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,

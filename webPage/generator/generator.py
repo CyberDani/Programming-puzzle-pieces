@@ -14,14 +14,6 @@ from modules import htmlBuilder
 from modules import htmlHead
 from modules import uTest
 
-# TODO dependency graph generator, e.g. https://github.com/thebjorn/pydeps
-# TODO general test helpers using tuple unpacking:
-#  https://bobbyhadz.com/blog/python-unpack-tuple-as-arguments-to-function-call
-# TODO check if generator is run from the right path
-# TODO unit test if all files and functions are unit tested
-# TODO acceptance test
-# TODO Move htmlIncludes from generator
-# TODO What happens if you delete .git? Can you make a build?
 
 # this is the main function being run
 def backupAndGenerateNewHtmlOutputFileIfAllUnitTestsPassDrivenByArguments():
