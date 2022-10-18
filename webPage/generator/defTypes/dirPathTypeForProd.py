@@ -4,8 +4,8 @@ from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAct
 from defTypes.dirPathChecker import DirectoryPathChecker
 from defTypes import pppConfig as config
 
-class DirectoryPathType(Enum):
-  # FOR TESTS
+class DirectoryPathTypeForProd(Enum):
+  # FOR PRODUCTION CODE
   PYTHON_GENERATOR_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
                                                      ["checks_test.py", "argumentParser_test.py"],
                                                      dirAction.ENSURE_DIR_AND_FILES_EXIST)
@@ -15,11 +15,6 @@ class DirectoryPathType(Enum):
   PYTHON_GENERATOR_UNIT_TESTS_TEMP2 = DirectoryPathChecker(
                                                       config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP2_FOLDER_NAME,
                                                       [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
-  PYTHON_UNIT_TESTS_4_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_REPO_TO_UT4UT,
-                                                        ["fail_x_group1.py", "pass_x_group1.py",
-                                                         "pass_x_group2.py", "test_tempDir.py"],
-                                                        dirAction.ENSURE_DIR_AND_FILES_EXIST)
-  # FOR PRODUCTION CODE
   GIT_REPOSITORY = DirectoryPathChecker("", ["README.md", ".git/HEAD"], dirAction.ENSURE_DIR_AND_FILES_EXIST)
   INDEX_HTML_LOCATION = DirectoryPathChecker("", [], dirAction.ENSURE_DIR_EXISTS_ONLY)
   HTML_BACKUP = DirectoryPathChecker("webPage/backup", [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)

@@ -3,7 +3,7 @@ import sys
 
 sys.path.append('..')
 
-from defTypes.dirPathType import DirectoryPathType as Dir
+from defTypes.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
 
 from modules import cmd
 from modules import path

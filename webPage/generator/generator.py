@@ -3,8 +3,8 @@ import sys
 from defTypes import appDecisionType
 from defTypes import buildSettings
 from defTypes import buildType
-from defTypes.dirPathType import DirectoryPathType as Dir
-from defTypes.filePathType import FilePathType as File
+from defTypes.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
+from defTypes.filePathTypeForProd import FilePathType as File
 
 from modules import argumentParser
 from modules import counter

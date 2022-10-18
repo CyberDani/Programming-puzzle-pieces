@@ -1,13 +1,13 @@
 import os
 
-from defTypes import dirPathType
+from defTypes import dirPathTypeForProd
 from defTypes import possibleDirPathTypes
 from defTypes import possibleFilePathTypes
 
 from modules import checks
 
 def getGitRepoAbsolutePathEndingWithSlash():
-  return dirPathType.DirectoryPathType.GIT_REPOSITORY.value.getAbsoluteDirPathEndingWithSlash()
+  return dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY.value.getAbsoluteDirPathEndingWithSlash()
 
 def getFileName(fPathType):
   checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
@@ -52,14 +52,15 @@ def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTy
   return relPath
 
 def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
-  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType, dirPathType.DirectoryPathType.GIT_REPOSITORY)
+  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType,
+                                                      dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY)
 
 def getRelativeFilePathToGitRepo(fPathType):
-  return getRelativeFilePathToDirectory(fPathType, dirPathType.DirectoryPathType.GIT_REPOSITORY)
+  return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY)
 
 def getRelativeFilePathToIndexHtml(fPathType):
-  return getRelativeFilePathToDirectory(fPathType, dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+  return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)
 
 def getRelativeDirPathToIndexHtmlEndingWithSlash(directoryPathType):
   return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType,
-                                                      dirPathType.DirectoryPathType.INDEX_HTML_LOCATION)
+                                                      dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)

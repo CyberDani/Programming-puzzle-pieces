@@ -5,7 +5,7 @@ from defTypes.filePathCheckerActionType import FilePathCheckerActionType as file
 from defTypes.filePathChecker import FilePathChecker
 
 class FilePathTypeForUT(Enum):
-  # FOR TESTS
+  # FOR UNIT TESTS
   FOR_TEST_TEXTFILE1 = FilePathChecker(UtDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test1.txt",
                                        fileAction.DONT_CHECK_FILE_EXISTENCE)
   FOR_TEST_TEXTFILE2 = FilePathChecker(UtDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test2.txt",
@@ -14,7 +14,3 @@ class FilePathTypeForUT(Enum):
                                        fileAction.DONT_CHECK_FILE_EXISTENCE)
   FOR_TEST_NON_EXISTING_TEXTFILE1 = FilePathChecker(UtDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "fbweifb1.sda",
                                                     fileAction.DONT_CHECK_FILE_EXISTENCE)
-  # FOR PRODUCTION CODE
-  HTML_FAVICON = FilePathChecker(UtDir.HTML_IMAGES, "favicon.png", fileAction.ENSURE_FILE_EXISTS)
-  SCRIPT_GITHUB_API = FilePathChecker(UtDir.HTML_SCRIPTS, "githubApiScripts.js", fileAction.ENSURE_FILE_EXISTS)
-  SCRIPT_NAVIGATION = FilePathChecker(UtDir.HTML_SCRIPTS, "navigationScripts.js", fileAction.ENSURE_FILE_EXISTS)

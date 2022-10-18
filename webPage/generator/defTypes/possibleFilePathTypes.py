@@ -1,5 +1,5 @@
-from defTypes import filePathType
+from defTypes import filePathTypeForProd
 from defTypes import filePathTypeForUT
 
 filePathTypes = [filePathTypeForUT.FilePathTypeForUT,
-                 filePathType.FilePathType]
+                 filePathTypeForProd.FilePathType]

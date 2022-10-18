@@ -1,4 +1,4 @@
-from defTypes.filePathType import FilePathType as File
+from defTypes.filePathTypeForProd import FilePathType as File
 
 from modules import checks
 from modules import htmlBuilder

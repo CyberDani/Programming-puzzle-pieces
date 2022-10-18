@@ -1,4 +1,3 @@
-from defTypes import dirPathType
 from defTypes import possibleDirPathTypes
 
 from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction

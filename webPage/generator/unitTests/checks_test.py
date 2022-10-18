@@ -510,6 +510,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists("./" + dirPath)
 
+  # TODO rework this test
   def test_checkIfFilePathExists_example(self):
     try:
       file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
@@ -518,12 +519,12 @@ class ChecksTests(unittest.TestCase):
       file.close()
       filePath1abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
       filePath2abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
-      filePath1rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
-      filePath2rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE2, Dir.PYTHON_MAIN_GENERATOR)
+      #filePath1rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
+      #filePath2rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE2, Dir.PYTHON_MAIN_GENERATOR)
       checks.checkIfFilePathExists(filePath1abs)
       checks.checkIfFilePathExists(filePath2abs)
-      checks.checkIfFilePathExists(filePath1rel)
-      checks.checkIfFilePathExists(filePath2rel)
+      #checks.checkIfFilePathExists(filePath1rel)
+      #checks.checkIfFilePathExists(filePath2rel)
     except Exception:
       self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
 
@@ -550,17 +551,18 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfDirectoryPathExists(nonExistingDirPath)
 
+  # TODO rework test case
   def test_checkIfDirectoryPathExists_example(self):
     try:
       dirPathAbs = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
-      dirPathRel = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
-                                                                     Dir.PYTHON_MAIN_GENERATOR)
+      #dirPathRel = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
+      #                                                               Dir.PYTHON_MAIN_GENERATOR)
 
       checks.checkIfDirectoryPathExists(dirPathAbs)
       checks.checkIfDirectoryPathExists(dirPathAbs[:-1])
-      checks.checkIfDirectoryPathExists(dirPathRel)
-      checks.checkIfDirectoryPathExists(dirPathRel[:-1])
-      checks.checkIfDirectoryPathExists("./" + dirPathRel)
+      #checks.checkIfDirectoryPathExists(dirPathRel)
+      #checks.checkIfDirectoryPathExists(dirPathRel[:-1])
+      #checks.checkIfDirectoryPathExists("./" + dirPathRel)
       checks.checkIfDirectoryPathExists(".")
       checks.checkIfDirectoryPathExists("./")
       checks.checkIfDirectoryPathExists("..")
