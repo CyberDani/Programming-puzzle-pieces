@@ -3,8 +3,9 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes import dirPathTypeForProd
-from defTypes import dirPathChecker
+from modules.paths import dirPathChecker
+from modules.paths.definitions import dirPathTypeForProd
+
 
 class PathTypeTests(unittest.TestCase):
 

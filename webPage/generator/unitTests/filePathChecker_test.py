@@ -3,9 +3,9 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes import dirPathTypeForProd
-from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
-from defTypes import filePathChecker
+from modules.paths import filePathChecker
+from modules.paths.definitions import dirPathTypeForProd
+from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes import pppConfig as config
 
 from modules import filerw

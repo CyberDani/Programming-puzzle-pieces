@@ -6,12 +6,13 @@ sys.path.append('..')
 from defTypes import buildType
 from defTypes import dbBranchType
 from defTypes import buildSettings
-from defTypes.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import htmlBuilder
 from modules import filerw
 from modules import counter
-from modules import path
+from modules.paths import path
+
 
 def emptyHtmlHeadContent(settings):
   a = 2

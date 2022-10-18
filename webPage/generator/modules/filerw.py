@@ -2,11 +2,10 @@ import os
 import pathlib
 import shutil
 
-from defTypes import possibleFilePathTypes
-from defTypes import possibleDirPathTypes
+from modules.paths import path
+from modules.paths.definitions import possibleDirPathTypes, possibleFilePathTypes
 
 from modules import checks
-from modules import path
 from modules import stringUtil
 
 ###### File ######

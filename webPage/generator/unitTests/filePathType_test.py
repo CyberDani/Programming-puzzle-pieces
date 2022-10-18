@@ -3,8 +3,9 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes import filePathTypeForProd
-from defTypes import filePathChecker
+from modules.paths import filePathChecker
+from modules.paths.definitions import filePathTypeForProd
+
 
 class FileTypeTests(unittest.TestCase):
 

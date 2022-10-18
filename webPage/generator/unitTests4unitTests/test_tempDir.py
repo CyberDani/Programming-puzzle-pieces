@@ -1,9 +1,10 @@
 import unittest
 
-from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 
 from modules import filerw
-from modules import path
+from modules.paths import path
+
 
 class TempDirTests(unittest.TestCase):
 

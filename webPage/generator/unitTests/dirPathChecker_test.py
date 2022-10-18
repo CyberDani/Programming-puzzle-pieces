@@ -4,8 +4,8 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
-from defTypes import dirPathChecker
+from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
+from modules.paths import dirPathChecker
 from defTypes import pppConfig as config
 
 from modules import filerw
@@ -155,7 +155,7 @@ class DirPathCheckerTests(unittest.TestCase):
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
-                                        dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
+                                              dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
                      gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],

@@ -1,6 +1,6 @@
 import pathlib
 
-from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
+from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 
 from modules import checks
 

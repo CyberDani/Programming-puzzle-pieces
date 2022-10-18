@@ -1,7 +1,7 @@
 from enum import Enum
 
-from defTypes.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
-from defTypes.dirPathChecker import DirectoryPathChecker
+from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
+from modules.paths.dirPathChecker import DirectoryPathChecker
 from defTypes import pppConfig as config
 
 class DirectoryPathTypeForProd(Enum):

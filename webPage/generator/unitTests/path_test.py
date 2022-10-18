@@ -4,12 +4,13 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as utDir
-from defTypes.filePathTypeForUT import FilePathTypeForUT as utFile
+from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as utDir
+from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as utFile
 from defTypes import pppConfig as config
 
 from modules import filerw
-from modules import path
+from modules.paths import path
+
 
 class StringUtilTests(unittest.TestCase):
 
@@ -311,7 +312,7 @@ class StringUtilTests(unittest.TestCase):
                                                          "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/" +
-                                                            config.PATH_FROM_REPO_TO_PY_GENERATOR,
+                                                        config.PATH_FROM_REPO_TO_PY_GENERATOR,
                                                         "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeDirPathToDirectoryEndingWithSlash(None, None)

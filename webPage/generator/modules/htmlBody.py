@@ -1,8 +1,6 @@
-from defTypes.filePathTypeForProd import FilePathType as File
-
 from modules import checks
 from modules import htmlBuilder
-from modules import path
+from modules.paths import path
 
 
 class HtmlBody:

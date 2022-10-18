@@ -4,13 +4,14 @@ import unittest
 
 sys.path.append('..')
 
-from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
-from defTypes.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import checks
 from modules import filerw
 from modules import htmlBuilder
-from modules import path
+from modules.paths import path
+
 
 class FileReadWriterTests(unittest.TestCase):
 

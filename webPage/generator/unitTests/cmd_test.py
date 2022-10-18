@@ -3,10 +3,10 @@ import sys
 
 sys.path.append('..')
 
-from defTypes.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
+from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
 
 from modules import cmd
-from modules import path
+from modules.paths import path
 from modules import stringUtil
 
 class CmdTests(unittest.TestCase):

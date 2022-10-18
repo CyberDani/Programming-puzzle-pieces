@@ -1,8 +1,8 @@
 from enum import Enum
 
-from defTypes.dirPathTypeForUT import DirectoryPathTypeForUT as UtDir
-from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
-from defTypes.filePathChecker import FilePathChecker
+from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as UtDir
+from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
+from modules.paths.filePathChecker import FilePathChecker
 
 class FilePathTypeForUT(Enum):
   # FOR UNIT TESTS

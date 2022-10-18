@@ -2,12 +2,12 @@ import io
 import unittest
 
 from defTypes import appDecisionType
-from defTypes import possibleDirPathTypes
-from defTypes.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
+from modules.paths import path
+from modules.paths.definitions import possibleDirPathTypes
 
 from modules import checks
 from modules import filerw
-from modules import path
+
 
 def runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(dirPathTypeContainingTests, filePattern,
                                                               tempFolderPathTypes, outputStream = None):

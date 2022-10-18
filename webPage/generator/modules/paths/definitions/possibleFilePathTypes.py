@@ -1,5 +1,4 @@
-from defTypes import filePathTypeForProd
-from defTypes import filePathTypeForUT
+from modules.paths.definitions import filePathTypeForProd, filePathTypeForUT
 
 filePathTypes = [filePathTypeForUT.FilePathTypeForUT,
                  filePathTypeForProd.FilePathType]

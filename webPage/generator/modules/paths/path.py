@@ -1,8 +1,6 @@
 import os
 
-from defTypes import dirPathTypeForProd
-from defTypes import possibleDirPathTypes
-from defTypes import possibleFilePathTypes
+from modules.paths.definitions import dirPathTypeForProd, possibleDirPathTypes, possibleFilePathTypes
 
 from modules import checks
 

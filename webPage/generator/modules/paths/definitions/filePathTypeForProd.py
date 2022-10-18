@@ -1,8 +1,8 @@
 from enum import Enum
 
-from defTypes.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
-from defTypes.filePathCheckerActionType import FilePathCheckerActionType as fileAction
-from defTypes.filePathChecker import FilePathChecker
+from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
+from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
+from modules.paths.filePathChecker import FilePathChecker
 
 class FilePathType(Enum):
   # FOR PRODUCTION CODE
