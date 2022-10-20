@@ -11,8 +11,8 @@ from modules.paths import projectRootDetector as projRoot
 
 class ProjectRootDetectorTests(unittest.TestCase):
 
-  def test_getGitRepoAbsolutePathEndingWithSlash_ifFound_RenameGitDir_Retest_RenameBack(self):
-    repoFound, gitRepoPath = projRoot.getGitRepoAbsolutePathEndingWithSlash()
+  def test_getGitRepoAbsolutePath_ifFound_renameGitDir_retest_renameBack(self):
+    repoFound, gitRepoPath = projRoot.getGitRepoAbsolutePath()
     if not repoFound:
       self.assertEqual(gitRepoPath, "")
       return
@@ -22,7 +22,7 @@ class ProjectRootDetectorTests(unittest.TestCase):
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRepoPath))
     shutil.move(gitRepoPath + ".git", gitRepoPath + ".gitX")
-    repoFound, newGitRepoPath = projRoot.getGitRepoAbsolutePathEndingWithSlash()
+    repoFound, newGitRepoPath = projRoot.getGitRepoAbsolutePath()
     if not repoFound:
       self.assertEqual(newGitRepoPath, "")
       shutil.move(gitRepoPath + ".gitX", gitRepoPath + ".git")
@@ -31,8 +31,8 @@ class ProjectRootDetectorTests(unittest.TestCase):
     self.assertTrue(len(gitRepoPath) > len(newGitRepoPath))
     shutil.move(gitRepoPath + ".gitX", gitRepoPath + ".git")
 
-  def test_getProjectRootAbsolutePathEndingWithSlash_ifFound_RenameRootDir_Retest_RenameBack(self):
-    rootFound, rootPath = projRoot.getProjectRootAbsolutePathEndingWithSlash()
+  def test_getProjectRootAbsolutePath_ifFound_renameRootDir_retest_renameBack(self):
+    rootFound, rootPath = projRoot.getProjectRootAbsolutePath()
     if not rootFound:
       self.assertEqual(rootPath, "")
       return
@@ -42,7 +42,7 @@ class ProjectRootDetectorTests(unittest.TestCase):
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(rootPath))
     shutil.move(rootPath + ".projRoot", rootPath + ".projRootX")
-    rootFound, newRootPath = projRoot.getProjectRootAbsolutePathEndingWithSlash()
+    rootFound, newRootPath = projRoot.getProjectRootAbsolutePath()
     if not rootFound:
       self.assertEqual(newRootPath, "")
       shutil.move(rootPath + ".projRootX", rootPath + ".projRoot")
@@ -50,3 +50,26 @@ class ProjectRootDetectorTests(unittest.TestCase):
     self.assertTrue(rootPath.startswith(newRootPath))
     self.assertTrue(len(rootPath) > len(newRootPath))
     shutil.move(rootPath + ".projRootX", rootPath + ".projRoot")
+
+  def test_getRootAbsolutePathBySpecificFileNames_ifFound_renameSth_retest_renameBack(self):
+    rootFound, rootPath = projRoot.getRootAbsolutePathBySpecificFileNames()
+    if not rootFound:
+      self.assertEqual(rootPath, "")
+      return
+    self.assertEqual(rootPath[-1], "/")
+    originalFileName = "libs.txt"
+    modifiedFileName = "libsX.txt"
+    self.assertTrue(os.path.isdir(rootPath + "webPage"))
+    self.assertTrue(os.path.isfile(rootPath + originalFileName))
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
+    self.assertTrue(currentPath.startswith(rootPath))
+    # rename -> retest -> rename back
+    os.rename(rootPath + originalFileName, rootPath + modifiedFileName)
+    rootFound, newRootPath = projRoot.getRootAbsolutePathBySpecificFileNames()
+    if not rootFound:
+      self.assertEqual(newRootPath, "")
+      os.rename(rootPath + modifiedFileName, rootPath + originalFileName)
+      return
+    self.assertTrue(rootPath.startswith(newRootPath))
+    self.assertTrue(len(rootPath) > len(newRootPath))
+    os.rename(rootPath + modifiedFileName, rootPath + originalFileName)

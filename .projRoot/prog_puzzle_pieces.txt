@@ -1,0 +1,8 @@
+This directory with this filename is one clue for finding the root of this project.
+
+Other clues are:
+
+- local git repo represented by the .git directory
+- directory containing specific hardcoded files and directories
+
+Project root detection is accepted if more than 50% of the methods have found the same path.
