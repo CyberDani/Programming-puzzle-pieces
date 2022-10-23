@@ -3,6 +3,10 @@ This directory with this filename is one clue for finding the root of this proje
 Other clues are:
 
 - local git repo represented by the .git directory
-- directory containing specific hardcoded files and directories
+- parent directory containing specific hardcoded files and directories
+- number of parent directories in relative paths requested from the github API (devel branch)
+- name of parent directories in relative paths requested from the github API (devel branch)
 
-Project root detection is accepted if more than 50% of the methods have found the same path.
+The most common path is accepted for the project root with the following restrictions: 
+ - all other paths are less common (no choosing between 50% Vs 50% or 30% Vs 30%)
+ - at least 2 approaches results the same exact path

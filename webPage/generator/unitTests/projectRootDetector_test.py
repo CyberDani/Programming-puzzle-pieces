@@ -73,3 +73,21 @@ class ProjectRootDetectorTests(unittest.TestCase):
     self.assertTrue(rootPath.startswith(newRootPath))
     self.assertTrue(len(rootPath) > len(newRootPath))
     os.rename(rootPath + modifiedFileName, rootPath + originalFileName)
+
+  def test_getRootAbsolutePathByNumberOfParentsFromGithub(self):
+    found, rootPath = projRoot.getRootAbsolutePathByNumberOfParentsFromGithub()
+    if not found:
+      self.assertEqual(rootPath, "")
+      return
+    self.assertEqual(rootPath[-1], "/")
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
+    self.assertTrue(currentPath.startswith(rootPath))
+
+  def test_getRootAbsolutePathByNameOfParentsFromGithub(self):
+    found, rootPath = projRoot.getRootAbsolutePathByNameOfParentsFromGithub()
+    if not found:
+      self.assertEqual(rootPath, "")
+      return
+    self.assertEqual(rootPath[-1], "/")
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
+    self.assertTrue(currentPath.startswith(rootPath))
