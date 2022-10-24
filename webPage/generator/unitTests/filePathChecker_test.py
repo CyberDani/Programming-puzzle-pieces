@@ -48,14 +48,14 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "bubbleGenerator.py")
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, "notMyRepo.git")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "notMyRepo.git")
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "asdasdsda.py")
 
   def test_FilePathChecker_existingFiles(self):
     try:
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, "README.md")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
     except Exception:
       self.fail("FilePathChecker raised Exception unexpectedly!")
@@ -76,26 +76,26 @@ class FilePathCheckerTests(unittest.TestCase):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "./generator.py")
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, ".git/HEAD")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, ".git/HEAD")
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, "./.git/HEAD")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "./.git/HEAD")
 
   def test_FilePathChecker_existingDirectoryInsteadOfExistingFile(self):
     with self.assertRaises(Exception):
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "unitTests")
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, ".git")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, ".git")
     with self.assertRaises(Exception):
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, ".git/refs")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, ".git/refs")
 
   def test_FilePathChecker_getAbsolutePathEndingWithSlash(self):
     filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getAbsoluteFilePath(),
                      dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR.value.getAbsoluteDirPathEndingWithSlash()
                      + "generator.py")
-    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, "README.md")
+    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
     self.assertEqual(filePath.getAbsoluteFilePath(),
-                     dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY.value.getAbsoluteDirPathEndingWithSlash()
+                     dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT.value.getAbsoluteDirPathEndingWithSlash()
                      + "README.md")
     filePath = filePathChecker.FilePathChecker(
                               dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
@@ -106,7 +106,7 @@ class FilePathCheckerTests(unittest.TestCase):
   def test_FilePathChecker_getFileName(self):
     filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getFileName(), "generator.py")
-    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY, "README.md")
+    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
     self.assertEqual(filePath.getFileName(), "README.md")
     filePath = filePathChecker.FilePathChecker(
                               dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")

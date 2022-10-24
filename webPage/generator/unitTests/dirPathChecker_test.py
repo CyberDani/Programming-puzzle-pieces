@@ -1,4 +1,3 @@
-import pathlib
 import sys
 import unittest
 
@@ -6,18 +5,12 @@ sys.path.append('..')
 
 from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 from modules.paths import dirPathChecker
+from modules.paths import projectRootDetector as projRoot
 from defTypes import pppConfig as config
 
 from modules import filerw
 
 class DirPathCheckerTests(unittest.TestCase):
-
-  def test_getGitRepoAbsolutePathEndingWithSlash(self):
-    gitRepoPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
-    self.assertEqual(gitRepoPath[-1], "/")
-    self.assertTrue(filerw.fileExistsByPath(gitRepoPath + ".git/HEAD"))
-    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
-    self.assertTrue(currentPath.startswith(gitRepoPath))
 
   def test_DirectoryPathChecker_nonSense(self):
     self.dirPatchCheckWithoutAndWithActions(None, ["file.txt"])
@@ -143,22 +136,24 @@ class DirPathCheckerTests(unittest.TestCase):
       self.fail("DirectoryPathChecker() raised Exception unexpectedly!")
 
   def test_DirectoryPathChecker_getAbsolutePathEndingWithSlash(self):
-    gitRepoAbsPath = dirPathChecker.getGitRepoAbsolutePathEndingWithSlash()
+    found, projRootAbsPath = projRoot.getProjectRootPath()
+    if not found:
+      return
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath)
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath)
     filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
     filerw.createOrOverwriteWithEmptyFileByPath(filePath)
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
     dir = dirPathChecker.DirectoryPathChecker("./././././" + config.PATH_FROM_REPO_TO_UNIT_TESTS,
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
                                               dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
+                     projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
     dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                               dirAction.ENSURE_DIR_EXISTS_ONLY)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     gitRepoAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")
+                     projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")

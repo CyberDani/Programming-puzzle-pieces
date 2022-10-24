@@ -4,6 +4,7 @@ import pathlib
 
 # reuse it to reduce extra HTTP requests and computation
 __githubBlobOfCurrentFile = None
+__projectRootPath = None
 
 def getGithubBlobOfCurrentFileFromDevel():
   """Once it has a value, it will not recalculate it. \n
@@ -45,7 +46,7 @@ Return values: \n
     currentPath = currentPath.parent
   return notFoundResult
 
-def getProjectRootAbsolutePath():
+def getProjectRootAbsolutePathByProjFile():
   """Goes back from the current file until it finds the .projRoot folder. \n
 Return values: \n
 * rootFound: True | False \n
@@ -146,3 +147,70 @@ Return values: \n
   if currentPath[-1] != '/':
     currentPath += "/"
   return True, currentPath
+
+def collectAllProjectRootPaths():
+  """Return values:\n
+* nrOfTotalPaths: nr of founds + notFounds
+* paths: dictionary of path - nrOfOccurrence"""
+  found1, gitRepoPath = getGitRepoAbsolutePath()
+  found2, projFilePath = getProjectRootAbsolutePathByProjFile()
+  found3, rootBySpecificFileNames = getRootAbsolutePathBySpecificFileNames()
+  found4, rootByGithubNrOfParents = getRootAbsolutePathByNumberOfParentsFromGithub()
+  found5, rootByGithubNameOfParents = getRootAbsolutePathByNameOfParentsFromGithub()
+  nrOfTotalPaths = 5
+  paths = {}
+  if found1:
+    paths[gitRepoPath] = 1
+  if found2:
+    if projFilePath not in paths:
+      paths[projFilePath] = 1
+    else:
+      paths[projFilePath] += 1
+  if found3:
+    if rootBySpecificFileNames not in paths:
+      paths[rootBySpecificFileNames] = 1
+    else:
+      paths[rootBySpecificFileNames] += 1
+  if found4:
+    if rootByGithubNrOfParents not in paths:
+      paths[rootByGithubNrOfParents] = 1
+    else:
+      paths[rootByGithubNrOfParents] += 1
+  if found5:
+    if rootByGithubNameOfParents not in paths:
+      paths[rootByGithubNameOfParents] = 1
+    else:
+      paths[rootByGithubNameOfParents] += 1
+  return nrOfTotalPaths, paths
+
+def getProjectRootPath():
+  """Criteria for selecting the most common root path :\n
+* at least 2 methods results in that same path
+* or other occurrences are less common (no choosing between 30% and 30%)\n
+The path ends with a slash.\n
+Return values: \n
+* found: True| False
+* path: empty string if not found"""
+  notFoundResult = (False, "")
+  global __projectRootPath
+  if __projectRootPath is not None:
+    return len(__projectRootPath) > 0, __projectRootPath
+  nrOfPaths, paths = collectAllProjectRootPaths()
+  if not paths:
+    __projectRootPath = ""
+    return notFoundResult
+  maxNrOfOccurrences = 0
+  pathWithMaxNrOfOccurrences = ""
+  nrOfPathsWithMaxNrOfOccurrences = 0
+  for path, nrOfOccurrences in paths.items():
+    if nrOfOccurrences == maxNrOfOccurrences:
+      nrOfPathsWithMaxNrOfOccurrences += 1
+    if nrOfOccurrences > maxNrOfOccurrences:
+      maxNrOfOccurrences = nrOfOccurrences
+      pathWithMaxNrOfOccurrences = path
+      nrOfPathsWithMaxNrOfOccurrences = 1
+  if nrOfPathsWithMaxNrOfOccurrences > 1 or maxNrOfOccurrences < 2:
+    __projectRootPath = ""
+    return notFoundResult
+  __projectRootPath = pathWithMaxNrOfOccurrences
+  return True, pathWithMaxNrOfOccurrences

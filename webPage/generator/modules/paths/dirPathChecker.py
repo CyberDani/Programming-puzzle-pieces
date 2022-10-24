@@ -1,36 +1,17 @@
-import pathlib
-
+from modules import checks
+from modules.paths import projectRootDetector as projRoot
 from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 
-from modules import checks
-
-def getGitRepoAbsolutePathEndingWithSlash():
-  filesInGitRepo = ["README.md", ".gitignore", ".git/HEAD"]
-  currentPath = pathlib.Path(__file__).parent.resolve()
-  gitRepoFound = False
-  while not gitRepoFound:
-    if currentPath.as_posix() == currentPath.parent.as_posix():
-      raise Exception("Could not found git repository")
-    gitRepo = True
-    for file in filesInGitRepo:
-      if not (currentPath / file).is_file():
-        gitRepo = False
-        break
-    if gitRepo:
-      currentPath = currentPath.as_posix()
-      if currentPath[-1] != '/':
-        currentPath += "/"
-      return currentPath
-    currentPath = currentPath.parent
-  raise Exception("Could not found git repository")
 
 class DirectoryPathChecker:
 
-  gitRepoAbsolutePath = getGitRepoAbsolutePathEndingWithSlash()
+  projRootDetected, projRootAbsolutePath = projRoot.getProjectRootPath()
 
   def __init__(self, dirPathRelativeToGitRepo, filesToCheck, actionType = dirAction.ENSURE_DIR_AND_FILES_EXIST):
     """The associated path must be relative to the git root repository"""
     checks.checkIfStringDoesNotContainAnySubstringFromList(dirPathRelativeToGitRepo, 0, 300, ["\\"])
+    if not self.projRootDetected:
+      raise Exception("Could not detect the the project root path!")
     if actionType == dirAction.ENSURE_DIR_AND_FILES_EXIST:
       checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
     elif actionType == dirAction.ENSURE_DIR_EXISTS_ONLY \
@@ -40,7 +21,7 @@ class DirectoryPathChecker:
       dirPathRelativeToGitRepo += "/"
     while len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo.startswith("./"):
       dirPathRelativeToGitRepo = dirPathRelativeToGitRepo[2:]
-    self.absoluteDirPath = self.gitRepoAbsolutePath + dirPathRelativeToGitRepo
+    self.absoluteDirPath = self.projRootAbsolutePath + dirPathRelativeToGitRepo
     if actionType != dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
       checks.checkIfDirectoryPathExists(self.absoluteDirPath)
     for file in filesToCheck:

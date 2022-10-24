@@ -1,11 +1,20 @@
 import os
+from pathlib import Path
 
 from modules.paths.definitions import dirPathTypeForProd, possibleDirPathTypes, possibleFilePathTypes
+from modules.paths import projectRootDetector as projRoot
 
 from modules import checks
 
-def getGitRepoAbsolutePathEndingWithSlash():
-  return dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY.value.getAbsoluteDirPathEndingWithSlash()
+
+currentWorkingDirectory = Path(os.getcwd()).as_posix() + "/"
+
+def getProjectRootAbsolutePath():
+  """The path ends with a slash"""
+  found, rootPath = projRoot.getProjectRootPath()
+  if not found:
+    raise Exception("Could not find project root path")
+  return rootPath
 
 def getFileName(fPathType):
   checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
@@ -49,12 +58,24 @@ def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTy
     relPath += '/'
   return relPath
 
-def getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType):
-  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType,
-                                                      dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY)
+def getRelativeDirPathToProjectRoot(directoryPathType):
+  """The path ends with a slash"""
+  checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
+  dirPath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
+  projRootPath = getProjectRootAbsolutePath()
+  relPath = os.path.relpath(dirPath, projRootPath)
+  relPath = relPath.replace("\\", "/")
+  if len(relPath) > 0 and relPath[-1] != '/':
+    relPath += '/'
+  return relPath
 
-def getRelativeFilePathToGitRepo(fPathType):
-  return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.GIT_REPOSITORY)
+def getRelativeFilePathToProjectRoot(fPathType):
+  checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
+  absFilePath = fPathType.value.getAbsoluteFilePath()
+  projRootPath = getProjectRootAbsolutePath()
+  relPath = os.path.relpath(absFilePath, projRootPath)
+  relPath = relPath.replace("\\", "/")
+  return relPath
 
 def getRelativeFilePathToIndexHtml(fPathType):
   return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)

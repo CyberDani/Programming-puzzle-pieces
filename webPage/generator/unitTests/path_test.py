@@ -14,8 +14,8 @@ from modules.paths import path
 
 class StringUtilTests(unittest.TestCase):
 
-  def test_getGitRepoAbsolutePathEndingWithSlash(self):
-    gitRepoPath = path.getGitRepoAbsolutePathEndingWithSlash()
+  def test_getProjectRootAbsolutePath(self):
+    gitRepoPath = path.getProjectRootAbsolutePath()
     self.assertTrue(len(gitRepoPath) > 0)
     self.assertEqual(gitRepoPath[-1], "/")
     self.assertTrue(filerw.fileExistsByPath(gitRepoPath + ".git/HEAD"))
@@ -77,7 +77,7 @@ class StringUtilTests(unittest.TestCase):
       path.getAbsoluteDirPathEndingWithSlash(utFile.FOR_TEST_TEXTFILE3)
 
   def test_getAbsoluteDirPathEndingWithSlash_examples(self):
-    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    gitRepoAbsPath = path.getProjectRootAbsolutePath()
     self.assertAbsoluteDirPath(gitRepoAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
 
   def assertAbsoluteDirPath(self, gitRepoAbsPath, dirType):
@@ -184,7 +184,7 @@ class StringUtilTests(unittest.TestCase):
       path.getAbsoluteFilePath(utDir.PYTHON_UNIT_TESTS_4_UNIT_TESTS)
 
   def test_getAbsoluteFilePath_examples(self):
-    gitRepoAbsPath = path.getGitRepoAbsolutePathEndingWithSlash()
+    gitRepoAbsPath = path.getProjectRootAbsolutePath()
     self.assertAbsoluteFilePath(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE1)
     self.assertAbsoluteFilePath(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE2)
     self.assertAbsoluteFilePath(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE3)
@@ -196,69 +196,69 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(fileAbsolutePath.endswith(fileType.value.getFileName()))
     self.assertEqual(fileAbsolutePath, fileType.value.getAbsoluteFilePath())
 
-  def test_getRelativeDirPathToGitRepoEndingWithSlash_nonSense(self):
+  def test_getRelativeDirPathToProjectRoot_nonSense(self):
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(".")
+      path.getRelativeDirPathToProjectRoot(".")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash("")
+      path.getRelativeDirPathToProjectRoot("")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getRelativeDirPathToProjectRoot(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(False)
+      path.getRelativeDirPathToProjectRoot(False)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(None)
+      path.getRelativeDirPathToProjectRoot(None)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(0)
+      path.getRelativeDirPathToProjectRoot(0)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getRelativeDirPathToProjectRoot([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash([])
+      path.getRelativeDirPathToProjectRoot([])
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToGitRepoEndingWithSlash(utFile.FOR_TEST_TEXTFILE3)
+      path.getRelativeDirPathToProjectRoot(utFile.FOR_TEST_TEXTFILE3)
 
   # TODO rework this test
-  #def test_getRelativeDirPathToGitRepoEndingWithSlash_examples(self):
+  #def test_getRelativeDirPathToProjectRoot_examples(self):
   #  gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToGit(gitRepoAbsPath, utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToGit(gitRepoAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
 
   def assertRelDirPathToGit(self, gitRepoAbsPath, directoryPathType):
-    relDirPath = path.getRelativeDirPathToGitRepoEndingWithSlash(directoryPathType)
+    relDirPath = path.getRelativeDirPathToProjectRoot(directoryPathType)
     self.assertTrue(len(relDirPath) > 0)
     self.assertTrue(relDirPath[-1] == "/")
     self.assertEqual(pathlib.Path(gitRepoAbsPath + relDirPath).resolve(),
                      pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
 
-  def test_getRelativeFilePathToGitRepo_nonSense(self):
+  def test_getRelativeFilePathToProjectRoot_nonSense(self):
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(".")
+      path.getRelativeFilePathToProjectRoot(".")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo("")
+      path.getRelativeFilePathToProjectRoot("")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getRelativeFilePathToProjectRoot(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(False)
+      path.getRelativeFilePathToProjectRoot(False)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(None)
+      path.getRelativeFilePathToProjectRoot(None)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(0)
+      path.getRelativeFilePathToProjectRoot(0)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getRelativeFilePathToProjectRoot([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo([])
+      path.getRelativeFilePathToProjectRoot([])
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToGitRepo(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+      path.getRelativeFilePathToProjectRoot(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
 
   # TODO rework this test
   #def test_getRelativeFilePathToGitRepo_examples(self):
   #  gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.GIT_REPOSITORY)
-  #  self.assertRelFilePathToGit(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE1)
-  #  self.assertRelFilePathToGit(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE2)
-  #  self.assertRelFilePathToGit(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE3)
-  #  self.assertRelFilePathToGit(gitRepoAbsPath, utFile.FOR_TEST_NON_EXISTING_TEXTFILE1)
+  #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE1)
+  #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE2)
+  #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE3)
+  #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_NON_EXISTING_TEXTFILE1)
 
-  def assertRelFilePathToGit(self, gitRepoAbsPath, fileType):
-    fileRelPathToGit = path.getRelativeFilePathToGitRepo(fileType)
+  def assertRelFilePathToProjectRoot(self, gitRepoAbsPath, fileType):
+    fileRelPathToGit = path.getRelativeFilePathToProjectRoot(fileType)
     self.assertTrue(fileRelPathToGit.endswith(fileType.value.getFileName()))
     self.assertEqual(pathlib.Path(gitRepoAbsPath + fileRelPathToGit).resolve(),
                      pathlib.Path(fileType.value.getAbsoluteFilePath()).resolve())

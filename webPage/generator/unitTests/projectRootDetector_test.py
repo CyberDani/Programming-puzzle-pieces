@@ -31,8 +31,8 @@ class ProjectRootDetectorTests(unittest.TestCase):
     self.assertTrue(len(gitRepoPath) > len(newGitRepoPath))
     shutil.move(gitRepoPath + ".gitX", gitRepoPath + ".git")
 
-  def test_getProjectRootAbsolutePath_ifFound_renameRootDir_retest_renameBack(self):
-    rootFound, rootPath = projRoot.getProjectRootAbsolutePath()
+  def test_getProjectRootAbsolutePathByProjFile_ifFound_renameRootDir_retest_renameBack(self):
+    rootFound, rootPath = projRoot.getProjectRootAbsolutePathByProjFile()
     if not rootFound:
       self.assertEqual(rootPath, "")
       return
@@ -42,7 +42,7 @@ class ProjectRootDetectorTests(unittest.TestCase):
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(rootPath))
     shutil.move(rootPath + ".projRoot", rootPath + ".projRootX")
-    rootFound, newRootPath = projRoot.getProjectRootAbsolutePath()
+    rootFound, newRootPath = projRoot.getProjectRootAbsolutePathByProjFile()
     if not rootFound:
       self.assertEqual(newRootPath, "")
       shutil.move(rootPath + ".projRootX", rootPath + ".projRoot")
@@ -91,3 +91,24 @@ class ProjectRootDetectorTests(unittest.TestCase):
     self.assertEqual(rootPath[-1], "/")
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(rootPath))
+
+  def test_collectAllProjectRootPaths(self):
+    totalPaths, paths = projRoot.collectAllProjectRootPaths()
+    self.assertTrue(totalPaths > 3)
+    self.assertTrue(len(paths) > 0)
+    pathsInDict = 0
+    pathsSoFar = []
+    for key, value in paths.items():
+      self.assertFalse(key in pathsSoFar)
+      pathsSoFar.append(key)
+      pathsInDict += value
+    self.assertTrue(totalPaths >= pathsInDict)
+
+  def test_getProjectRootPath(self):
+    found, rootPath = projRoot.getProjectRootPath()
+    if not found:
+      self.assertEqual(rootPath, "")
+    self.assertTrue(found)
+    currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
+    self.assertTrue(currentPath.startswith(rootPath))
+    self.assertEqual(rootPath[-1], "/")

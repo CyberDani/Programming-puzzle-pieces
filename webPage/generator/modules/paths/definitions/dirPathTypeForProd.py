@@ -15,7 +15,7 @@ class DirectoryPathTypeForProd(Enum):
   PYTHON_GENERATOR_UNIT_TESTS_TEMP2 = DirectoryPathChecker(
                                                       config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP2_FOLDER_NAME,
                                                       [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
-  GIT_REPOSITORY = DirectoryPathChecker("", ["README.md", ".git/HEAD"], dirAction.ENSURE_DIR_AND_FILES_EXIST)
+  PROJECT_ROOT = DirectoryPathChecker("", ["README.md", ".git/HEAD"], dirAction.ENSURE_DIR_AND_FILES_EXIST)
   INDEX_HTML_LOCATION = DirectoryPathChecker("", [], dirAction.ENSURE_DIR_EXISTS_ONLY)
   HTML_BACKUP = DirectoryPathChecker("webPage/backup", [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
   HTML_SCRIPTS = DirectoryPathChecker("webPage/scripts", ["githubApiScripts.js", "navigationScripts.js"],
