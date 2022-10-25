@@ -1,3 +1,4 @@
+import os
 import pathlib
 import sys
 import unittest
@@ -395,3 +396,61 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(relDirPath[-1] == "/")
     self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + relDirPath).resolve(),
                      pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
+
+  def test_getCwd(self):
+    cwd = path.getCwd()
+    self.assertTrue(len(cwd) > 0)
+    self.assertTrue(cwd.endswith("/"))
+    self.assertTrue(os.path.isdir(cwd))
+
+  def test_getRelativeDirPathToCurrentWorkingDir_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToCurrentWorkingDir(utFile.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToCurrentWorkingDir("file.txt")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToCurrentWorkingDir(".")
+    with self.assertRaises(Exception):
+      path.getRelativeDirPathToCurrentWorkingDir(None)
+
+  def test_getRelativeDirPathToCurrentWorkingDir_example1(self):
+    found, relPath = path.getRelativeDirPathToCurrentWorkingDir(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    if not found:
+      return
+    self.assertTrue(found)
+    cwd = path.getCwd()
+    self.assertTrue(os.path.isdir(cwd + relPath))
+
+  def test_getRelativeDirPathToCurrentWorkingDir_example2(self):
+    found, relPath = path.getRelativeDirPathToCurrentWorkingDir(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+    if not found:
+      return
+    self.assertTrue(found)
+    cwd = path.getCwd()
+    self.assertTrue(os.path.isdir(cwd + relPath))
+
+  def test_getRelativeFilePathToCurrentWorkingDir_nonSense(self):
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToCurrentWorkingDir(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToCurrentWorkingDir("file.txt")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToCurrentWorkingDir(".")
+    with self.assertRaises(Exception):
+      path.getRelativeFilePathToCurrentWorkingDir(None)
+
+  def test_getRelativeFilePathToCurrentWorkingDir_example1(self):
+    found, relPath = path.getRelativeFilePathToCurrentWorkingDir(utFile.FOR_TEST_TEXTFILE1)
+    if not found:
+      return
+    self.assertTrue(found)
+    cwd = path.getCwd()
+    self.assertTrue(os.path.isfile(cwd + relPath))
+
+  def test_getRelativeFilePathToCurrentWorkingDir_example2(self):
+    found, relPath = path.getRelativeFilePathToCurrentWorkingDir(utFile.FOR_TEST_TEXTFILE3)
+    if not found:
+      return
+    self.assertTrue(found)
+    cwd = path.getCwd()
+    self.assertTrue(os.path.isfile(cwd + relPath))

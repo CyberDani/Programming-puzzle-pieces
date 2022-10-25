@@ -7,7 +7,18 @@ from modules.paths import projectRootDetector as projRoot
 from modules import checks
 
 
-currentWorkingDirectory = Path(os.getcwd()).as_posix() + "/"
+__cwd = None
+__cwdDrive = Path(os.getcwd()).drive
+__projectRootDrive = None
+
+def getCwd():
+  """Ends with a slash."""
+  global __cwd
+  if __cwd is None:
+    __cwd = Path(os.getcwd()).as_posix()
+    if __cwd[-1] != "/":
+      __cwd += "/"
+  return __cwd
 
 def getProjectRootAbsolutePath():
   """The path ends with a slash"""
@@ -15,6 +26,13 @@ def getProjectRootAbsolutePath():
   if not found:
     raise Exception("Could not find project root path")
   return rootPath
+
+def getProjectRootDrive():
+  root = getProjectRootAbsolutePath()
+  global __projectRootDrive
+  if __projectRootDrive is None:
+    __projectRootDrive = Path(root).drive
+  return __projectRootDrive
 
 def getFileName(fPathType):
   checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
@@ -57,6 +75,37 @@ def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTy
   if len(relPath) > 0 and relPath[-1] != '/':
     relPath += '/'
   return relPath
+
+def getRelativeDirPathToCurrentWorkingDir(directoryPathType):
+  """The path ends with a slash \n
+Return values:\n
+* found: True | False
+* relPath: empty string if not found"""
+  checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
+  dirPath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
+  global __cwd, __cwdDrive
+  currentDrive = getProjectRootDrive()
+  if __cwdDrive != currentDrive:
+    return False, ""
+  relPath = os.path.relpath(dirPath, __cwd)
+  relPath = relPath.replace("\\", "/")
+  if len(relPath) > 0 and relPath[-1] != '/':
+    relPath += '/'
+  return True, relPath
+
+def getRelativeFilePathToCurrentWorkingDir(fPathType):
+  """Return values:\n
+* found: True | False
+* relPath: empty string if not found"""
+  checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
+  absFilePath = fPathType.value.getAbsoluteFilePath()
+  global __cwd, __cwdDrive
+  currentDrive = getProjectRootDrive()
+  if __cwdDrive != currentDrive:
+    return False, ""
+  relPath = os.path.relpath(absFilePath, __cwd)
+  relPath = relPath.replace("\\", "/")
+  return True, relPath
 
 def getRelativeDirPathToProjectRoot(directoryPathType):
   """The path ends with a slash"""
