@@ -503,7 +503,7 @@ class ChecksTests(unittest.TestCase):
     nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists(nonExistingFilePath)
-    dirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+    dirPath = path.getAbsoluteDirPath(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists(dirPath)
     with self.assertRaises(Exception):
@@ -511,8 +511,7 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfFilePathExists("./" + dirPath)
 
-  # TODO rework this test
-  def test_checkIfFilePathExists_example(self):
+  def test_checkIfFilePathExists_absolutePath(self):
     try:
       file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
       file.close()
@@ -520,12 +519,23 @@ class ChecksTests(unittest.TestCase):
       file.close()
       filePath1abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
       filePath2abs = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE2)
-      #filePath1rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE1, Dir.PYTHON_MAIN_GENERATOR)
-      #filePath2rel = path.getRelativeFilePathToDirectory(File.FOR_TEST_TEXTFILE2, Dir.PYTHON_MAIN_GENERATOR)
       checks.checkIfFilePathExists(filePath1abs)
       checks.checkIfFilePathExists(filePath2abs)
-      #checks.checkIfFilePathExists(filePath1rel)
-      #checks.checkIfFilePathExists(filePath2rel)
+    except Exception:
+      self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
+
+  def test_checkIfFilePathExists_relativePath(self):
+    try:
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
+      file.close()
+      file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE2)
+      file.close()
+      found1, relFilePath1 = path.getRelativeFilePathToCurrentWorkingDir(File.FOR_TEST_TEXTFILE1)
+      found2, relFilePath2 = path.getRelativeFilePathToCurrentWorkingDir(File.FOR_TEST_TEXTFILE2)
+      if found1:
+        checks.checkIfFilePathExists(relFilePath1)
+      if found2:
+        checks.checkIfFilePathExists(relFilePath2)
     except Exception:
       self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
 
@@ -544,7 +554,7 @@ class ChecksTests(unittest.TestCase):
       checks.checkIfDirectoryPathExists(False)
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
-    nonExistingDirPath = path.getAbsoluteDirPathEndingWithSlash(Dir.NON_EXISTING_DIRECTORY)
+    nonExistingDirPath = path.getAbsoluteDirPath(Dir.NON_EXISTING_DIRECTORY)
     with self.assertRaises(Exception):
       checks.checkIfDirectoryPathExists(filePath)
     with self.assertRaises(Exception):
@@ -552,24 +562,37 @@ class ChecksTests(unittest.TestCase):
     with self.assertRaises(Exception):
       checks.checkIfDirectoryPathExists(nonExistingDirPath)
 
-  # TODO rework test case
-  def test_checkIfDirectoryPathExists_example(self):
+  def test_checkIfDirectoryPathExists_absolutePath(self):
     try:
-      dirPathAbs = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
-      #dirPathRel = path.getRelativeDirPathToDirectoryEndingWithSlash(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1,
-      #                                                               Dir.PYTHON_MAIN_GENERATOR)
+      absDirPath = path.getAbsoluteDirPath(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+      checks.checkIfDirectoryPathExists(absDirPath)
+      checks.checkIfDirectoryPathExists(absDirPath[:-1])
+      absDirPath = path.getAbsoluteDirPath(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+      checks.checkIfDirectoryPathExists(absDirPath)
+      checks.checkIfDirectoryPathExists(absDirPath[:-1])
+    except Exception:
+      self.fail("checkIfDirectoryPathExists() raised Exception unexpectedly!")
 
-      checks.checkIfDirectoryPathExists(dirPathAbs)
-      checks.checkIfDirectoryPathExists(dirPathAbs[:-1])
-      #checks.checkIfDirectoryPathExists(dirPathRel)
-      #checks.checkIfDirectoryPathExists(dirPathRel[:-1])
-      #checks.checkIfDirectoryPathExists("./" + dirPathRel)
+  def test_checkIfDirectoryPathExists_relativePath(self):
+    try:
       checks.checkIfDirectoryPathExists(".")
       checks.checkIfDirectoryPathExists("./")
       checks.checkIfDirectoryPathExists("..")
       checks.checkIfDirectoryPathExists("../")
+      found, relDirPath = path.getRelativeDirPathToCurrentWorkingDir(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1)
+      if not found:
+        return
+      checks.checkIfDirectoryPathExists(relDirPath)
+      checks.checkIfDirectoryPathExists(relDirPath[:-1])
+      checks.checkIfDirectoryPathExists("./" + relDirPath)
+      found, relDirPath = path.getRelativeDirPathToCurrentWorkingDir(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
+      if not found:
+        return
+      checks.checkIfDirectoryPathExists(relDirPath)
+      checks.checkIfDirectoryPathExists(relDirPath[:-1])
+      checks.checkIfDirectoryPathExists("./" + relDirPath)
     except Exception:
-      self.fail("checkIfFilePathExists() raised Exception unexpectedly!")
+      self.fail("checkIfDirectoryPathExists() raised Exception unexpectedly!")
 
   def test_checkIfChar_invalid(self):
     with self.assertRaises(Exception):

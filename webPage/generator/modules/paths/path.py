@@ -38,18 +38,21 @@ def getFileName(fPathType):
   checks.checkIfAnyType(fPathType, possibleFilePathTypes.filePathTypes)
   return fPathType.value.getFileName()
 
-def getAbsoluteDirPathEndingWithSlash(directoryPathType):
+def getAbsoluteDirPath(directoryPathType):
+  """The path ends with a slash."""
   checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
   return directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
 
-def getAbsoluteDirParentPathEndingWithSlash(directoryPathType):
-  absolutePath = getAbsoluteDirPathEndingWithSlash(directoryPathType)
+def getAbsoluteDirParentPath(directoryPathType):
+  """The path ends with a slash."""
+  absolutePath = getAbsoluteDirPath(directoryPathType)
   absolutePath = absolutePath[:-1]
   idx = absolutePath.rfind("/")
   return absolutePath[:idx + 1]
 
-def getAbsoluteDirParentX2PathEndingWithSlash(directoryPathType):
-  absoluteParentPath = getAbsoluteDirParentPathEndingWithSlash(directoryPathType)
+def getAbsoluteDirParentX2Path(directoryPathType):
+  """The path ends with a slash."""
+  absoluteParentPath = getAbsoluteDirParentPath(directoryPathType)
   absoluteParentPath = absoluteParentPath[:-1]
   idx = absoluteParentPath.rfind("/")
   return absoluteParentPath[:idx + 1]
@@ -66,11 +69,12 @@ def getRelativeFilePathToDirectory(fPathType, directoryPathType):
   relPath = relPath.replace("\\", "/")
   return relPath
 
-def getRelativeDirPathToDirectoryEndingWithSlash(dirPathTypeToResolve, dirPathTypeForComparison):
+def getRelativeDirPathToDirectory(dirPathTypeToResolve, dirPathTypeForComparison):
+  """The path ends with a slash."""
   checks.checkIfAnyType(dirPathTypeToResolve, possibleDirPathTypes.dirPathTypes)
   checks.checkIfAnyType(dirPathTypeForComparison, possibleDirPathTypes.dirPathTypes)
-  relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPathEndingWithSlash(),
-                            dirPathTypeForComparison.value.getAbsoluteDirPathEndingWithSlash())
+  relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPath(),
+                            dirPathTypeForComparison.value.getAbsoluteDirPath())
   relPath = relPath.replace("\\", "/")
   if len(relPath) > 0 and relPath[-1] != '/':
     relPath += '/'
@@ -110,7 +114,7 @@ def getRelativeFilePathToCurrentWorkingDir(fPathType):
 def getRelativeDirPathToProjectRoot(directoryPathType):
   """The path ends with a slash"""
   checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
-  dirPath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
+  dirPath = directoryPathType.value.getAbsoluteDirPath()
   projRootPath = getProjectRootAbsolutePath()
   relPath = os.path.relpath(dirPath, projRootPath)
   relPath = relPath.replace("\\", "/")
@@ -129,6 +133,7 @@ def getRelativeFilePathToProjectRoot(fPathType):
 def getRelativeFilePathToIndexHtml(fPathType):
   return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)
 
-def getRelativeDirPathToIndexHtmlEndingWithSlash(directoryPathType):
-  return getRelativeDirPathToDirectoryEndingWithSlash(directoryPathType,
-                                                      dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)
+def getRelativeDirPathToIndexHtml(directoryPathType):
+  """The path ends with a slash"""
+  return getRelativeDirPathToDirectory(directoryPathType,
+                                       dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)

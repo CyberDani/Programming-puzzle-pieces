@@ -30,7 +30,7 @@ def directoryExistsByPath(dirPath):
   return os.path.isdir(dirPath)
 
 def directoryExistsByType(dirPath):
-  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPath)
+  dirPath = path.getAbsoluteDirPath(dirPath)
   return directoryExistsByPath(dirPath)
 
 ###### Reads ######
@@ -68,7 +68,7 @@ def deleteNonEmptyDirectoryByPathIfExists(dirPath):
   shutil.rmtree(dirPath)
 
 def deleteNonEmptyDirectoryByTypeIfExists(dirPathType):
-  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  dirPath = path.getAbsoluteDirPath(dirPathType)
   deleteNonEmptyDirectoryByPathIfExists(dirPath)
 
 def deleteFileIfExistsByPath(filePath):
@@ -89,7 +89,7 @@ def moveFileIfExistsIntoAlreadyExistingOrNewlyCreatedDirectory(filePathType, dir
   if not fileExistsByPath(filePath):
     return
   fileName = path.getFileName(filePathType)
-  folderPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  folderPath = path.getAbsoluteDirPath(dirPathType)
   createDirectoryWithParentsByPathIfNotExists(folderPath)
   os.replace(filePath, folderPath + fileName)
 
@@ -101,7 +101,7 @@ def createDirectoryWithParentsByPathIfNotExists(dirPath):
   pathlib.Path(dirPath).mkdir(parents=True, exist_ok=True)
 
 def createDirectoryWithParentsByTypeIfNotExists(dirPathType):
-  dirPath = path.getAbsoluteDirPathEndingWithSlash(dirPathType)
+  dirPath = path.getAbsoluteDirPath(dirPathType)
   createDirectoryWithParentsByPathIfNotExists(dirPath)
 
 def createOrOverwriteWithEmptyFileByPath(filePath):

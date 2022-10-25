@@ -57,55 +57,55 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(absolutFilePath.endswith(fileName))
     self.assertEqual(fileName, fPathType.value.getFileName())
 
-  def test_getAbsoluteDirPathEndingWithSlash_nonSense(self):
+  def test_getAbsoluteDirPath_nonSense(self):
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(".")
+      path.getAbsoluteDirPath(".")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash("")
+      path.getAbsoluteDirPath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirPath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(False)
+      path.getAbsoluteDirPath(False)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(None)
+      path.getAbsoluteDirPath(None)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(0)
+      path.getAbsoluteDirPath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirPath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash([])
+      path.getAbsoluteDirPath([])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPathEndingWithSlash(utFile.FOR_TEST_TEXTFILE3)
+      path.getAbsoluteDirPath(utFile.FOR_TEST_TEXTFILE3)
 
   def test_getAbsoluteDirPathEndingWithSlash_examples(self):
     gitRepoAbsPath = path.getProjectRootAbsolutePath()
     self.assertAbsoluteDirPath(gitRepoAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
 
   def assertAbsoluteDirPath(self, gitRepoAbsPath, dirType):
-    absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
+    absPath = path.getAbsoluteDirPath(dirType)
     self.assertTrue(absPath.startswith(gitRepoAbsPath))
     self.assertEqual(absPath, dirType.value.getAbsoluteDirPathEndingWithSlash())
     self.assertTrue(absPath[-1] == "/")
 
-  def test_getAbsoluteDirParentPathEndingWithSlash_nonSense(self):
+  def test_getAbsoluteDirParentPath_nonSense(self):
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(".")
+      path.getAbsoluteDirParentPath(".")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash("")
+      path.getAbsoluteDirParentPath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirParentPath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(False)
+      path.getAbsoluteDirParentPath(False)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(None)
+      path.getAbsoluteDirParentPath(None)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(0)
+      path.getAbsoluteDirParentPath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirParentPath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash([])
+      path.getAbsoluteDirParentPath([])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPathEndingWithSlash(utFile.FOR_TEST_TEXTFILE2)
+      path.getAbsoluteDirParentPath(utFile.FOR_TEST_TEXTFILE2)
 
   def test_getAbsoluteDirParentPathEndingWithSlash_examples(self):
     self.assertAbsoluteDirParentPath(utDir.PYTHON_GENERATOR_UNIT_TESTS)
@@ -114,8 +114,8 @@ class StringUtilTests(unittest.TestCase):
     self.assertAbsoluteDirParentPath(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP2)
 
   def assertAbsoluteDirParentPath(self, dirType):
-    absParentPath = path.getAbsoluteDirParentPathEndingWithSlash(dirType)
-    absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
+    absParentPath = path.getAbsoluteDirParentPath(dirType)
+    absPath = path.getAbsoluteDirPath(dirType)
     self.assertTrue(absParentPath[-1] == "/")
     self.assertTrue(absPath[-1] == "/")
     self.assertTrue(absPath.startswith(absParentPath))
@@ -124,25 +124,25 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(len(absPathParts), len(absParentPathParts) + 1)
     self.assertEqual(absParentPathParts[:-1], absPathParts[:-2])
 
-  def test_getAbsoluteDirParentX2PathEndingWithSlash_nonSense(self):
+  def test_getAbsoluteDirParentX2Path_nonSense(self):
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(".")
+      path.getAbsoluteDirParentX2Path(".")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash("")
+      path.getAbsoluteDirParentX2Path("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirParentX2Path(config.PATH_FROM_REPO_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(False)
+      path.getAbsoluteDirParentX2Path(False)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(None)
+      path.getAbsoluteDirParentX2Path(None)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(0)
+      path.getAbsoluteDirParentX2Path(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirParentX2Path([config.PATH_FROM_REPO_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash([])
+      path.getAbsoluteDirParentX2Path([])
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2PathEndingWithSlash(utFile.FOR_TEST_TEXTFILE3)
+      path.getAbsoluteDirParentX2Path(utFile.FOR_TEST_TEXTFILE3)
 
   def test_getAbsoluteDirParentX2PathEndingWithSlash_examples(self):
     self.assertAbsoluteDirParentX2Path(utDir.PYTHON_GENERATOR_UNIT_TESTS)
@@ -154,8 +154,8 @@ class StringUtilTests(unittest.TestCase):
     self.assertAbsoluteDirParentX2Path(utDir.PYTHON_UNIT_TESTS_4_UNIT_TESTS_TEMPDIR2)
 
   def assertAbsoluteDirParentX2Path(self, dirType):
-    absParentPath = path.getAbsoluteDirParentX2PathEndingWithSlash(dirType)
-    absPath = path.getAbsoluteDirPathEndingWithSlash(dirType)
+    absParentPath = path.getAbsoluteDirParentX2Path(dirType)
+    absPath = path.getAbsoluteDirPath(dirType)
     self.assertTrue(absParentPath[-1] == "/")
     self.assertTrue(absPath[-1] == "/")
     self.assertTrue(absPath.startswith(absParentPath))
@@ -219,7 +219,7 @@ class StringUtilTests(unittest.TestCase):
 
   # TODO rework this test
   #def test_getRelativeDirPathToProjectRoot_examples(self):
-  #  gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.GIT_REPOSITORY)
+  #  gitRepoAbsPath = path.getAbsoluteDirPath(utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToGit(gitRepoAbsPath, utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToGit(gitRepoAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
 
@@ -228,7 +228,7 @@ class StringUtilTests(unittest.TestCase):
     self.assertTrue(len(relDirPath) > 0)
     self.assertTrue(relDirPath[-1] == "/")
     self.assertEqual(pathlib.Path(gitRepoAbsPath + relDirPath).resolve(),
-                     pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
+                     pathlib.Path(directoryPathType.value.getAbsoluteDirPath()).resolve())
 
   def test_getRelativeFilePathToProjectRoot_nonSense(self):
     with self.assertRaises(Exception):
@@ -252,7 +252,7 @@ class StringUtilTests(unittest.TestCase):
 
   # TODO rework this test
   #def test_getRelativeFilePathToGitRepo_examples(self):
-  #  gitRepoAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.GIT_REPOSITORY)
+  #  gitRepoAbsPath = path.getAbsoluteDirPath(utDir.GIT_REPOSITORY)
   #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE1)
   #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE2)
   #  self.assertRelFilePathToProjectRoot(gitRepoAbsPath, utFile.FOR_TEST_TEXTFILE3)
@@ -296,45 +296,43 @@ class StringUtilTests(unittest.TestCase):
   def assertRelativeFilePathToDirectory(self, fPathType, directoryPathType):
     relPath = path.getRelativeFilePathToDirectory(fPathType, directoryPathType)
     self.assertTrue(relPath.endswith(fPathType.value.getFileName()))
-    self.assertEqual(pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
+    self.assertEqual(pathlib.Path(directoryPathType.value.getAbsoluteDirPath() + relPath).resolve(),
                      pathlib.Path(fPathType.value.getAbsoluteFilePath()).resolve())
     self.assertFalse("\\" in relPath)
 
-  def test_getRelativeDirPathToDirectoryEndingWithSlash_nonSense(self):
+  def test_getRelativeDirPathToDirectory_nonSense(self):
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(utDir.PYTHON_GENERATOR_UNIT_TESTS, utFile.FOR_TEST_TEXTFILE3)
+      path.getRelativeDirPathToDirectory(utDir.PYTHON_GENERATOR_UNIT_TESTS, utFile.FOR_TEST_TEXTFILE3)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(utFile.FOR_TEST_TEXTFILE3, utDir.PYTHON_GENERATOR_UNIT_TESTS)
+      path.getRelativeDirPathToDirectory(utFile.FOR_TEST_TEXTFILE3, utDir.PYTHON_GENERATOR_UNIT_TESTS)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(utFile.FOR_TEST_TEXTFILE1,
-                                                        utFile.FOR_TEST_NON_EXISTING_TEXTFILE1)
+      path.getRelativeDirPathToDirectory(utFile.FOR_TEST_TEXTFILE1,
+                                         utFile.FOR_TEST_NON_EXISTING_TEXTFILE1)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(utDir.GIT_REPOSITORY,
-                                                         "D:/Programming puzzle pieces/webPage")
+      path.getRelativeDirPathToDirectory(utDir.GIT_REPOSITORY, "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash("D:/Programming puzzle pieces/" +
-                                                        config.PATH_FROM_REPO_TO_PY_GENERATOR,
-                                                        "D:/Programming puzzle pieces/webPage")
+      path.getRelativeDirPathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR,
+                                          "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(None, None)
+      path.getRelativeDirPathToDirectory(None, None)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(True, "directoryName")
+      path.getRelativeDirPathToDirectory(True, "directoryName")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash("directoryName", 12)
+      path.getRelativeDirPathToDirectory("directoryName", 12)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(123, 0)
+      path.getRelativeDirPathToDirectory(123, 0)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectoryEndingWithSlash(["directoryName"], False)
+      path.getRelativeDirPathToDirectory(["directoryName"], False)
 
   # TODO rework this test
   #def test_getRelativeDirPathToDirectoryEndingWithSlash_examples(self):
   #  self.assertRelativeDirPathToDirectory(utDir.GIT_REPOSITORY, utDir.GIT_REPOSITORY)
 
   def assertRelativeDirPathToDirectory(self, dirPath1, dirPath2):
-    relPath = path.getRelativeDirPathToDirectoryEndingWithSlash(dirPath1, dirPath2)
+    relPath = path.getRelativeDirPathToDirectory(dirPath1, dirPath2)
     self.assertTrue(len(relPath) > 0)
-    self.assertEqual(pathlib.Path(dirPath2.value.getAbsoluteDirPathEndingWithSlash() + relPath).resolve(),
-                     pathlib.Path(dirPath1.value.getAbsoluteDirPathEndingWithSlash()).resolve())
+    self.assertEqual(pathlib.Path(dirPath2.value.getAbsoluteDirPath() + relPath).resolve(),
+                     pathlib.Path(dirPath1.value.getAbsoluteDirPath()).resolve())
     self.assertFalse("\\" in relPath)
     self.assertTrue(relPath[-1] == "/")
 
@@ -358,7 +356,7 @@ class StringUtilTests(unittest.TestCase):
 
   # TODO implement test cases
   #def test_getRelativeFilePathToIndexHtml_examples(self):
-   # indexHtmlLocationAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.INDEX_HTML_LOCATION)
+   # indexHtmlLocationAbsPath = path.getAbsoluteDirPath(utDir.INDEX_HTML_LOCATION)
 
   def assertRelFilePathToIndexHtml(self, indexHtmlLocationAbsPath, fileType):
     fileRelPathToIndexHtml = path.getRelativeFilePathToIndexHtml(fileType)
@@ -366,36 +364,36 @@ class StringUtilTests(unittest.TestCase):
     self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + fileRelPathToIndexHtml).resolve(),
                      pathlib.Path(fileType.value.getAbsoluteFilePath()).resolve())
 
-  def test_getRelativeDirPathToIndexHtmlEndingWithSlash_nonSense(self):
+  def test_getRelativeDirPathToIndexHtml_nonSense(self):
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash("")
+      path.getRelativeDirPathToIndexHtml("")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash(".")
+      path.getRelativeDirPathToIndexHtml(".")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash("temp")
+      path.getRelativeDirPathToIndexHtml("temp")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash("..")
+      path.getRelativeDirPathToIndexHtml("..")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash(0)
+      path.getRelativeDirPathToIndexHtml(0)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash(None)
+      path.getRelativeDirPathToIndexHtml(None)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash(False)
+      path.getRelativeDirPathToIndexHtml(False)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtmlEndingWithSlash(["webPage"])
+      path.getRelativeDirPathToIndexHtml(["webPage"])
 
   # TODO rework this test
   #def test_getRelativeDirPathToIndexHtmlEndingWithSlash_examples(self):
-  #  indexHtmlLocationAbsPath = path.getAbsoluteDirPathEndingWithSlash(utDir.GIT_REPOSITORY)
+  #  indexHtmlLocationAbsPath = path.getAbsoluteDirPath(utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath, utDir.GIT_REPOSITORY)
   #  self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
 
   def assertRelDirPathToIndexHtmlLocation(self, indexHtmlLocationAbsPath, directoryPathType):
-    relDirPath = path.getRelativeDirPathToIndexHtmlEndingWithSlash(directoryPathType)
+    relDirPath = path.getRelativeDirPathToIndexHtml(directoryPathType)
     self.assertTrue(len(relDirPath) > 0)
     self.assertTrue(relDirPath[-1] == "/")
     self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + relDirPath).resolve(),
-                     pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
+                     pathlib.Path(directoryPathType.value.getAbsoluteDirPath()).resolve())
 
   def test_getCwd(self):
     cwd = path.getCwd()

@@ -25,7 +25,7 @@ class CmdTests(unittest.TestCase):
 
   def test_getOutputFromCommand_simpleExamples(self):
     ans = cmd.getOutputFromCommand("cd")
-    generatorPath = path.getAbsoluteDirPathEndingWithSlash(Dir.PYTHON_MAIN_GENERATOR)[:-1]
+    generatorPath = path.getAbsoluteDirPath(Dir.PYTHON_MAIN_GENERATOR)[:-1]
     generatorPath = generatorPath.replace("/", "\\")
     self.assertEqual(stringUtil.rTrimNewLines(ans), generatorPath)
     ans = cmd.getOutputFromCommand("echo hello")
