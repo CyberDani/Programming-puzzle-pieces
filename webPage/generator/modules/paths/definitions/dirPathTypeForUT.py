@@ -5,10 +5,6 @@ from modules.paths.dirPathChecker import DirectoryPathChecker
 from defTypes import pppConfig as config
 
 class DirectoryPathTypeForUT(Enum):
-  # FOR UNIT TESTS
-  PYTHON_GENERATOR_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
-                                                     ["checks_test.py", "argumentParser_test.py"],
-                                                     dirAction.ENSURE_DIR_AND_FILES_EXIST)
   PYTHON_GENERATOR_UNIT_TESTS_TEMP1 = DirectoryPathChecker(
                                                       config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                                       [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)

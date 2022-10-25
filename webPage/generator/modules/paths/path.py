@@ -73,8 +73,8 @@ def getRelativeDirPathToDirectory(dirPathTypeToResolve, dirPathTypeForComparison
   """The path ends with a slash."""
   checks.checkIfAnyType(dirPathTypeToResolve, possibleDirPathTypes.dirPathTypes)
   checks.checkIfAnyType(dirPathTypeForComparison, possibleDirPathTypes.dirPathTypes)
-  relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPath(),
-                            dirPathTypeForComparison.value.getAbsoluteDirPath())
+  relPath = os.path.relpath(dirPathTypeToResolve.value.getAbsoluteDirPathEndingWithSlash(),
+                            dirPathTypeForComparison.value.getAbsoluteDirPathEndingWithSlash())
   relPath = relPath.replace("\\", "/")
   if len(relPath) > 0 and relPath[-1] != '/':
     relPath += '/'
@@ -114,7 +114,7 @@ def getRelativeFilePathToCurrentWorkingDir(fPathType):
 def getRelativeDirPathToProjectRoot(directoryPathType):
   """The path ends with a slash"""
   checks.checkIfAnyType(directoryPathType, possibleDirPathTypes.dirPathTypes)
-  dirPath = directoryPathType.value.getAbsoluteDirPath()
+  dirPath = directoryPathType.value.getAbsoluteDirPathEndingWithSlash()
   projRootPath = getProjectRootAbsolutePath()
   relPath = os.path.relpath(dirPath, projRootPath)
   relPath = relPath.replace("\\", "/")
