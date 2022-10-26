@@ -1,23 +1,26 @@
 from modules import checks
 
-# TODO add found return value
 def getNextChar(string, index):
-  """Returns **None** if there is no next char. \n
-  Raises exception for empty string because the index cannot be set properly."""
+  """Raises exception for empty string because the index cannot be set properly.\n
+Return values: \n
+* found: True | False
+* nextChar: empty string if not found"""
   checks.checkIfString(string, 0, 5000)
   checks.checkIntIsBetween(index, 0, len(string) - 1)
   if index == len(string) - 1:
-    return None
-  return string[index + 1]
+    return False, ""
+  return True, string[index + 1]
 
 def getPreviousChar(string, index):
-  """Returns **None** if there is no previous char. \n
-  Raises exception for empty string because the index cannot be set properly."""
+  """Raises exception for empty string because the index cannot be set properly.\n
+Return values: \n
+* found: True | False
+* nextChar: empty string if not found"""
   checks.checkIfString(string, 0, 5000)
   checks.checkIntIsBetween(index, 0, len(string) - 1)
   if index == 0:
-    return None
-  return string[index - 1]
+    return False, ""
+  return True, string[index - 1]
 
 def getStringStartsWithEndsWithNoOverlap(src, startsWithStr, endsWithStr):
   """Returns empty string if not found."""
@@ -100,9 +103,10 @@ Return values:\n
   return True, idx
 
 def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, startIdx, endIdx):
-  """Returns **-1** if not found \n
-  Raises error at empty strings because indexes cannot be set properly for scanning an empty string,
-  or it does not make sense to find an empty string"""
+  """Raises error for empty strings because indexes cannot be set properly.\n
+Return values: \n
+* found: True | False
+* index: -1 if not found"""
   checks.checkIfString(stringToScan, startIdx, 5000)
   checks.checkIfString(stringToFind, 1, 500)
   checks.checkIntIsBetween(endIdx, startIdx, len(stringToScan) - 1)
@@ -110,11 +114,11 @@ def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, startIdx, endIdx):
   while findIdx == -1 and startIdx <= endIdx:
     findIdx = stringToScan.find(stringToFind, startIdx, endIdx + 1)
     if findIdx == -1:
-      return -1
+      return False, -1
     if findIdx > 0 and not stringToScan[findIdx - 1].isspace():
       startIdx = findIdx + 1
       findIdx = -1
-  return findIdx
+  return findIdx != -1, findIdx
 
 def find(stringToScan, stringToFind, startIdx, endIdx, notFoundValue):
   """Raises exception if any string is empty\n

@@ -22,7 +22,8 @@
 						
 						<p>
 							GitHub surely does its thing. But as from my side you have no cookies, no IP or other kind of 
-							trackers, no ads, no logs about whatever you do. Nothing. The entire codebase is 100% 
+							trackers, no ads, no logs about whatever you do. Nothing. The 
+							<a href="https://github.com/CyberDani/Programming-puzzle-pieces">entire codebase</a> is 100% 
 							transparent for everyone. Technically there are no ways I can "trick" the system to secretly add
 							a spyware or an ad spammer.
 						</p>

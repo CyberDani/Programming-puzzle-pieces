@@ -503,14 +503,18 @@ Raises exception for empty string because the index cannot be set properly.
 def htmlDelimitedFromLeft(htmlString, index):
   """Intended for full word check in case of HTML attribute names and values. \n
 Raises exception for empty string because the index cannot be set properly."""
-  previousChar = stringUtil.getPreviousChar(htmlString, index)
-  return previousChar is None or charIsHtmlDelimiter(previousChar)
+  found, previousChar = stringUtil.getPreviousChar(htmlString, index)
+  if not found:
+    return True
+  return charIsHtmlDelimiter(previousChar)
 
 def htmlDelimitedFromRight(htmlString, index):
   """Intended for full word check in case of HTML attribute names and values. \n
 Raises exception for empty string because the index cannot be set properly."""
-  nextChar = stringUtil.getNextChar(htmlString, index)
-  return nextChar is None or charIsHtmlDelimiter(nextChar)
+  found, nextChar = stringUtil.getNextChar(htmlString, index)
+  if not found:
+    return True
+  return charIsHtmlDelimiter(nextChar)
 
 def isThereNonDelimiterCharBeforeIdx(htmString, idx):
   """Skips whitespaces."""
