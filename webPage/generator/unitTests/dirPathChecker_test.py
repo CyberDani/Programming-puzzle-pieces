@@ -16,71 +16,71 @@ class DirPathCheckerTests(unittest.TestCase):
     self.dirPatchCheckWithoutAndWithActions(None, ["file.txt"])
     self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_GENERATOR_TO_UNIT_TESTS, None)
     self.dirPatchCheckWithoutAndWithActions(True, ["file.txt"])
-    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_REPO_TO_UNIT_TESTS, False)
-    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_REPO_TO_UNIT_TESTS, 34)
+    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_ROOT_TO_UNIT_TESTS, False)
+    self.dirPatchCheckWithoutAndWithActions(config.PATH_FROM_ROOT_TO_UNIT_TESTS, 34)
     self.dirPatchCheckWithoutAndWithActions(None, ["checks.py"])
     self.dirPatchCheckWithoutAndWithActions(12, ["checks.py"])
     self.dirPatchCheckWithoutAndWithActions(None, None)
     self.dirPatchCheckWithoutAndWithActions(False, True)
     self.dirPatchCheckWithoutAndWithActions(1, 5)
-    pathWithAlteredSlash = config.PATH_FROM_REPO_TO_UNIT_TESTS.replace("/", "\\")
+    pathWithAlteredSlash = config.PATH_FROM_ROOT_TO_UNIT_TESTS.replace("/", "\\")
     self.dirPatchCheckWithoutAndWithActions(pathWithAlteredSlash, ["testFile.txt"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, "checks_test.py")
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, "checks_test.py")
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("checks.py", ["checks_test.py"])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("nonExistingFolder", ["checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"],
                                           dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory",
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory",
                                           ["nonExistingFile.py"], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"],
                                           dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py"],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py"],
                                           dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     with self.assertRaises(Exception):
       filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile1.txt"
       file = open(filePath, "w")
       file.close()
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile1.txt"], dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, [])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
     with self.assertRaises(Exception):
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["nonExistingFile.py", "checks_test.py"])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker("", ["READMENOT.md"])
 
@@ -95,42 +95,45 @@ class DirPathCheckerTests(unittest.TestCase):
       dirPathChecker.DirectoryPathChecker(firstArg, secondArg, dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
 
   def test_DirectoryPathChecker_validExamples(self):
-    filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
-    filePath2 = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile2.txt"
-    filePath3 = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile3.txt"
-    file = open(filePath, "w")
+    found, projRootAbsPath = projRoot.getProjectRootPath()
+    if not found:
+      return
+    filePath = config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
+    filePath2 = config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile2.txt"
+    filePath3 = config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile3.txt"
+    file = open(projRootAbsPath + filePath, "w")
     file.close()
-    file = open(filePath2, "w")
+    file = open(projRootAbsPath + filePath2, "w")
     file.close()
-    file = open(filePath3, "w")
+    file = open(projRootAbsPath + filePath3, "w")
     file.close()
     try:
       dirPathChecker.DirectoryPathChecker("", ["README.md"])
       dirPathChecker.DirectoryPathChecker("", [], dirAction.ENSURE_DIR_EXISTS_ONLY)
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                           dirAction.ENSURE_DIR_EXISTS_ONLY)
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                           dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory", [],
                                           dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
-      dirPathChecker.DirectoryPathChecker("./" + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker("./" + config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS,
                                           [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS,
                                           [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_PY_GENERATOR,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_PY_GENERATOR,
                                           [config.PATH_FROM_GENERATOR_TO_UNIT_TESTS +
                                            config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt", "testFile2.txt"])
-      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile.txt", "testFile2.txt", "testFile3.txt"])
     except Exception:
       self.fail("DirectoryPathChecker() raised Exception unexpectedly!")
@@ -141,19 +144,19 @@ class DirPathCheckerTests(unittest.TestCase):
       return
     dir = dirPathChecker.DirectoryPathChecker("", ["README.md"])
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath)
-    filePath = config.PATH_FROM_GENERATOR_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
-    filerw.createOrOverwriteWithEmptyFileByPath(filePath)
-    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS,
+    filePath = config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"
+    filerw.createOrOverwriteWithEmptyFileByPath(projRootAbsPath + filePath)
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS,
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
-    dir = dirPathChecker.DirectoryPathChecker("./././././" + config.PATH_FROM_REPO_TO_UNIT_TESTS,
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_ROOT_TO_UNIT_TESTS)
+    dir = dirPathChecker.DirectoryPathChecker("./././././" + config.PATH_FROM_ROOT_TO_UNIT_TESTS,
                                               [config.UT_TEMP1_FOLDER_NAME + "/testFile.txt"])
-    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS)
-    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory", [],
+    self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(), projRootAbsPath + config.PATH_FROM_ROOT_TO_UNIT_TESTS)
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory", [],
                                               dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + "nonExistingDirectory/")
-    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
+                     projRootAbsPath + config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory/")
+    dir = dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [],
                                               dirAction.ENSURE_DIR_EXISTS_ONLY)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
-                     projRootAbsPath + config.PATH_FROM_REPO_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")
+                     projRootAbsPath + config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")

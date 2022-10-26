@@ -1,7 +1,7 @@
 from modules import checks
 from modules import htmlBuilder
 from modules.paths import path
-
+from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as dir
 
 class HtmlBody:
   def __init__(self, htmlFile, indentDepth):
@@ -49,7 +49,7 @@ class HtmlBody:
     return self
 
   def addJsScriptSrcByTypeThenAppendNewLine(self, filePathType, integrity=None, crossorigin=None, referrerpolicy=None):
-    localRelUrl = path.getRelativeFilePathToIndexHtml(filePathType)
+    localRelUrl = path.getRelativeFilePathToDirectory(filePathType, dir.INDEX_HTML_LOCATION)
     return self.addJsScriptSrcThenAppendNewLine(localRelUrl, integrity, crossorigin, referrerpolicy)
 
   def includeFileAsInlineJs(self, filePath):

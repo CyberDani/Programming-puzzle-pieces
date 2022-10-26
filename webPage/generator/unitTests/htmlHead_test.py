@@ -131,7 +131,7 @@ class HtmlHeadTests(unittest.TestCase):
     self.assertEqual(len(line), 3)
     self.assertEqual(line[0], "random string")
     self.assertEqual(line[1], "another random string")
-    self.assertEqual(line[2], htmlBuilder.getHtmlFavicon(path.getRelativeFilePathToIndexHtml(File.FOR_TEST_TEXTFILE2),
+    self.assertEqual(line[2], htmlBuilder.getHtmlFavicon(path.getRelativeFilePathToProjectRoot(File.FOR_TEST_TEXTFILE2),
                                                          2))
 
   def test_setMetaScreenOptimizedForMobile_multipleTimes(self):

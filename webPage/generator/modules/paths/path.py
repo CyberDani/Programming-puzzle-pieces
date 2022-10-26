@@ -129,11 +129,3 @@ def getRelativeFilePathToProjectRoot(fPathType):
   relPath = os.path.relpath(absFilePath, projRootPath)
   relPath = relPath.replace("\\", "/")
   return relPath
-
-def getRelativeFilePathToIndexHtml(fPathType):
-  return getRelativeFilePathToDirectory(fPathType, dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)
-
-def getRelativeDirPathToIndexHtml(directoryPathType):
-  """The path ends with a slash"""
-  return getRelativeDirPathToDirectory(directoryPathType,
-                                       dirPathTypeForProd.DirectoryPathTypeForProd.INDEX_HTML_LOCATION)

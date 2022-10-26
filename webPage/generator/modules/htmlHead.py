@@ -1,6 +1,7 @@
 from modules import checks
 from modules import htmlBuilder
 from modules.paths import path
+from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as dir
 from modules import webLibs
 
 class HtmlHead:
@@ -34,7 +35,7 @@ class HtmlHead:
     return self
 
   def setFaviconByType(self, favIconPathType):
-    favIconPath = path.getRelativeFilePathToIndexHtml(favIconPathType)
+    favIconPath = path.getRelativeFilePathToDirectory(favIconPathType, dir.INDEX_HTML_LOCATION)
     return self.setFavicon(favIconPath)
 
   def setMetaScreenOptimizedForMobile(self):

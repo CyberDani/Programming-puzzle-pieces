@@ -29,7 +29,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getFileName("")
     with self.assertRaises(Exception):
-      path.getFileName(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getFileName(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getFileName(False)
     with self.assertRaises(Exception):
@@ -37,7 +37,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getFileName(0)
     with self.assertRaises(Exception):
-      path.getFileName([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getFileName([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getFileName([])
     with self.assertRaises(Exception):
@@ -63,7 +63,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirPath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirPath(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirPath(False)
     with self.assertRaises(Exception):
@@ -71,7 +71,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirPath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirPath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirPath([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirPath([])
     with self.assertRaises(Exception):
@@ -95,7 +95,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirParentPath(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPath(False)
     with self.assertRaises(Exception):
@@ -103,7 +103,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentPath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirParentPath([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentPath([])
     with self.assertRaises(Exception):
@@ -133,7 +133,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2Path("")
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2Path(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteDirParentX2Path(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2Path(False)
     with self.assertRaises(Exception):
@@ -141,7 +141,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2Path(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteDirParentX2Path([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteDirParentX2Path([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteDirParentX2Path([])
     with self.assertRaises(Exception):
@@ -172,7 +172,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath("")
     with self.assertRaises(Exception):
-      path.getAbsoluteFilePath(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getAbsoluteFilePath(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath(False)
     with self.assertRaises(Exception):
@@ -180,7 +180,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath(0)
     with self.assertRaises(Exception):
-      path.getAbsoluteFilePath([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getAbsoluteFilePath([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getAbsoluteFilePath([])
     with self.assertRaises(Exception):
@@ -205,7 +205,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeDirPathToProjectRoot("")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToProjectRoot(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getRelativeDirPathToProjectRoot(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getRelativeDirPathToProjectRoot(False)
     with self.assertRaises(Exception):
@@ -213,7 +213,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeDirPathToProjectRoot(0)
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToProjectRoot([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getRelativeDirPathToProjectRoot([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getRelativeDirPathToProjectRoot([])
     with self.assertRaises(Exception):
@@ -239,7 +239,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeFilePathToProjectRoot("")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToProjectRoot(config.PATH_FROM_REPO_TO_PY_GENERATOR)
+      path.getRelativeFilePathToProjectRoot(config.PATH_FROM_ROOT_TO_PY_GENERATOR)
     with self.assertRaises(Exception):
       path.getRelativeFilePathToProjectRoot(False)
     with self.assertRaises(Exception):
@@ -247,7 +247,7 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeFilePathToProjectRoot(0)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToProjectRoot([config.PATH_FROM_REPO_TO_PY_GENERATOR])
+      path.getRelativeFilePathToProjectRoot([config.PATH_FROM_ROOT_TO_PY_GENERATOR])
     with self.assertRaises(Exception):
       path.getRelativeFilePathToProjectRoot([])
     with self.assertRaises(Exception):
@@ -273,10 +273,10 @@ class StringUtilTests(unittest.TestCase):
     with self.assertRaises(Exception):
       path.getRelativeFilePathToDirectory(utFile.FOR_TEST_TEXTFILE1, "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR +
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_ROOT_TO_PY_GENERATOR +
                                           "generator.py", utDir.PYTHON_GENERATOR_UNIT_TESTS_NESTED_X2)
     with self.assertRaises(Exception):
-      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR +
+      path.getRelativeFilePathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_ROOT_TO_PY_GENERATOR +
                                           "generator.py", "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeFilePathToDirectory(None, None)
@@ -314,7 +314,7 @@ class StringUtilTests(unittest.TestCase):
       path.getRelativeDirPathToDirectory(utDir.PYTHON_GENERATOR_UNIT_TESTS_TEST1,
                                          "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
-      path.getRelativeDirPathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_REPO_TO_PY_GENERATOR,
+      path.getRelativeDirPathToDirectory("D:/Programming puzzle pieces/" + config.PATH_FROM_ROOT_TO_PY_GENERATOR,
                                           "D:/Programming puzzle pieces/webPage")
     with self.assertRaises(Exception):
       path.getRelativeDirPathToDirectory(None, None)
@@ -347,65 +347,6 @@ class StringUtilTests(unittest.TestCase):
                      pathlib.Path(dirPath1.value.getAbsoluteDirPathEndingWithSlash()).resolve())
     self.assertFalse("\\" in relPath)
     self.assertTrue(relPath[-1] == "/")
-
-  def test_getRelativeFilePathToIndexHtml_nonSense(self):
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml("")
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml(".")
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml("temp")
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml("..")
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml(0)
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml(None)
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml(False)
-    with self.assertRaises(Exception):
-      path.getRelativeFilePathToIndexHtml(["webPage"])
-
-  # TODO what to do with relativeToIndexHtml ?
-  #def test_getRelativeFilePathToIndexHtml_examples(self):
-   # indexHtmlLocationAbsPath = path.getAbsoluteDirPath(utDir.INDEX_HTML_LOCATION)
-
-  def assertRelFilePathToIndexHtml(self, indexHtmlLocationAbsPath, fileType):
-    fileRelPathToIndexHtml = path.getRelativeFilePathToIndexHtml(fileType)
-    self.assertTrue(fileRelPathToIndexHtml.endswith(fileType.value.getFileName()))
-    self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + fileRelPathToIndexHtml).resolve(),
-                     pathlib.Path(fileType.value.getAbsoluteFilePath()).resolve())
-
-  def test_getRelativeDirPathToIndexHtml_nonSense(self):
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml("")
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml(".")
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml("temp")
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml("..")
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml(0)
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml(None)
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml(False)
-    with self.assertRaises(Exception):
-      path.getRelativeDirPathToIndexHtml(["webPage"])
-
-  # TODO what to do with relativeToIndexHtml?
-  #def test_getRelativeDirPathToIndexHtmlEndingWithSlash_examples(self):
-  #  indexHtmlLocationAbsPath = path.getAbsoluteDirPath(utDir.GIT_REPOSITORY)
-  #  self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath, utDir.GIT_REPOSITORY)
-  #  self.assertRelDirPathToIndexHtmlLocation(indexHtmlLocationAbsPath, utDir.PYTHON_GENERATOR_UNIT_TESTS)
-
-  def assertRelDirPathToIndexHtmlLocation(self, indexHtmlLocationAbsPath, directoryPathType):
-    relDirPath = path.getRelativeDirPathToIndexHtml(directoryPathType)
-    self.assertTrue(len(relDirPath) > 0)
-    self.assertTrue(relDirPath[-1] == "/")
-    self.assertEqual(pathlib.Path(indexHtmlLocationAbsPath + relDirPath).resolve(),
-                     pathlib.Path(directoryPathType.value.getAbsoluteDirPathEndingWithSlash()).resolve())
 
   def test_getCwd(self):
     cwd = path.getCwd()

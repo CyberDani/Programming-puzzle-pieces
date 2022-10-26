@@ -5,7 +5,6 @@ from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as
 from modules.paths.filePathChecker import FilePathChecker
 
 class FilePathTypeForUT(Enum):
-  # FOR UNIT TESTS
   FOR_TEST_TEXTFILE1 = FilePathChecker(UtDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test1.txt",
                                        fileAction.DONT_CHECK_FILE_EXISTENCE)
   FOR_TEST_TEXTFILE2 = FilePathChecker(UtDir.PYTHON_GENERATOR_UNIT_TESTS_TEMP1, "test2.txt",
