@@ -15,11 +15,10 @@ def runAndEvaluateUnitTestsUsingMultipleTempFolderPathsByType(dirPathTypeContain
 
   # TODO checkIfNonEmptyPureListOfAnyType
   checks.checkIfNonEmptyList(tempFolderPathTypes)
-  #checks.checkIfNonEmptyPureListOfType(tempFolderPathTypes, Dir)
-
   testPath = path.getAbsoluteDirPath(dirPathTypeContainingTests)
   tempFolderPaths = []
   for tempDirType in tempFolderPathTypes:
+    checks.checkIfAnyType(tempDirType, path.possibleDirPathTypes.dirPathTypes)
     dirPath = path.getAbsoluteDirPath(tempDirType)
     tempFolderPaths.append(dirPath)
   return runAndEvaluateUnitTestsUsingMultipleTempFolderPaths(testPath, filePattern, tempFolderPaths, outputStream)
