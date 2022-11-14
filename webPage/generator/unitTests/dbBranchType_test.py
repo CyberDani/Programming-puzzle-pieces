@@ -1,11 +1,11 @@
-import unittest
 import sys
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from defTypes import dbBranchType
 
-class DbBranchTypeTests(unittest.TestCase):
+class DbBranchTypeTests(AutoUnitTest):
 
   def test_values(self):
     dbBranchType.DbBranchType.MASTER

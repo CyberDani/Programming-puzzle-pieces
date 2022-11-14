@@ -1,13 +1,14 @@
-import unittest
 import sys
 
 sys.path.append('..')
+
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
 from defTypes import dbBranchType
 from modules import db
 from modules import git
 
-class DbTests(unittest.TestCase):
+class DbTests(AutoUnitTest):
 
   def test_getDbBranchByGitBranch_nonSense(self):
     with self.assertRaises(Exception):

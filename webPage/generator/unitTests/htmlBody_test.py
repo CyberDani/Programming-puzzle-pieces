@@ -1,9 +1,9 @@
 import os
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
@@ -13,7 +13,7 @@ from modules import htmlBody
 from modules.paths import path
 
 
-class HtmlBodyTests(unittest.TestCase):
+class HtmlBodyTests(AutoUnitTest):
 
   def test_constructor_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)

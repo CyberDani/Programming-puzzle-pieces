@@ -1,9 +1,9 @@
 import os
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
@@ -13,7 +13,7 @@ from modules import htmlBuilder
 from modules.paths import path
 
 
-class FileReadWriterTests(unittest.TestCase):
+class FileReadWriterTests(AutoUnitTest):
 
   def test_getFileWithWritePerm_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)

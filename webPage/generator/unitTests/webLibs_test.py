@@ -1,14 +1,14 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import filerw
 from modules import webLibs
 
-class WebLibsTests(unittest.TestCase):
+class WebLibsTests(AutoUnitTest):
 
   def test_addFontAwesome_v611_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)

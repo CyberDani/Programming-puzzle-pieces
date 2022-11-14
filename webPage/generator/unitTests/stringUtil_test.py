@@ -1,11 +1,12 @@
 import sys
-import unittest
 
 sys.path.append('..')
+
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules import stringUtil
 
 
-class StringUtilTests(unittest.TestCase):
+class StringUtilTests(AutoUnitTest):
 
   def test_getNextChar_nonSense(self):
     with self.assertRaises(Exception):

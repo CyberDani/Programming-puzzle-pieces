@@ -1,16 +1,16 @@
-import unittest
 import sys
 
 sys.path.append('..')
 
 from modules.paths import path
 from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as Dir
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
 from modules import cmd
 from modules.paths import path
 from modules import stringUtil
 
-class CmdTests(unittest.TestCase):
+class CmdTests(AutoUnitTest):
 
   def test_getOutputFromCommandNonSense(self):
     with self.assertRaises(Exception):

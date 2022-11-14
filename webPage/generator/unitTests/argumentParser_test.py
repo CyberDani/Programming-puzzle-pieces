@@ -1,4 +1,3 @@
-import unittest
 import sys
 
 sys.path.append('..')
@@ -9,8 +8,9 @@ from defTypes import buildType
 from modules import argumentParser
 from modules import checks
 from modules import db
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
-class ArgumentParserTests(unittest.TestCase):
+class ArgumentParserTests(AutoUnitTest):
 
   def test_nonSense(self):
     with self.assertRaises(Exception):

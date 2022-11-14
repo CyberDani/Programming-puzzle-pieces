@@ -1,8 +1,8 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 from modules.paths import dirPathChecker
 from modules.paths import projectRootDetector as projRoot
@@ -10,7 +10,7 @@ from defTypes import pppConfig as config
 
 from modules import filerw
 
-class DirPathCheckerTests(unittest.TestCase):
+class DirPathCheckerTests(AutoUnitTest):
 
   def test_DirectoryPathChecker_nonSense(self):
     self.dirPatchCheckWithoutAndWithActions(None, ["file.txt"])

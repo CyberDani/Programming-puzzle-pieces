@@ -1,10 +1,10 @@
 import os
 import pathlib
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as utDir
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as utFile
 from defTypes import pppConfig as config
@@ -13,7 +13,7 @@ from modules import filerw
 from modules.paths import path
 
 
-class StringUtilTests(unittest.TestCase):
+class StringUtilTests(AutoUnitTest):
 
   def test_getProjectRootAbsolutePath(self):
     gitRepoPath = path.getProjectRootAbsolutePath()

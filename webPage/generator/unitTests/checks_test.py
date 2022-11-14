@@ -1,18 +1,18 @@
 import io
-import unittest
 import sys
 
 sys.path.append('..')
 
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
 from modules import checks
 from modules import filerw
 from modules.paths import path
 
 
-class ChecksTests(unittest.TestCase):
+class ChecksTests(AutoUnitTest):
 
   def test_checkIntIsBetween_raiseException(self):
     with self.assertRaises(Exception):

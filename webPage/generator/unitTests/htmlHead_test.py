@@ -1,8 +1,8 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import htmlBuilder
@@ -11,7 +11,7 @@ from modules import htmlHead
 from modules.paths import path
 from modules import webLibs
 
-class HtmlHeadTests(unittest.TestCase):
+class HtmlHeadTests(AutoUnitTest):
 
   def test_constructor_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)

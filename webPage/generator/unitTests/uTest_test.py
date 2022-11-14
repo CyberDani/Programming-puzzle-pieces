@@ -1,10 +1,10 @@
 import os
 import sys
-import unittest
 
 sys.path.append('..')
 
 from defTypes import appDecisionType
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 
 from modules import checks
@@ -12,7 +12,7 @@ from modules import filerw
 from modules.paths import path
 from modules import uTest
 
-class UnitTestTests(unittest.TestCase):
+class UnitTestTests(AutoUnitTest):
 
   def test_collectAndRunUnitTestsByFilePattern_nonSense(self):
     void = open(os.devnull, "w")

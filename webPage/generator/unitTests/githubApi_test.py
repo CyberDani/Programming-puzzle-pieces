@@ -1,12 +1,13 @@
 import string
 import sys
-import unittest
 
 sys.path.append('..')
+
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from defTypes.dbBranchType import DbBranchType
 from modules import githubApi
 
-class GithubApiTests(unittest.TestCase):
+class GithubApiTests(AutoUnitTest):
 
   def test_getTreeSha_nonSense(self):
     with self.assertRaises(Exception):

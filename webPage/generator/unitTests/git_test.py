@@ -1,14 +1,15 @@
 import sys
-import unittest
 
 sys.path.append('..')
+
 from modules import git
 from modules import cmd
 from modules import stringUtil
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import path
 
-class GitUtilTests(unittest.TestCase):
+class GitUtilTests(AutoUnitTest):
 
   def test_getCurrentBranch(self):
     currentBranch = git.getCurrentBranch()

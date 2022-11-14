@@ -1,11 +1,11 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules import htmlAttributes as attr
 
-class HtmlAttributesTests(unittest.TestCase):
+class HtmlAttributesTests(AutoUnitTest):
 
   def helper_getAttributeNameIdx_checkIfCorrupt(self, htmlAttributes, key):
     corrupt, keyFound, idx = attr.getAttributeNameIdx(htmlAttributes, key)

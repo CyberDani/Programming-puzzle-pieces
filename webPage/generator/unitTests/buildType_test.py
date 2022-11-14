@@ -1,12 +1,12 @@
-import unittest
 import sys
 
 sys.path.append('..')
 
 from defTypes import buildType
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
-class BuildTypeTests(unittest.TestCase):
+class BuildTypeTests(AutoUnitTest):
 
   def test_values(self):
     buildType.BuildType.DO_NOT_BUILD

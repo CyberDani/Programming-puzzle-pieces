@@ -2,14 +2,14 @@ import os
 import pathlib
 import shutil
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import projectRootDetector as projRoot
 
 
-class ProjectRootDetectorTests(unittest.TestCase):
+class ProjectRootDetectorTests(AutoUnitTest):
 
   def test_getGitRepoAbsolutePath_ifFound_renameGitDir_retest_renameBack(self):
     repoFound, gitRepoPath = projRoot.getGitRepoAbsolutePath()

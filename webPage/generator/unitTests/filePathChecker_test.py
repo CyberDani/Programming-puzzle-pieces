@@ -1,8 +1,8 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import filePathChecker
 from modules.paths.definitions import dirPathTypeForProd
 from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
@@ -10,7 +10,7 @@ from defTypes import pppConfig as config
 
 from modules import filerw
 
-class FilePathCheckerTests(unittest.TestCase):
+class FilePathCheckerTests(AutoUnitTest):
 
   def test_FilePathChecker_nonSense(self):
     with self.assertRaises(Exception):

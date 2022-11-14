@@ -1,11 +1,12 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
 from defTypes import buildType
 from defTypes import dbBranchType
 from defTypes import buildSettings
+
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import htmlBuilder
@@ -28,7 +29,7 @@ def minimalistHtmlBodyContent(settings):
   htmlTabs = htmlBuilder.getEscapedTabs(settings.indentDepth)
   filerw.writeLinesToExistingFileThenAppendNewLine(settings.htmlOutputFile, [htmlTabs + "<h1>Hello!</h1>"])
 
-class HtmlBuilderTests(unittest.TestCase):
+class HtmlBuilderTests(AutoUnitTest):
 
   def test_writeIndexHtmlToFile_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)

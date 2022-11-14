@@ -1,13 +1,13 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import filePathChecker
 from modules.paths.definitions import filePathTypeForProd
 
 
-class FileTypeTests(unittest.TestCase):
+class FileTypeTests(AutoUnitTest):
 
   def test_FilePathType_checkPaths(self):
     # this line will run the pathChecker test for all enum values

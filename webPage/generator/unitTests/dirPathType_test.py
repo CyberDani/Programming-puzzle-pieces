@@ -1,13 +1,13 @@
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import dirPathChecker
 from modules.paths.definitions import dirPathTypeForProd
 
 
-class PathTypeTests(unittest.TestCase):
+class PathTypeTests(AutoUnitTest):
 
   def test_DirectoryRelPathType_checkPaths(self):
     # this line will run the pathChecker test for all enum values

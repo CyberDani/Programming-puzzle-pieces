@@ -3,9 +3,10 @@ import sys
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules import counter
 
-class CounterTests(unittest.TestCase):
+class CounterTests(AutoUnitTest):
 
   def test_initNonSense(self):
     with self.assertRaises(Exception):

@@ -1,11 +1,11 @@
-import unittest
 import sys
 
 sys.path.append('..')
 
 from defTypes import appDecisionType
+from modules.unitTests.autoUnitTest import AutoUnitTest
 
-class AppDecisionTypeTests(unittest.TestCase):
+class AppDecisionTypeTests(AutoUnitTest):
 
   def test_values(self):
     appDecisionType.AppDecisionType.STOP_APP

@@ -1,9 +1,9 @@
 import os
 import sys
-import unittest
 
 sys.path.append('..')
 
+from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
 
@@ -12,7 +12,7 @@ from modules import filerw
 from modules.paths import path
 
 
-class WebReqTests(unittest.TestCase):
+class WebReqTests(AutoUnitTest):
 
   def test_getstatusCodeEncodingAndHtmlFromUrl_nonSense(self):
     with self.assertRaises(Exception):
