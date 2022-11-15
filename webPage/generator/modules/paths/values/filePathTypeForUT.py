@@ -1,6 +1,6 @@
 from enum import Enum
 
-from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as UtDir
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as UtDir
 from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from modules.paths.filePathChecker import FilePathChecker
 

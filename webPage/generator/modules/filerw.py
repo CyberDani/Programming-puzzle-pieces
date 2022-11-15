@@ -3,7 +3,7 @@ import pathlib
 import shutil
 
 from modules.paths import path
-from modules.paths.definitions import possibleDirPathTypes, possibleFilePathTypes
+from modules.paths.values import possibleDirPathTypes, possibleFilePathTypes
 
 from modules import checks
 from modules import stringUtil

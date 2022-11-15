@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from modules.paths.definitions import dirPathTypeForProd, possibleDirPathTypes, possibleFilePathTypes
+from modules.paths.values import dirPathTypeForProd, possibleDirPathTypes, possibleFilePathTypes
 from modules.paths import projectRootDetector as projRoot
 
 from modules import checks

@@ -1,7 +1,7 @@
 from modules import checks
 from modules import htmlBuilder
 from modules.paths import path
-from modules.paths.definitions.dirPathTypeForProd import DirectoryPathTypeForProd as dir
+from modules.paths.values.dirPathTypeForProd import DirectoryPathTypeForProd as dir
 
 class HtmlBody:
   def __init__(self, htmlFile, indentDepth):

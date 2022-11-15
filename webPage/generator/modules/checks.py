@@ -39,6 +39,14 @@ def checkIfDirectoryPathExists(dirPath):
   if not resolvedPath.is_dir():
     raise Exception("Could not validate as a directory path '{}'!".format(resolvedPath))
 
+def checkIfCallable(arg):
+  if not callable(arg):
+    raise Exception("'{}' having type '{}' is not a callable object!".format(str(arg), str(type(arg))))
+
+def checkIfTuple(arg):
+  if type(arg) != tuple:
+    raise Exception("'{}' having type '{}' is not a tuple!".format(str(arg), str(type(arg))))
+
 def checkIfType(value, compareType):
   if type(value) != compareType:
     raise Exception("Type missmatch '{}' with '{}'!".format(str(type(value)), str(compareType)))

@@ -3,7 +3,7 @@ import unittest
 
 from defTypes import appDecisionType
 from modules.paths import path
-from modules.paths.definitions import possibleDirPathTypes
+from modules.paths.values import possibleDirPathTypes
 
 from modules import checks
 from modules import filerw

@@ -4,7 +4,7 @@ sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import dirPathChecker
-from modules.paths.definitions import dirPathTypeForProd
+from modules.paths.values import dirPathTypeForProd
 
 
 class PathTypeTests(AutoUnitTest):

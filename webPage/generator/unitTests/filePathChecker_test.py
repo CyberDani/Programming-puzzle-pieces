@@ -4,7 +4,7 @@ sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import filePathChecker
-from modules.paths.definitions import dirPathTypeForProd
+from modules.paths.values import dirPathTypeForProd
 from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 from defTypes import pppConfig as config
 

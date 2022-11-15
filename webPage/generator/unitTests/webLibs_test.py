@@ -3,7 +3,7 @@ import sys
 sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
-from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import filerw
 from modules import webLibs

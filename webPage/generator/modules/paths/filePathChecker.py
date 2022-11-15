@@ -1,4 +1,4 @@
-from modules.paths.definitions import possibleDirPathTypes
+from modules.paths.values import possibleDirPathTypes
 
 from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
 

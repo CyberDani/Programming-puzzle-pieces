@@ -5,8 +5,8 @@ import sys
 sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
-from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as utDir
-from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as utFile
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as utDir
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as utFile
 from defTypes import pppConfig as config
 
 from modules import filerw

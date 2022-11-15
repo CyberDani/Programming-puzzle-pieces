@@ -1,4 +1,4 @@
-from modules.paths.definitions import dirPathTypeForProd, dirPathTypeForUT
+from modules.paths.values import dirPathTypeForProd, dirPathTypeForUT
 
 dirPathTypes = [dirPathTypeForUT.DirectoryPathTypeForUT,
                 dirPathTypeForProd.DirectoryPathTypeForProd]

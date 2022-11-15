@@ -5,7 +5,7 @@ sys.path.append('..')
 from defTypes import buildSettings
 from defTypes import buildType
 from defTypes import dbBranchType
-from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 from modules.unitTests.autoUnitTest import AutoUnitTest
 
 from modules import counter

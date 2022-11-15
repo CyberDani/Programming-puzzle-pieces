@@ -4,8 +4,8 @@ import sys
 sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
-from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
-from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 
 from modules import checks
 from modules import filerw

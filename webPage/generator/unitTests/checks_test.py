@@ -3,8 +3,8 @@ import sys
 
 sys.path.append('..')
 
-from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
-from modules.paths.definitions.filePathTypeForUT import FilePathTypeForUT as File
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 from modules.unitTests.autoUnitTest import AutoUnitTest
 
 from modules import checks
@@ -623,6 +623,43 @@ class ChecksTests(AutoUnitTest):
       checks.checkIfChar("h")
     except Exception:
       self.fail("checkIfChar() raised Exception unexpectedly!")
+
+  def test_checkIfCallable_invalid(self):
+    self.assertRaises(Exception, checks.checkIfCallable, 1)
+    self.assertRaises(Exception, checks.checkIfCallable, {})
+    self.assertRaises(Exception, checks.checkIfCallable, [1, 2, 3])
+    self.assertRaises(Exception, checks.checkIfCallable, "string")
+
+  def test_checkIfCallable_valid(self):
+    try:
+      checks.checkIfCallable(print)
+      checks.checkIfCallable(type)
+      checks.checkIfCallable(self.test_checkIfCallable_invalid)
+      checks.checkIfCallable(self.assertEqual)
+      checks.checkIfCallable(checks.checkIfList)
+      checks.checkIfCallable(checks.checkIfString)
+    except Exception:
+      self.fail("checkIfCallable() raised Exception unexpectedly!")
+
+  def test_checkIfTuple_invalid(self):
+    self.assertRaises(Exception, checks.checkIfTuple, True)
+    self.assertRaises(Exception, checks.checkIfTuple, None)
+    self.assertRaises(Exception, checks.checkIfTuple, "string")
+    self.assertRaises(Exception, checks.checkIfTuple, [1, 2, 3])
+    self.assertRaises(Exception, checks.checkIfTuple, [None, 2, True])
+    self.assertRaises(Exception, checks.checkIfTuple, {})
+    self.assertRaises(Exception, checks.checkIfTuple, {"key": "value"})
+
+  def test_checkIfTuple_valid(self):
+    try:
+      checks.checkIfTuple((1, 2))
+      checks.checkIfTuple((0, True, False, "string", [], {}, None))
+      checks.checkIfTuple((-1, False))
+      checks.checkIfTuple((None, None))
+      checks.checkIfTuple(([], ""))
+      checks.checkIfTuple(([1, 2, 3], {"nr": 1}, (True, False)))
+    except Exception:
+      self.fail("checkIfTuple() raised Exception unexpectedly!")
 
   def test_checkIfString_raiseException(self):
     with self.assertRaises(Exception):

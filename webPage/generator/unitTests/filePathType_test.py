@@ -4,7 +4,7 @@ sys.path.append('..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import filePathChecker
-from modules.paths.definitions import filePathTypeForProd
+from modules.paths.values import filePathTypeForProd
 
 
 class FileTypeTests(AutoUnitTest):

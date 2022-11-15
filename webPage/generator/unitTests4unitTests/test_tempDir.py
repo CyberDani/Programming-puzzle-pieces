@@ -1,6 +1,6 @@
 import unittest
 
-from modules.paths.definitions.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 
 from modules import filerw
 from modules.paths import path
