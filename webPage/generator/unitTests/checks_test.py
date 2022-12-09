@@ -661,6 +661,27 @@ class ChecksTests(AutoUnitTest):
     except Exception:
       self.fail("checkIfTuple() raised Exception unexpectedly!")
 
+  def test_checkIfDict_invalid(self):
+    self.assertRaises(Exception, checks.checkIfDict, True)
+    self.assertRaises(Exception, checks.checkIfDict, None)
+    self.assertRaises(Exception, checks.checkIfDict, "string")
+    self.assertRaises(Exception, checks.checkIfDict, [])
+    self.assertRaises(Exception, checks.checkIfDict, [1, 2, 3])
+    self.assertRaises(Exception, checks.checkIfDict, [None, 2, True])
+    self.assertRaises(Exception, checks.checkIfDict, (None,))
+    self.assertRaises(Exception, checks.checkIfDict, (1, 2))
+    self.assertRaises(Exception, checks.checkIfDict, (0, True, False, "string", [], {}, None))
+
+  def test_checkIfDict_valid(self):
+    try:
+      checks.checkIfDict({})
+      checks.checkIfDict({1: "one"})
+      checks.checkIfDict({"one": 1})
+      checks.checkIfDict({"zero": None, "one": 1, "two": "zwei"})
+      checks.checkIfDict({None: None, "one": 1, 2: "zwei", True: False})
+    except Exception:
+      self.fail("checkIfDict() raised Exception unexpectedly!")
+
   def test_checkIfString_raiseException(self):
     with self.assertRaises(Exception):
       checks.checkIfString(123, 3, 10)

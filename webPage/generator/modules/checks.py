@@ -47,6 +47,10 @@ def checkIfTuple(arg):
   if type(arg) != tuple:
     raise Exception("'{}' having type '{}' is not a tuple!".format(str(arg), str(type(arg))))
 
+def checkIfDict(arg):
+  if type(arg) != dict:
+    raise Exception("'{}' having type '{}' is not a dictionary!".format(str(arg), str(type(arg))))
+
 def checkIfType(value, compareType):
   if type(value) != compareType:
     raise Exception("Type missmatch '{}' with '{}'!".format(str(type(value)), str(compareType)))
