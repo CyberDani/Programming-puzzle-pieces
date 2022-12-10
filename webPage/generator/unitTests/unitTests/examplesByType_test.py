@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.unitTests.values import examplesByType as ex

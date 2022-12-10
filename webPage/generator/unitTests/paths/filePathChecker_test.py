@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import filePathChecker
@@ -56,7 +56,8 @@ class FilePathCheckerTests(AutoUnitTest):
     try:
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
-      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
+      filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS,
+                                      "checks_test.py")
     except Exception:
       self.fail("FilePathChecker raised Exception unexpectedly!")
 

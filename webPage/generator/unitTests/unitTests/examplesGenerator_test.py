@@ -1,7 +1,7 @@
 import sys
 import itertools
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.unitTests import examplesGenerator as exGen

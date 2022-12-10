@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 

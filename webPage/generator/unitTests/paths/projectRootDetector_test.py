@@ -3,7 +3,7 @@ import pathlib
 import shutil
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths import projectRootDetector as projRoot
