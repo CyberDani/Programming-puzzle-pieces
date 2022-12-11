@@ -27,7 +27,18 @@ class UtExamplesGeneratorTests(AutoUnitTest):
     list: [[]]
   }
 
+  examplesDict_stringAndEmptyList_2 = {
+    str: ["Hello", "test string", "None"],
+    list: [[]]
+  }
+
   examplesDict_dictTupleList = {
+    dict: [{}, {"myKey": "myValue"}, {1: "one", 2: "two"}],
+    tuple: [(1,), (False, -1), ("string", (2,), None), ([], {}, (), ""), ((1, (2,)),)],
+    list: [[]]
+  }
+
+  examplesDict_dictTupleList_2 = {
     dict: [{}, {"myKey": "myValue"}, {1: "one", 2: "two"}],
     tuple: [(1,), (False, -1), ("string", (2,), None), ([], {}, (), ""), ((1, (2,)),)],
     list: [[]]
@@ -482,3 +493,41 @@ class UtExamplesGeneratorTests(AutoUnitTest):
     nrOfFilteredTuples = self.countNrOfFilteredLookalikeFiveTuples(self.fiveElementTuples_dictTupleList,
                                                                   (list, tuple, tuple, dict, tuple))
     self.assertEqual(n, nrOfFilteredTuples)
+
+  def test_getExamplesDictHash_wrongType(self):
+    self.assertRaises(Exception, exGen.getExamplesDictHash, 12)
+    self.assertRaises(Exception, exGen.getExamplesDictHash, None)
+    self.assertRaises(Exception, exGen.getExamplesDictHash, True)
+    self.assertRaises(Exception, exGen.getExamplesDictHash, "string")
+    self.assertRaises(Exception, exGen.getExamplesDictHash, [1, 2])
+    self.assertRaises(Exception, exGen.getExamplesDictHash, (1, 2))
+
+  def test_getExamplesDictHash_emptyDict(self):
+    hash1 = exGen.getExamplesDictHash({})
+    emptyDict2 = {}
+    hash2 = exGen.getExamplesDictHash(emptyDict2)
+    self.assertEqual(hash1, hash2)
+
+  def test_getExamplesDictHash_sameDict(self):
+    hash1 = exGen.getExamplesDictHash({"one": 1, "two": 2})
+    dictionary = {"one": 1, "two": 2}
+    hash2 = exGen.getExamplesDictHash(dictionary)
+    self.assertEqual(hash1, hash2)
+    hash1 = exGen.getExamplesDictHash(self.examplesDict_stringAndEmptyList)
+    hash2 = exGen.getExamplesDictHash(self.examplesDict_stringAndEmptyList_2)
+    self.assertEqual(hash1, hash2)
+    hash1 = exGen.getExamplesDictHash(self.examplesDict_dictTupleList)
+    hash2 = exGen.getExamplesDictHash(self.examplesDict_dictTupleList_2)
+    self.assertEqual(hash1, hash2)
+
+  def test_getExamplesDictHash_differentDict(self):
+    hash1 = exGen.getExamplesDictHash({"one": 1, "two": 2})
+    hash2 = exGen.getExamplesDictHash({"one": 1})
+    self.assertNotEqual(hash1, hash2)
+    hash1 = exGen.getExamplesDictHash(self.examplesDict)
+    hash2 = exGen.getExamplesDictHash(self.examplesDict_justInt)
+    hash3 = exGen.getExamplesDictHash(self.examplesDict_stringAndEmptyList)
+    hash4 = exGen.getExamplesDictHash(self.examplesDict_dictTupleList)
+    hash5 = exGen.getExamplesDictHash({})
+    self.assertTrue(hash1 != hash2 and hash1 != hash3 and hash1 != hash4 and hash1 != hash5 and hash2 != hash3 and
+                    hash2 != hash4 and hash2 != hash5 and hash3 != hash4 and hash3 != hash5 and hash4 != hash5)

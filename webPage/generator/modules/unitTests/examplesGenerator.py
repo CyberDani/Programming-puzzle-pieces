@@ -1,3 +1,5 @@
+import hashlib
+import json
 import random
 
 from modules import checks
@@ -67,3 +69,12 @@ Raises exception if a type could not be found within examples."""
   if len(typeTuple) == 5:
     return x*x*x*x + x*x*x*xm1 + x*x*xm1*xm1 + x*xm1*xm1*xm1 + xm1*xm1*xm1*xm1 - 1
   raise Exception("This case is not implemented!")
+
+def getExamplesDictHash(examplesDict: dict) -> str:
+  """Returns the MD5 hash of a dictionary content. \n
+Order dependent: hash({'a': 1, 'b': 2) != hash({'b': 2, 'a': 1}) """
+  checks.checkIfDict(examplesDict)
+  dhash = hashlib.md5()
+  encoded = json.dumps(str(examplesDict), ensure_ascii=True).encode()
+  dhash.update(encoded)
+  return dhash.hexdigest()

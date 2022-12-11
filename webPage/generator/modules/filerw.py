@@ -17,7 +17,7 @@ def getFileWithWritePerm(filePathType):
 
 ###### Existence ######
 
-def fileExistsByPath(filePath):
+def fileExistsByPath(filePath: str) -> bool:
   checks.checkIfString(filePath, 2, 300)
   return os.path.isfile(filePath)
 
