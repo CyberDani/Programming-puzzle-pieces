@@ -189,7 +189,7 @@ def getProjectRootPath():
 * or other occurrences are less common (no choosing between 30% and 30%)\n
 The path ends with a slash.\n
 Return values: \n
-* found: True| False
+* found: True | False
 * path: empty string if not found"""
   notFoundResult = (False, "")
   global __projectRootPath

@@ -1,7 +1,9 @@
+import os
+import pathlib
+
 from modules import checks
 from modules.paths import projectRootDetector as projRoot
 from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
-
 
 class DirectoryPathChecker:
 
@@ -15,14 +17,17 @@ class DirectoryPathChecker:
     if actionType == dirAction.ENSURE_DIR_AND_FILES_EXIST:
       checks.checkIfNonEmptyPureListOfStrings(filesToCheck)
     elif actionType == dirAction.ENSURE_DIR_EXISTS_ONLY \
-            or actionType == dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
+            or actionType == dirAction.DO_NOT_CHECK_DIR_EXISTENCE or actionType == dirAction.CREATE_DIR_IF_NOT_EXISTS:
       checks.checkIfEmptyList(filesToCheck)
     if len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo[-1] != "/":
       dirPathRelativeToGitRepo += "/"
     while len(dirPathRelativeToGitRepo) > 1 and dirPathRelativeToGitRepo.startswith("./"):
       dirPathRelativeToGitRepo = dirPathRelativeToGitRepo[2:]
     self.absoluteDirPath = self.projRootAbsolutePath + dirPathRelativeToGitRepo
-    if actionType != dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
+    if actionType == dirAction.CREATE_DIR_IF_NOT_EXISTS:
+      if not os.path.isdir(self.absoluteDirPath):
+        pathlib.Path(self.absoluteDirPath).mkdir(parents=True, exist_ok=True)
+    elif actionType != dirAction.DO_NOT_CHECK_DIR_EXISTENCE:
       checks.checkIfDirectoryPathExists(self.absoluteDirPath)
     for file in filesToCheck:
       absPath = self.absoluteDirPath + file

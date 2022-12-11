@@ -52,6 +52,9 @@ class DirPathCheckerTests(AutoUnitTest):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME,
                                           ["testFile1.txt"], dirAction.ENSURE_DIR_EXISTS_ONLY)
     with self.assertRaises(Exception):
+      dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory",
+                                          ["nonExistingFile.py"], dirAction.CREATE_DIR_IF_NOT_EXISTS)
+    with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, [])
     with self.assertRaises(Exception):
       dirPathChecker.DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS, ["checks_test.py", "nonExistingFile.py"])
@@ -160,3 +163,20 @@ class DirPathCheckerTests(AutoUnitTest):
                                               dirAction.ENSURE_DIR_EXISTS_ONLY)
     self.assertEqual(dir.getAbsoluteDirPathEndingWithSlash(),
                      projRootAbsPath + config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME + "/")
+
+  def test_DirectoryPathChecker_createDirIfNotExists(self):
+    relDirPath = config.PATH_FROM_ROOT_TO_UNIT_TESTS + "nonExistingDirectory_2022"
+    found, absDirPath = projRoot.getProjectRootPath()
+    if not found:
+      raise Exception("Project root not found")
+    absDirPath += relDirPath
+    filerw.deleteNonEmptyDirectoryByPathIfExists(absDirPath)
+    self.assertFalse(filerw.directoryExistsByPath(absDirPath))
+    try:
+      dirPathChecker.DirectoryPathChecker(relDirPath, [], dirAction.CREATE_DIR_IF_NOT_EXISTS)
+      self.assertTrue(filerw.directoryExistsByPath(absDirPath))
+      dirPathChecker.DirectoryPathChecker(relDirPath, [], dirAction.CREATE_DIR_IF_NOT_EXISTS)
+      self.assertTrue(filerw.directoryExistsByPath(absDirPath))
+      filerw.deleteNonEmptyDirectoryByPathIfExists(absDirPath)
+    except Exception:
+      self.fail("DirectoryPathChecker() raised Exception unexpectedly!")
