@@ -1,13 +1,13 @@
 import io
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 
 from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 from modules.unitTests.autoUnitTest import AutoUnitTest
 
-from modules import checks
+from modules.checks import checks
 from modules import filerw
 from modules.paths import path
 

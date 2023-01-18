@@ -5,7 +5,7 @@ from defTypes import appDecisionType
 from modules.paths import path
 from modules.paths.values import possibleDirPathTypes
 
-from modules import checks
+from modules.checks import checks
 from modules import filerw
 
 

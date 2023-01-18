@@ -1,4 +1,4 @@
-from modules import checks
+from modules.checks import checks
 
 def getNextChar(string, index):
   """Raises exception for empty string because the index cannot be set properly.\n

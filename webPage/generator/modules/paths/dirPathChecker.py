@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from modules import checks
+from modules.checks import checks
 from modules.paths import projectRootDetector as projRoot
 from modules.paths.dirPathCheckerActionType import DirPathCheckerActionType as dirAction
 

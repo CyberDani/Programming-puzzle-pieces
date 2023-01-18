@@ -1,4 +1,4 @@
-from modules import checks
+from modules.checks import checks
 
 class SimpleCounter:
   def __init__(self, startCounter: int):

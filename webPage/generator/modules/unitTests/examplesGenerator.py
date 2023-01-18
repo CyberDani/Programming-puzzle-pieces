@@ -2,7 +2,7 @@ import hashlib
 import json
 import random
 
-from modules import checks
+from modules.checks import checks
 
 def getAllExamplesByTypes(examplesDict, typeTuple):
   """ Raises exception if a type could not be found within examples.\n
@@ -72,7 +72,7 @@ Raises exception if a type could not be found within examples."""
 
 def getExamplesDictHash(examplesDict: dict) -> str:
   """Returns the MD5 hash of a dictionary content. \n
-Order dependent: hash({'a': 1, 'b': 2) != hash({'b': 2, 'a': 1}) """
+Order dependent: hash({'one': 1, 'two': 2) != hash({'two': 2, 'one': 1}) """
   checks.checkIfDict(examplesDict)
   dhash = hashlib.md5()
   encoded = json.dumps(str(examplesDict), ensure_ascii=True).encode()

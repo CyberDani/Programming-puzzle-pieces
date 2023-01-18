@@ -7,7 +7,7 @@ from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
 
-from modules import checks
+from modules.checks import checks
 from modules import filerw
 from modules import htmlBuilder
 from modules.paths import path
@@ -33,6 +33,44 @@ class FileReadWriterTests(AutoUnitTest):
     lines = filerw.getLinesByType(File.FOR_TEST_TEXTFILE1)
     self.assertEqual(len(lines), 1)
     self.assertEqual(lines[0], "Hello test!")
+
+  def test_getFileWithReadPerm_wrongType(self):
+    filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    with self.assertRaises(Exception):
+      filerw.getFileWithReadPerm(filePath)
+    with self.assertRaises(Exception):
+      filerw.getFileWithReadPerm("")
+    with self.assertRaises(Exception):
+      filerw.getFileWithReadPerm(12)
+
+  def test_getFileWithReadPerm_fileNotFound(self):
+    filerw.deleteFileIfExistsByType(File.FOR_TEST_TEXTFILE1)
+    self.assertRaises(Exception, filerw.getFileWithReadPerm, File.FOR_TEST_TEXTFILE1)
+
+  def test_getFileWithReadPerm_failToWriteTo(self):
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE2)
+    file = filerw.getFileWithReadPerm(File.FOR_TEST_TEXTFILE2)
+    checks.checkIfFile(file)
+    self.assertRaises(Exception, file.write, "Hello test!\n")
+
+  def test_getFileWithReadPerm_emptyFile(self):
+    filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE3)
+    file = filerw.getFileWithReadPerm(File.FOR_TEST_TEXTFILE3)
+    checks.checkIfFile(file)
+    lines = filerw.getLinesByFile(file)
+    self.assertEqual(lines, [])
+
+  def test_getFileWithReadPerm_nonEmptyFile(self):
+    filePathType = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
+    file = open(filePathType, "w")
+    file.write("first line\n")
+    file.write("second line\n")
+    file.close()
+    file = filerw.getFileWithReadPerm(File.FOR_TEST_TEXTFILE1)
+    checks.checkIfFile(file)
+    lines = file.readlines()
+    self.assertEqual(lines, ["first line\n", "second line\n"])
+    file.close()
 
   def test_createOrOverwriteWithEmptyFileByType_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)

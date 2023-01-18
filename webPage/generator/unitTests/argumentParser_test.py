@@ -6,7 +6,7 @@ from defTypes import dbBranchType
 from defTypes import buildType
 
 from modules import argumentParser
-from modules import checks
+from modules.checks import checks
 from modules import db
 from modules.unitTests.autoUnitTest import AutoUnitTest
 

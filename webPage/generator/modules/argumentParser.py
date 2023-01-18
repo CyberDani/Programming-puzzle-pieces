@@ -2,7 +2,7 @@ import sys
 
 from defTypes import buildType
 from defTypes import dbBranchType
-from modules import checks
+from modules.checks import checks
 from modules import db
 
 # args excludes the name of the script

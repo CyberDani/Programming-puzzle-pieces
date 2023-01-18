@@ -1,8 +1,6 @@
 from modules.paths.values import possibleDirPathTypes
-
 from modules.paths.filePathCheckerActionType import FilePathCheckerActionType as fileAction
-
-from modules import checks
+from modules.checks import checks
 
 class FilePathChecker:
   def __init__(self, directoryPathType, fileName, actionType = fileAction.ENSURE_FILE_EXISTS):

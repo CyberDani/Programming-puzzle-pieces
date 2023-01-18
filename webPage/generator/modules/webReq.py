@@ -1,6 +1,6 @@
 import requests
 
-from modules import checks
+from modules.checks import checks
 
 def getstatusCodeEncodingAndHtmlFromUrl(url):
   checks.checkIfString(url, 9, 500)

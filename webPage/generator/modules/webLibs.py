@@ -1,5 +1,5 @@
 from modules import htmlBuilder
-from modules import checks
+from modules.checks import checks
 
 def addFontAwesome_v611(htmlFile, indentDepth):
   htmlBuilder.addCssLinkHrefToHtmlOutputFile(htmlFile, indentDepth, 

@@ -7,7 +7,7 @@ from defTypes import pppConfig as config
 class DirectoryPathTypeForProd(Enum):
   # FOR PRODUCTION CODE
   PYTHON_GENERATOR_UNIT_TESTS = DirectoryPathChecker(config.PATH_FROM_ROOT_TO_UNIT_TESTS,
-                                                     ["checks_test.py", "argumentParser_test.py"],
+                                                     ["htmlBuilder_test.py", "argumentParser_test.py"],
                                                      dirAction.ENSURE_DIR_AND_FILES_EXIST)
   PYTHON_GENERATOR_UNIT_TESTS_TEMP1 = DirectoryPathChecker(
             config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)

@@ -5,14 +5,21 @@ import shutil
 from modules.paths import path
 from modules.paths.values import possibleDirPathTypes, possibleFilePathTypes
 
-from modules import checks
+from modules.checks import checks
 from modules import stringUtil
 
 ###### File ######
 
 def getFileWithWritePerm(filePathType):
+  """Creates a new file if not exists"""
   filePathType = path.getAbsoluteFilePath(filePathType)
   file = open(filePathType, "w")
+  return file
+
+def getFileWithReadPerm(filePathType):
+  """Throws exception if file not exists"""
+  filePathType = path.getAbsoluteFilePath(filePathType)
+  file = open(filePathType, "r")
   return file
 
 ###### Existence ######
@@ -57,6 +64,7 @@ def getLinesByType(filePathType):
   return getLinesByPath(filePath)
 
 def getLinesByFile(file):
+  """Throws exception if file not exists"""
   linesWithNewEndingLine = getLinesByFileWithEndingNewLine(file)
   return rTrimNewLines(linesWithNewEndingLine)
 

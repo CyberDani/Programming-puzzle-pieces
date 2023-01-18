@@ -1,4 +1,4 @@
-from modules import checks
+from modules.checks import checks
 from modules import stringUtil
 
 def getStringFromDictionary(attributesDict):

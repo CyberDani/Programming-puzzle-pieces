@@ -1,6 +1,6 @@
 import subprocess
 
-from modules import checks
+from modules.checks import checks
 
 def getOutputFromCommand(command):
   checks.checkIfString(command, 1, 800)

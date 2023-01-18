@@ -1,4 +1,4 @@
-from modules import checks
+from modules.checks import checks
 from modules import filerw
 from modules import htmlAttributes as attr
 from modules import stringUtil

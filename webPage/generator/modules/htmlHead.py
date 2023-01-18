@@ -1,4 +1,4 @@
-from modules import checks
+from modules.checks import checks
 from modules import htmlBuilder
 from modules.paths import path
 from modules.paths.values.dirPathTypeForProd import DirectoryPathTypeForProd as dir

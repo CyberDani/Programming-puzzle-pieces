@@ -4,7 +4,7 @@ from pathlib import Path
 from modules.paths.values import dirPathTypeForProd, possibleDirPathTypes, possibleFilePathTypes
 from modules.paths import projectRootDetector as projRoot
 
-from modules import checks
+from modules.checks import checks
 
 
 __cwd = None

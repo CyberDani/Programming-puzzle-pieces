@@ -7,7 +7,7 @@ from defTypes import appDecisionType
 from modules.unitTests.autoUnitTest import AutoUnitTest
 from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
 
-from modules import checks
+from modules.checks import checks
 from modules import filerw
 from modules.paths import path
 from modules import uTest

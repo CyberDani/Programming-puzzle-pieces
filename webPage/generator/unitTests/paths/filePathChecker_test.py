@@ -57,7 +57,7 @@ class FilePathCheckerTests(AutoUnitTest):
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
       filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS,
-                                      "checks_test.py")
+                                      "htmlBuilder_test.py")
     except Exception:
       self.fail("FilePathChecker raised Exception unexpectedly!")
 
@@ -98,17 +98,17 @@ class FilePathCheckerTests(AutoUnitTest):
     self.assertEqual(filePath.getAbsoluteFilePath(),
                      dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT.value.getAbsoluteDirPathEndingWithSlash()
                      + "README.md")
-    filePath = filePathChecker.FilePathChecker(
-                              dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
+    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS,
+                                                "htmlBuilder_test.py")
     self.assertEqual(filePath.getAbsoluteFilePath(),
                      dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS.value.getAbsoluteDirPathEndingWithSlash()
-                     + "checks_test.py")
+                     + "htmlBuilder_test.py")
 
   def test_FilePathChecker_getFileName(self):
     filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_MAIN_GENERATOR, "generator.py")
     self.assertEqual(filePath.getFileName(), "generator.py")
     filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PROJECT_ROOT, "README.md")
     self.assertEqual(filePath.getFileName(), "README.md")
-    filePath = filePathChecker.FilePathChecker(
-                              dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS, "checks_test.py")
-    self.assertEqual(filePath.getFileName(), "checks_test.py")
+    filePath = filePathChecker.FilePathChecker(dirPathTypeForProd.DirectoryPathTypeForProd.PYTHON_GENERATOR_UNIT_TESTS,
+                                              "htmlBuilder_test.py")
+    self.assertEqual(filePath.getFileName(), "htmlBuilder_test.py")

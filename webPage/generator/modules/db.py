@@ -1,6 +1,6 @@
 from defTypes import dbBranchType
 
-from modules import checks
+from modules.checks import checks
 from modules import git
 
 # git:master -> MASTER, otherwise DEVEL
