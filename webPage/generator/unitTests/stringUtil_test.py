@@ -523,6 +523,127 @@ class StringUtilTests(AutoUnitTest):
     self.assertTrue(idx > -1)
     self.assertEqual(idx, string.find("ill while doing sth"))
 
+  def test_whitespaceDelimitedFind_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind(True, "word", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind(None, "word", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind(415, "word", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind(["hello", "world"], "word", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", True, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", None, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", 312, 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", [], 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "string", -1, 5)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "string", 2, 95)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "string", 10, 4)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "string", 3, 2)
+
+  def test_whitespaceDelimitedFind_emptyStrings(self):
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "", 0, len("sample string") - 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("sample string", "", 0, 1)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("", "apple", 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.whitespaceDelimitedFind("", ".", 0, 0)
+
+  def test_whitespaceDelimitedFind_notFound(self):
+    string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "putty", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, ",", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "soft", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "itty", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "kitt", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "itt", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "oft", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "!", 0, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "Soft", 1, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "fur!", string.find("fur") + 1, len(string) - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "fur!", string.find("fur!"), len(string) - 2)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "Soft", string.find("warm"), string.find("ball") - 1)
+    self.assertEqual((found, idx), (False, -1))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "fur!", string.find("warm"), string.find("ball") - 1)
+    self.assertEqual((found, idx), (False, -1))
+
+  def test_whitespaceDelimitedFind_found(self):
+    string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "Soft", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertEqual(idx, 0)
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "fur!", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("fur"))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "little", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("little"))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "warm", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("warm"))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "warm", string.find("\twarm"), len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("warm"))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "ball", string.find("\twarm"),
+                                                          string.find("\tof fur") - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ball"))
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "kitty,", string.find("\twarm"),
+                                                          string.find("\tof fur") - 1)
+    self.assertTrue(found)
+    self.assertEqual(string[17], 'k')
+    self.assertTrue(idx != string.find("kitty"))
+    self.assertEqual(idx, 17)
+    string = "Bill is feeling ill ."
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "ill", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertEqual(string[16], 'i')
+    self.assertEqual(idx, string.find("ill ."))
+    self.assertEqual(idx, 16)
+    string = "Bill the illager on the hill is feeling ill ."
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "ill", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill ."))
+    string = "Bill on the hill is feeling ill while doing sth illegally ill ."
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "ill", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill while doing sth"))
+    string = "Kill Bill on the hill is feeling ill while doing sth illegally illegitimate."
+    found, idx = stringUtil.whitespaceDelimitedFind(string, "ill", 0, len(string) - 1)
+    self.assertTrue(found)
+    self.assertTrue(idx > -1)
+    self.assertEqual(idx, string.find("ill while doing sth"))
+
   def test_rTrimNewLines_nonSense(self):
     with self.assertRaises(Exception):
       stringUtil.rTrimNewLines()
@@ -772,3 +893,95 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idxs, [19])
     idxs = stringUtil.findAll("this is my special string written in python", "string", 19, 24)
     self.assertEqual(idxs, [19])
+
+  def test_findNthOccurrence_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, 0, True)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, 0, -1)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, 3, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, 1, 25)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, 1, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, -1, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, None, None)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 1, False, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", 0, 0, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", -1, 0, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "e", None, 0, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", [], 1, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", None, 1, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence(None, "x", 1, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence(None, None, 1, 0, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence(None, None, None, None, None)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence(1, 2, 1, 3, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence(True, False, True, False, True)
+
+  def test_findNthOccurrence_emptyStrings(self):
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("text", "", 1, 0, 0)
+    with self.assertRaises(Exception):
+      stringUtil.findNthOccurrence("", "x", 1, 0, 0)
+
+  def test_findNthOccurrence_notFound_noOccurrence(self):
+    idxs = stringUtil.findNthOccurrence("a", "Q", 1, 0, 0)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("a", "longer text", 1, 0, 0)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("this a string", "square", 1, 0, 0)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("this a string", "square", 1, 0, 12)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("this a string", "square", 1, 12, 12)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("this a string", "this is a longer text than the previous one", 1, 0, 12)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("quantum entanglement", "quantum", 1, 0, 4)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("quantum entanglement", "entanglement", 1, 0, 18)
+    self.assertEqual(idxs, (False, -1))
+
+  def test_findNthOccurrence_notFound_thereIsOccurrence(self):
+    idxs = stringUtil.findNthOccurrence("a", "a", 2, 0, 0)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("_aQa_", "a", 3, 0, 4)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("a-a+a=a", "a", 2, 1, 3)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("a-a+a=a", "a", 5, 0, 5)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("this is a string", "is", 3, 0, 15)
+    self.assertEqual(idxs, (False, -1))
+    idxs = stringUtil.findNthOccurrence("quantum entanglement", "quantum", 2, 0, 19)
+    self.assertEqual(idxs, (False, -1))
+
+  def test_findNthOccurrence_found(self):
+    ans = stringUtil.findNthOccurrence("Q", "Q", 1, 0, 0)
+    self.assertEqual(ans, (True, 0))
+    ans = stringUtil.findNthOccurrence("O_O", "O", 2, 0, 2)
+    self.assertEqual(ans, (True, 2))
+    ans = stringUtil.findNthOccurrence("This is his string", "is", 1, 0, 17)
+    self.assertEqual(ans, (True, 2))
+    ans = stringUtil.findNthOccurrence("This is his string", "is", 2, 0, 17)
+    self.assertEqual(ans, (True, 5))
+    ans = stringUtil.findNthOccurrence("This is his string", "is", 3, 0, 17)
+    self.assertEqual(ans, (True, 9))
+    ans = stringUtil.findNthOccurrence("This is his string", "is", 2, 4, 17)
+    self.assertEqual(ans, (True, 9))
+    ans = stringUtil.findNthOccurrence("This is his string", "is", 1, 6, 17)
+    self.assertEqual(ans, (True, 9))

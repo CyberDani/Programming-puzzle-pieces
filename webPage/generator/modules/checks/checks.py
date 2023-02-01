@@ -2,6 +2,7 @@ import io
 import json
 import os
 import pathlib
+import inspect
 
 def checkIfValidJsonFile(file):
   checkIfFile(file)
@@ -38,6 +39,10 @@ def checkIfDirectoryPathExists(dirPath):
   resolvedPath = pathlib.Path(dirPath).resolve()
   if not resolvedPath.is_dir():
     raise Exception("Could not validate as a directory path '{}'!".format(resolvedPath))
+
+def checkIfUserDefinedFunction(arg):
+  if not inspect.isfunction(arg) or inspect.isbuiltin(arg):
+    raise Exception("'{}' having type '{}' is not a user defined function!".format(str(arg), str(type(arg))))
 
 def checkIfCallable(arg):
   if not callable(arg):

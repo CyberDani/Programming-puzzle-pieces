@@ -624,6 +624,28 @@ class ChecksTests(AutoUnitTest):
     except Exception:
       self.fail("checkIfChar() raised Exception unexpectedly!")
 
+  def test_checkIfUserDefinedFunction_invalid(self):
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, 1)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, {})
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, [1, 2, 3])
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, "string")
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, print)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, io)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, sys.path.append)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, self.assertEqual)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, type)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, Dir)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
+    self.assertRaises(Exception, checks.checkIfUserDefinedFunction, AutoUnitTest)
+
+  def test_checkIfUserDefinedFunction_valid(self):
+    try:
+      checks.checkIfUserDefinedFunction(checks.checkIfFile)
+      checks.checkIfUserDefinedFunction(filerw.getFileWithWritePerm)
+      checks.checkIfUserDefinedFunction(path.getRelativeDirPathToCurrentWorkingDir)
+    except Exception:
+      self.fail("checkIfUserDefinedFunction() raised Exception unexpectedly!")
+
   def test_checkIfCallable_invalid(self):
     self.assertRaises(Exception, checks.checkIfCallable, 1)
     self.assertRaises(Exception, checks.checkIfCallable, {})

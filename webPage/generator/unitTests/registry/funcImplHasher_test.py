@@ -1,0 +1,303 @@
+import inspect
+import io
+import sys
+
+sys.path.append('../..')
+
+from modules.paths.values.dirPathTypeForUT import DirectoryPathTypeForUT as Dir
+from modules.paths.values.filePathTypeForUT import FilePathTypeForUT as File
+from modules.unitTests.autoUnitTest import AutoUnitTest
+
+from modules.checks import checks
+from modules import filerw
+from modules.paths import path
+from modules.registry import funcionImpllHasher as funcImplHash
+
+from unitTests4unitTests import similarFunctions as func
+
+class FunctionImplementationHasherTests(AutoUnitTest):
+
+  def setUp(self):
+    self.hash = funcImplHash.getHash(func.simpleFunc)
+
+  def test_getFunctionName_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getFunctionName, print)
+    self.assertRaises(Exception, funcImplHash.getFunctionName, None)
+    self.assertRaises(Exception, funcImplHash.getFunctionName, [])
+    self.assertRaises(Exception, funcImplHash.getFunctionName, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getFunctionName, AutoUnitTest)
+
+  def test_getFunctionName_examples(self):
+    funcName = funcImplHash.getFunctionName(func.simpleFunc)
+    self.assertEqual(funcName, "simpleFunc")
+    funcName = funcImplHash.getFunctionName(func.simpleFunc2)
+    self.assertEqual(funcName, "simpleFunc2")
+    funcName = funcImplHash.getFunctionName(func.simpleFunc_sameImpl_differentSignature)
+    self.assertEqual(funcName, "simpleFunc_sameImpl_differentSignature")
+    funcName = funcImplHash.getFunctionName(func.simpleFunc_sameImpl_differentSignature_decorated)
+    self.assertEqual(funcName, "simpleFunc_sameImpl_differentSignature_decorated")
+    funcName = funcImplHash.getFunctionName(func.SimpleClass.simpleFunc)
+    self.assertEqual(funcName, "simpleFunc")
+
+  def test_getFunctionSignature_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getFunctionSignature, print)
+    self.assertRaises(Exception, funcImplHash.getFunctionSignature, None)
+    self.assertRaises(Exception, funcImplHash.getFunctionSignature, [])
+    self.assertRaises(Exception, funcImplHash.getFunctionSignature, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getFunctionSignature, AutoUnitTest)
+
+  def test_getFunctionSignature_examples(self):
+    sig = funcImplHash.getFunctionSignature(func.simpleFunc)
+    self.assertEqual(sig, "()")
+    sig = funcImplHash.getFunctionSignature(func.simpleFunc2)
+    self.assertEqual(sig, "()")
+    sig = funcImplHash.getFunctionSignature(func.simpleFunc_sameImpl_differentSignature)
+    self.assertEqual(sig, "(arg1, arg2)")
+    sig = funcImplHash.getFunctionSignature(func.simpleFunc_sameImpl_differentSignature_decorated)
+    self.assertEqual(sig, "(arg1, arg2)")
+    sig = funcImplHash.getFunctionSignature(func.SimpleClass.simpleFunc)
+    self.assertEqual(sig, "(self)")
+    sig = funcImplHash.getFunctionSignature(func.simpleFunc_sameImpl_differentSignature_decorated_annotated)
+    self.assertEqual(sig, "(arg1: int, arg2: str) -> bool")
+
+  def test_getDefIndex_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getDefIndex, print)
+    self.assertRaises(Exception, funcImplHash.getDefIndex, None)
+    self.assertRaises(Exception, funcImplHash.getDefIndex, [])
+    self.assertRaises(Exception, funcImplHash.getDefIndex, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getDefIndex, AutoUnitTest)
+
+  def test_getDefIndex_examples(self):
+    source = inspect.getsource(func.simpleFunc)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc)
+    self.assertTrue(source[defIdx:].startswith("def simpleFunc():\n"))
+    source = inspect.getsource(func.simpleFunc2)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc2)
+    self.assertTrue(source[defIdx:].startswith("def \\\n    \\\n        simpleFunc2 "
+                                               "\\\n                \\\n                (\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc3)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc3)
+    self.assertTrue(source[defIdx:].startswith("def \\\n    \\\n        simpleFunc3 "
+                                               "\\\n                \\\n                (\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc4)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc4)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc4 \\\n                "
+                                               "(\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc5)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc5)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc5 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc6)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc6)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc6 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc7)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc7)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc7 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc8)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc8)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc8 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc9)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc9)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc9 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc10)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc10)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc10 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc11)
+    defIdx = funcImplHash.getDefIndex(func.simpleFunc11)
+    self.assertTrue(source[defIdx:].startswith("def \\\n        simpleFunc11 \\\n                "
+                                               "( arg\n        )\\\n        :"))
+
+  def test_getNameIndex_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getNameIndex, print)
+    self.assertRaises(Exception, funcImplHash.getNameIndex, None)
+    self.assertRaises(Exception, funcImplHash.getNameIndex, 2)
+    self.assertRaises(Exception, funcImplHash.getNameIndex, [])
+    self.assertRaises(Exception, funcImplHash.getNameIndex, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getNameIndex, AutoUnitTest)
+
+  def test_getNameIndex_examples(self):
+    source = inspect.getsource(func.simpleFunc)
+    idx = funcImplHash.getNameIndex(func.simpleFunc)
+    self.assertTrue(source[idx:].startswith("simpleFunc():\n"))
+    source = inspect.getsource(func.simpleFunc2)
+    idx = funcImplHash.getNameIndex(func.simpleFunc2)
+    self.assertTrue(source[idx:].startswith("simpleFunc2 \\\n                \\\n                (\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc3)
+    idx = funcImplHash.getNameIndex(func.simpleFunc3)
+    self.assertTrue(source[idx:].startswith("simpleFunc3 \\\n                \\\n                (\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc4)
+    idx = funcImplHash.getNameIndex(func.simpleFunc4)
+    self.assertTrue(source[idx:].startswith("simpleFunc4 \\\n                (\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc5)
+    idx = funcImplHash.getNameIndex(func.simpleFunc5)
+    self.assertTrue(source[idx:].startswith("simpleFunc5 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc6)
+    idx = funcImplHash.getNameIndex(func.simpleFunc6)
+    self.assertTrue(source[idx:].startswith("simpleFunc6 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc7)
+    idx = funcImplHash.getNameIndex(func.simpleFunc7)
+    self.assertTrue(source[idx:].startswith("simpleFunc7 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc8)
+    idx = funcImplHash.getNameIndex(func.simpleFunc8)
+    self.assertTrue(source[idx:].startswith("simpleFunc8 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc9)
+    idx = funcImplHash.getNameIndex(func.simpleFunc9)
+    self.assertTrue(source[idx:].startswith("simpleFunc9 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc10)
+    idx = funcImplHash.getNameIndex(func.simpleFunc10)
+    self.assertTrue(source[idx:].startswith("simpleFunc10 \\\n                ( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc11)
+    idx = funcImplHash.getNameIndex(func.simpleFunc11)
+    self.assertTrue(source[idx:].startswith("simpleFunc11 \\\n                ( arg\n        )\\\n        :"))
+
+  def test_getSignatureIndex_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, print)
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, None)
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, 2)
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, [])
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getSignatureIndex, AutoUnitTest)
+
+  def test_getSignatureIndex_examples(self):
+    source = inspect.getsource(func.simpleFunc)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc)
+    self.assertTrue(source[idx:].startswith("():\n"))
+    source = inspect.getsource(func.simpleFunc2)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc2)
+    self.assertTrue(source[idx:].startswith("(\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc3)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc3)
+    self.assertTrue(source[idx:].startswith("(\n\n        )\\\n"))
+    source = inspect.getsource(func.simpleFunc4)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc4)
+    self.assertTrue(source[idx:].startswith("(\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc5)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc5)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc6)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc6)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc7)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc7)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc8)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc8)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc9)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc9)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc10)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc10)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspect.getsource(func.simpleFunc11)
+    idx = funcImplHash.getSignatureIndex(func.simpleFunc11)
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+
+  def test_getFunctionDeclarationIndexes_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getFunctionDeclarationIndexes, print)
+    self.assertRaises(Exception, funcImplHash.getFunctionDeclarationIndexes, None)
+    self.assertRaises(Exception, funcImplHash.getFunctionDeclarationIndexes, [])
+    self.assertRaises(Exception, funcImplHash.getFunctionDeclarationIndexes, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getFunctionDeclarationIndexes, AutoUnitTest)
+
+  def test_getFunctionDeclarationIndexes_examples(self):
+    source = inspect.getsource(func.simpleFunc)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc")
+    self.assertEqual(source[signatureIdx:colIdx], "()")
+    source = inspect.getsource(func.simpleFunc2)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc2)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n    \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc2 \\\n                \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "(\n\n        )\\\n        \\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc3)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc3)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n    \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc3 \\\n                \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "(\n\n        )\\\n        \\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc4)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc4)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc4 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "(\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc5)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc5)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc5 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc6)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc6)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc6 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc7)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc7)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc7 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc8)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc8)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc8 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc9)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc9)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc9 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc10)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc10)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc10 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+    source = inspect.getsource(func.simpleFunc11)
+    defIdx, nameIdx, signatureIdx, colIdx = funcImplHash.getFunctionDeclarationIndexes(func.simpleFunc11)
+    self.assertTrue(defIdx < nameIdx < signatureIdx < colIdx)
+    self.assertEqual(source[defIdx:nameIdx], "def \\\n        ")
+    self.assertEqual(source[nameIdx:signatureIdx], "simpleFunc11 \\\n                ")
+    self.assertEqual(source[signatureIdx:colIdx], "( arg\n        )\\\n        ")
+    self.assertEqual(source[colIdx], ':')
+
+  def test_getHash_wrongType(self):
+    self.assertRaises(Exception, funcImplHash.getHash, print)
+    self.assertRaises(Exception, funcImplHash.getHash, None)
+    self.assertRaises(Exception, funcImplHash.getHash, [])
+    self.assertRaises(Exception, funcImplHash.getHash, sys.path.copy)
+    self.assertRaises(Exception, funcImplHash.getHash, AutoUnitTest)
+
+  def test_getHash_functionHashEqualsWithItself(self):
+    hash1 = funcImplHash.getHash(func.simpleFunc)
+    hash2 = funcImplHash.getHash(func.simpleFunc)
+    self.assertEqual(hash1, hash2)
+    self.assertEqual(self.hash, hash1)
+    self.assertEqual(self.hash, hash2)
+
+  def test_getHash_differentFunctionName(self):
+    hash1 = funcImplHash.getHash(func.simpleFunc)
+    hash2 = funcImplHash.getHash(func.simpleFunc_sameImpl)
+    # self.assertEqual(hash1, hash2)

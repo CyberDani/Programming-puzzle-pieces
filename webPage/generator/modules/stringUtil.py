@@ -115,7 +115,26 @@ Return values: \n
     findIdx = stringToScan.find(stringToFind, startIdx, endIdx + 1)
     if findIdx == -1:
       return False, -1
-    if findIdx > 0 and not stringToScan[findIdx - 1].isspace():
+    if findIdx > startIdx and not stringToScan[findIdx - 1].isspace():
+      startIdx = findIdx + 1
+      findIdx = -1
+  return findIdx != -1, findIdx
+
+def whitespaceDelimitedFind(stringToScan, stringToFind, startIdx, endIdx):
+  """Raises error for empty strings because indexes cannot be set properly.\n
+Return values: \n
+* found: True | False
+* index: -1 if not found"""
+  checks.checkIfString(stringToScan, startIdx, 5000)
+  checks.checkIfString(stringToFind, 1, 500)
+  checks.checkIntIsBetween(endIdx, startIdx, len(stringToScan) - 1)
+  findIdx = -1
+  while findIdx == -1 and startIdx <= endIdx:
+    found, findIdx = beforeWhitespaceDelimitedFind(stringToScan, stringToFind, startIdx, endIdx)
+    if not found:
+      return False, -1
+    lastCharIdx = findIdx + len(stringToFind) - 1
+    if lastCharIdx < endIdx and not stringToScan[lastCharIdx + 1].isspace():
       startIdx = findIdx + 1
       findIdx = -1
   return findIdx != -1, findIdx
@@ -163,3 +182,27 @@ Return value:\n
       break
     idx = stringToScan.find(stringToFind, idx + 1, endIdx + 1)
   return result
+
+def findNthOccurrence(stringToScan, stringToFind, n, startIdx, endIdx):
+  """Includes overlaps. Raises exception if any string is empty\n
+Return value:\n
+* found: True | False
+* index: position of the nth find, otherwise -1"""
+  checks.checkIfString(stringToScan, startIdx, 4000)
+  checks.checkIfString(stringToFind, 1, 400)
+  checks.checkIntIsBetween(endIdx, startIdx, len(stringToScan) - 1)
+  checks.checkIntIsBetween(n, 1, 400)
+  notFoundResult = (False, -1)
+  if n > len(stringToScan):
+    return notFoundResult
+  i = 0
+  idx = -1
+  while i < n:
+    idx = stringToScan.find(stringToFind, startIdx, endIdx + 1)
+    if idx == -1:
+      return notFoundResult
+    i += 1
+    if idx == endIdx:
+      break
+    startIdx = idx + 1
+  return True, idx
