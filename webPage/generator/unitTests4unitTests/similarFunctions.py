@@ -1,5 +1,3 @@
-import functools
-
 from decorator import *
 
 def simpleFunc():
@@ -133,6 +131,20 @@ def \
         :
   a = 2
   b = 3
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc12(): ")
+def \
+        simpleFunc12 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+        :
+  a = len(d)
+  b = len(str)
   return ((a + b) * 10) % 2 == 0
 
 def simpleFunc_sameImpl():
