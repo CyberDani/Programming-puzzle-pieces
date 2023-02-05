@@ -6,12 +6,15 @@ from modules.checks import checks
 class FunctionInspector:
   def __init__(self, func):
     checks.checkIfUserDefinedFunction(func)
+    self.func = func
     self.source = inspect.getsource(func)
     self.sourceLen = len(self.source)
     self.functionName = func.__name__
     self.signature = str(inspect.signature(func))
-    self.defIndex, self.nameIndex, self.signatureIndex, self.colonIndex, \
-      self.implementationIndex = None, None, None, None, None
+    self.isDecorated = False
+    self.decoratorIndex, self.defIndex, \
+      self.nameIndex, self.signatureIndex, \
+      self.colonIndex, self.implementationIndex = None, None, None, None, None, None
 
   def getFunctionName(self):
     return self.functionName
@@ -21,9 +24,37 @@ class FunctionInspector:
   Example: (arg1: int, arg2: str) -> bool"""
     return self.signature
 
+  def getArgumentVariableNames(self):
+    """Keeps the original order"""
+    args = inspect.getfullargspec(self.func).args
+    answer = ""
+    for arg in args:
+      answer += arg + ","
+    if answer:
+      answer = answer[:-1]
+    return answer
+
   def getFullSource(self):
     """Original source code containing every part of the function, not normalized"""
     return self.source
+
+  def isDecorator(self):
+    return self.source.startswith("@decorator\n")
+
+  def getDecorationIndex(self):
+    """Returns:\n
+* found: True | False
+* decoratorIndex: the index of the first '@' character (even for multiple decorators), -1 if not found"""
+    if self.decoratorIndex is not None:
+      return self.isDecorated, self.decoratorIndex
+    if self.defIndex is None:
+      self.getDefIndex()
+    found, idx = stringUtil.find(self.source, "@", 0, self.defIndex, -1)
+    if not found:
+      return False, -1
+    self.decoratorIndex = idx
+    self.isDecorated = True
+    return True, self.decoratorIndex
 
   def getDefIndex(self):
     """Raises exception if not valid (should not happen). \n
@@ -93,7 +124,6 @@ Returns the position of the first ':' after the signature"""
       raise Exception("Failed to find the colon at the end of the '{}' function declaration".format(self.functionName))
     return self.colonIndex
 
-  # not finished
   def getImplementationIndex(self):
     """Raises exception if not valid (should not happen). \n
 Returns the index of the first line at where the implementation begins"""
@@ -104,4 +134,10 @@ Returns the index of the first line at where the implementation begins"""
     found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, self.colonIndex + 1, self.sourceLen - 1)
     if not found:
       raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
-    return self.colonIndex
+    found, self.implementationIndex = stringUtil.getLastNewLineCharIdx(self.source, self.colonIndex, idx)
+    if not found:
+      raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+    self.implementationIndex += 1
+    if self.implementationIndex >= self.sourceLen - 1:
+      raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+    return self.implementationIndex

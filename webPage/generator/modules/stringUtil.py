@@ -72,6 +72,21 @@ def doubleSplit(string, primaryDelimiter, secondaryDelimiter):
       secondaryParts += secondaryPartials[1:]
   return primaryParts, secondaryParts
 
+def getLastNewLineCharIdx(string, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Return values:\n
+* found: True | False \n
+* index: -1 if not found"""
+  checks.checkIfString(string, 0, 5000)
+  checks.checkIntIsBetween(startIdx, 0, endIdx)
+  checks.checkIntIsBetween(endIdx, startIdx, len(string) - 1)
+  idx = endIdx
+  while idx >= startIdx and string[idx] != '\n':
+    idx -= 1
+  if idx < startIdx:
+    return False, -1
+  return True, idx
+
 def getFirstNonWhiteSpaceCharIdx(string, startIdx, endIdx):
   """Raises error at empty string because indexes cannot be set properly.\n
 Return values:\n

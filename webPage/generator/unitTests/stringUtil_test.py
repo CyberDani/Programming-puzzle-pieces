@@ -258,6 +258,64 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(parts1, ["key", "value_db_something", "default_numeric"])
     self.assertEqual(parts2, [])
 
+  def test_getLastNewLineCharIdx_nonSense(self):
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "example test string", None, None)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "another test string", 2, True)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "again a string", "0", 3)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "let me use this example", -1, 3)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "let me use this example", 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "let me use this example", 8, 5)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "let me use this example", 11, 10)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, 123, 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, ["let me use this example"], 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, None, 3, 61)
+
+  def test_getLastNewLineCharIdx_emptyString(self):
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "", 0, 0)
+
+  def helper_getLastNewLineCharIdx_checkIfNotFound(self, string, startIdx, endIdx):
+    found, idx = stringUtil.getLastNewLineCharIdx(string, startIdx, endIdx)
+    self.assertEqual((found, idx), (False, -1))
+
+  def test_getLastNewLineCharIdx_notFound(self):
+    self.helper_getLastNewLineCharIdx_checkIfNotFound(".", 0, 0)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("_Q", 0, 1)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("not a single newline", 0, 19)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("not a single newline", 0, 10)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("not a single newline", 9, 19)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("not a single newline", 5, 15)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine not in range", 1, 20)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine not in range", 1, 10)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine not in range", 10, 16)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine not in range", 10, 20)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine not in range\n", 1, 20)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine\nnot\nin\nrange\n", 1, 7)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine\nnot\nin\nrange\n", 9, 11)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine\nnot\nin\nrange\n", 13, 14)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\nnewLine\nnot\nin\nrange\n", 16, 20)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\n\nanother\n\n\nexample\n\n", 2, 8)
+    self.helper_getLastNewLineCharIdx_checkIfNotFound("\n\nanother\n\n\nexample\n\n", 12, 18)
+
+  def helper_getLastNewLineCharIdx_checkIfFound(self, string, startIdx, endIdx, foundAt):
+    found, idx = stringUtil.getLastNewLineCharIdx(string, startIdx, endIdx)
+    self.assertEqual((found, idx), (True, foundAt))
+
+  def test_getLastNewLineCharIdx_found(self):
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n", 0, 0, foundAt=0)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n", 0, 0, foundAt=0)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n", 0, 1, foundAt=1)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n", 1, 1, foundAt=1)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n\n", 0, 1, foundAt=1)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n\n", 0, 2, foundAt=2)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\n\n", 1, 2, foundAt=2)
+    self.helper_getLastNewLineCharIdx_checkIfFound("first line\nsecond line", 0, 21, foundAt=10)
+    self.helper_getLastNewLineCharIdx_checkIfFound("first line\nsecond line", 9, 11, foundAt=10)
+    self.helper_getLastNewLineCharIdx_checkIfFound("first line\nsecond line", 10, 10, foundAt=10)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\nmultiple\nnewlines\n", 0, 18, foundAt=18)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\nmultiple\nnewlines\n", 0, 17, foundAt=9)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 20, foundAt=20)
+    self.helper_getLastNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 8, foundAt=8)
+
   def helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
       stringUtil.getFirstNonWhiteSpaceCharIdx(string, startIdx, endIdx)

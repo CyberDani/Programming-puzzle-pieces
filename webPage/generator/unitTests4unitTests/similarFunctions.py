@@ -147,15 +147,89 @@ def \
   b = len(str)
   return ((a + b) * 10) % 2 == 0
 
-def simpleFunc_sameImpl():
-  a = 2
-  b = 3
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc13(): ")
+def \
+        simpleFunc13 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc14(): ")
+def \
+        simpleFunc14 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :
+
+
+
+  a = len(d)
+  b = len(str)
   return ((a + b) * 10) % 2 == 0
 
 @decorator
 def invertBool(func, *args, **kw):
   # print("- = -   H E L L O   - = -")
   return not func(*args)
+
+@invertBool
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc15(): ")
+def \
+        simpleFunc15 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :
+
+
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@invertBool
+@defdeco
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc16(): ")
+def \
+        simpleFunc16 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :
+
+
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+def simpleFunc_sameImpl():
+  a = 2
+  b = 3
+  return ((a + b) * 10) % 2 == 0
 
 def simpleFunc_sameImpl_differentSignature(
                                            arg1 ,

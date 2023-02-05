@@ -38,6 +38,12 @@ class FunctionInspectorTests(AutoUnitTest):
     inspector = FunctionInspector(func.simpleFunc12)
     self.assertEqual(inspector.getFunctionName(), "simpleFunc12")
 
+  def test_getFunctionName_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc)
+    self.assertEqual(inspector.getFunctionName(), "simpleFunc")
+    self.assertEqual(inspector.getFunctionName(), "simpleFunc")
+    self.assertEqual(inspector.getFunctionName(), "simpleFunc")
+
   def test_getFunctionSignature_examples(self):
     inspector = FunctionInspector(func.simpleFunc)
     self.assertEqual(inspector.getFunctionSignature(), "()")
@@ -50,6 +56,13 @@ class FunctionInspectorTests(AutoUnitTest):
     inspector = FunctionInspector(func.SimpleClass.simpleFunc)
     self.assertEqual(inspector.getFunctionSignature(), "(self)")
     inspector = FunctionInspector(func.simpleFunc_sameImpl_differentSignature_decorated_annotated)
+    self.assertEqual(inspector.getFunctionSignature(), "(arg1: int, arg2: str) -> bool")
+
+  def test_getFunctionSignature_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc_sameImpl_differentSignature_decorated_annotated)
+    self.assertEqual(inspector.getFunctionSignature(), "(arg1: int, arg2: str) -> bool")
+    self.assertEqual(inspector.getFunctionSignature(), "(arg1: int, arg2: str) -> bool")
+    self.assertEqual(inspector.getFunctionSignature(), "(arg1: int, arg2: str) -> bool")
     self.assertEqual(inspector.getFunctionSignature(), "(arg1: int, arg2: str) -> bool")
 
   def test_getFullSource_examples(self):
@@ -85,6 +98,17 @@ class FunctionInspectorTests(AutoUnitTest):
                                     'def \\\n        simpleFunc12 \\\n                ( str = "2:1",\n                '
                                     '  d = {"one": 1}\n        )\\\n        :\n  a = len(d)\n  b = len(str)\n'
                                     '  return ((a + b) * 10) % 2 == 0\n')
+
+  def test_getFullSource_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc)
+    self.assertEqual(inspector.getFullSource(), "def simpleFunc():\n  a = 2\n  b = 3\n"
+                                                "  return ((a + b) * 10) % 2 == 0\n")
+    self.assertEqual(inspector.getFullSource(), "def simpleFunc():\n  a = 2\n  b = 3\n"
+                                                "  return ((a + b) * 10) % 2 == 0\n")
+    self.assertEqual(inspector.getFullSource(), "def simpleFunc():\n  a = 2\n  b = 3\n"
+                                                "  return ((a + b) * 10) % 2 == 0\n")
+    self.assertEqual(inspector.getFullSource(), "def simpleFunc():\n  a = 2\n  b = 3\n"
+                                                "  return ((a + b) * 10) % 2 == 0\n")
 
   def test_getDefIndex_examples(self):
     inspector = FunctionInspector(func.simpleFunc)
@@ -146,6 +170,21 @@ class FunctionInspectorTests(AutoUnitTest):
     defIdx = inspector.getDefIndex()
     self.assertTrue(source[defIdx:].startswith("def simpleFunc( self ) \\\n"))
 
+  def test_getDefIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.SimpleClass.simpleFunc)
+    source = inspector.getFullSource()
+    defIdx = inspector.getDefIndex()
+    self.assertTrue(source[defIdx:].startswith("def simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    defIdx = inspector.getDefIndex()
+    self.assertTrue(source[defIdx:].startswith("def simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    defIdx = inspector.getDefIndex()
+    self.assertTrue(source[defIdx:].startswith("def simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    defIdx = inspector.getDefIndex()
+    self.assertTrue(source[defIdx:].startswith("def simpleFunc( self ) \\\n"))
+
   def test_getNameIndex_examples(self):
     inspector = FunctionInspector(func.SimpleClass.simpleFunc)
     source = inspector.getFullSource()
@@ -196,6 +235,21 @@ class FunctionInspectorTests(AutoUnitTest):
     idx = inspector.getNameIndex()
     self.assertTrue(source[idx:].startswith("simpleFunc11 \\\n                ( arg\n        )\\\n        :"))
 
+  def test_getNameIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.SimpleClass.simpleFunc)
+    source = inspector.getFullSource()
+    idx = inspector.getNameIndex()
+    self.assertTrue(source[idx:].startswith("simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    idx = inspector.getNameIndex()
+    self.assertTrue(source[idx:].startswith("simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    idx = inspector.getNameIndex()
+    self.assertTrue(source[idx:].startswith("simpleFunc( self ) \\\n"))
+    source = inspector.getFullSource()
+    idx = inspector.getNameIndex()
+    self.assertTrue(source[idx:].startswith("simpleFunc( self ) \\\n"))
+
   def test_getSignatureIndex_examples(self):
     inspector = FunctionInspector(func.simpleFunc)
     source = inspector.getFullSource()
@@ -238,6 +292,21 @@ class FunctionInspectorTests(AutoUnitTest):
     idx = inspector.getSignatureIndex()
     self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
     inspector = FunctionInspector(func.simpleFunc11)
+    source = inspector.getFullSource()
+    idx = inspector.getSignatureIndex()
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+
+  def test_getSignatureIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc11)
+    source = inspector.getFullSource()
+    idx = inspector.getSignatureIndex()
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getSignatureIndex()
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getSignatureIndex()
+    self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
     source = inspector.getFullSource()
     idx = inspector.getSignatureIndex()
     self.assertTrue(source[idx:].startswith("( arg\n        )\\\n        :"))
@@ -302,3 +371,197 @@ class FunctionInspectorTests(AutoUnitTest):
     idx = inspector.getColonIndex()
     self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
                                               "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+
+  def test_getColonIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc12)
+    source = inspector.getFullSource()
+    idx = inspector.getColonIndex()
+    self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
+                                              "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getColonIndex()
+    self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
+                                              "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getColonIndex()
+    self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
+                                              "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getColonIndex()
+    self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
+                                              "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+    source = inspector.getFullSource()
+    idx = inspector.getColonIndex()
+    self.assertTrue(source[:idx + 1].endswith("def \\\n        simpleFunc12 \\\n                ( str = \"2:1\","
+                                              "\n                  d = {\"one\": 1}\n        )\\\n        :"))
+
+  def test_getImplementationIndex_examples(self):
+    inspector = FunctionInspector(func.simpleFunc)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], "  a = 2\n  b = 3\n  return ((a + b) * 10) % 2 == 0\n")
+    inspector = FunctionInspector(func.simpleFunc2)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], "  a = 2\n  b = 3\n  return ((a + b) * 10) % 2 == 0\n")
+    inspector = FunctionInspector(func.simpleFunc3)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = 2\n  b = 3\n  return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.simpleFunc4)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = 2\n  b = 3\n  return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.SimpleClass.simpleFunc)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '    a = 2\n    b = 3\n    return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.simpleFunc_sameImpl_differentSignature_decorated_annotated)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = 2\n  b = 3\n  return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.simpleFunc12)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.simpleFunc13)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+    inspector = FunctionInspector(func.simpleFunc14)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+
+  def test_getImplementationIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc14)
+    source = inspector.getFullSource()
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+    idx = inspector.getImplementationIndex()
+    self.assertEqual(source[idx:], '  a = len(d)\n  b = len(str)\n  return ((a + b) * 10) % 2 == 0\n')
+
+  def test_getDecorationIndex_notFound(self):
+    inspector = FunctionInspector(func.simpleFunc)
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+    inspector = FunctionInspector(func.simpleFunc2)
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+    inspector = FunctionInspector(func.simpleFunc3)
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+    inspector = FunctionInspector(func.decorator)
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+
+  def test_getDecorationIndex_found(self):
+    inspector = FunctionInspector(func.simpleFunc4)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@defdeco\ndef \\\n"))
+    inspector = FunctionInspector(func.simpleFunc5)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@defdef (arg = \" def \")\ndef \\\n        simpleFunc5"))
+    inspector = FunctionInspector(func.simpleFunc7)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@defdef \\\n  (arg = \"\\\n          def simpleFunc7 ( ) \")\ndef \\"))
+    inspector = FunctionInspector(func.simpleFunc14)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc14(): \")\ndef \\"))
+    inspector = FunctionInspector(func.simpleFunc15)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc15(): \")\ndef \\"))
+    inspector = FunctionInspector(func.simpleFunc16)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@defdeco\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc16(): \")\ndef \\"))
+
+  def test_getDecorationIndex_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc16)
+    source = inspector.getFullSource()
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@defdeco\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc16(): \")\ndef \\"))
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@defdeco\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc16(): \")\ndef \\"))
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@defdeco\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc16(): \")\ndef \\"))
+    found, idx = inspector.getDecorationIndex()
+    self.assertTrue(found)
+    self.assertTrue(source[idx:].startswith("@invertBool\n@defdeco\n@\\\ndefdef \\\n  (arg = \" @defdef(dec) \\\n "
+                                            "def simpleFunc16(): \")\ndef \\"))
+    inspector = FunctionInspector(func.simpleFunc)
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+    self.assertEqual(inspector.getDecorationIndex(), (False, -1))
+
+  def test_isDecorator_notDecorator(self):
+    self.assertFalse(FunctionInspector(func.simpleFunc).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc2).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc3).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc4).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc5).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc6).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc7).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc8).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc9).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc10).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc11).isDecorator())
+    self.assertFalse(FunctionInspector(func.simpleFunc12).isDecorator())
+
+  def test_isDecorator_decorator(self):
+    self.assertTrue(FunctionInspector(func.defdeco).isDecorator())
+    self.assertTrue(FunctionInspector(func.defdef).isDecorator())
+    self.assertTrue(FunctionInspector(func.invertBool).isDecorator())
+
+  def test_isDecorator_getMultipleTimes(self):
+    inspector = FunctionInspector(func.defdeco)
+    self.assertTrue(inspector.isDecorator())
+    self.assertTrue(inspector.isDecorator())
+    self.assertTrue(inspector.isDecorator())
+    self.assertTrue(inspector.isDecorator())
+    inspector = FunctionInspector(func.simpleFunc12)
+    self.assertFalse(inspector.isDecorator())
+    self.assertFalse(inspector.isDecorator())
+    self.assertFalse(inspector.isDecorator())
+    self.assertFalse(inspector.isDecorator())
+
+  def test_getArgumentVariableNames_examples(self):
+    inspector = FunctionInspector(func.simpleFunc)
+    self.assertEqual(inspector.getArgumentVariableNames(), "")
+    inspector = FunctionInspector(func.simpleFunc2)
+    self.assertEqual(inspector.getArgumentVariableNames(), "")
+    inspector = FunctionInspector(func.simpleFunc3)
+    self.assertEqual(inspector.getArgumentVariableNames(), "")
+    inspector = FunctionInspector(func.simpleFunc4)
+    self.assertEqual(inspector.getArgumentVariableNames(), "")
+    inspector = FunctionInspector(func.simpleFunc5)
+    self.assertEqual(inspector.getArgumentVariableNames(), "arg")
+    inspector = FunctionInspector(func.simpleFunc14)
+    self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
+
+  def test_getArgumentVariableNames_getMultipleTimes(self):
+    inspector = FunctionInspector(func.simpleFunc14)
+    self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
+    self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
+    self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
+    self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
