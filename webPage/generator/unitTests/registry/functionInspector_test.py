@@ -565,3 +565,45 @@ class FunctionInspectorTests(AutoUnitTest):
     self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
     self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
     self.assertEqual(inspector.getArgumentVariableNames(), "str,d")
+
+  def test_getFunctionCallNames_examples(self):
+    insp = FunctionInspector(func.simpleFunc)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), ([], []))
+    insp = FunctionInspector(func.SimpleClass.simpleFunc)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), ([], []))
+    insp = FunctionInspector(func.simpleFunc4)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), ([], []))
+    insp = FunctionInspector(func.simpleFunc14)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), ([], []))
+    insp = FunctionInspector(func.simpleFunc16)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), ([], []))
+    insp = FunctionInspector(func.simpleFunc17)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'], ['simpleFunc']))
+    insp = FunctionInspector(func.simpleFunc18)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+
+  def test_getFunctionCallNames_getMultipleTimes(self):
+    insp = FunctionInspector(func.simpleFunc18)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))

@@ -1,4 +1,5 @@
 from decorator import *
+from unitTests4unitTests import otherFunctions
 
 def simpleFunc():
   a = 2
@@ -225,6 +226,23 @@ def \
   a = len(d)
   b = len(str)
   return ((a + b) * 10) % 2 == 0
+
+def simpleFunc17(str = "2:1", d = {"one": 1}):
+  a = simpleFunc16()
+  b = simpleFunc2()
+  cl = SimpleClass()
+  cl.simpleFunc()
+  return (len(str) + len(d) < 5) or (a and b)
+
+def simpleFunc18(str = "2:1", d = [1, 2, 4]):
+  fl = otherFunctions.getFalseIfNotTrue()
+  other = otherFunctions.OtherClass()
+  a = simpleFunc16()
+  b = simpleFunc2()
+  cl = SimpleClass()
+  other.saySomething()
+  cl.simpleFunc()
+  return fl or (len(str) + len(d) < 5) or (a and b)
 
 def simpleFunc_sameImpl():
   a = 2

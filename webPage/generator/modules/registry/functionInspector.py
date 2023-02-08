@@ -1,4 +1,6 @@
+import dis
 import inspect
+import builtins as builtin
 
 from modules import stringUtil
 from modules.checks import checks
@@ -141,3 +143,43 @@ Returns the index of the first line at where the implementation begins"""
     if self.implementationIndex >= self.sourceLen - 1:
       raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
     return self.implementationIndex
+
+  # TODO see if decorator can be bypassed when it will become necessary
+  # Source (slightly modified):
+  # https://stackoverflow.com/questions/51901676/get-the-lists-of-functions-used-called-within-a-function-in-python
+  def getFunctionCallNames(self, built_ins=False):
+    """Ignore function names which can be methods of a built-in type (e.g. find). Because of the duck-typing mechanism
+it seems impossible to deduce if that method is applied on a string for example. To not be excluded better autocheck
+that functions has unique names.\n
+**Does not work with decorated functions** (it will return empty lists)\n
+Return:\n
+* functionNames: list of names ordered alphabetically
+* methodNames: list of names ordered alphabetically"""
+    instructions = list(dis.get_instructions(self.func))[::-1]
+    # use dict for unique check
+    functions, methods = {}, {}
+    for i, inst in list(enumerate(instructions))[::-1]:
+        # find last CALL_FUNCTION
+        if inst.opname[:11] == "LOAD_METHOD":
+          name = str(inst.argval)
+          if not hasattr(str, name) and not hasattr(tuple, name) and not hasattr(dict, name):
+            methods[name] = True
+          continue
+        if inst.opname[:13] == "CALL_FUNCTION":
+            # function takes ins[i].arg number of arguments
+            ep = i + inst.arg + (2 if inst.opname[13:16] == "_KW" else 1)
+            # parse argument list (Python2)
+            if inst.arg == 257:
+                k = i+1
+                while k < len(instructions) and instructions[k].opname != "BUILD_LIST":
+                    k += 1
+                ep = k-1
+            entry = instructions[ep]
+            name = str(entry.argval)
+            # "fix" is found in decorated functions, so ignore it
+            if "." not in name and name != "fix" and (entry.opname == "LOAD_GLOBAL") and \
+                    (built_ins or not hasattr(builtin, name)):
+                functions[name] = True
+            # reduce this CALL_FUNCTION and all its parameters to one entry
+            instructions = instructions[:i] + [entry] + instructions[ep + 1:]
+    return sorted(list(functions.keys())), sorted(list(methods.keys()))
