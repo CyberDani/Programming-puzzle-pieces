@@ -1,4 +1,4 @@
-from decorator import *
+from decorator import decorator
 from unitTests4unitTests import otherFunctions
 
 def simpleFunc():
@@ -243,6 +243,184 @@ def simpleFunc18(str = "2:1", d = [1, 2, 4]):
   other.saySomething()
   cl.simpleFunc()
   return fl or (len(str) + len(d) < 5) or (a and b)
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc19(): ")
+def \
+        simpleFunc19 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+
+
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc20(): ")
+def \
+        simpleFunc20 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+
+# there is another comment here
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc21(): ")
+def \
+        simpleFunc21 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc22(): ")
+def \
+        simpleFunc22 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  """Function documentation... hello"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc23(): ")
+def \
+        simpleFunc23 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc24(): ")
+def \
+        simpleFunc24 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc25(): ")
+def \
+        simpleFunc25 \
+                ( str = "2:1",  # here is a ::comment::
+                  d = {"one": 1}
+        )\
+        :
+  a = len(d)
+  b = len(str)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc26(): ")
+def \
+        simpleFunc26 \
+                  \
+                \
+                (   # put a comment here
+                  # another here
+                  str1 = "2:1=\"2\"",  # here is a ::comment::
+                  str2 = "'hello'",  # here is a ::comment2::
+                  d = {"one": 1}    # here is another comment
+                # also a comment in this line
+        )\
+\
+\
+        : # comment after the colon
+  a = len(d)
+  b = len(str1) - len(str2)
+  return ((a + b) * 10) % 2 == 0
 
 def simpleFunc_sameImpl():
   a = 2

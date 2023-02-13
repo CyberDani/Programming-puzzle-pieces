@@ -22,8 +22,9 @@ class FunctionInspector:
     return self.functionName
 
   def getFunctionSignature(self):
-    """Signature string is normalized by deleting extra and adding missing white space characters. \n
-  Example: (arg1: int, arg2: str) -> bool"""
+    """Signature string is normalized by deleting extra and adding missing white space characters. Simple quotes will
+be used unless it does not make sense to use the double ones.\n
+  Example: (arg1: int, arg2='default', arg3="hello 'world'") -> bool"""
     return self.signature
 
   def getArgumentVariableNames(self):
@@ -119,26 +120,58 @@ Returns the position of the first ':' after the signature"""
       return self.colonIndex
     if self.signatureIndex is None:
       self.getSignatureIndex()
-    nrOfColons = self.signature.count(":")
-    found, self.colonIndex = stringUtil.findNthOccurrence(self.source, ":", nrOfColons + 1,
-                                                          self.signatureIndex, self.sourceLen - 1)
-    if not found:
-      raise Exception("Failed to find the colon at the end of the '{}' function declaration".format(self.functionName))
+    sourceIdx, signatureIdx, colonIdx = self.signatureIndex, 0, 0
+    signatureLen = len(self.signature)
+    while signatureIdx < signatureLen:
+      found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx, self.sourceLen - 1)
+      if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+      found, signatureIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.signature, signatureIdx, signatureLen - 1)
+      if self.source[sourceIdx] == self.signature[signatureIdx] or \
+            (self.source[sourceIdx] == '"' and self.signature[signatureIdx] == "'"):
+        sourceIdx += 1
+        signatureIdx += 1
+        continue
+      if self.source[sourceIdx] == "#":
+        found, sourceIdx = stringUtil.getFirstNewLineCharIdx(self.source, sourceIdx, self.sourceLen - 1)
+        if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+        continue
+      if self.source[sourceIdx:sourceIdx + 2] == '\\"' and self.signature[signatureIdx] == '"':
+        sourceIdx += 2
+        signatureIdx += 1
+        continue
+      raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+    found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx, self.sourceLen - 1)
+    if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+    while self.source[sourceIdx] == "\\":
+      found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx + 1, self.sourceLen - 1)
+      if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+    if self.source[sourceIdx] == ":":
+      self.colonIndex = sourceIdx
     return self.colonIndex
 
   def getImplementationIndex(self):
     """Raises exception if not valid (should not happen). \n
-Returns the index of the first line at where the implementation begins"""
+Returns the index of the first line at where the implementation begins skipping all possible comments"""
     if self.implementationIndex is not None:
       return self.implementationIndex
     if self.colonIndex is None:
       self.getColonIndex()
-    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, self.colonIndex + 1, self.sourceLen - 1)
-    if not found:
-      raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
-    found, self.implementationIndex = stringUtil.getLastNewLineCharIdx(self.source, self.colonIndex, idx)
-    if not found:
-      raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+    idx = self.colonIndex + 1
+    while True:
+      found, idx = stringUtil.getFirstNewLineCharIdx(self.source, idx, self.sourceLen - 1)
+      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      # skip newlines
+      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, idx, self.sourceLen - 1)
+      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      if self.source[idx:].startswith('"""'):
+        found, idx = stringUtil.find(self.source, '"""', idx + 3, self.sourceLen - 1, -1)
+        if not found: raise Exception("Incorrect doc found in function '{}'".format(self.functionName))
+        found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, idx + 3, self.sourceLen - 1)
+        if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      if self.source[idx] == "#": continue
+      found, self.implementationIndex = stringUtil.getLastNewLineCharIdx(self.source, self.colonIndex, idx)
+      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      break
     self.implementationIndex += 1
     if self.implementationIndex >= self.sourceLen - 1:
       raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
