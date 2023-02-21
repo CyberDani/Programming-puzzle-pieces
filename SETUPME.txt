@@ -1,0 +1,11 @@
+Setup (mandatory):
+	- Install pip if required 
+	- cmd: pip install requests
+	- cmd: pip install decorator
+	
+Optional:
+	- cmd: pip install --user git+https://github.com/kuuurt/pyan.git
+	- install dependency for pyon: http://www.graphviz.org/download/
+
+Example:
+	- pyan3 '/d/Programming puzzle pieces/webPage/generator/modules/htmlAttributes.py' --uses --no-defines --colored --grouped --annotated --svg > attr.svg
