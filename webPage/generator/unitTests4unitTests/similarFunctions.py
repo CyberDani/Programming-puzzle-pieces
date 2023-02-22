@@ -1,6 +1,13 @@
 from decorator import decorator
 from unitTests4unitTests import otherFunctions
 
+def simpleFunc_noReturn():
+  a = 2
+  b = 3
+  isTrue = ((a + b) * 10) % 2 == 0
+  if isTrue:
+    isTrue = not otherFunctions.getTrue()
+
 def simpleFunc():
   a = 2
   b = 3
@@ -420,6 +427,150 @@ def \
         : # comment after the colon
   a = len(d)
   b = len(str1) - len(str2)
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc27(): ")
+def \
+        simpleFunc27 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+
+
+  b = len(str)
+  # comment before return 1
+
+  # return 12
+  return ((a + b) * 10) % 2 == 0
+
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc28(): ")
+def \
+        simpleFunc28 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  if not d:
+    a += 2
+    if a == 20:
+      a = 12
+
+  b = len(str)
+  # comment before return 1
+
+  # return 12
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc29(): ")
+def \
+        simpleFunc29 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  if not d:
+    a += 2
+    if a == 20:return True
+
+  b = len(str)
+  # comment before return 1
+
+  # return 12
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc30(): ")
+def \
+        simpleFunc30 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  if not d:
+    a += 2
+    if a == 20 :  return True
+
+  b = len(str)
+  # comment before return 1
+
+  # return 12
   return ((a + b) * 10) % 2 == 0
 
 def simpleFunc_sameImpl():

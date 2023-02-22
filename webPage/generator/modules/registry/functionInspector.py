@@ -69,6 +69,7 @@ Returns the position of the 'def' keyword"""
     firstOpenParenthesisFound, firstOpenParenthesisIdx = stringUtil.find(self.source, '(', 0, self.sourceLen - 1, -1)
     while True:
       found, self.defIndex = stringUtil.whitespaceDelimitedFind(self.source, "def", startIdx, self.sourceLen - 1)
+      # TODO checkIfFalse
       if not found:
         raise Exception("'def' not found for function '{}'".format(self.functionName))
       if aroundFound < self.defIndex and firstOpenParenthesisFound and firstOpenParenthesisIdx < self.defIndex:
@@ -177,6 +178,37 @@ Returns the index of the first line at where the implementation begins skipping 
       raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
     return self.implementationIndex
 
+# TODO bugfix + cover: ignore "return" found in string, e.g if str == "if true: return value":
+  def getImplementationCode(self):
+    """Get raw implementation code as if it were alone itself, which means: \n
+* Remove first indentation
+* Remove empty lines
+* Remove all comments
+* Replace 'return' with 'returnValue ='"""
+    startIdx = self.getImplementationIndex()
+    lines = self.source[startIdx:].splitlines()
+    found, nrOfCharsUsedForIndentation = stringUtil.getFirstNonWhiteSpaceCharIdx(lines[0], 0, len(lines[0]) - 1)
+    if not found:
+      raise Exception("Failed to get implementation code for function '{}'".format(self.functionName))
+    answer = ""
+    for line in lines:
+      if not line:
+        continue
+      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
+      if not found:
+        continue
+      if line[idx] == "#":
+        continue
+      found, colonIdx = stringUtil.find(line, ":", idx, len(line) - 1, -1)
+      if found and colonIdx < len(line) - 1:
+        found, idx2 = stringUtil.getFirstNonWhiteSpaceCharIdx(line, colonIdx + 1, len(line) - 1)
+        if found and line[idx2:].startswith("return") and idx2 + 6 < len(line) - 1:
+          line = line[:idx2] + "returnValue =" + line[idx2 + 6:]
+      if line[idx:].startswith("return") and idx + 6 < len(line) - 1 and line[idx + 6].isspace():
+        line = line[:nrOfCharsUsedForIndentation] + "returnValue =" + line[idx + 6:]
+      answer += line[nrOfCharsUsedForIndentation:] + "\n"
+    return answer[:-1]
+
   # TODO see if decorator can be bypassed when it will become necessary
   # Source (slightly modified):
   # https://stackoverflow.com/questions/51901676/get-the-lists-of-functions-used-called-within-a-function-in-python
@@ -188,6 +220,9 @@ that functions has unique names.\n
 Return:\n
 * functionNames: list of names ordered alphabetically
 * methodNames: list of names ordered alphabetically"""
+    code = compile("a = 2\nb = 3\nsimpleFunc()\nstringUtil.find()\nret = ((a + b) * 10) % 2 == 0",
+                 filename="D:\\Programming puzzle pieces\\webPage\\generator\\unitTests4unitTests\\similarFunctions.py",
+                 mode="exec")
     instructions = list(dis.get_instructions(self.func))[::-1]
     # use dict for unique check
     functions, methods = {}, {}

@@ -13,7 +13,7 @@ class DirectoryPathTypeForProd(Enum):
             config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP1_FOLDER_NAME, [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
   PYTHON_GENERATOR_UNIT_TESTS_TEMP2 = DirectoryPathChecker(
             config.PATH_FROM_ROOT_TO_UNIT_TESTS + config.UT_TEMP2_FOLDER_NAME, [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
-  PROJECT_ROOT = DirectoryPathChecker("", ["libs.txt"], dirAction.ENSURE_DIR_AND_FILES_EXIST)
+  PROJECT_ROOT = DirectoryPathChecker("", ["SETUPME.txt"], dirAction.ENSURE_DIR_AND_FILES_EXIST)
   INDEX_HTML_LOCATION = DirectoryPathChecker("", [], dirAction.ENSURE_DIR_EXISTS_ONLY)
   HTML_BACKUP = DirectoryPathChecker("webPage/backup", [], dirAction.DO_NOT_CHECK_DIR_EXISTENCE)
   HTML_SCRIPTS = DirectoryPathChecker("webPage/scripts", ["githubApiScripts.js", "navigationScripts.js"],

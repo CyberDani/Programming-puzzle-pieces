@@ -236,3 +236,53 @@ Return value:\n
       break
     startIdx = idx + 1
   return True, idx
+
+def findFirstInLinePythonStringConstant(stringToScan, startIdx, endIdx):
+  """ Raises exception if string is empty. Detects a multiline string as multiple strings. Ignores invalid strings. \n
+Return value: \n
+* found: True | False
+* openingQuoteIdx: -1 if not found
+* closingQuoteIdx: -1 if not found"""
+  checks.checkIfString(stringToScan, startIdx, 4000)
+  checks.checkIntIsBetween(endIdx, startIdx, len(stringToScan) - 1)
+  notFoundValue = False, -1, -1
+  simpleQuoteFound, simpleQuoteIdx = find(stringToScan, "'", startIdx, endIdx, 700000)
+  doubleQuoteFound, doubleQuoteIdx = find(stringToScan, '"', startIdx, endIdx, 700000)
+  if not simpleQuoteFound and not doubleQuoteFound:
+    return notFoundValue
+  openingQuoteIdx = simpleQuoteIdx if simpleQuoteIdx < doubleQuoteIdx else doubleQuoteIdx
+  if openingQuoteIdx == endIdx:
+    return notFoundValue
+  quoteChar = stringToScan[openingQuoteIdx]
+  leftSideIdx = openingQuoteIdx + 1
+  while True:
+    closingQuoteFound, closingQuoteIdx = find(stringToScan, quoteChar, leftSideIdx, endIdx, -1)
+    if not closingQuoteFound:
+      return notFoundValue
+    nrOfSlashesBefore = 0
+    while stringToScan[closingQuoteIdx - nrOfSlashesBefore - 1] == "\\":
+      if closingQuoteIdx == endIdx: return notFoundValue
+      nrOfSlashesBefore += 1
+    if nrOfSlashesBefore % 2 == 1:
+      leftSideIdx = closingQuoteIdx + 1
+      continue
+    break
+  return True, openingQuoteIdx, closingQuoteIdx
+
+def indexIsOutsideOfPythonStringConstant(stringToScan, index):
+  """Tells if an index is outside of a python string constant meaning that it also cannot be one of the surrounding
+quotes. \n Raises exception if string is empty."""
+  checks.checkIfString(stringToScan, 0, 4000)
+  checks.checkIntIsBetween(index, 0, len(stringToScan) - 1)
+  startIdx = 0
+  endIdx = len(stringToScan) - 1
+  while startIdx <= endIdx:
+    found, openingQuoteIdx, closingQuoteIdx = findFirstInLinePythonStringConstant(stringToScan, startIdx, endIdx)
+    if not found:
+      return False
+    if index < openingQuoteIdx:
+      return False
+    if index <= closingQuoteIdx:
+      return True
+    startIdx = closingQuoteIdx + 1
+  return False
