@@ -3,7 +3,7 @@ import sys
 sys.path.append('../..')
 
 from modules.unitTests.autoUnitTest import AutoUnitTest
-from modules.registry.functionInspector import FunctionInspector
+from modules.sourceInspector.functionInspector import FunctionInspector
 from unitTests4unitTests import similarFunctions as func
 
 class FunctionInspectorTests(AutoUnitTest):
@@ -624,6 +624,10 @@ class FunctionInspectorTests(AutoUnitTest):
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
                                         ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+    insp = FunctionInspector(func.simpleFunc34)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
 
   def test_getFunctionCallNames_getMultipleTimes(self):
     insp = FunctionInspector(func.simpleFunc18)
@@ -680,3 +684,12 @@ class FunctionInspectorTests(AutoUnitTest):
     insp = FunctionInspector(func.simpleFunc30)
     code = insp.getImplementationCode()
     self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if a == 20 :  returnValue = True\nb = len(str)\nreturnValue = ((a + b) * 10) % 2 == 0")
+    insp = FunctionInspector(func.simpleFunc31)
+    code = insp.getImplementationCode()
+    self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if d[\"if True: return 2\"] == \"if False: return 3 \" :  returnValue = True\nb = len(str)\nreturnValue = ((a + b) * 10) % 2 == 0")
+    insp = FunctionInspector(func.simpleFunc32)
+    code = insp.getImplementationCode()
+    self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if d[\"if True: return 2\"] == \"if False: return 3 \" :  returnValue = True\nb = len(str)\nreturnValue = ((a + b) * 10) % 2 == 0")
+    insp = FunctionInspector(func.simpleFunc33)
+    code = insp.getImplementationCode()
+    self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if d[\"if True: return 2\"] == \"if False: return 3 \" :  returnValue = True\nb = len(str)\nreturnValue = \" return \"\nif not returnValue:returnValue = 2\nreturnValue = 2 if returnValue == ' return 2 ' else  3")

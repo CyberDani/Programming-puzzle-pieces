@@ -3,7 +3,8 @@ import hashlib
 
 from modules import stringUtil
 from modules.checks import checks
-from modules.registry import functionInspector
+from modules.sourceInspector import functionInspector
+
 
 def getHash(func):
   checks.checkIfUserDefinedFunction(func)

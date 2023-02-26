@@ -573,6 +573,146 @@ hello:\n
   # return 12
   return ((a + b) * 10) % 2 == 0
 
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc31(): ")
+def \
+        simpleFunc31 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)
+  if not d:
+    a += 2
+    if d["if True: return 2"] == "if False: return 3 " :  return True
+
+  b = len(str)
+  # comment before return 1
+
+  # return 12
+  return ((a + b) * 10) % 2 == 0
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc32(): ")
+def \
+        simpleFunc32 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)  # return 2
+  if not d: #some comment here
+    a += 2#another comment
+    if d["if True: return 2"] == "if False: return 3 " :  return True #
+
+  b = len(str)          #   heyyo captain jack
+  # comment before return 1
+
+  # return 12
+  return ((a + b) * 10) % 2 == 0#
+
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc33(): ")
+def \
+        simpleFunc33 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)  # return 2
+  if not d: #some comment here
+    a += 2#another comment
+    if d["if True: return 2"] == "if False: return 3 " :  return True #
+
+  b = len(str)          #   heyyo captain jack
+  # comment before return 1
+      # asdasd
+  # return 12
+  returnValue = " return "#####
+  if not returnValue:return 2# any comment here #
+  return 2 if returnValue == ' return 2 ' else  3       # return 3 every time
+
+@defdeco
+@ \
+defdef \
+  (arg=" @defdef(dec) \
+   def simpleFunc34(): ")
+def \
+          simpleFunc34 \
+                  (str="2:1",
+                   d={"one": 1}
+                   ) \
+ \
+          :  # random comment after the colon
+    # comment before doc
+    # another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+    # some comment in the first line
+
+  # there is another comment here
+  fl = otherFunctions.getFalseIfNotTrue()
+  other = otherFunctions.OtherClass()
+  a = simpleFunc16()
+  b = simpleFunc2()
+  cl = SimpleClass()
+  other.saySomething()
+  cl.simpleFunc()
+  return fl or (len(str) + len(d) < 5) or (a and b)
+
 def simpleFunc_sameImpl():
   a = 2
   b = 3

@@ -279,10 +279,10 @@ quotes. \n Raises exception if string is empty."""
   while startIdx <= endIdx:
     found, openingQuoteIdx, closingQuoteIdx = findFirstInLinePythonStringConstant(stringToScan, startIdx, endIdx)
     if not found:
-      return False
-    if index < openingQuoteIdx:
-      return False
-    if index <= closingQuoteIdx:
       return True
+    if index < openingQuoteIdx:
+      return True
+    if index <= closingQuoteIdx:
+      return False
     startIdx = closingQuoteIdx + 1
   return False

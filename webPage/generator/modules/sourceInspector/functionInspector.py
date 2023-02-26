@@ -178,13 +178,13 @@ Returns the index of the first line at where the implementation begins skipping 
       raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
     return self.implementationIndex
 
-# TODO bugfix + cover: ignore "return" found in string, e.g if str == "if true: return value":
   def getImplementationCode(self):
     """Get raw implementation code as if it were alone itself, which means: \n
 * Remove first indentation
 * Remove empty lines
-* Remove all comments
-* Replace 'return' with 'returnValue ='"""
+* Remove comments
+* Replace 'return' with 'returnValue ='\n
+There is no source code normalization applied."""
     startIdx = self.getImplementationIndex()
     lines = self.source[startIdx:].splitlines()
     found, nrOfCharsUsedForIndentation = stringUtil.getFirstNonWhiteSpaceCharIdx(lines[0], 0, len(lines[0]) - 1)
@@ -194,22 +194,47 @@ Returns the index of the first line at where the implementation begins skipping 
     for line in lines:
       if not line:
         continue
+      # TODO stringUtil.stringHasOnlyWhitespaceChars
       found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
       if not found:
         continue
-      if line[idx] == "#":
+      while True:
+        if not line:
+          break
+        found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
+        if not found:
+          break
+        commentFound, commentIdx = stringUtil.find(line, "#", idx, len(line) - 1, -1)
+        if not commentFound:
+          break
+        notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, commentIdx)
+        if notString:
+          line = line[:commentIdx]
+        else:
+          continue
+      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
+      if not found:
         continue
-      found, colonIdx = stringUtil.find(line, ":", idx, len(line) - 1, -1)
-      if found and colonIdx < len(line) - 1:
-        found, idx2 = stringUtil.getFirstNonWhiteSpaceCharIdx(line, colonIdx + 1, len(line) - 1)
-        if found and line[idx2:].startswith("return") and idx2 + 6 < len(line) - 1:
-          line = line[:idx2] + "returnValue =" + line[idx2 + 6:]
-      if line[idx:].startswith("return") and idx + 6 < len(line) - 1 and line[idx + 6].isspace():
-        line = line[:nrOfCharsUsedForIndentation] + "returnValue =" + line[idx + 6:]
+      line = line.rstrip()
+      while True:
+        returnFound, returnIdx = stringUtil.find(line, "return", idx, len(line) - 1, -1)
+        if not returnFound:
+          break
+        if line[returnIdx - 1] != ":" and not line[returnIdx - 1].isspace():
+          idx = returnIdx + 1
+          continue
+        if returnIdx + 6 < len(line) and not line[returnIdx + 6].isspace():
+          idx = returnIdx + 1
+          continue
+        notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, returnIdx)
+        if notString:
+          line = line[:returnIdx] + "returnValue =" + line[returnIdx + 6:]
+        else:
+          idx = returnIdx + 1
+          continue
       answer += line[nrOfCharsUsedForIndentation:] + "\n"
     return answer[:-1]
 
-  # TODO see if decorator can be bypassed when it will become necessary
   # Source (slightly modified):
   # https://stackoverflow.com/questions/51901676/get-the-lists-of-functions-used-called-within-a-function-in-python
   def getFunctionCallNames(self, built_ins=False):
@@ -220,14 +245,15 @@ that functions has unique names.\n
 Return:\n
 * functionNames: list of names ordered alphabetically
 * methodNames: list of names ordered alphabetically"""
-    code = compile("a = 2\nb = 3\nsimpleFunc()\nstringUtil.find()\nret = ((a + b) * 10) % 2 == 0",
-                 filename="D:\\Programming puzzle pieces\\webPage\\generator\\unitTests4unitTests\\similarFunctions.py",
-                 mode="exec")
-    instructions = list(dis.get_instructions(self.func))[::-1]
+    # function definition will not work, e.g. self.source[self.defIndex] - will found nothing
+    implCode = self.getImplementationCode()
+    code = compile(implCode,
+                   filename="compiled",
+                   mode="exec")
+    instructions = list(dis.get_instructions(code))[::-1]
     # use dict for unique check
     functions, methods = {}, {}
     for i, inst in list(enumerate(instructions))[::-1]:
-        # find last CALL_FUNCTION
         if inst.opname[:11] == "LOAD_METHOD":
           name = str(inst.argval)
           if not hasattr(str, name) and not hasattr(tuple, name) and not hasattr(dict, name):
@@ -244,8 +270,7 @@ Return:\n
                 ep = k-1
             entry = instructions[ep]
             name = str(entry.argval)
-            # "fix" is found in decorated functions, so ignore it
-            if "." not in name and name != "fix" and (entry.opname == "LOAD_GLOBAL") and \
+            if "." not in name and (entry.opname == "LOAD_GLOBAL" or entry.opname == "LOAD_NAME") and \
                     (built_ins or not hasattr(builtin, name)):
                 functions[name] = True
             # reduce this CALL_FUNCTION and all its parameters to one entry
