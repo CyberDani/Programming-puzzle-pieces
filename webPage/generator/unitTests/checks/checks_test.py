@@ -15,26 +15,16 @@ from modules.paths import path
 class ChecksTests(AutoUnitTest):
 
   def test_checkIntIsBetween_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(0, 1, 4)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-20, 10, 55)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(20, -55, -15)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-30, -15, -45)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(10, 2, 9)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(-120, 20, 90)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100, 120, 90)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100, 30, "hundred")
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween(100, [0], 1200)
-    with self.assertRaises(Exception):
-      checks.checkIntIsBetween("one", 0, 1200)
+    self.assertRaises(Exception, checks.checkIntIsBetween, 0, 1, 4)
+    self.assertRaises(Exception, checks.checkIntIsBetween, -20, 10, 55)
+    self.assertRaises(Exception, checks.checkIntIsBetween, 20, -55, -15)
+    self.assertRaises(Exception, checks.checkIntIsBetween, -30, -15, -45)
+    self.assertRaises(Exception, checks.checkIntIsBetween, 10, 2, 9)
+    self.assertRaises(Exception, checks.checkIntIsBetween, -120, 20, 90)
+    self.assertRaises(Exception, checks.checkIntIsBetween, 100, 120, 90)
+    self.assertRaises(Exception, checks.checkIntIsBetween, 100, 30, "hundred")
+    self.assertRaises(Exception, checks.checkIntIsBetween, 100, [0], 1200)
+    self.assertRaises(Exception, checks.checkIntIsBetween, "one", 0, 1200)
 
   def test_checkIntIsBetween_notRaiseException(self):
     try:
@@ -45,34 +35,24 @@ class ChecksTests(AutoUnitTest):
       checks.checkIntIsBetween(20, 5, 20)
       checks.checkIntIsBetween(5, 5, 20)
       checks.checkIntIsBetween(15, 5, 20)
+      checks.checkIntIsBetween(10, -5, 25)
+      checks.checkIntIsBetween(0, -1, 30)
     except Exception:
       self.fail("checkIntIsBetween() raised Exception unexpectedly!")
 
   def test_checkIfStringIsAlphaNumerical_invalid(self):
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("!")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical([])
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical(23)
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical(None)
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("ha-ha-ha")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("[something]")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("2+4")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("4's street")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("hey!")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("my text")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("nickname_12")
-    with self.assertRaises(Exception):
-      checks.checkIfStringIsAlphaNumerical("professional?")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "!")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, [])
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, 23)
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, None)
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "ha-ha-ha")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "[something]")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "2+4")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "4's street")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "hey!")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "my text")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "nickname_12")
+    self.assertRaises(Exception, checks.checkIfStringIsAlphaNumerical, "professional?")
 
   def test_checkIfStringIsAlphaNumerical_valid(self):
     try:
@@ -87,17 +67,12 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfStringIsAlphaNumerical() raised Exception unexpectedly!")
 
   def test_checkIfFile_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfFile(0)
-    with self.assertRaises(Exception):
-      checks.checkIfFile(None)
+    self.assertRaises(Exception, checks.checkIfFile, 0)
+    self.assertRaises(Exception, checks.checkIfFile, None)
     nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
-    with self.assertRaises(Exception):
-      checks.checkIfFile(nonExistingFilePath)
-    with self.assertRaises(Exception):
-      checks.checkIfFile([2, 3, 4])
-    with self.assertRaises(Exception):
-      checks.checkIfFile(True)
+    self.assertRaises(Exception, checks.checkIfFile, nonExistingFilePath)
+    self.assertRaises(Exception, checks.checkIfFile, [2, 3, 4])
+    self.assertRaises(Exception, checks.checkIfFile, True)
 
   def test_checkIfFile_notRaiseException(self):
     try:
@@ -110,14 +85,10 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfFile() raised Exception unexpectedly!")
 
   def test_checkIfList_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfList(0)
-    with self.assertRaises(Exception):
-      checks.checkIfList(None)
-    with self.assertRaises(Exception):
-      checks.checkIfList(False)
-    with self.assertRaises(Exception):
-      checks.checkIfList("hey")
+    self.assertRaises(Exception, checks.checkIfList, 0)
+    self.assertRaises(Exception, checks.checkIfList, None)
+    self.assertRaises(Exception, checks.checkIfList, False)
+    self.assertRaises(Exception, checks.checkIfList, "hey")
 
   def test_checkIfList_notRaiseException(self):
     try:
@@ -131,24 +102,15 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfList() raised Exception unexpectedly!")
 
   def test_checkIfEmptyList_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList(0)
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList(None)
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList(False)
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList(["hello", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList([0, "world", False])
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList(["hey", None])
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList([0, 2, 4, 1, 0])
-    with self.assertRaises(Exception):
-      checks.checkIfEmptyList([0])
+    self.assertRaises(Exception, checks.checkIfEmptyList, 0)
+    self.assertRaises(Exception, checks.checkIfEmptyList, None)
+    self.assertRaises(Exception, checks.checkIfEmptyList, False)
+    self.assertRaises(Exception, checks.checkIfEmptyList, "hey")
+    self.assertRaises(Exception, checks.checkIfEmptyList, ["hello", "world"])
+    self.assertRaises(Exception, checks.checkIfEmptyList, [0, "world", False])
+    self.assertRaises(Exception, checks.checkIfEmptyList, ["hey", None])
+    self.assertRaises(Exception, checks.checkIfEmptyList, [0, 2, 4, 1, 0])
+    self.assertRaises(Exception, checks.checkIfEmptyList, [0])
 
   def test_checkIfEmptyList_notRaiseException(self):
     try:
@@ -157,16 +119,11 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfList() raised Exception unexpectedly!")
 
   def test_checkIfNonEmptyList_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyList(0)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyList(None)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyList(False)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyList("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyList([])
+    self.assertRaises(Exception, checks.checkIfNonEmptyList, 0)
+    self.assertRaises(Exception, checks.checkIfNonEmptyList, None)
+    self.assertRaises(Exception, checks.checkIfNonEmptyList, False)
+    self.assertRaises(Exception, checks.checkIfNonEmptyList, "hey")
+    self.assertRaises(Exception, checks.checkIfNonEmptyList, [])
 
   def test_checkIfNonEmptyList_validExample(self):
     try:
@@ -177,48 +134,27 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfNonEmptyList() raised Exception unexpectedly!")
 
   def test_checkIfNonEmptyPureListOfType_invalidExamples(self):
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(12, int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType("Hello", int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(12, 23)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(12, 12)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(True, False)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([1, 2, 3], False)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([False, False, False], False)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([False, False, False], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([False, False, False], list)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, None, 3], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, 32, 123, 35, 33, 67, 23, 13, [44, 11], 0, 12, 44, 566, 1256, 335], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([None, 3, 4], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(["NaN", 3, 4, 5, 6, 7, 1, 2, 3, 4, 1, 2, 2, 5, 6, 1, 3, 5, 6, 3], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5, None], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5, 2, 2, 4, 4, 2, 2, 1, 2, 3, 5, 6, 6, 3, 1, 3, 33, False], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([], int)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([], list)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([], None)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5], bool)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType([2, 3, 4, 5], list)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfType(int, [2, 3, 4, 5])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, 12, int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, "Hello", int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, 12, 23)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, 12, 12)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, True, False)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [1, 2, 3], False)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [False, False, False], False)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [False, False, False], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [False, False, False], list)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, None, 3], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, 32, 123, 35, 33, 67, 23, 13, [44, 11], 0, 12, 44, 566, 1256, 335], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [None, 3, 4], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, ["NaN", 3, 4, 5, 6, 7, 1, 2, 3, 4, 1, 2, 2, 5, 6, 1, 3, 5, 6, 3], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, 3, 4, 5, None], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, 3, 4, 5, 2, 2, 4, 4, 2, 2, 1, 2, 3, 5, 6, 6, 3, 1, 3, 33, False], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [], int)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [], list)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [], None)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, 3, 4, 5], bool)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, [2, 3, 4, 5], list)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfType, int, [2, 3, 4, 5])
 
   def test_checkIfNonEmptyPureListOfType_validExamples(self):
     try:
@@ -233,36 +169,22 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfNonEmptyPureListOfType() raised Exception unexpectedly!")
 
   def test_checkIfPureListOfNonEmptyStrings_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(0)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(None)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(False)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["hello", "my", "world", 12])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings([True, "hello", "my", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["hello", "my", ["one", "two"], "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings([True])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings([0, 1, 2, 3, 4, 5, 6])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, 0)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, None)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, False)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, "hey")
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["hello", "my", "world", 12])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, [True, "hello", "my", "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["hello", "my", ["one", "two"], "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, [True])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, [0, 1, 2, 3, 4, 5, 6])
 
   def test_checkIfPureListOfNonEmptyStrings_invalid(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings([""])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["", "HEY"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["HEY", ""])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["hello", "", "be happy"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStrings(["don't worry", "be happy", ""])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, [""])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["", "HEY"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["HEY", ""])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["hello", "", "be happy"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStrings, ["don't worry", "be happy", ""])
 
   def test_checkIfPureListOfNonEmptyStrings_valid(self):
     try:
@@ -275,48 +197,28 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfPureListOfNonEmptyStrings() raised Exception unexpectedly!")
 
   def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(0)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(None)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(False)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["hello", "my", "world", 12])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([True, "hello", "my", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["hello", "my", ["one", "two"], "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([True])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([0, 1, 2, 3, 4, 5, 6])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, 0)
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, None)
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, False)
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, "hey")
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["hello", "my", "world", 12])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, [True, "hello", "my", "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["hello", "my", ["one", "two"], "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, [True])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, [0, 1, 2, 3, 4, 5, 6])
 
   def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter([" "])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["       "])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\t       \t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\r"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["\n"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["apple", "Hey you!"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["firstLine\nsecondLine", "banana"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "\t\tbird"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "bird\t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "my\tbird"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, [" "])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["       "])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["\t       \t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["\t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["\r"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["\n"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["apple", "Hey you!"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["firstLine\nsecondLine", "banana"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "\t\tbird"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "bird\t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "my\tbird"])
 
   def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_valid(self):
     try:
@@ -329,56 +231,32 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfPureListOfNonEmptyStrings() raised Exception unexpectedly!")
 
   def test_checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(0)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(None)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(False)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["hello", "my", "world", 12])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([True, "hello", "my", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["hello", "my", ["one", "two"], "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([True])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([0, 1, 2, 3, 4, 5, 6])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, 0)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, None)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, False)
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, "hey")
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["hello", "my", "world", 12])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, [True, "hello", "my", "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["hello", "my", ["one", "two"], "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, [True])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, [0, 1, 2, 3, 4, 5, 6])
 
   def test_checkIfPureListOfStringsDoesNotContainWhitespaceCharacter_invalid2(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([""])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter([" "])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["       "])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\t       \t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\r"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["\n"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "Hey you!"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "pear", ""])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["apple", "", "ananas"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["", "detail", "question"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["firstLine\nsecondLine", "banana"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "\t\tbird"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "bird\t"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter(["cat", "monkey", "python", "my\tbird"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, [""])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, [" "])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["       "])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["\t       \t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["\t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["\r"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["\n"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["apple", "Hey you!"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["apple", "pear", ""])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["apple", "", "ananas"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["", "detail", "question"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["firstLine\nsecondLine", "banana"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "\t\tbird"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "bird\t"])
+    self.assertRaises(Exception, checks.checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter, ["cat", "monkey", "python", "my\tbird"])
 
   def test_checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter_valid(self):
     try:
@@ -391,24 +269,16 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfPureListOfNonEmptyStringsDoesNotContainWhitespaceCharacter() raised Exception unexpectedly!")
 
   def test_checkIfTwoNonEmptyStringsAreDifferent_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent(False, True)
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent(45, 2)
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent(None, [])
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent("test", "")
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent("", "test")
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent("", "")
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, False, True)
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, 45, 2)
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, None, [])
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, "test", "")
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, "", "test")
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, "", "")
 
   def test_checkIfTwoNonEmptyStringsAreDifferent_invalid(self):
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent("test", "test")
-    with self.assertRaises(Exception):
-      checks.checkIfTwoNonEmptyStringsAreDifferent("123_abc_!@#", "123_abc_!@#")
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, "test", "test")
+    self.assertRaises(Exception, checks.checkIfTwoNonEmptyStringsAreDifferent, "123_abc_!@#", "123_abc_!@#")
 
   def test_checkIfTwoNonEmptyStringsAreDifferent_valid(self):
     try:
@@ -419,24 +289,15 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfTwoNonEmptyStringsAreDifferent() raised Exception unexpectedly!")
 
   def test_checkIfPureListOfStrings_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(0)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(None)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(False)
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(["hello", "my", "world", 12])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings([True, "hello", "my", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings(["hello", "my", ["one", "two"], "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings([True])
-    with self.assertRaises(Exception):
-      checks.checkIfPureListOfStrings([0, 1, 2, 3, 4, 5, 6])
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, 0)
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, None)
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, False)
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, "hey")
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, ["hello", "my", "world", 12])
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, [True, "hello", "my", "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, ["hello", "my", ["one", "two"], "world"])
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, [True])
+    self.assertRaises(Exception, checks.checkIfPureListOfStrings, [0, 1, 2, 3, 4, 5, 6])
 
   def test_checkIfPureListOfStrings_notRaiseException(self):
     try:
@@ -453,26 +314,16 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfPureListOfStrings() raised Exception unexpectedly!")
 
   def test_checkIfNonEmptyPureListOfStrings_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings(0)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings(None)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings(False)
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings("hey")
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings(["hello", "my", "world", 12])
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings([True, "hello", "my", "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings(["hello", "my", ["one", "two"], "world"])
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings([True])
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings([0, 1, 2, 3, 4, 5, 6])
-    with self.assertRaises(Exception):
-      checks.checkIfNonEmptyPureListOfStrings([])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, 0)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, None)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, False)
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, "hey")
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, ["hello", "my", "world", 12])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, [True, "hello", "my", "world"])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, ["hello", "my", ["one", "two"], "world"])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, [True])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, [0, 1, 2, 3, 4, 5, 6])
+    self.assertRaises(Exception, checks.checkIfNonEmptyPureListOfStrings, [])
 
   def test_checkIfNonEmptyPureListOfStrings_notRaiseException(self):
     try:
@@ -490,26 +341,17 @@ class ChecksTests(AutoUnitTest):
   def test_checkIfFilePathExists_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     file.close()
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(file)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("")
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(None)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(23)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(False)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, file)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, "")
+    self.assertRaises(Exception, checks.checkIfFilePathExists, None)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, 23)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, False)
     nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(nonExistingFilePath)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, nonExistingFilePath)
     dirPath = path.getAbsoluteDirPath(Dir.PYTHON_GENERATOR_UNIT_TESTS_TEST1)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(dirPath)
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists(dirPath[:-1])
-    with self.assertRaises(Exception):
-      checks.checkIfFilePathExists("./" + dirPath)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, dirPath)
+    self.assertRaises(Exception, checks.checkIfFilePathExists, dirPath[:-1])
+    self.assertRaises(Exception, checks.checkIfFilePathExists, "./" + dirPath)
 
   def test_checkIfFilePathExists_absolutePath(self):
     try:
@@ -542,25 +384,17 @@ class ChecksTests(AutoUnitTest):
   def test_checkIfDirectoryPathExists_nonSense(self):
     file = filerw.getFileWithWritePerm(File.FOR_TEST_TEXTFILE1)
     file.close()
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(file)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists("")
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(None)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(23)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(False)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, file)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, "")
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, None)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, 23)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, False)
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     nonExistingFilePath = path.getAbsoluteFilePath(File.FOR_TEST_NON_EXISTING_TEXTFILE1)
     nonExistingDirPath = path.getAbsoluteDirPath(Dir.NON_EXISTING_DIRECTORY)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(filePath)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(nonExistingFilePath)
-    with self.assertRaises(Exception):
-      checks.checkIfDirectoryPathExists(nonExistingDirPath)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, filePath)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, nonExistingFilePath)
+    self.assertRaises(Exception, checks.checkIfDirectoryPathExists, nonExistingDirPath)
 
   def test_checkIfDirectoryPathExists_absolutePath(self):
     try:
@@ -595,18 +429,12 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfDirectoryPathExists() raised Exception unexpectedly!")
 
   def test_checkIfChar_invalid(self):
-    with self.assertRaises(Exception):
-      checks.checkIfChar(123)
-    with self.assertRaises(Exception):
-      checks.checkIfChar(False)
-    with self.assertRaises(Exception):
-      checks.checkIfChar(None)
-    with self.assertRaises(Exception):
-      checks.checkIfChar("String")
-    with self.assertRaises(Exception):
-      checks.checkIfChar("")
-    with self.assertRaises(Exception):
-      checks.checkIfChar("AB")
+    self.assertRaises(Exception, checks.checkIfChar, 123)
+    self.assertRaises(Exception, checks.checkIfChar, False)
+    self.assertRaises(Exception, checks.checkIfChar, None)
+    self.assertRaises(Exception, checks.checkIfChar, "String")
+    self.assertRaises(Exception, checks.checkIfChar, "")
+    self.assertRaises(Exception, checks.checkIfChar, "AB")
 
   def test_checkIfChar_valid(self):
     try:
@@ -705,26 +533,16 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfDict() raised Exception unexpectedly!")
 
   def test_checkIfString_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfString(123, 3, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hello", "empty", 10)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hey", 1, None)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hey", -3, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfString("", -3, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hey", 20, 2)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hey", -2, -1)
-    with self.assertRaises(Exception):
-      checks.checkIfString("hey", 5, 1500)
-    with self.assertRaises(Exception):
-      checks.checkIfString("", 1, 21)
-    with self.assertRaises(Exception):
-      checks.checkIfString("this string is intended to represent a longer one", 5, 15)
+    self.assertRaises(Exception, checks.checkIfString, 123, 3, 10)
+    self.assertRaises(Exception, checks.checkIfString, "hello", "empty", 10)
+    self.assertRaises(Exception, checks.checkIfString, "hey", 1, None)
+    self.assertRaises(Exception, checks.checkIfString, "hey", -3, 10)
+    self.assertRaises(Exception, checks.checkIfString, "", -3, 10)
+    self.assertRaises(Exception, checks.checkIfString, "hey", 20, 2)
+    self.assertRaises(Exception, checks.checkIfString, "hey", -2, -1)
+    self.assertRaises(Exception, checks.checkIfString, "hey", 5, 1500)
+    self.assertRaises(Exception, checks.checkIfString, "", 1, 21)
+    self.assertRaises(Exception, checks.checkIfString, "this string is intended to represent a longer one", 5, 15)
 
   def test_checkIfString_notRaiseException(self):
     try:
@@ -738,61 +556,35 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfString() raised Exception unexpectedly!")
 
   def test_checkIfStringDoesNotContainAnySubstringFromList_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList(123, 3, 10, ["/"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, "el")
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, "abc")
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, None)
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, False)
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 15, 2)
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hello", "empty", 10, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 1, None, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", -3, 10, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("", -3, 10, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 20, 2, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", -2, -1, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("hey", 5, 1500, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("", 1, 21, ["notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("this string is intended to represent a longer one", 5, 15,
-                                                             ["^_^"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["notMatch", 2])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [None])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [True, "notMatch"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["notMatch", 2, "bye"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, [None, "notMatch", 2])
+    func = checks.checkIfStringDoesNotContainAnySubstringFromList
+    self.assertRaises(Exception, func, 123, 3, 10, ["/"])
+    self.assertRaises(Exception, func, "Hello", 1, 15, "el")
+    self.assertRaises(Exception, func, "Hello", 1, 15, "abc")
+    self.assertRaises(Exception, func, "Hello", 1, 15, None)
+    self.assertRaises(Exception, func, "Hello", 1, 15, False)
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 1, 15, 2)
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hello", "empty", 10, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hey", 1, None, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hey", -3, 10, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "", -3, 10, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hey", 20, 2, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hey", -2, -1, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "hey", 5, 1500, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "", 1, 21, ["notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "this string is intended to represent a longer one", 5, 15, ["^_^"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, ["notMatch", 2])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, [None])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, [True, "notMatch"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, ["notMatch", 2, "bye"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, [None, "notMatch", 2])
 
   def test_checkIfStringDoesNotContainAnySubstringFromList_containsString(self):
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 21, ["H"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 2, 21, ["./", "H"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 3, 8, ["y", "H", "x"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 121, ["hey", "hell", "H", "bye"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 1, 11, ["hey", "Hell", "bye"])
-    with self.assertRaises(Exception):
-      checks.checkIfStringDoesNotContainAnySubstringFromList("Hello", 0, 21, ["ell", "Hell", "H", "He"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 21, ["H"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 2, 21, ["./", "H"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 3, 8, ["y", "H", "x"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 1, 121, ["hey", "hell", "H", "bye"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 1, 11, ["hey", "Hell", "bye"])
+    self.assertRaises(Exception, checks.checkIfStringDoesNotContainAnySubstringFromList, "Hello", 0, 21, ["ell", "Hell", "H", "He"])
 
   def test_checkIfStringDoesNotContainAnySubstringFromList_valid(self):
     try:
@@ -804,28 +596,17 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfStringDoesNotContainAnySubstringFromList() raised Exception unexpectedly!")
 
   def test_checkIfAllNoneOrString_raiseException(self):
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString("not a list", 3, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString([], 0, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["hello", "hey", "hi"], 3, 10)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["", "hello"], 0, 2)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["heyho", "hello"], 0, 4)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["heyho", "hello"], 10, 22)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["hello"], 6, 6)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["hello", "bye", None], 0, 16)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString(["hello", None, "bye"], 0, 16)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString([None, "hello", "bye"], 0, 16)
-    with self.assertRaises(Exception):
-      checks.checkIfAllNoneOrString([None, "im a lonely string :(", None], 0, 16)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, "not a list", 3, 10)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, [], 0, 10)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["hello", "hey", "hi"], 3, 10)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["", "hello"], 0, 2)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["heyho", "hello"], 0, 4)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["heyho", "hello"], 10, 22)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["hello"], 6, 6)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["hello", "bye", None], 0, 16)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, ["hello", None, "bye"], 0, 16)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, [None, "hello", "bye"], 0, 16)
+    self.assertRaises(Exception, checks.checkIfAllNoneOrString, [None, "im a lonely string :(", None], 0, 16)
 
   def test_checkIfAllNoneOrString_notRaiseException(self):
     try:
@@ -842,33 +623,25 @@ class ChecksTests(AutoUnitTest):
       self.fail("checkIfAllNoneOrString() raised Exception unexpectedly!")
 
   def test_checkIfValidJsonFile_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile("test.json")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(None)
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile("{}")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(False)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, "test.json")
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, None)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, "{}")
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, False)
 
   def test_checkIfValidJsonFile_invalid(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [""])
     file = open(filePath, "r")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(file)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, file)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["hello internet"])
     file = open(filePath, "r")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(file)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, file)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["{", "true", "}"])
     file = open(filePath, "r")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(file)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, file)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["1", "2", "3", "4"])
     file = open(filePath, "r")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFile(file)
+    self.assertRaises(Exception, checks.checkIfValidJsonFile, file)
 
   def test_checkIfValidJsonFile_valid(self):
     try:
@@ -888,33 +661,24 @@ class ChecksTests(AutoUnitTest):
   def test_checkIfValidJsonFileByFilePath_nonSense(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     file = open(filePath, "r")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(file)
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath("notExistingFile.extension")
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(None)
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(12)
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(False)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, file)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, "notExistingFile.extension")
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, None)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, 12)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, False)
 
   def test_checkIfValidJsonFileByFilePath_invalid(self):
     filePath = path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, [""])
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(filePath)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, filePath)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath, ["hello internet"])
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(filePath)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, filePath)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                                 ["{", "true", "}"])
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(filePath)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, filePath)
     filerw.writeLinesToExistingOrNewlyCreatedFileByPathAndClose(filePath,
                                                                 ["1", "2", "3", "4"])
-    with self.assertRaises(Exception):
-      checks.checkIfValidJsonFileByFilePath(filePath)
+    self.assertRaises(Exception, checks.checkIfValidJsonFileByFilePath, filePath)
 
   def test_checkIfValidJsonFileByFilePath_valid(self):
     try:
@@ -951,30 +715,20 @@ class ChecksTests(AutoUnitTest):
   def test_checkIfType_invalid(self):
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
     file = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
-    with self.assertRaises(Exception):
-      checks.checkIfType(file, 12)
-    with self.assertRaises(Exception):
-      checks.checkIfType(12, "notExistingFile.extension")
-    with self.assertRaises(Exception):
-      checks.checkIfType(None, None)
-    with self.assertRaises(Exception):
-      checks.checkIfType(True, False)
-    with self.assertRaises(Exception):
-      checks.checkIfType(False, Exception)
+    self.assertRaises(Exception, checks.checkIfType, file, 12)
+    self.assertRaises(Exception, checks.checkIfType, 12, "notExistingFile.extension")
+    self.assertRaises(Exception, checks.checkIfType, None, None)
+    self.assertRaises(Exception, checks.checkIfType, True, False)
+    self.assertRaises(Exception, checks.checkIfType, False, Exception)
 
   def test_checkIfType_wrongType(self):
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
     file = open(path.getAbsoluteFilePath(File.FOR_TEST_TEXTFILE1), "r")
-    with self.assertRaises(Exception):
-      checks.checkIfType(file, int)
-    with self.assertRaises(Exception):
-      checks.checkIfType(12, str)
-    with self.assertRaises(Exception):
-      checks.checkIfType(None, list)
-    with self.assertRaises(Exception):
-      checks.checkIfType(True, bytearray)
-    with self.assertRaises(Exception):
-      checks.checkIfType(False, io.TextIOWrapper)
+    self.assertRaises(Exception, checks.checkIfType, file, int)
+    self.assertRaises(Exception, checks.checkIfType, 12, str)
+    self.assertRaises(Exception, checks.checkIfType, None, list)
+    self.assertRaises(Exception, checks.checkIfType, True, bytearray)
+    self.assertRaises(Exception, checks.checkIfType, False, io.TextIOWrapper)
 
   def test_checkIfType_correctType(self):
     filerw.createOrOverwriteWithEmptyFileByType(File.FOR_TEST_TEXTFILE1)
@@ -988,36 +742,22 @@ class ChecksTests(AutoUnitTest):
     checks.checkIfType([12, "array"], list)
 
   def test_checkIfAnyType_nonSense(self):
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, 3)
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, int)
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, None)
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [1, 2, 3])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [True, 2, None])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, 3)
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, int)
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, None)
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [1, 2, 3])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [True, 2, None])
 
   def test_checkIfAnyType_notMatch(self):
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [bool])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [list])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [str])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(2, [list, bool])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType("string", [list, bool])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType("string", [list, bool, int])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType(23, [list, bool, str])
-    with self.assertRaises(Exception):
-      checks.checkIfAnyType({}, [list, bool, str, int])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [bool])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [list])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [str])
+    self.assertRaises(Exception, checks.checkIfAnyType, 2, [list, bool])
+    self.assertRaises(Exception, checks.checkIfAnyType, "string", [list, bool])
+    self.assertRaises(Exception, checks.checkIfAnyType, "string", [list, bool, int])
+    self.assertRaises(Exception, checks.checkIfAnyType, 23, [list, bool, str])
+    self.assertRaises(Exception, checks.checkIfAnyType, {}, [list, bool, str, int])
 
   def test_checkIfAnyType_match(self):
     try:
