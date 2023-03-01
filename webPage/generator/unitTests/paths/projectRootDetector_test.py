@@ -2,6 +2,7 @@ import os
 import pathlib
 import shutil
 import sys
+import glob
 
 sys.path.append('../..')
 
@@ -21,6 +22,20 @@ class ProjectRootDetectorTests(AutoUnitTest):
     self.assertTrue(os.path.isfile(gitRepoPath + ".git/HEAD"))
     currentPath = pathlib.Path(__file__).parent.resolve().as_posix()
     self.assertTrue(currentPath.startswith(gitRepoPath))
+    # TODO move directory if none of its files are being used by another process
+    rename = True
+    for fileName in glob.iglob(gitRepoPath + ".git/**", recursive=True):
+      fileName = fileName.replace("\\", "/")
+      if os.path.isdir(fileName):
+        continue
+      try:
+        file = open(fileName, "a")
+      except IOError:
+        print("Skip renaming {} to .gitX: {} is being used by another process".format(gitRepoPath + ".git", fileName))
+        rename = False
+        break
+    if not rename:
+      return
     shutil.move(gitRepoPath + ".git", gitRepoPath + ".gitX")
     repoFound, newGitRepoPath = projRoot.getGitRepoAbsolutePath()
     if not repoFound:
