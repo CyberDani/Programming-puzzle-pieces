@@ -776,3 +776,37 @@ class ChecksTests(AutoUnitTest):
       checks.checkIfAnyType("string", [int, list, dict, str, bool])
     except Exception:
       self.fail("checkIfAnyType() raised Exception unexpectedly!")
+
+  def test_checkIfBoolean_wrongType(self):
+    self.assertRaises(Exception, checks.checkIfBoolean, 2)
+    self.assertRaises(Exception, checks.checkIfBoolean, 2.2)
+    self.assertRaises(Exception, checks.checkIfBoolean, None)
+    self.assertRaises(Exception, checks.checkIfBoolean, "")
+    self.assertRaises(Exception, checks.checkIfBoolean, "0")
+    self.assertRaises(Exception, checks.checkIfBoolean, [])
+
+  def test_checkIfBoolean_valid(self):
+    checks.checkIfBoolean(True)
+    checks.checkIfBoolean(False)
+
+  def test_checkIfTrue_wrongType(self):
+    self.assertRaises(Exception, checks.checkIfTrue, 2, "This is not two!")
+    self.assertRaises(Exception, checks.checkIfTrue, 2 == 3, 2)
+    self.assertRaises(Exception, checks.checkIfTrue, True, False)
+
+  def test_checkIfTrue_emptyOrVeryShortString(self):
+    self.assertRaises(Exception, checks.checkIfTrue, 2 == 2, "")
+    self.assertRaises(Exception, checks.checkIfTrue, 2 == 2, "A")
+    self.assertRaises(Exception, checks.checkIfTrue, 2 == 2, "AB")
+
+  def test_checkIfTrue_false(self):
+    with self.assertRaises(Exception) as exc:
+      checks.checkIfTrue(2 > 20, "two is not greater than twenty")
+    self.assertEqual(exc.exception.args[0], "two is not greater than twenty")
+    with self.assertRaises(Exception) as exc:
+      checks.checkIfTrue(5 != 5, "five is equal with five")
+    self.assertEqual(exc.exception.args[0], "five is equal with five")
+
+  def test_checkIfTrue_true(self):
+    checks.checkIfTrue(2 < 20, "two is not greater than twenty!")
+    checks.checkIfTrue(-4 == -4, "-4 is equal to -4")
