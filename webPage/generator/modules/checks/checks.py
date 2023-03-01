@@ -181,3 +181,13 @@ def checkIntIsBetween(var, minValue, maxValue):
     raise Exception("var({}) < minValue({})?".format(var, minValue))
   if var > maxValue:
     raise Exception("var({}) > maxValue({})?".format(var, maxValue))
+
+def checkIfBoolean(value):
+  if type(value) != bool:
+    raise Exception("'{}' having type '{}' is not boolean!".format(str(value), str(type(value))))
+
+def checkIfTrue(value, exceptionMessage):
+  checkIfBoolean(value)
+  checkIfString(exceptionMessage, 3, 400)
+  if not value:
+    raise Exception(exceptionMessage)

@@ -69,9 +69,7 @@ Returns the position of the 'def' keyword"""
     firstOpenParenthesisFound, firstOpenParenthesisIdx = stringUtil.find(self.source, '(', 0, self.sourceLen - 1, -1)
     while True:
       found, self.defIndex = stringUtil.whitespaceDelimitedFind(self.source, "def", startIdx, self.sourceLen - 1)
-      # TODO checkIfFalse
-      if not found:
-        raise Exception("'def' not found for function '{}'".format(self.functionName))
+      checks.checkIfTrue(found, "'def' not found for function '{}'".format(self.functionName))
       if aroundFound < self.defIndex and firstOpenParenthesisFound and firstOpenParenthesisIdx < self.defIndex:
         found, idx = stringUtil.getLastNonWhiteSpaceCharIdx(self.source, 0, self.defIndex - 1)
         if not found:
