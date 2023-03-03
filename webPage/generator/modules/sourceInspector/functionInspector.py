@@ -255,7 +255,15 @@ Return:\n
         if inst.opname[:11] == "LOAD_METHOD":
           name = str(inst.argval)
           if not hasattr(str, name) and not hasattr(tuple, name) and not hasattr(dict, name):
-            methods[name] = True
+            methodName = name
+            methodParentName = ""
+            methodParent = instructions[i+1]
+            if methodParent.opname[:9] == "LOAD_NAME":
+              methodParentName = methodParent.argrepr
+            if methodParentName:
+              methods[(methodParentName, methodName)] = True
+            else:
+              methods[methodName] = True
           continue
         if inst.opname[:13] == "CALL_FUNCTION":
             # function takes ins[i].arg number of arguments

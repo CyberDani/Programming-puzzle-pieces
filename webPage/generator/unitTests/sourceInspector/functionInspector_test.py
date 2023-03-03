@@ -619,33 +619,54 @@ class FunctionInspectorTests(AutoUnitTest):
     self.assertEqual((funcs, methods), ([], []))
     insp = FunctionInspector(func.simpleFunc17)
     funcs, methods = insp.getFunctionCallNames()
-    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'], ['simpleFunc']))
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'], [('cl', 'simpleFunc')]))
     insp = FunctionInspector(func.simpleFunc18)
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                          ('otherFunctions', 'OtherClass'),
+                                          ('otherFunctions', 'getFalseIfNotTrue')]))
     insp = FunctionInspector(func.simpleFunc34)
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
 
   def test_getFunctionCallNames_getMultipleTimes(self):
     insp = FunctionInspector(func.simpleFunc18)
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                          ('other', 'saySomething'),
+                                          ('otherFunctions', 'OtherClass'),
+                                          ('otherFunctions', 'getFalseIfNotTrue')]))
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
     funcs, methods = insp.getFunctionCallNames()
     self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
-                                        ['OtherClass', 'getFalseIfNotTrue', 'saySomething', 'simpleFunc']))
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
 
   def test_getImplementationCode_examples(self):
     insp = FunctionInspector(func.simpleFunc_noReturn)
