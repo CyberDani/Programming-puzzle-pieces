@@ -634,6 +634,13 @@ class FunctionInspectorTests(AutoUnitTest):
                                          ('other', 'saySomething'),
                                          ('otherFunctions', 'OtherClass'),
                                          ('otherFunctions', 'getFalseIfNotTrue')]))
+    insp = FunctionInspector(func.simpleFunc36)
+    funcs, methods = insp.getFunctionCallNames()
+    self.assertEqual((funcs, methods), (['SimpleClass', 'simpleFunc16', 'simpleFunc2'],
+                                        [('cl', 'simpleFunc'),
+                                         ('other', 'saySomething'),
+                                         ('otherFunctions', 'OtherClass'),
+                                         ('otherFunctions', 'getFalseIfNotTrue')]))
 
   def test_getFunctionCallNames_getMultipleTimes(self):
     insp = FunctionInspector(func.simpleFunc18)
@@ -714,3 +721,6 @@ class FunctionInspectorTests(AutoUnitTest):
     insp = FunctionInspector(func.simpleFunc33)
     code = insp.getImplementationCode()
     self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if d[\"if True: return 2\"] == \"if False: return 3 \" :  returnValue = True\nb = len(str)\nreturnValue = \" return \"\nif not returnValue:returnValue = 2\nreturnValue = 2 if returnValue == ' return 2 ' else  3")
+    insp = FunctionInspector(func.simpleFunc35)
+    code = insp.getImplementationCode()
+    self.assertEqual(code, "a = len(d)\nif not d:\n  a += 2\n  if d[\"if True: return 2\"] == \"if False: return 3 \" :  returnValue = \"exitFunction\"\nb = len(str)\nreturnValue = \" return \"\nif not returnValue:returnValue = \"exitFunction\"\nreturnValue = \"exitFunction\"")

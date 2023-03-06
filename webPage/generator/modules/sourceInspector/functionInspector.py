@@ -181,7 +181,8 @@ Returns the index of the first line at where the implementation begins skipping 
 * Remove first indentation
 * Remove empty lines
 * Remove comments
-* Replace 'return' with 'returnValue ='\n
+* Replace 'return' with 'returnValue =' if there is a value
+* Replace non-value 'return' with 'returnValue = "exitFunction"' \n
 There is no source code normalization applied."""
     startIdx = self.getImplementationIndex()
     lines = self.source[startIdx:].splitlines()
@@ -227,6 +228,15 @@ There is no source code normalization applied."""
         notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, returnIdx)
         if notString:
           line = line[:returnIdx] + "returnValue =" + line[returnIdx + 6:]
+          if returnIdx + 13 == len(line):
+            line += ' "exitFunction"'
+            idx = returnIdx + 1
+            continue
+          found, nextNoneSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, returnIdx + 6, len(line) - 1)
+          if not found:
+            line += '"exitFunction"'
+            idx = returnIdx + 1
+            continue
         else:
           idx = returnIdx + 1
           continue

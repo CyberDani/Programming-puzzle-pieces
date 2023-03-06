@@ -713,6 +713,59 @@ hello:\n
   cl.simpleFunc()
   return fl or (len(str) + len(d) < 5) or (a and b)
 
+@\
+defdef \
+  (arg = " @defdef(dec) \
+ def simpleFunc35(): ")
+def \
+        simpleFunc35 \
+                ( str = "2:1",
+                  d = {"one": 1}
+        )\
+\
+        :   # random comment after the colon
+  # comment before doc
+# another comment before doc
+  """Function documentation... \n
+hello:\n
+* option"""
+
+  # some comment in the first line
+
+# there is another comment here
+
+
+
+   # another comment, cause why not
+
+  a = len(d)  # return 2
+  if not d: #some comment here
+    a += 2#another comment
+    if d["if True: return 2"] == "if False: return 3 " :  return #
+
+  b = len(str)          #   heyyo captain jack
+  # comment before return 1
+      # asdasd
+  # return 12
+  returnValue = " return "#####
+  if not returnValue:return# any comment here #
+  return
+
+@defdeco
+@defdef(arg=" @defdef(dec) def simpleFunc36(): ")
+def simpleFunc36(str="2:1", d={"one": 1}):
+  fl = otherFunctions.getFalseIfNotTrue()
+  other = otherFunctions.OtherClass()
+  if other is None:
+    return
+  a = simpleFunc16()
+  b = simpleFunc2()
+  return
+  cl = SimpleClass()
+  other.saySomething()
+  cl.simpleFunc()
+  return
+
 def simpleFunc_sameImpl():
   a = 2
   b = 3
