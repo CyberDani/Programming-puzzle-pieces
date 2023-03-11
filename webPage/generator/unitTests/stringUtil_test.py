@@ -316,6 +316,56 @@ class StringUtilTests(AutoUnitTest):
     self.helper_getFirstNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 2, 20, foundAt=6)
     self.helper_getFirstNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 8, 18, foundAt=8)
 
+  def test_getFirstNewLineCharIdxOrThrow_nonSense(self):
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "example test string", None, None)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "another test string", 2, True)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "again a string", "0", 3)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "let me use this example", -1, 3)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "let me use this example", 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "let me use this example", 8, 5)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "let me use this example", 11, 10)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, 123, 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, ["let me use this example"], 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, None, 3, 61)
+
+  def test_getFirstNewLineCharIdxOrThrow_emptyString(self):
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "", 0, 0)
+
+  def test_getFirstNewLineCharIdxOrThrow_notFound(self):
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, ".", 0, 0)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "_Q", 0, 1)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "not a single newline", 0, 19)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "not a single newline", 0, 10)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "not a single newline", 9, 19)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "not a single newline", 5, 15)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine not in range", 1, 20)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine not in range", 1, 10)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine not in range", 10, 16)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine not in range", 10, 20)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine not in range\n", 1, 20)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 1, 7)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 9, 11)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 13, 14)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 16, 20)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\n\nanother\n\n\nexample\n\n", 2, 8)
+    self.assertRaises(Exception, stringUtil.getFirstNewLineCharIdxOrThrow, "\n\nanother\n\n\nexample\n\n", 12, 18)
+
+  def test_getFirstNewLineCharIdxOrThrow_found(self):
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n", 0, 0), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n", 0, 0), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n", 0, 1), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n", 1, 1), 1)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n\n", 0, 1), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n\n", 0, 2), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\n\n", 1, 2), 1)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("first line\nsecond line", 0, 21), 10)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("first line\nsecond line", 9, 11), 10)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("first line\nsecond line", 10, 10), 10)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\nmultiple\nnewlines\n", 0, 18), 0)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\nmultiple\nnewlines\n", 1, 18), 9)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\nmore\n\n\nnewlines\n\n\n\n", 2, 20), 6)
+    self.assertEqual(stringUtil.getFirstNewLineCharIdxOrThrow("\n\nmore\n\n\nnewlines\n\n\n\n", 8, 18), 8)
+
   def test_getLastNewLineCharIdx_nonSense(self):
     self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "example test string", None, None)
     self.assertRaises(Exception, stringUtil.getLastNewLineCharIdx, "another test string", 2, True)
@@ -373,6 +423,56 @@ class StringUtilTests(AutoUnitTest):
     self.helper_getLastNewLineCharIdx_checkIfFound("\nmultiple\nnewlines\n", 0, 17, foundAt=9)
     self.helper_getLastNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 20, foundAt=20)
     self.helper_getLastNewLineCharIdx_checkIfFound("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 8, foundAt=8)
+
+  def test_getLastNewLineCharIdxOrThrow_nonSense(self):
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "example test string", None, None)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "another test string", 2, True)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "again a string", "0", 3)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "let me use this example", -1, 3)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "let me use this example", 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "let me use this example", 8, 5)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "let me use this example", 11, 10)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, 123, 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, ["let me use this example"], 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, None, 3, 61)
+
+  def test_getLastNewLineCharIdxOrThrow_emptyString(self):
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "", 0, 0)
+
+  def test_getLastNewLineCharIdxOrThrow_notFound(self):
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, ".", 0, 0)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "_Q", 0, 1)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "not a single newline", 0, 19)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "not a single newline", 0, 10)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "not a single newline", 9, 19)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "not a single newline", 5, 15)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine not in range", 1, 20)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine not in range", 1, 10)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine not in range", 10, 16)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine not in range", 10, 20)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine not in range\n", 1, 20)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 1, 7)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 9, 11)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 13, 14)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\nnewLine\nnot\nin\nrange\n", 16, 20)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\n\nanother\n\n\nexample\n\n", 2, 8)
+    self.assertRaises(Exception, stringUtil.getLastNewLineCharIdxOrThrow, "\n\nanother\n\n\nexample\n\n", 12, 18)
+
+  def test_getLastNewLineCharIdxOrThrow_found(self):
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n", 0, 0), 0)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n", 0, 0), 0)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n", 0, 1), 1)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n", 1, 1), 1)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n\n", 0, 1), 1)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n\n", 0, 2), 2)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\n\n", 1, 2), 2)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("first line\nsecond line", 0, 21), 10)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("first line\nsecond line", 9, 11), 10)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("first line\nsecond line", 10, 10), 10)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\nmultiple\nnewlines\n", 0, 18), 18)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\nmultiple\nnewlines\n", 0, 17), 9)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 20), 20)
+    self.assertEqual(stringUtil.getLastNewLineCharIdxOrThrow("\n\nmore\n\n\nnewlines\n\n\n\n", 0, 8), 8)
 
   def helper_getFirstNonWhiteSpaceCharIdx_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
@@ -440,6 +540,59 @@ class StringUtilTests(AutoUnitTest):
     randomIndex = string.find("$")
     self.helper_getFirstNonWhiteSpaceCharIdx_checkIfFound(string, randomIndex, len(string) - 13, foundAt=randomIndex)
 
+  def test_getFirstNonWhiteSpaceCharIdxOrThrow_nonSense(self):
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "example test string", None, None)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "another test string", 2, True)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "again a string", "0", 3)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "let me use this example", -1, 3)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "let me use this example", 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "let me use this example", 8, 5)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "let me use this example", 11, 10)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, 123, 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, ["let me use this example"], 3, 61)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, None, 3, 61)
+
+  def test_getFirstNonWhiteSpaceCharIdxOrThrow_emptyString(self):
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, "", 0, 0)
+
+  def test_getFirstNonWhiteSpaceCharIdxOrThrow_notFound(self):
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, " \t \r\n \t", 0, 6)
+    string = "here comes some whitespaces: \t\t\t \r\r\n\n    \t      "
+    self.assertEqual(string[27], ':')
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 28, len(string) - 1)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 28, len(string) - 5)
+    string = " \t\t\t \r\r\n\n    \t      : these are my whitespaces"
+    colonIdx = string.find(':')
+    self.assertEqual(string[colonIdx], ':')
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 0, colonIdx - 1)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 0, 0)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, colonIdx - 1, colonIdx - 1)
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 6, colonIdx - 5)
+    string = "look at these whitespaces: \t\t\t \r\r\n\n    \t      => beautiful"
+    self.assertEqual(string[25], ':')
+    self.assertRaises(Exception, stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow, string, 26, string.find("=>") - 1)
+
+  def test_getFirstNonWhiteSpaceCharIdxOrThrow_found(self):
+    func = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow
+    string = "\ta\r\nb \r\n \t \n cwer\nd\nd"
+    self.assertEqual(func(string, 0, len(string)-1), 1)
+    self.assertEqual(func(string, 2, len(string)-1), 4)
+    self.assertEqual(func(string, 5, len(string)-1), string.find("c"))
+    self.assertEqual(func("a\tb\tc\nd\nd", 0, 8), 0)
+    self.assertEqual(func("a\tb\tc\nd\nd", 4, 8), 4)
+    string = " \t  asad\tbrev\tcSasd\ndbrt\ndqwY      \r\n\r\n X"
+    self.assertEqual(func(string, 0, len(string)-1), 4)
+    self.assertEqual(func(string, 0, 12), 4)
+    self.assertEqual(func(string, 2, 7), 4)
+    self.assertEqual(func(string, 4, 4), 4)
+    startIdx = string.find('Y')
+    self.assertEqual(func(string, startIdx + 1, len(string) - 1), len(string) - 1)
+    string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
+    self.assertEqual(func(string, 0, len(string) - 1), 0)
+    self.assertEqual(func(string, 0, len(string) - 13), 0)
+    randomIndex = string.find("$")
+    self.assertEqual(func(string, randomIndex, len(string) - 13), randomIndex)
+
   def helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(self, string, startIdx, endIdx):
     with self.assertRaises(Exception):
       stringUtil.getLastNonWhiteSpaceCharIdx(string, startIdx, endIdx)
@@ -500,6 +653,54 @@ class StringUtilTests(AutoUnitTest):
     self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 4, 4, foundAt=4)
     string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
     self.helper_getLastNonWhiteSpaceCharIdx_checkIfFound(string, 7, len(string) - 13, foundAt=len(string)-13)
+
+  def test_getLastNonWhiteSpaceCharIdxOrThrow_nonSense(self):
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "example test string", None, None)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "another test string", 2, True)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "again a string", "0", 3)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "let me use this example", -1, 3)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "let me use this example", 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "let me use this example", 8, 5)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "let me use this example", 11, 10)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, 123, 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, ["let me use this example"], 3, 61)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, None, 3, 61)
+
+  def test_getLastNonWhiteSpaceCharIdxOrThrow_emptyString(self):
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, "", 0, 0)
+
+  def test_getLastNonWhiteSpaceCharIdxOrThrow_notFound(self):
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, " \t \r\n \t", 0, 6)
+    string = "here comes some whitespaces: \t\t\t \r\r\n\n    \t      "
+    self.assertEqual(string[27], ':')
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 28, len(string) - 1)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 28, len(string) - 5)
+    string = " \t\t\t \r\r\n\n    \t      : these are my whitespaces"
+    colonIdx = string.find(':')
+    self.assertEqual(string[colonIdx], ':')
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 0, colonIdx - 1)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 0, 0)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, colonIdx - 1, colonIdx - 1)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 6, colonIdx - 5)
+    string = "look at these whitespaces: \t\t\t \r\r\n\n    \t      => beautiful"
+    self.assertEqual(string[25], ':')
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdxOrThrow, string, 26, string.find("=>") - 1)
+
+  def test_getLastNonWhiteSpaceCharIdxOrThrow_found(self):
+    func = stringUtil.getLastNonWhiteSpaceCharIdxOrThrow
+    string = "\ta\r\nb \r\n \t \n cwer\nd\nd"
+    self.assertEqual(func(string, 0, len(string) - 1), len(string) - 1)
+    self.assertEqual(func(string, 5, len(string) - 1), len(string) - 1)
+    self.assertEqual(func(string, 1, 13), 13)
+    self.assertEqual(func(string, 2, 12), 4)
+    self.assertEqual(func(string, 4, 12), 4)
+    self.assertEqual(func("a\tb\tc\nd\nd", 0, 8), 8)
+    self.assertEqual(func("a\tb\tc\nd\nd", 4, 7), 6)
+    string = " \t  asad\tbrev\tcSasd\ndbrt\ndqwY      \r\n\r\n X"
+    self.assertEqual(func(string, 2, 7), 7)
+    self.assertEqual(func(string, 4, 4), 4)
+    string = "[log-info]In_this_${string}_there_are_(no|0)_whitespaces!"
+    self.assertEqual(func(string, 7, len(string) - 13), len(string)-13)
 
   def test_beforeWhitespaceDelimitedFind_nonSense(self):
     with self.assertRaises(Exception):
@@ -861,6 +1062,47 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idx, 10)
     found, idx = stringUtil.find("'field' = 'value'", "'", 11, 16, -1)
     self.assertTrue(found)
+    self.assertEqual(idx, 16)
+
+  def test_findOrThrow_nonSense(self):
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", 1, 3)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", -1, 3)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", 4, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", 0, 26)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", 0, 6)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", 0, None)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "substring", None, 2)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", None, 2, 2)
+
+  def test_findOrThrow_emptyString(self):
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("", "substring", 1, 4)
+    with self.assertRaises(Exception):
+      stringUtil.findOrThrow("string", "", 1, 4)
+
+  def test_findOrThrow_notFound(self):
+    self.assertRaises(Exception, stringUtil.findOrThrow, "string", "substring", 1, 5)
+    self.assertRaises(Exception, stringUtil.findOrThrow, "this is a longer string", "substring", 1, 5)
+    self.assertRaises(Exception, stringUtil.findOrThrow, "this is a longer string", "'", 1, 5)
+
+  def test_findOrThrow_found(self):
+    idx = stringUtil.findOrThrow("string", "string", 0, 5)
+    self.assertEqual(idx, 0)
+    idx = stringUtil.findOrThrow("this is my string here", "string", 0, 21)
+    self.assertEqual(idx, 11)
+    idx = stringUtil.findOrThrow("'field' = 'value'", "'", 0, 6)
+    self.assertEqual(idx, 0)
+    idx = stringUtil.findOrThrow("'field' = 'value'", "'", 8, 16)
+    self.assertEqual(idx, 10)
+    idx = stringUtil.findOrThrow("'field' = 'value'", "'", 11, 16)
     self.assertEqual(idx, 16)
 
   def test_rfind_nonSense(self):

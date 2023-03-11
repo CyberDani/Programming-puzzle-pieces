@@ -18,6 +18,113 @@ class FunctionInspector:
       self.nameIndex, self.signatureIndex, \
       self.colonIndex, self.implementationIndex = None, None, None, None, None, None
 
+  # TODO test
+  def __getFirstIndexAfterSignature(self):
+    self.getSignatureIndex()
+    sourceIdx, signatureIdx, signatureLen = self.signatureIndex, 0, len(self.signature)
+    while signatureIdx < signatureLen:
+      sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, sourceIdx, self.sourceLen - 1)
+      found, signatureIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.signature, signatureIdx, signatureLen - 1)
+      if self.source[sourceIdx] == self.signature[signatureIdx] or \
+              (self.source[sourceIdx] == '"' and self.signature[signatureIdx] == "'"):
+        sourceIdx += 1
+        signatureIdx += 1
+        continue
+      if self.source[sourceIdx] == "#":
+        sourceIdx = stringUtil.getFirstNewLineCharIdxOrThrow(self.source, sourceIdx, self.sourceLen - 1)
+        continue
+      if self.source[sourceIdx:sourceIdx + 2] == '\\"' and self.signature[signatureIdx] == '"':
+        sourceIdx += 2
+        signatureIdx += 1
+        continue
+      raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+    return sourceIdx
+
+  # TODO test
+  # TODO move to stringUtil
+  def __whiteSpaceString(self, string):
+    if not string:
+      return True
+    found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(string, 0, len(string) - 1)
+    return not found
+
+  # TODO test
+  def __removeWhiteSpaceLines(self, lines):
+    answer = []
+    for line in lines:
+      if self.__whiteSpaceString(line):
+        continue
+      answer.append(line)
+    return answer
+
+  # TODO test
+  def __removeCommentsFromCodeLines(self, lines):
+    """Empty and whitespace lines must be removed before"""
+    answer = []
+    for line in lines:
+      commentIdx = -1
+      while True:
+        commentFound, commentIdx = stringUtil.find(line, "#", commentIdx + 1, len(line) - 1, -1)
+        if not commentFound:
+          break
+        notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, commentIdx)
+        if notString:
+          line = line[:commentIdx].rstrip()
+          break
+      if not self.__whiteSpaceString(line):
+        answer.append(line)
+    return answer
+
+  # TODO test
+  def __removeExtraIndentationFromCodeLines(self, lines):
+    """Whitespace lines and comments must be removed before"""
+    nrOfCharsUsedForIndentation = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(lines[0], 0, len(lines[0]) - 1)
+    answer = []
+    for line in lines:
+      answer.append(line[nrOfCharsUsedForIndentation:])
+    return answer
+
+  # TODO test
+  def __returnIsDelimited(self, line, returnIdx):
+    """returnIdx must point to "return" """
+    if returnIdx > 0 and line[returnIdx - 1] != ":" and not line[returnIdx - 1].isspace():
+      return False
+    if returnIdx + 6 < len(line) and not line[returnIdx + 6].isspace():
+      return False
+    return True
+
+  # TODO test
+  def __findReturnInLine(self, line):
+    returnIdx = 0
+    while True:
+      returnFound, returnIdx = stringUtil.find(line, "return", returnIdx, len(line) - 1, -1)
+      if not returnFound:
+        return False, -1
+      if not self.__returnIsDelimited(line, returnIdx) \
+              or not stringUtil.indexIsOutsideOfPythonStringConstant(line, returnIdx):
+        returnIdx += 1
+        continue
+      break
+    return True, returnIdx
+
+  # TODO test
+  def __rewriteReturnToAssignmentIfFound(self, line, variable, defaultValue):
+    returnFound, returnIdx = self.__findReturnInLine(line)
+    if not returnFound:
+      return line
+    line = line[:returnIdx] + variable + " =" + line[returnIdx + 6:]
+    if returnIdx + 13 == len(line):
+      line += " " + defaultValue
+    return line
+
+  # TODO test
+  def __rewriteReturnsToAssignmentsInCodeLines(self, lines):
+    answer = []
+    for line in lines:
+      line = self.__rewriteReturnToAssignmentIfFound(line, "returnValue", '"exitFunction"')
+      answer.append(line)
+    return answer
+
   def getFunctionName(self):
     return self.functionName
 
@@ -68,12 +175,11 @@ Returns the position of the 'def' keyword"""
     aroundFound, aroundIdx = stringUtil.find(self.source, '@', 0, self.sourceLen - 1, -1)
     firstOpenParenthesisFound, firstOpenParenthesisIdx = stringUtil.find(self.source, '(', 0, self.sourceLen - 1, -1)
     while True:
+      # TODO add throwing alternative
       found, self.defIndex = stringUtil.whitespaceDelimitedFind(self.source, "def", startIdx, self.sourceLen - 1)
       checks.checkIfTrue(found, "'def' not found for function '{}'".format(self.functionName))
       if aroundFound < self.defIndex and firstOpenParenthesisFound and firstOpenParenthesisIdx < self.defIndex:
-        found, idx = stringUtil.getLastNonWhiteSpaceCharIdx(self.source, 0, self.defIndex - 1)
-        if not found:
-          raise Exception("Strange unexpected error")
+        idx = stringUtil.getLastNonWhiteSpaceCharIdxOrThrow(self.source, 0, self.defIndex - 1)
         newLineFound, newLineIdx = stringUtil.find(self.source, "\n", idx, self.defIndex, -1)
         if (not newLineFound and self.source[idx] == ")") or self.source[idx] != ")":
           startIdx = self.defIndex + 1
@@ -88,12 +194,12 @@ Returns the index of the first character from the function name"""
       return self.nameIndex
     if self.defIndex is None:
       self.getDefIndex()
-    found, self.nameIndex = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, self.defIndex + 3, self.sourceLen - 1)
-    while found and self.source[self.nameIndex] == '\\':
+    self.nameIndex = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, self.defIndex + 3, self.sourceLen - 1)
+    while self.source[self.nameIndex] == '\\':
       startIdx = self.nameIndex + 1
-      found, self.nameIndex = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, startIdx, self.sourceLen - 1)
-    if not found or self.source[self.nameIndex: self.nameIndex + len(self.functionName)] != self.functionName:
-      raise Exception("Function name not found for function '{}'".format(self.functionName))
+      self.nameIndex = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, startIdx, self.sourceLen - 1)
+    if self.source[self.nameIndex: self.nameIndex + len(self.functionName)] != self.functionName:
+      raise Exception("Function name missmatch for '{}'".format(self.functionName))
     return self.nameIndex
 
   def getSignatureIndex(self):
@@ -103,13 +209,13 @@ Returns the index of the first '(' character of the function signature"""
       return self.signatureIndex
     if self.nameIndex is None:
       self.getNameIndex()
-    found, self.signatureIndex = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, self.nameIndex
+    self.signatureIndex = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, self.nameIndex
                                                                          + len(self.functionName), self.sourceLen - 1)
-    while found and self.source[self.signatureIndex] == '\\':
+    while self.source[self.signatureIndex] == '\\':
       startIdx = self.signatureIndex + 1
-      found, self.signatureIndex = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, startIdx, self.sourceLen - 1)
-    if not found or self.source[self.signatureIndex] != "(":
-      raise Exception("Failed to find signature for function '{}'".format(self.functionName))
+      self.signatureIndex = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, startIdx, self.sourceLen - 1)
+    openParenthesesFound = self.source[self.signatureIndex] == "("
+    checks.checkIfTrue(openParenthesesFound, "Failed to find signature for function '{}'".format(self.functionName))
     return self.signatureIndex
 
   def getColonIndex(self):
@@ -117,59 +223,30 @@ Returns the index of the first '(' character of the function signature"""
 Returns the position of the first ':' after the signature"""
     if self.colonIndex is not None:
       return self.colonIndex
-    if self.signatureIndex is None:
-      self.getSignatureIndex()
-    sourceIdx, signatureIdx, colonIdx = self.signatureIndex, 0, 0
-    signatureLen = len(self.signature)
-    while signatureIdx < signatureLen:
-      found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx, self.sourceLen - 1)
-      if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
-      found, signatureIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.signature, signatureIdx, signatureLen - 1)
-      if self.source[sourceIdx] == self.signature[signatureIdx] or \
-            (self.source[sourceIdx] == '"' and self.signature[signatureIdx] == "'"):
-        sourceIdx += 1
-        signatureIdx += 1
-        continue
-      if self.source[sourceIdx] == "#":
-        found, sourceIdx = stringUtil.getFirstNewLineCharIdx(self.source, sourceIdx, self.sourceLen - 1)
-        if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
-        continue
-      if self.source[sourceIdx:sourceIdx + 2] == '\\"' and self.signature[signatureIdx] == '"':
-        sourceIdx += 2
-        signatureIdx += 1
-        continue
-      raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
-    found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx, self.sourceLen - 1)
-    if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
+    sourceIdx = self.__getFirstIndexAfterSignature()
+    sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, sourceIdx, self.sourceLen - 1)
     while self.source[sourceIdx] == "\\":
-      found, sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, sourceIdx + 1, self.sourceLen - 1)
-      if not found: raise Exception("Failed to find colon idx for function '{}'".format(self.functionName))
-    if self.source[sourceIdx] == ":":
-      self.colonIndex = sourceIdx
+      sourceIdx = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, sourceIdx + 1, self.sourceLen - 1)
+    checks.checkIfTrue(self.source[sourceIdx] == ":", "Colon char not found")
+    self.colonIndex = sourceIdx
     return self.colonIndex
 
   def getImplementationIndex(self):
     """Raises exception if not valid (should not happen). \n
-Returns the index of the first line at where the implementation begins skipping all possible comments"""
+Returns the index of the first line at where the implementation begins skipping all comments"""
     if self.implementationIndex is not None:
       return self.implementationIndex
     if self.colonIndex is None:
       self.getColonIndex()
     idx = self.colonIndex + 1
     while True:
-      found, idx = stringUtil.getFirstNewLineCharIdx(self.source, idx, self.sourceLen - 1)
-      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
-      # skip newlines
-      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, idx, self.sourceLen - 1)
-      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      idx = stringUtil.getFirstNewLineCharIdxOrThrow(self.source, idx, self.sourceLen - 1)
+      idx = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, idx, self.sourceLen - 1)
       if self.source[idx:].startswith('"""'):
-        found, idx = stringUtil.find(self.source, '"""', idx + 3, self.sourceLen - 1, -1)
-        if not found: raise Exception("Incorrect doc found in function '{}'".format(self.functionName))
-        found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(self.source, idx + 3, self.sourceLen - 1)
-        if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+        idx = stringUtil.findOrThrow(self.source, '"""', idx + 3, self.sourceLen - 1)
+        idx = stringUtil.getFirstNonWhiteSpaceCharIdxOrThrow(self.source, idx + 3, self.sourceLen - 1)
       if self.source[idx] == "#": continue
-      found, self.implementationIndex = stringUtil.getLastNewLineCharIdx(self.source, self.colonIndex, idx)
-      if not found: raise Exception("Failed to find implementation for function '{}'".format(self.functionName))
+      self.implementationIndex = stringUtil.getLastNewLineCharIdxOrThrow(self.source, self.colonIndex, idx)
       break
     self.implementationIndex += 1
     if self.implementationIndex >= self.sourceLen - 1:
@@ -177,7 +254,7 @@ Returns the index of the first line at where the implementation begins skipping 
     return self.implementationIndex
 
   def getImplementationCode(self):
-    """Get raw implementation code as if it were alone itself, which means: \n
+    """Get raw implementation code as if it would not be a function: \n
 * Remove first indentation
 * Remove empty lines
 * Remove comments
@@ -186,62 +263,12 @@ Returns the index of the first line at where the implementation begins skipping 
 There is no source code normalization applied."""
     startIdx = self.getImplementationIndex()
     lines = self.source[startIdx:].splitlines()
-    found, nrOfCharsUsedForIndentation = stringUtil.getFirstNonWhiteSpaceCharIdx(lines[0], 0, len(lines[0]) - 1)
-    if not found:
-      raise Exception("Failed to get implementation code for function '{}'".format(self.functionName))
-    answer = ""
-    for line in lines:
-      if not line:
-        continue
-      # TODO stringUtil.stringHasOnlyWhitespaceChars
-      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
-      if not found:
-        continue
-      while True:
-        if not line:
-          break
-        found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
-        if not found:
-          break
-        commentFound, commentIdx = stringUtil.find(line, "#", idx, len(line) - 1, -1)
-        if not commentFound:
-          break
-        notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, commentIdx)
-        if notString:
-          line = line[:commentIdx]
-        else:
-          continue
-      found, idx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, 0, len(line) - 1)
-      if not found:
-        continue
-      line = line.rstrip()
-      while True:
-        returnFound, returnIdx = stringUtil.find(line, "return", idx, len(line) - 1, -1)
-        if not returnFound:
-          break
-        if line[returnIdx - 1] != ":" and not line[returnIdx - 1].isspace():
-          idx = returnIdx + 1
-          continue
-        if returnIdx + 6 < len(line) and not line[returnIdx + 6].isspace():
-          idx = returnIdx + 1
-          continue
-        notString = stringUtil.indexIsOutsideOfPythonStringConstant(line, returnIdx)
-        if notString:
-          line = line[:returnIdx] + "returnValue =" + line[returnIdx + 6:]
-          if returnIdx + 13 == len(line):
-            line += ' "exitFunction"'
-            idx = returnIdx + 1
-            continue
-          found, nextNoneSpaceCharIdx = stringUtil.getFirstNonWhiteSpaceCharIdx(line, returnIdx + 6, len(line) - 1)
-          if not found:
-            line += '"exitFunction"'
-            idx = returnIdx + 1
-            continue
-        else:
-          idx = returnIdx + 1
-          continue
-      answer += line[nrOfCharsUsedForIndentation:] + "\n"
-    return answer[:-1]
+    lines = self.__removeWhiteSpaceLines(lines)
+    lines = self.__removeCommentsFromCodeLines(lines)
+    lines = self.__removeExtraIndentationFromCodeLines(lines)
+    lines = self.__rewriteReturnsToAssignmentsInCodeLines(lines)
+    ans = stringUtil.stringListToString(lines, "", "", "\n")
+    return ans
 
   # Source (slightly modified):
   # https://stackoverflow.com/questions/51901676/get-the-lists-of-functions-used-called-within-a-function-in-python

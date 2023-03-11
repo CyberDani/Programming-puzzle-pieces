@@ -87,6 +87,14 @@ Return values:\n
     return False, -1
   return True, idx
 
+def getFirstNewLineCharIdxOrThrow(string, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Returns the index or throws exception."""
+  found, sourceIdx = getFirstNewLineCharIdx(string, startIdx, endIdx)
+  checks.checkIfTrue(found, "Failed to find newline character within range {}-{}: [{}]"
+                            .format(startIdx, endIdx, string[startIdx:min(startIdx + 100, endIdx+1)]))
+  return sourceIdx
+
 def getLastNewLineCharIdx(string, startIdx, endIdx):
   """Raises error at empty string because indexes cannot be set properly.\n
 Return values:\n
@@ -101,6 +109,14 @@ Return values:\n
   if idx < startIdx:
     return False, -1
   return True, idx
+
+def getLastNewLineCharIdxOrThrow(string, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Returns the index or throws exception."""
+  found, sourceIdx = getLastNewLineCharIdx(string, startIdx, endIdx)
+  checks.checkIfTrue(found, "Failed to find newline character within range {}-{}: [{}]"
+                            .format(startIdx, endIdx, string[startIdx:min(startIdx + 100, endIdx+1)]))
+  return sourceIdx
 
 def getFirstNonWhiteSpaceCharIdx(string, startIdx, endIdx):
   """Raises error at empty string because indexes cannot be set properly.\n
@@ -117,6 +133,14 @@ Return values:\n
     return False, -1
   return True, idx
 
+def getFirstNonWhiteSpaceCharIdxOrThrow(string, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Returns the index or throws exception."""
+  found, sourceIdx = getFirstNonWhiteSpaceCharIdx(string, startIdx, endIdx)
+  checks.checkIfTrue(found, "Failed to find non-whitespace character within range {}-{}: [{}]"
+                            .format(startIdx, endIdx, string[startIdx:min(startIdx + 100, endIdx+1)]))
+  return sourceIdx
+
 def getLastNonWhiteSpaceCharIdx(string, startIdx, endIdx):
   """Raises error at empty string because indexes cannot be set properly.\n
 Return values:\n
@@ -131,6 +155,14 @@ Return values:\n
   if idx < startIdx:
     return False, -1
   return True, idx
+
+def getLastNonWhiteSpaceCharIdxOrThrow(string, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Returns the index or throws exception."""
+  found, index = getLastNonWhiteSpaceCharIdx(string, startIdx, endIdx)
+  checks.checkIfTrue(found, "Failed to find non-whitespace character within range {}-{}: [{}]"
+                     .format(startIdx, endIdx, string[startIdx:min(startIdx + 100, endIdx + 1)]))
+  return index
 
 def beforeWhitespaceDelimitedFind(stringToScan, stringToFind, startIdx, endIdx):
   """Raises error for empty strings because indexes cannot be set properly.\n
@@ -182,6 +214,14 @@ Return values:\n
   if idx == -1:
     return False, notFoundValue
   return True, idx
+
+def findOrThrow(stringToScan, stringToFind, startIdx, endIdx):
+  """Raises error at empty string because indexes cannot be set properly.\n
+Returns the index or throws exception."""
+  found, index = find(stringToScan, stringToFind, startIdx, endIdx, -1)
+  checks.checkIfTrue(found, "Failed to find [{}] within range {}-{}: [{}]"
+                     .format(stringToFind, startIdx, endIdx, stringToScan[startIdx:min(startIdx + 100, endIdx + 1)]))
+  return index
 
 def rfind(stringToScan, stringToFind, startIdx, endIdx, notFoundValue):
   """Raises exception if any string is empty\n
