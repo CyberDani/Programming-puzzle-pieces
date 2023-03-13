@@ -9,22 +9,15 @@ from modules import stringUtil
 class StringUtilTests(AutoUnitTest):
 
   def test_getNextChar_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar("Chuck Norris", None)
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar(False, True)
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar(None, 0)
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar("Dynamic", -1)
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar("Generation", 56)
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar("012345", 6)
+    self.assertRaises(Exception, stringUtil.getNextChar, "Chuck Norris", None)
+    self.assertRaises(Exception, stringUtil.getNextChar, False, True)
+    self.assertRaises(Exception, stringUtil.getNextChar, None, 0)
+    self.assertRaises(Exception, stringUtil.getNextChar, "Dynamic", -1)
+    self.assertRaises(Exception, stringUtil.getNextChar, "Generation", 56)
+    self.assertRaises(Exception, stringUtil.getNextChar, "012345", 6)
 
   def test_getNextChar_emptyString(self):
-    with self.assertRaises(Exception):
-      stringUtil.getNextChar("", 0)
+    self.assertRaises(Exception, stringUtil.getNextChar, "", 0)
 
   def test_getNextChar_noNextChar(self):
     found, char = stringUtil.getNextChar("012345", 5)
@@ -58,22 +51,15 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(char, "5")
 
   def test_getPreviousChar_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar("Chuck Norris", None)
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar(False, True)
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar(None, 0)
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar("Dynamic", -1)
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar("Generation", 56)
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar("012345", 6)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, "Chuck Norris", None)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, False, True)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, None, 0)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, "Dynamic", -1)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, "Generation", 56)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, "012345", 6)
 
   def test_getPreviousChar_emptyString(self):
-    with self.assertRaises(Exception):
-      stringUtil.getPreviousChar("", 0)
+    self.assertRaises(Exception, stringUtil.getPreviousChar, "", 0)
 
   def test_getPreviousChar_noPrevChar(self):
     found, char = stringUtil.getPreviousChar("tomato sauce", 0)
@@ -88,8 +74,7 @@ class StringUtilTests(AutoUnitTest):
 
   def test_getPreviousChar_examples(self):
     found, char = stringUtil.getPreviousChar("Ex", 1)
-    self.assertTrue(found)
-    self.assertEqual(char, "E")
+    self.assertEqual((found, char), (True, "E"))
     found, char = stringUtil.getPreviousChar("Explore", 1)
     self.assertTrue(found)
     self.assertEqual(char, "E")
@@ -104,28 +89,17 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(char, "3")
 
   def test_getStringStartsWithEndsWith_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap(None, None, None)
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("", "Mozart", "Bach")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("X", "Mozart", "Bach")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("", "", "")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("", "", "endStr")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("", "beginStr", "")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("Small test string", "", "test")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("Small test string", "", "asd")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("Small test string", "Small", "")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("Small test string", "asd", "")
-    with self.assertRaises(Exception):
-      stringUtil.getStringStartsWithEndsWithNoOverlap("Small test string", "", "")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, None, None, None)
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "", "Mozart", "Bach")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "X", "Mozart", "Bach")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "", "", "")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "", "", "endStr")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "", "beginStr", "")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "Small test string", "", "test")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "Small test string", "", "asd")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "Small test string", "Small", "")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "Small test string", "asd", "")
+    self.assertRaises(Exception, stringUtil.getStringStartsWithEndsWithNoOverlap, "Small test string", "", "")
 
   def test_getStringStartsWithEndsWith_stringNotFound(self):
     ans = stringUtil.getStringStartsWithEndsWithNoOverlap("test string", "test", "end")
@@ -174,20 +148,13 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(ans, "abcabc")
 
   def test_stringListToString_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString(["element1", "element2"], "[", "]", 2)
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString(["element1", "element2"], "[", None, "-")
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString(["element1", "element2"], False, "]", "-")
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString("this is just a simple string", "[", "]", "-")
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString([True, False], "[", "]", "-")
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString([1, 2, 3, 4, 5, 6], "[", "]", "-")
-    with self.assertRaises(Exception):
-      stringUtil.stringListToString(["one", "two", "three", []], "[", "]", "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, ["element1", "element2"], "[", "]", 2)
+    self.assertRaises(Exception, stringUtil.stringListToString, ["element1", "element2"], "[", None, "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, ["element1", "element2"], False, "]", "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, "this is just a simple string", "[", "]", "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, [True, False], "[", "]", "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, [1, 2, 3, 4, 5, 6], "[", "]", "-")
+    self.assertRaises(Exception, stringUtil.stringListToString, ["one", "two", "three", []], "[", "]", "-")
 
   def test_stringListToString_examples(self):
     res = stringUtil.stringListToString([], "-<(", ")>-", "|")
@@ -216,18 +183,12 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(res, "<<<== hey --> bye --> hello ==>>>")
 
   def test_doubleSplit_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit("test", "|", "|")
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit("test string", "", "_")
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit("test string", "_", "")
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit("test string", 12, "_")
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit("test string", "_", True)
-    with self.assertRaises(Exception):
-      stringUtil.doubleSplit(["test string", "HEY"], "[]", "_")
+    self.assertRaises(Exception, stringUtil.doubleSplit, "test", "|", "|")
+    self.assertRaises(Exception, stringUtil.doubleSplit, "test string", "", "_")
+    self.assertRaises(Exception, stringUtil.doubleSplit, "test string", "_", "")
+    self.assertRaises(Exception, stringUtil.doubleSplit, "test string", 12, "_")
+    self.assertRaises(Exception, stringUtil.doubleSplit, "test string", "_", True)
+    self.assertRaises(Exception, stringUtil.doubleSplit, ["test string", "HEY"], "[]", "_")
 
   def test_doubleSplit_examples(self):
     parts1, parts2 = stringUtil.doubleSplit("", "_", "|")
@@ -594,8 +555,7 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(func(string, randomIndex, len(string) - 13), randomIndex)
 
   def helper_getLastNonWhiteSpaceCharIdx_exceptionRaised(self, string, startIdx, endIdx):
-    with self.assertRaises(Exception):
-      stringUtil.getLastNonWhiteSpaceCharIdx(string, startIdx, endIdx)
+    self.assertRaises(Exception, stringUtil.getLastNonWhiteSpaceCharIdx, string, startIdx, endIdx)
 
   def helper_getLastNonWhiteSpaceCharIdx_checkIfNotFound(self, string, startIdx, endIdx):
     found, idx = stringUtil.getLastNonWhiteSpaceCharIdx(string, startIdx, endIdx)
@@ -703,42 +663,25 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(func(string, 7, len(string) - 13), len(string)-13)
 
   def test_beforeWhitespaceDelimitedFind_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind(True, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind(None, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind(415, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind(["hello", "world"], "word", 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", True, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", None, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", 312, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", [], 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", -1, 5)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 2, 95)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 10, 4)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "string", 3, 2)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, True, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, None, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, 415, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, ["hello", "world"], "word", 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", True, 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", None, 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", 312, 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", [], 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "string", -1, 5)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "string", 2, 95)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "string", 10, 4)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "string", 3, 2)
 
   def test_beforeWhitespaceDelimitedFind_emptyStrings(self):
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, len("sample string") - 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("sample string", "", 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("", "apple", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.beforeWhitespaceDelimitedFind("", ".", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "", 0, len("sample string") - 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "sample string", "", 0, 1)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "", "apple", 0, 0)
+    self.assertRaises(Exception, stringUtil.beforeWhitespaceDelimitedFind, "", ".", 0, 0)
 
   def test_beforeWhitespaceDelimitedFind_notFound(self):
     string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
@@ -841,42 +784,25 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idx, string.find("ill while doing sth"))
 
   def test_whitespaceDelimitedFind_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind(True, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind(None, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind(415, "word", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind(["hello", "world"], "word", 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", True, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", None, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", 312, 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", [], 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "string", -1, 5)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "string", 2, 95)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "string", 10, 4)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "string", 3, 2)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, True, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, None, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, 415, "word", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, ["hello", "world"], "word", 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", True, 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", None, 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", 312, 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", [], 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "string", -1, 5)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "string", 2, 95)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "string", 10, 4)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "string", 3, 2)
 
   def test_whitespaceDelimitedFind_emptyStrings(self):
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "", 0, len("sample string") - 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("sample string", "", 0, 1)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("", "apple", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.whitespaceDelimitedFind("", ".", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "", 0, len("sample string") - 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "sample string", "", 0, 1)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "", "apple", 0, 0)
+    self.assertRaises(Exception, stringUtil.whitespaceDelimitedFind, "", ".", 0, 0)
 
   def test_whitespaceDelimitedFind_notFound(self):
     string = "Soft kitty,\twarm kitty,\nlittle ball\tof fur!"
@@ -962,14 +888,10 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idx, string.find("ill while doing sth"))
 
   def test_rTrimNewLines_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.rTrimNewLines()
-    with self.assertRaises(Exception):
-      stringUtil.rTrimNewLines(["hello"])
-    with self.assertRaises(Exception):
-      stringUtil.rTrimNewLines(True)
-    with self.assertRaises(Exception):
-      stringUtil.rTrimNewLines(None)
+    self.assertRaises(Exception, stringUtil.rTrimNewLines, [0, 1])
+    self.assertRaises(Exception, stringUtil.rTrimNewLines, ["hello"])
+    self.assertRaises(Exception, stringUtil.rTrimNewLines, True)
+    self.assertRaises(Exception, stringUtil.rTrimNewLines, None)
 
   def test_rTrimNewLines_examples(self):
     ans = stringUtil.rTrimNewLines("")
@@ -1004,28 +926,18 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(ans, "\n\nfirstRow\n\r\n\nsecondRow")
 
   def test_find_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", 1, 3, None)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", -1, 3, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", 4, 2, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", 0, 26, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", 0, 6, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", 0, None, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "substring", None, 2, -1)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", None, 2, 2, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", 1, 3, None)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", -1, 3, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", 4, 2, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", 0, 26, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", 0, 6, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", 0, None, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", "substring", None, 2, -1)
+    self.assertRaises(Exception, stringUtil.find, "string", None, 2, 2, -1)
 
   def test_find_emptyString(self):
-    with self.assertRaises(Exception):
-      stringUtil.find("", "substring", 1, 4, 3)
-    with self.assertRaises(Exception):
-      stringUtil.find("string", "", 1, 4, 3)
+    self.assertRaises(Exception, stringUtil.find, "", "substring", 1, 4, 3)
+    self.assertRaises(Exception, stringUtil.find, "string", "", 1, 4, 3)
 
   def test_find_notFound(self):
     found, idx = stringUtil.find("string", "substring", 1, 5, 3)
@@ -1106,28 +1018,18 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idx, 16)
 
   def test_rfind_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", 1, 3, None)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", -1, 3, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", 4, 2, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", 0, 26, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", 0, 6, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", 0, None, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "substring", None, 2, -1)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", None, 2, 2, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", 1, 3, None)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", -1, 3, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", 4, 2, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", 0, 26, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", 0, 6, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", 0, None, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "substring", None, 2, -1)
+    self.assertRaises(Exception, stringUtil.rfind, "string", None, 2, 2, -1)
 
   def test_rfind_emptyString(self):
-    with self.assertRaises(Exception):
-      stringUtil.rfind("", "substring", 1, 4, 3)
-    with self.assertRaises(Exception):
-      stringUtil.rfind("string", "", 1, 4, 3)
+    self.assertRaises(Exception, stringUtil.rfind, "", "substring", 1, 4, 3)
+    self.assertRaises(Exception, stringUtil.rfind, "string", "", 1, 4, 3)
 
   def test_rfind_notFound(self):
     found, idx = stringUtil.rfind("string", "substring", 1, 5, 3)
@@ -1167,46 +1069,28 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idx, 16)
 
   def test_findAll_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", 0, True)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", 0, -1)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", 3, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", 1, 25)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", 1, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", -1, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", None, None)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "e", False, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", [], 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", None, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll(None, "x", 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll(None, None, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findAll(None, None, None, None)
-    with self.assertRaises(Exception):
-      stringUtil.findAll(1, 2, 3, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findAll(True, False, False, True)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", 0, True)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", 0, -1)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", 3, 2)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", 1, 25)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", 1, 4)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", -1, 4)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", None, None)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "e", False, 2)
+    self.assertRaises(Exception, stringUtil.findAll, "text", [], 0, 2)
+    self.assertRaises(Exception, stringUtil.findAll, "text", None, 0, 2)
+    self.assertRaises(Exception, stringUtil.findAll, None, "x", 0, 2)
+    self.assertRaises(Exception, stringUtil.findAll, None, None, 0, 2)
+    self.assertRaises(Exception, stringUtil.findAll, None, None, None, None)
+    self.assertRaises(Exception, stringUtil.findAll, 1, 2, 3, 4)
+    self.assertRaises(Exception, stringUtil.findAll, True, False, False, True)
 
   def test_findAll_emptyStrings(self):
-    with self.assertRaises(Exception):
-      stringUtil.findAll("text", "", 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.findAll("", "x", 0, 0)
+    self.assertRaises(Exception, stringUtil.findAll, "text", "", 0, 0)
+    self.assertRaises(Exception, stringUtil.findAll, "", "x", 0, 0)
 
   def test_findAll_notFound(self):
-    idxs = stringUtil.findAll("a", "Q", 0, 0)
-    self.assertEqual(idxs, [])
+    self.assertEqual(stringUtil.findAll("a", "Q", 0, 0), [])
     idxs = stringUtil.findAll("a", "longer text", 0, 0)
     self.assertEqual(idxs, [])
     idxs = stringUtil.findAll("this a string", "square", 0, 0)
@@ -1253,48 +1137,28 @@ class StringUtilTests(AutoUnitTest):
     self.assertEqual(idxs, [19])
 
   def test_findNthOccurrence_nonSense(self):
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, 0, True)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, 0, -1)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, 3, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, 1, 25)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, 1, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, -1, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, None, None)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 1, False, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", 0, 0, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", -1, 0, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "e", None, 0, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", [], 1, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", None, 1, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence(None, "x", 1, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence(None, None, 1, 0, 2)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence(None, None, None, None, None)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence(1, 2, 1, 3, 4)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence(True, False, True, False, True)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, 0, True)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, 0, -1)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, 3, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, 1, 25)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, 1, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, -1, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, None, None)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 1, False, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", 0, 0, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", -1, 0, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "e", None, 0, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", [], 1, 0, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", None, 1, 0, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, None, "x", 1, 0, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, None, None, 1, 0, 2)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, None, None, None, None, None)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, 1, 2, 1, 3, 4)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, True, False, True, False, True)
 
   def test_findNthOccurrence_emptyStrings(self):
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("text", "", 1, 0, 0)
-    with self.assertRaises(Exception):
-      stringUtil.findNthOccurrence("", "x", 1, 0, 0)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "text", "", 1, 0, 0)
+    self.assertRaises(Exception, stringUtil.findNthOccurrence, "", "x", 1, 0, 0)
 
   def test_findNthOccurrence_notFound_noOccurrence(self):
     idxs = stringUtil.findNthOccurrence("a", "Q", 1, 0, 0)
