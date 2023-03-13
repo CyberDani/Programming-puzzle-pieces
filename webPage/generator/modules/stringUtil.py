@@ -39,7 +39,7 @@ def getStringStartsWithEndsWithNoOverlap(src, startsWithStr, endsWithStr):
   endIdx += idxAdd + len(endsWithStr)
   return originalSrc[startIdx:endIdx]
 
-def rTrimNewLines(string: str):
+def rTrimNewLines(string):
   checks.checkIfString(string, 0, 1000000)
   trimmedString = string
   while trimmedString.endswith("\n") or trimmedString.endswith("\r"):
